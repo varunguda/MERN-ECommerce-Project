@@ -5,8 +5,6 @@ const connectToDB = () => {
         dbName: "E-Commerce"
     }).then(()=>{
         console.log("Database connection established successfully!");
-    }).catch((err)=>{
-        console.log("Error connecting to Database!", err)
     })
 }
 
