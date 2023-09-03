@@ -1,12 +1,17 @@
 import { Products } from '../models/productModel.js'
 import { ErrorHandler } from '../utils/errorHandler.js';
 import catchAsync from '../utils/catchAsync.js';
+import { ApiFeatures } from '../utils/apiFeatures.js';
 
 export const getAllProducts = catchAsync(async (req, res, next) =>{
-    const products = await Products.find({});
+
+    const productCount = await Products.countDocuments()
+    const apiFeatures = new ApiFeatures(Products.find(), req.query).search().filter().pagination(10)
+    const products = await apiFeatures.products;
     return res.json({
         success: true,
-        products
+        products,
+        product_count: productCount,
     })
 })
 

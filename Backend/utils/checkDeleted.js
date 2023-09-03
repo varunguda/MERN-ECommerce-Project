@@ -1,0 +1,52 @@
+import { DeletedUsers } from "../models/deletedUserModel.js";
+import { Users } from "../models/userModel.js";
+import { addCookie } from "./addCookie.js";
+import catchAsync from "./catchAsync.js";
+import { ErrorHandler } from "./errorHandler.js";
+import { compareHashPassword, hashPassword } from "./hashFunctions.js";
+
+
+export const checkDeletedUsersLogin = catchAsync( async(req, res, next) => {
+
+    const { email, password} = req.body;
+
+    let user = await DeletedUsers.findOne({ email }).select("+password");
+    if(!user){
+        return next(new ErrorHandler("Invalid Email or Password!", 400));
+    }
+
+    const isSame = await compareHashPassword(password, user.password);
+    if(!isSame){
+        return next(new ErrorHandler("Invalid Email or Password!", 400));
+    }
+
+    const { name, isSeller, address, createdAt, user_image_url } = user;
+    
+    const hashPass = await hashPassword(password)
+    
+    user = await Users.create({ name, email, password: hashPass , isSeller, address, createdAt, user_image_url});
+    
+    await DeletedUsers.findOneAndDelete({ email });
+    
+    addCookie(user, `${user.name}, Good to see you back again:)`, 200, req, res, next);
+
+})
+
+
+
+export const checkDeletedUsersCreate = catchAsync( async(req, res, next) => {
+
+    const { name ,email, password } = req.body;
+
+    let user = await DeletedUsers.findOne({ email }).select("+password");
+    if(user){
+        return next(new ErrorHandler("This mail is already registered!", 400));
+    }
+
+    const hashPass = await hashPassword(password)
+
+    user = await Users.create({ name, email, password: hashPass })
+
+    addCookie(user, "User registered successfully!", 201, req, res, next);
+
+})
