@@ -1,5 +1,6 @@
 import express from 'express';
 import productRoute from './routes/productRoute.js'
+import { ErrorHandler } from './utils/errorHandler.js';
 
 const app = express();
 
@@ -9,6 +10,26 @@ app.use(express.json());
 
 // Using routes
 app.use('/api/v1', productRoute)
+
+
+
+// Error Handling
+app.use((err, req, res, next)=>{
+
+    err.status = err.status || 500
+    err.message = err.message || "Internal server error!"
+
+    if(err.name === "CastError"){
+        err = new ErrorHandler(`Resource not found! Invalid: ${err.path}`, 400)
+    }
+
+    return res
+    .status(err.status)
+    .json({
+        success: false,
+        message: err.message
+    })
+})
 
 
 export default app
