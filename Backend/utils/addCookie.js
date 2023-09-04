@@ -9,7 +9,7 @@ export const addCookie = async (user ,message, status ,req, res, next) => {
         .status(status)
         .cookie("token", token, {
             httpOnly: true,
-            maxAge:  15*60*100
+            maxAge: 24*60*60*1000
         })
         .json({
             success: true,

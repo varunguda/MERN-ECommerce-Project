@@ -3,6 +3,8 @@ import { ErrorHandler } from '../utils/errorHandler.js';
 import catchAsync from '../utils/catchAsync.js';
 import { ApiFeatures } from '../utils/apiFeatures.js';
 
+
+
 export const getAllProducts = catchAsync(async (req, res, next) =>{
 
     const productCount = await Products.countDocuments()
@@ -33,8 +35,8 @@ export const getProductDetails = catchAsync(async(req, res, next) => {
 
 
 export const createProduct = catchAsync(async (req, res, next) => {
-    
-    await Products.create(req.body);
+
+    await Products.create({...req.body, seller_id: req.user._id});
     
     return res.status(201).json({
         success: true,
@@ -45,16 +47,14 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
 
 
-export const updateProduct = catchAsync(async (req, res, next) => {
+export const updateAnyProduct = catchAsync( async(req, res, next) => {
 
     const { id } = req.params;
 
-    const product = await Products.findById(id);
+    const product =  await Products.findByIdAndUpdate(id, req.body);
     if(!product){
         return next(new ErrorHandler("Product not found!", 400));
     }
-
-    await Products.findByIdAndUpdate(id, req.body);
 
     return res.json({
         success: true,
@@ -64,16 +64,13 @@ export const updateProduct = catchAsync(async (req, res, next) => {
 
 
 
-export const deleteProduct = catchAsync(async(req, res, next) => {
+export const deleteAnyProduct = catchAsync(async(req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findById(id);
-
+    const product = await Products.findByIdAndDelete(id);
     if(!product){
         return next(new ErrorHandler("Product not found!", 400));
     }
-
-    await Products.findByIdAndDelete(id);
 
     return res.json({
         success: true,
@@ -83,10 +80,50 @@ export const deleteProduct = catchAsync(async(req, res, next) => {
 
 
 
-export const deleteAllProducts = catchAsync(async (req, res, next) => {
-    await Products.deleteMany({});
-    res.json({
+export const getMyProducts = catchAsync( async(req, res, next) => {
+    
+    const apiFeatures  = new ApiFeatures(Products.find({ seller_id: req.user._id }), req.query ).search().pagination(10);
+
+    const products = await apiFeatures.products;
+
+    const product_count = products.length
+
+    return res.json({
         success: true,
-        message: "Successfully deleted all the Products"
+        products,
+        product_count
+    })
+})
+
+
+
+export const updateMyProduct = catchAsync( async(req, res, next) => {
+    const { id } = params;
+
+    const product = await Products.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { ...req.body })
+
+    if(!product){
+        return next(new ErrorHandler("Product not found!", 404));
+    }
+
+    return res.json({
+        success: true,
+        message: "Product details updated successfully!"
+    })
+})
+
+
+
+export const deleteMyProduct = catchAsync( async(req, res, next) => {
+    const { id } = req.params;
+
+    const product = await Products.findOneAndDelete({ _id:id, seller_id: req.user._id })
+    if(!product){
+        return next(new ErrorHandler("Product not found", 404))
+    }
+
+    return res.json({
+        success: true,
+        message: "Successfully deleted your product!"
     })
 })

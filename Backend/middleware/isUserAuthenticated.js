@@ -11,10 +11,14 @@ export const isUserAuthenticated = async(req, res, next) => {
 
     const userPayload = jwt.verify(token, process.env.JWT_SECRET);
 
+    if(!userPayload){
+        return next(new ErrorHandler("Something went wrong, Please Login again!", 400));
+    }
+
     const user = await Users.findById(userPayload._id);
 
     if(!user){
-        return next(new ErrorHandler("Something went wrong, Please Login again!", 400));
+        return next(new ErrorHandler("User not found!", 404));
     }
 
     req.user = user;

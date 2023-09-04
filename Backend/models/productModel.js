@@ -2,6 +2,10 @@ import { Schema, model } from "mongoose";
 
 const schema = new Schema({
 
+    seller_id: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
     name: {
         type: String,
         required: [ true, "Please enter product Name" ]
@@ -68,7 +72,8 @@ const schema = new Schema({
     ],
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        select: false
     }
 
 })

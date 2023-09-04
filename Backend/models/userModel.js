@@ -54,12 +54,28 @@ const schema = new mongoose.Schema({
 
     is_seller: {
         type: Boolean,
-        default: false
+        default: false,
+        select: false,
+    },
+
+    is_admin: {
+        type: Boolean,
+        default: false,
+        select: false,
     },
 
     createdAt: {
         type: Date,
         default: Date.now
+    },
+
+    resetPasswordToken: {
+        type: String,
+        select: false
+    },
+    resetPasswordExpire: {
+        type: Date,
+        select: false
     }
 })
 
