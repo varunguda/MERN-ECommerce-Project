@@ -1,23 +1,36 @@
 import { Router } from "express";
-import { createProduct, deleteAllProducts, deleteProduct, getAllProducts, getProductDetails, updateProduct } from "../controllers/productController.js";
+import { createProduct, deleteAnyProduct, deleteMyProduct, getAllProducts, getMyProducts, getProductDetails, updateAnyProduct, updateMyProduct } from "../controllers/productController.js";
+import { isAdmin } from "../middleware/isAdminAuthenticated.js";
+import { isAdminOrSeller } from "../middleware/isAdminOrSeller.js";
+import { isSeller } from "../middleware/isSellerAuthenticated.js";
 
 const router = Router();
 
-// Get all products - All
-router.route('/products').get(getAllProducts)
+// All
+router.route('/products').get(getAllProducts);
 
-// Create a product - Admin & Seller
-router.route('/product/addnew').post(createProduct)
+router.route('/products/:id').get(getProductDetails)
 
-// Update & delete & get product - Admin & Seller
-router
-    .route('/product/:id')
-    .put(updateProduct)
-    .delete(deleteProduct)
-    .get(getProductDetails)
 
-// Delete all products - Admin
-router.route('/products/deleteall').delete(deleteAllProducts)
+
+// Admin
+router.route('/admin/products/:id')
+    .put( isAdmin, updateAnyProduct)
+    .delete( isAdmin ,deleteAnyProduct)
+
+
+
+// Seller
+router.route("/seller/myproducts/:id")
+    .put(isSeller, updateMyProduct )
+    .delete(isSeller, deleteMyProduct)
+
+
+
+// Admin & Seller
+router.route("/myproducts").get(isAdminOrSeller, getMyProducts)
+
+router.route('/myproducts/addnew').post(isAdminOrSeller, createProduct)
 
 
 export default router;

@@ -1,5 +1,3 @@
-import { ErrorHandler } from "./errorHandler.js";
-
 export class ApiFeatures{
     constructor(products, queryStr){
         this.products = products,

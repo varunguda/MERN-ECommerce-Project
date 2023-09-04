@@ -34,7 +34,7 @@ export const checkDeletedUsersLogin = catchAsync( async(req, res, next) => {
 
 
 
-export const checkDeletedUsersCreate = catchAsync( async(req, res, next) => {
+export const checkDeletedUsersAndCreate = catchAsync( async(req, res, next) => {
 
     const { name ,email, password } = req.body;
 

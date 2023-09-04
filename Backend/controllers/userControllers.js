@@ -2,38 +2,11 @@ import { DeletedUsers } from "../models/deletedUserModel.js";
 import { Users } from "../models/userModel.js"
 import { addCookie } from "../utils/addCookie.js";
 import catchAsync from "../utils/catchAsync.js"
-import { checkDeletedUsersCreate, checkDeletedUsersLogin } from "../utils/checkDeleted.js";
+import { checkDeletedUsersAndCreate, checkDeletedUsersLogin } from "../utils/checkDeleted.js";
 import { ErrorHandler } from "../utils/errorHandler.js";
-import {compareHashPassword, hashPassword} from '../utils/hashFunctions.js'
-
-
-// ADMIN FUNCTIONS
-
-export const getAllUsers = catchAsync( async (req, res, next) => {
-
-    const users = await Users.find({});
-
-    return res.json({
-        success: true,
-        users
-    })
-
-})
-
-
-
-export const deleteAllUsers = catchAsync( async(req, res, next) => {
-    await Users.deleteMany({});
-
-    return res.json({
-        success: true,
-        message: "DELETED ALL THE USERS!"
-    })
-})
-
-
-
-
+import {compareHashPassword } from '../utils/hashFunctions.js';
+import crypto from 'crypto';
+import { sendEmail } from "../utils/sendMail.js";
 
 
 // USER FUNCTIONS
@@ -45,7 +18,7 @@ export const createUser = catchAsync( async (req, res, next) => {
         return next(new ErrorHandler("This mail is already registered!", 400))
     }
 
-    checkDeletedUsersCreate(req, res, next);
+    checkDeletedUsersAndCreate(req, res, next);
     
 });
 
@@ -79,9 +52,9 @@ export const loginUser = catchAsync( async(req, res, next) => {
 
 
 export const updateUserDetails = catchAsync( async(req, res, next) => {
-    const { name, email, password, address, user_image_url, isSeller } = req.body;
+    const { name, email, address, user_image_url } = req.body;
 
-    await Users.findByIdAndUpdate(req.user._id, { name, email, password, address, user_image_url, isSeller });
+    await Users.findByIdAndUpdate(req.user._id, { name, email, address, user_image_url });
 
     return res.json({
         success: true,
@@ -117,5 +90,54 @@ export const deleteUser = catchAsync( async(req, res, next) => {
         success: true,
         message: "Successfully deleted your account, You can log back in again within the next 10 days!"
     })
+
+});
+
+
+
+export const forgotPassword = catchAsync( async(req, res, next) => {
+    const { email } = req.body;
+
+    const user = await Users.findOne({ email });
+    if(!user){
+        return next(new ErrorHandler("This mail has not yet been registered!", 400));
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    await Users.findOneAndUpdate( {email} ,{ resetPasswordToken, resetPasswordExpire: new Date(Date.now() + 10 * 60 * 1000) })
+
+    const resetPasswordURL = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetPasswordToken}`
+
+    // const message = `URL to your password reset request: \n\n ${resetPasswordURL} \n\n !!! If you havent requested for resetting your password, Ignore the above link !!! \n NOTE: Clicking on this URL could be a possible threat to your account if you haven't requested to reset your password.`
+
+    const html = `<html>
+                    <body>
+                        URL to your password reset request:<br/><br/> ${resetPasswordURL} <br/><br/>
+                          
+                        <p><span style="color: red;">!!! If you havent requested for resetting your password, Ignore the above link !!!</span></p><br/>
+                        <p>NOTE: Clicking on this URL could be a possible threat to your account if you haven't requested to reset your password.</p>
+                    </body>
+                </html>`
+
+    try {
+
+        await sendEmail({
+            email,
+            subject: "Link to recover your MANYin password!",
+            html
+        })
+
+        return res.json({
+            success: true,
+            message: `A password recovery mail has been sent to ${email}`
+        })
+        
+    } catch (error) {
+        await Users.findOneAndUpdate( {email} ,{ resetPasswordToken: undefined, resetPasswordExpire: undefined });
+        return next(new ErrorHandler(error.message, 500))
+    }
+
 
 })
