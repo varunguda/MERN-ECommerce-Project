@@ -103,6 +103,11 @@ const schema = new Schema({
         }
     ],
 
+    total_reviews: {
+        type: Number,
+        default: 0
+    },
+
     createdAt: {
         type: Date,
         default: Date.now,
@@ -110,7 +115,6 @@ const schema = new Schema({
     }
 
 })
-
 
 
 export const Products = model("Products", schema)

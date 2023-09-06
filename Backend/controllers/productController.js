@@ -5,7 +5,7 @@ import { ApiFeatures } from '../utils/apiFeatures.js';
 
 
 
-export const getAllProducts = catchAsync(async (req, res, next) =>{
+export const getAllProducts = catchAsync(async (req, res, next) => {
 
     const productCount = await Products.countDocuments()
     const apiFeatures = new ApiFeatures(Products.find(), req.query).search().filter().pagination(10)
@@ -19,11 +19,11 @@ export const getAllProducts = catchAsync(async (req, res, next) =>{
 
 
 
-export const getProductDetails = catchAsync(async(req, res, next) => {
+export const getProductDetails = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
     const product = await Products.findById(id);
-    if(!product){
+    if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
     return res.json({
@@ -38,27 +38,28 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
     const { name, description, price, category } = req.body;
 
-    await Products.create({ name, description, price, category , user: req.user._id});
-    
+    const product = await Products.create({ name, description, price, category, seller_id: req.user._id });
+
     return res.status(201).json({
         success: true,
-        message: "Product added successfully!"
+        message: "Product added successfully!",
+        product
     })
 
 })
 
 
 
-export const updateAnyProduct = catchAsync( async(req, res, next) => {
+export const updateAnyProduct = catchAsync(async (req, res, next) => {
 
     const { id } = req.params;
 
-    const product =  await Products.findByIdAndUpdate(id, req.body, 
+    const product = await Products.findByIdAndUpdate(id, req.body,
         {
             new: true,
             runValidators: true
         });
-    if(!product){
+    if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
 
@@ -70,11 +71,11 @@ export const updateAnyProduct = catchAsync( async(req, res, next) => {
 
 
 
-export const deleteAnyProduct = catchAsync(async(req, res, next) => {
+export const deleteAnyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
     const product = await Products.findByIdAndDelete(id);
-    if(!product){
+    if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
 
@@ -86,9 +87,9 @@ export const deleteAnyProduct = catchAsync(async(req, res, next) => {
 
 
 
-export const getMyProducts = catchAsync( async(req, res, next) => {
-    
-    const apiFeatures  = new ApiFeatures(Products.find({ seller_id: req.user._id }), req.query ).search().pagination(10);
+export const getMyProducts = catchAsync(async (req, res, next) => {
+
+    const apiFeatures = new ApiFeatures(Products.find({ seller_id: req.user._id }), req.query).search().pagination(10);
 
     const products = await apiFeatures.products;
 
@@ -103,16 +104,16 @@ export const getMyProducts = catchAsync( async(req, res, next) => {
 
 
 
-export const updateMyProduct = catchAsync( async(req, res, next) => {
+export const updateMyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { ...req.body }, 
-        { 
+    const product = await Products.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { ...req.body },
+        {
             new: true,
             runValidators: true
         }
     )
-    if(!product){
+    if (!product) {
         return next(new ErrorHandler("Product not found!", 404));
     }
 
@@ -124,11 +125,11 @@ export const updateMyProduct = catchAsync( async(req, res, next) => {
 
 
 
-export const deleteMyProduct = catchAsync( async(req, res, next) => {
+export const deleteMyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findOneAndDelete({ _id:id, seller_id: req.user._id })
-    if(!product){
+    const product = await Products.findOneAndDelete({ _id: id, seller_id: req.user._id })
+    if (!product) {
         return next(new ErrorHandler("Product not found", 404))
     }
 
@@ -140,7 +141,7 @@ export const deleteMyProduct = catchAsync( async(req, res, next) => {
 
 
 
-export const craeateProductReview = catchAsync( async(req, res, next) => {
+export const craeateProductReview = catchAsync(async (req, res, next) => {
 
     const { id } = req.params;
     const { title, comment, rating, images } = req.body;
@@ -153,54 +154,58 @@ export const craeateProductReview = catchAsync( async(req, res, next) => {
         comment
     }
 
-    const product = await Products.findById(id);
-    if(!product){
+    let product = await Products.findById(id);
+    if (!product) {
         return next(new ErrorHandler("Product not found!", 404));
     }
 
     const isReviewed = product.reviews.find((review) => {
-        review.user_id === req.user._id // returns true if the user already reviewed the product
+        return review.user_id.toString() === req.user._id.toString() // returns true if the user already reviewed the product
     })
 
-    if(isReviewed){
-        product.reviews.forEach((review)=>{
-            if(review.user_id === req.user._id){
+    // console.log(review.user_id.toString() === req.user._id.toString())
+
+    if (isReviewed) {
+        product.reviews.forEach((review) => {
+            if (review.user_id.toString() === req.user._id.toString()) {
                 review.title = title,
-                review.rating = rating,
-                review.comment = comment
+                    review.rating = rating,
+                    review.comment = comment
             }
         })
     }
-    else{
+    else {
         product.reviews.push(review);
+        product.total_reviews = product.reviews.length;
     }
 
     let total = 0;
 
-    product.reviews.forEach((rev)=>{
+    product.reviews.forEach((rev) => {
         total += rev.rating;
     })
 
-    const totalRating = total/product.reviews.length;
-    
+    const totalRating = total / product.reviews.length;
+
     product.rating = totalRating;
 
-    await product.save({ validateBeforeSave: false });
+    product = await product.save({ validateBeforeSave: false });
 
     return res.status(201).json({
         success: true,
         message: "Review added successfully!",
+        product
     });
 })
 
 
 
-export const getAllProductReviews = catchAsync( async(req, res, next) => {
+export const getAllProductReviews = catchAsync(async (req, res, next) => {
 
     const { id } = req.params;
 
     const product = await Products.findById(id);
-    if(!product){
+    if (!product) {
         next(new ErrorHandler("Product not found!", 404))
     }
 
@@ -208,4 +213,51 @@ export const getAllProductReviews = catchAsync( async(req, res, next) => {
         success: true,
         reviews: product.reviews
     })
+})
+
+
+
+export const deleteReview = catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+
+    const product = await Products.findById(id);
+    if (!product) {
+        return next(new ErrorHandler("Product not found!", 404));
+    }
+
+    if (product.reviews.length === 0) {
+        return next(new ErrorHandler("There are no reviews to this product!"));
+    }
+
+    const isReviewed = product.reviews.find((review) => {
+        return review.user_id.toString() === req.user._id.toString();
+    })
+
+    if (!isReviewed) {
+        return next(new ErrorHandler("You haven't reviewed this product yet!", 400));
+    }
+
+    let total = 0;
+
+    product.reviews = product.reviews.filter((review) => {
+        if (review.user_id.toString() === req.user._id.toString()) {
+            return false;
+        }
+        total += review.rating;
+        return true;
+    });
+
+    const totalRating = total / product.reviews.length;
+
+    product.rating = totalRating;
+
+    product.total_reviews = product.reviews.length;
+
+    product.save({ validateBeforeSave: false });
+
+    return res.json({
+        success: true,
+        message: "Successfully deleted your review!"
+    })
+
 })
