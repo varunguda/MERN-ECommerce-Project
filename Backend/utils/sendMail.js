@@ -19,12 +19,8 @@ export const sendEmail = catchAsync( async(object) => {
         html: object.html
       };
       
-      transporter.sendMail(mailOptions, (error, info)=>{
-        if (error) {
-          return Promise.reject()
-        } else {
-          return Promise.resolve(true)
-        }
-      });
+      const mail = await transporter.sendMail(mailOptions);
+
+      return mail;
 } )
 

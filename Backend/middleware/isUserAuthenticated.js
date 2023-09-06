@@ -12,6 +12,10 @@ export const isUserAuthenticated = async(req, res, next) => {
     const userPayload = jwt.verify(token, process.env.JWT_SECRET);
 
     if(!userPayload){
+        res.cookie("token", "", {
+            httpOnly: true,
+            maxAge: 0
+        })
         return next(new ErrorHandler("Something went wrong, Please Login again!", 400));
     }
 

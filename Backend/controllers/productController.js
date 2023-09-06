@@ -98,7 +98,7 @@ export const getMyProducts = catchAsync( async(req, res, next) => {
 
 
 export const updateMyProduct = catchAsync( async(req, res, next) => {
-    const { id } = params;
+    const { id } = req.params;
 
     const product = await Products.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { ...req.body })
 

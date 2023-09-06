@@ -5,20 +5,29 @@ import adminRoute from './routes/adminRoutes.js';
 import sellerRoutes from './routes/sellerRoute.js'
 import { ErrorHandler } from './utils/errorHandler.js';
 import cookieParser from 'cookie-parser';
+import { config } from 'dotenv';
+import session from 'express-session';
+
+config({
+    path: "./config/config.env"
+})
 
 const app = express();
 
 // Using middleware
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+}))
 
 // Using routes
 app.use('/api/v1', adminRoute)
 app.use('/api/v1', sellerRoutes)
 app.use('/api/v1', userRoute)
 app.use('/api/v1/', productRoute)
-
 
 
 // Error Handling
