@@ -102,9 +102,9 @@ export const loginUser = catchAsync( async(req, res, next) => {
 
 
 export const updateUserDetails = catchAsync( async(req, res, next) => {
-    const { name, email, address, user_image_url } = req.body;
+    const { name, email, address, avatar } = req.body;
 
-    await Users.findByIdAndUpdate(req.user._id, { name, email, address, user_image_url });
+    await Users.findByIdAndUpdate(req.user._id, { name, email, address, avatar });
 
     return res.json({
         success: true,
