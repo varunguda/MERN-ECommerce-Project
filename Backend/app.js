@@ -50,7 +50,6 @@ app.use((err, req, res, next) => {
         err = new ErrorHandler(message, 400);
     }
 
-    // JWT EXPIRE error
     if (err.name === "TokenExpiredError") {
         const message = `Json Web Token is Expired, Try again `;
         err = new ErrorHandler(message, 400);
