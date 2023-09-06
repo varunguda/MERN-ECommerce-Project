@@ -1,39 +1,38 @@
-import jwt from "jsonwebtoken";
 import catchAsync from "./catchAsync.js";
 import { sendEmail } from "./sendMail.js";
-import {codeGenerator} from './generateCode.js';
+import { codeGenerator } from './generateCode.js';
 
-export const verifyMail = catchAsync( async(req, res, next) => {
-    
-    const { name, email, password } = req.body;
- 
-    // Two approaches I've come up to Verify user before creating his account:
-    // 1. User enters his details his details are stored in a 'tempusers' collection in database until his email is verified.
-    // 2. His data is temperorily stored in express session until his mail is is verified.
+export const verifyMail = catchAsync(async (req, res, next) => {
 
-    // Also two methods of verifying the mail
-    // 1. I send a url, on which upon clicking, user account is created
-    // 2. A confirmation code is sent to users mail. This way I wouldnt have to worry about browser specific nature of sessions.
+  const { name, email, password } = req.body;
+
+  // Two approaches I've come up to Verify user before creating his account:
+  // 1. User enters his details his details are stored in a 'tempusers' collection in database until his email is verified.
+  // 2. His data is temperorily stored in express session until his mail is is verified.
+
+  // Also two methods of verifying the mail
+  // 1. I send a url, on which upon clicking, user account is created
+  // 2. A confirmation code is sent to users mail. This way I wouldnt have to worry about browser specific nature of sessions.
 
 
-    
-    // const mailToken = jwt.sign({
-    //     email
-    // }, process.env.JWT_SECRET, { expiresIn: '1d' })
 
-    // const verifyEmailURL = `${req.protocol}://${req.get("host")}/api/v1/verified-create/${mailToken}`;
+  // const mailToken = jwt.sign({
+  //     email
+  // }, process.env.JWT_SECRET, { expiresIn: '1d' })
 
-    const code = codeGenerator();
+  // const verifyEmailURL = `${req.protocol}://${req.get("host")}/api/v1/verified-create/${mailToken}`;
 
-    const codeExpireTime = Date.now() + 15*60*1000;
+  const code = codeGenerator();
 
-    if(req.session.registrationDetails){
-        delete req.session.registrationDetails;
-    }
+  const codeExpireTime = Date.now() + 15 * 60 * 1000;
 
-    req.session.registrationDetails = { name, email, password, code, codeExpireTime }
+  if (req.session.registrationDetails) {
+    delete req.session.registrationDetails;
+  }
 
-    const html = `<html>
+  req.session.registrationDetails = { name, email, password, code, codeExpireTime }
+
+  const html = `<html>
 
     <head>
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -93,9 +92,9 @@ export const verifyMail = catchAsync( async(req, res, next) => {
           margin-top: 20px;
         }
       </style>
-    </head>
+      </head>
     
-    <body>
+      <body>
     
       <div class="container">
         <h1>Verify Your Email</h1>
@@ -110,22 +109,21 @@ export const verifyMail = catchAsync( async(req, res, next) => {
         <p class="note">Note: The verification code is valid for 15 mins for security reasons.</p>
       </div>
     
-    </body>
+      </body>
     
-    </html>
+      </html>
     
-    `
+      `
 
-    await sendEmail({
-        email,
-        subject: "Confirmation code for creating your MANYin account!",
-        html
-    });
+  await sendEmail({
+    email,
+    subject: "Confirmation code for creating your MANYin account!",
+    html
+  });
 
-    return res.json({
-        success: true,
-        message: `Verification mail has been sent to ${email}`
-    })
-
+  return res.json({
+    success: true,
+    message: `Verification mail has been sent to ${email}`
+  })
 
 })
