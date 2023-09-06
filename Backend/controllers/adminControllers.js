@@ -18,7 +18,6 @@ export const getAllSellersAndBuyers = catchAsync( async (req, res, next) => {
 
 
 
-
 export const updateUserRole = catchAsync( async(req, res, next) => {
     const { id } = req.params;
     const { is_seller, is_admin } = req.body;
@@ -29,19 +28,17 @@ export const updateUserRole = catchAsync( async(req, res, next) => {
     }
 
     if(user.is_admin){
-        // An admin can create another admin but cannot remove an admin
+        // An Admin can create another admin but cannot remove an Admin
         return next(new ErrorHandler("This action cannot be performed!", 403))
     }
-    
-    user = await Users.findByIdAndUpdate(id, {is_seller, is_admin})
 
-    if(!user){
-        return next(new ErrorHandler("User not found!", 404));
-    }
+    user.is_seller = is_seller;
+    user.is_admin = is_admin;
+
+    user.save();
 
     return res.json({
         success: true,
         message: "User Role updated successfully!"
     })
-
 })

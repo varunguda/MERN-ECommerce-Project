@@ -36,7 +36,9 @@ export const getProductDetails = catchAsync(async(req, res, next) => {
 
 export const createProduct = catchAsync(async (req, res, next) => {
 
-    await Products.create({...req.body, seller_id: req.user._id});
+    const { name, description, price, category } = req.body;
+
+    await Products.create({ name, description, price, category , user: req.user._id});
     
     return res.status(201).json({
         success: true,
@@ -51,7 +53,11 @@ export const updateAnyProduct = catchAsync( async(req, res, next) => {
 
     const { id } = req.params;
 
-    const product =  await Products.findByIdAndUpdate(id, req.body);
+    const product =  await Products.findByIdAndUpdate(id, req.body, 
+        {
+            new: true,
+            runValidators: true
+        });
     if(!product){
         return next(new ErrorHandler("Product not found!", 400));
     }
@@ -100,8 +106,12 @@ export const getMyProducts = catchAsync( async(req, res, next) => {
 export const updateMyProduct = catchAsync( async(req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { ...req.body })
-
+    const product = await Products.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { ...req.body }, 
+        { 
+            new: true,
+            runValidators: true
+        }
+    )
     if(!product){
         return next(new ErrorHandler("Product not found!", 404));
     }
@@ -125,5 +135,77 @@ export const deleteMyProduct = catchAsync( async(req, res, next) => {
     return res.json({
         success: true,
         message: "Successfully deleted your product!"
+    })
+})
+
+
+
+export const craeateProductReview = catchAsync( async(req, res, next) => {
+
+    const { id } = req.params;
+    const { title, comment, rating, images } = req.body;
+
+    const review = {
+        user_id: req.user._id,
+        name: req.user.name,
+        rating,
+        title,
+        comment
+    }
+
+    const product = await Products.findById(id);
+    if(!product){
+        return next(new ErrorHandler("Product not found!", 404));
+    }
+
+    const isReviewed = product.reviews.find((review) => {
+        review.user_id === req.user._id // returns true if the user already reviewed the product
+    })
+
+    if(isReviewed){
+        product.reviews.forEach((review)=>{
+            if(review.user_id === req.user._id){
+                review.title = title,
+                review.rating = rating,
+                review.comment = comment
+            }
+        })
+    }
+    else{
+        product.reviews.push(review);
+    }
+
+    let total = 0;
+
+    product.reviews.forEach((rev)=>{
+        total += rev.rating;
+    })
+
+    const totalRating = total/product.reviews.length;
+    
+    product.rating = totalRating;
+
+    await product.save({ validateBeforeSave: false });
+
+    return res.status(201).json({
+        success: true,
+        message: "Review added successfully!",
+    });
+})
+
+
+
+export const getAllProductReviews = catchAsync( async(req, res, next) => {
+
+    const { id } = req.params;
+
+    const product = await Products.findById(id);
+    if(!product){
+        next(new ErrorHandler("Product not found!", 404))
+    }
+
+    return res.json({
+        success: true,
+        reviews: product.reviews
     })
 })

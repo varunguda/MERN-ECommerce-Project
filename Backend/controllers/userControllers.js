@@ -10,7 +10,6 @@ import { sendEmail } from "../utils/sendMail.js";
 import { verifyMail } from "../utils/verifyMail.js";
 
 
-
 // USER FUNCTIONS
 
 export const createUser = catchAsync( async (req, res, next) => {
@@ -104,7 +103,11 @@ export const loginUser = catchAsync( async(req, res, next) => {
 export const updateUserDetails = catchAsync( async(req, res, next) => {
     const { name, email, address, avatar } = req.body;
 
-    await Users.findByIdAndUpdate(req.user._id, { name, email, address, avatar });
+    await Users.findByIdAndUpdate(req.user._id, { name, email, address, avatar }, 
+        {
+            new: true,
+            runValidators: true,
+        });
 
     return res.json({
         success: true,
@@ -134,7 +137,7 @@ export const deleteUser = catchAsync( async(req, res, next) => {
     
     await DeletedUsers.create({ name, email, password, isSeller, address, createdAt, user_image_url, expireAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)});
 
-    await Users.findByIdAndDelete(req.user._id);
+    user.deleteOne()
 
     return res.json({
         success: true,
@@ -157,7 +160,10 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
 
     const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
-    await Users.findOneAndUpdate( {email} ,{ resetPasswordToken, resetPasswordExpire: new Date(Date.now() + 15 * 60 * 1000) })
+    user.resetPasswordToken = resetPasswordToken;
+    user.resetPasswordExpire = new Date(Date.now() + 15 * 60 * 1000)
+
+    await user.save();
 
     const resetPasswordURL = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`
 
@@ -259,7 +265,9 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
         })
         
     } catch (error) {
-        await Users.findOneAndUpdate( {email} ,{ resetPasswordToken: undefined, resetPasswordExpire: undefined });
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        user.save()
         return next(new ErrorHandler(error.message, 500))
     }
 
