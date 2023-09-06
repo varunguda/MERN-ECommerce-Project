@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 export const addCookie = async (user ,message, status ,req, res, next) => {
     const token = jwt.sign({
         _id: user.id
-    }, process.env.JWT_SECRET);
+    }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
     return res
         .status(status)

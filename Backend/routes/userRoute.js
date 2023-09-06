@@ -1,13 +1,15 @@
 import { Router } from "express";
-import { createUser, deleteUser, forgotPassword, getUserDetails, loginUser, logoutUser, updateUserDetails } from "../controllers/userControllers.js";
+import { createUser, createVerifiedUser, deleteUser, forgotPassword, getUserDetails, loginUser, logoutUser, recoverPassword, updateUserDetails } from "../controllers/userControllers.js";
 import { isUserAuthenticated } from "../middleware/isUserAuthenticated.js";
-
+import { verifyMail } from "../utils/verifyMail.js";
 
 const router = Router();
 
 
 // USER ROUTES
 router.route("/createuser").post(createUser);
+
+router.route("/createuser/user-verification").post(createVerifiedUser);
 
 router.route('/login').post(loginUser)
 
@@ -19,6 +21,8 @@ router.route('/user/deleteuser').delete(isUserAuthenticated, deleteUser)
 
 router.route('/user/logout').get(isUserAuthenticated, logoutUser);
 
-router.route('/user/forgotpassword').post(forgotPassword)
+router.route('/user/forgotpassword').post(forgotPassword);
+
+router.route("/password/reset/:resetToken").put(recoverPassword)
 
 export default router;

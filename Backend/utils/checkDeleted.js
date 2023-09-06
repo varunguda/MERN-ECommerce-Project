@@ -31,22 +31,3 @@ export const checkDeletedUsersLogin = catchAsync( async(req, res, next) => {
     addCookie(user, `${user.name}, Good to see you back again:)`, 200, req, res, next);
 
 })
-
-
-
-export const checkDeletedUsersAndCreate = catchAsync( async(req, res, next) => {
-
-    const { name ,email, password } = req.body;
-
-    let user = await DeletedUsers.findOne({ email }).select("+password");
-    if(user){
-        return next(new ErrorHandler("This mail is already registered!", 400));
-    }
-
-    const hashPass = await hashPassword(password)
-
-    user = await Users.create({ name, email, password: hashPass })
-
-    addCookie(user, "User registered successfully!", 201, req, res, next);
-
-})

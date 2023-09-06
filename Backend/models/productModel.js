@@ -4,6 +4,7 @@ const schema = new Schema({
 
     seller_id: {
         type: Schema.Types.ObjectId,
+        ref:"Users",
         required: true
     },
     name: {
