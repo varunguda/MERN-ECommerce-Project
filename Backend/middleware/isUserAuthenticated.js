@@ -22,6 +22,10 @@ export const isUserAuthenticated = async(req, res, next) => {
     const user = await Users.findById(userPayload._id);
 
     if(!user){
+        res.cookie("token", "", {
+            httpOnly: true,
+            maxAge: 0
+        })
         return next(new ErrorHandler("User not found!", 404));
     }
 
