@@ -133,9 +133,9 @@ export const logoutUser = catchAsync( async(req, res, next) => {
 export const deleteUser = catchAsync( async(req, res, next) => {
     
     const user = await Users.findById(req.user._id).select("+password")
-    const { name, email, password, isSeller, address, createdAt, user_image_url } = user;
+    const { name, email, password, is_seller, address, created_at, user_image_url } = user;
     
-    await DeletedUsers.create({ name, email, password, isSeller, address, createdAt, user_image_url, expireAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)});
+    await DeletedUsers.create({ name, email, password, is_seller, address, created_at, user_image_url, expires_at: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)});
 
     user.deleteOne()
 
@@ -160,8 +160,8 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
 
     const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
-    user.resetPasswordToken = resetPasswordToken;
-    user.resetPasswordExpire = new Date(Date.now() + 15 * 60 * 1000)
+    user.reset_password_token = resetPasswordToken;
+    user.reset_password_expire = new Date(Date.now() + 15 * 60 * 1000)
 
     await user.save();
 
@@ -241,7 +241,7 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
     
         <a href="${resetPasswordURL}" class="button">Reset Password</a>
     
-        <p class="important"><strong>Important:</strong> If you haven't requested this password reset, please ignore this email.</p>
+        <p class="important"><strong>Important:</strong> If you haven't requested to reset your password, please ignore this email.</p>
     
         <p class="note">Note: Clicking on this URL could pose a security risk to your account if you didn't initiate the password reset.</p>
       </div>
@@ -265,8 +265,8 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
         })
         
     } catch (error) {
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpire = undefined;
+        user.reset_password_token = undefined;
+        user.reset_password_expire = undefined;
         user.save()
         return next(new ErrorHandler(error.message, 500))
     }
@@ -280,7 +280,7 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
 
     const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
-    const user = await Users.findOne({ resetPasswordToken, resetPasswordExpire: { $gt: Date.now() } }).select("+password+resetPasswordExpire+resetPasswordToken");
+    const user = await Users.findOne({ reset_password_token: resetPasswordToken, reset_password_expire: { $gt: Date.now() } }).select("+password+resetPasswordExpire+resetPasswordToken");
 
     if(!user){
         return next(new ErrorHandler("Reset password link is invalid or has been expired!", 400))
@@ -291,8 +291,8 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
     }
 
     user.password = await hashPassword(password);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    user.reset_password_token = undefined;
+    user.reset_password_expire = undefined;
 
     await user.save();
 

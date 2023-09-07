@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { isAdmin } from "../middleware/isAdminAuthenticated.js";
-import { getAllSellersAndBuyers, updateUserRole } from "../controllers/adminControllers.js";
+import {
+    getAllSellersAndBuyers,
+    updateUserRole
+} from "../controllers/adminControllers.js";
 
 
 const router = Router();

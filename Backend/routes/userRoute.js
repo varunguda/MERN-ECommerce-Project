@@ -1,7 +1,17 @@
 import { Router } from "express";
-import { createUser, createVerifiedUser, deleteUser, forgotPassword, getUserDetails, loginUser, logoutUser, recoverPassword, updateUserDetails } from "../controllers/userControllers.js";
 import { isUserAuthenticated } from "../middleware/isUserAuthenticated.js";
-import { verifyMail } from "../utils/verifyMail.js";
+import {
+    createUser,
+    createVerifiedUser,
+    deleteUser,
+    forgotPassword,
+    getUserDetails,
+    loginUser,
+    logoutUser,
+    recoverPassword,
+    updateUserDetails
+} from "../controllers/userControllers.js";
+
 
 const router = Router();
 

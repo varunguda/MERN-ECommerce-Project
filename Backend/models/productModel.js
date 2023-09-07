@@ -59,6 +59,11 @@ const schema = new Schema({
         maxLength: [ 4, "Stock cannot exceed 4 numbers"]
     },
 
+    discount_price: {
+        type: Number,
+        default: 0
+    },
+
     reviews: [
         {
             user_id: {
@@ -108,7 +113,7 @@ const schema = new Schema({
         default: 0
     },
 
-    createdAt: {
+    created_at: {
         type: Date,
         default: Date.now,
         select: false
