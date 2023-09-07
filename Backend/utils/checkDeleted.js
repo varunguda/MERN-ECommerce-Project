@@ -20,11 +20,11 @@ export const checkDeletedUsersLogin = catchAsync( async(req, res, next) => {
         return next(new ErrorHandler("Invalid Email or Password!", 400));
     }
 
-    const { name, isSeller, address, createdAt, user_image_url } = user;
+    const { name, is_seller, address, created_at, user_image_url } = user;
     
     const hashPass = await hashPassword(password)
     
-    user = await Users.create({ name, email, password: hashPass , isSeller, address, createdAt, user_image_url});
+    user = await Users.create({ name, email, password: hashPass , is_seller, address, created_at, user_image_url});
     
     await DeletedUsers.findOneAndDelete({ email });
     

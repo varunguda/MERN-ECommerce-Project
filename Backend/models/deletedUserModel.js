@@ -57,12 +57,12 @@ const schema = new mongoose.Schema({
         default: false
     },
 
-    createdAt: {
+    created_at: {
         type: Date,
         default: Date.now
     },
 
-    expireAt: {
+    expires_at: {
         type: Date,
         default: Date.now,
         expires: 10 * 24 * 60 * 60  // 10 days

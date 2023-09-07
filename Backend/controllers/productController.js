@@ -36,9 +36,9 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
 
 export const createProduct = catchAsync(async (req, res, next) => {
 
-    const { name, description, price, category } = req.body;
+    const { name, description, price, category, stock } = req.body;
 
-    const product = await Products.create({ name, description, price, category, seller_id: req.user._id });
+    const product = await Products.create({ name, description, price, stock, category, seller_id: req.user._id });
 
     return res.status(201).json({
         success: true,
@@ -201,7 +201,6 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
 
 
 export const getAllProductReviews = catchAsync(async (req, res, next) => {
-
     const { id } = req.params;
 
     const product = await Products.findById(id);

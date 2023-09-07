@@ -104,9 +104,9 @@ export const verifyMail = catchAsync(async (req, res, next) => {
 
         <h2 class="verification-code">${code}</h2>
     
-        <p class="important"><strong>Important:</strong> If you didn't create this account, please disregard this email.</p>
+        <p class="important"><strong>Important:</strong> If you haven't requested for creating this account, please disregard this email.</p>
     
-        <p class="note">Note: The verification code is valid for 15 mins for security reasons.</p>
+        <p class="note">Note: The verification code is valid only for 15 mins for security reasons.</p>
       </div>
     
       </body>

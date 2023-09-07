@@ -35,7 +35,7 @@ const schema = new mongoose.Schema({
 
     address: [
         {
-            flat_details: {
+            flat: {
                 type: String,
                 required: true
             },
@@ -57,7 +57,8 @@ const schema = new mongoose.Schema({
             },
             zip: {
                 type: Number,
-                required: true
+                required: true,
+                length: [ 5, "Please enter a valid zip code!" ],
             }
         }
     ],
@@ -74,16 +75,17 @@ const schema = new mongoose.Schema({
         select: false,
     },
 
-    createdAt: {
+    created_at: {
         type: Date,
         default: Date.now
     },
 
-    resetPasswordToken: {
+    reset_password_token: {
         type: String,
         select: false
     },
-    resetPasswordExpire: {
+    
+    reset_password_expire: {
         type: Date,
         select: false
     }

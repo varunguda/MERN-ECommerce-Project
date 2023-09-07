@@ -1,11 +1,25 @@
 import { Router } from "express";
-import { craeateProductReview, createProduct, deleteAnyProduct, deleteMyProduct, deleteReview, getAllProductReviews, getAllProducts, getMyProducts, getProductDetails, updateAnyProduct, updateMyProduct } from "../controllers/productController.js";
 import { isAdmin } from "../middleware/isAdminAuthenticated.js";
 import { isUserAuthenticated } from "../middleware/isUserAuthenticated.js"
 import { isAdminOrSeller } from "../middleware/isAdminOrSeller.js";
 import { isSeller } from "../middleware/isSellerAuthenticated.js";
+import {
+    craeateProductReview,
+    createProduct,
+    deleteAnyProduct,
+    deleteMyProduct,
+    deleteReview,
+    getAllProductReviews,
+    getAllProducts,
+    getMyProducts,
+    getProductDetails,
+    updateAnyProduct,
+    updateMyProduct
+} from "../controllers/productController.js";
+
 
 const router = Router();
+
 
 // All
 router.route('/products').get(getAllProducts);
