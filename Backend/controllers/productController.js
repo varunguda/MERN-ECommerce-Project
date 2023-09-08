@@ -93,7 +93,7 @@ export const getMyProducts = catchAsync(async (req, res, next) => {
 
     const products = await apiFeatures.products;
 
-    const product_count = products.length
+    const product_count = products.length;
 
     return res.json({
         success: true,
@@ -107,7 +107,8 @@ export const getMyProducts = catchAsync(async (req, res, next) => {
 export const updateMyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { ...req.body },
+    const { name, description, price, category, images, stock, discount_price } = req.body;
+    const product = await Products.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { name, description, price, category, images, stock, discount_price },
         {
             new: true,
             runValidators: true
@@ -160,11 +161,9 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
     }
 
     const isReviewed = product.reviews.find((review) => {
-        return review.user_id.toString() === req.user._id.toString() // returns true if the user already reviewed the product
+        return review.user_id.toString() === req.user._id.toString()
     })
-
-    // console.log(review.user_id.toString() === req.user._id.toString())
-
+    
     if (isReviewed) {
         product.reviews.forEach((review) => {
             if (review.user_id.toString() === req.user._id.toString()) {

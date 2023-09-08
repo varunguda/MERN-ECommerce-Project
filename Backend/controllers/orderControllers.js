@@ -191,6 +191,7 @@ export const getAllOrders = catchAsync( async(req, res, next) => {
 
 
 export const deleteAnyOrder = catchAsync( async(req, res, next) => {
+
     const { id } = req.params;
 
     const order = await Orders.findByIdAndDelete(id);
@@ -267,10 +268,10 @@ export const cancelOrderOfMyProduct = [
           return next(new ErrorHandler(errors.array().map((err)=>err.msg).join(","),400))
         }
 
-        const { id } = req.params;
-        const { justification, product_id } = req.body;
+        const { order_id, product } = req.query;
+        const { justification } = req.body;
 
-        const order = await Orders.findById(id);
+        const order = await Orders.findById(order_id);
         if(!order){
             return next(new ErrorHandler("Order not found!", 404));
         }
@@ -281,7 +282,7 @@ export const cancelOrderOfMyProduct = [
         }
 
         order.order_items = order.order_items.map(item => {
-            if(item.product.toString() === product_id.toString()){
+            if(item.product.toString() === product.toString()){
                 return item.product_status = "Cancelled";
             }
             return item;
@@ -289,7 +290,6 @@ export const cancelOrderOfMyProduct = [
 
         let noOrders = true;
         let totalItemPrice = 0;
-
 
         for( const item of order.order_items ){
             if(item.product_status !== "Cancelled"){
@@ -330,3 +330,100 @@ export const cancelOrderOfMyProduct = [
 
     })
 ]
+
+
+
+export const cancelAllOrderOfMyProduct = [
+
+    body('justification')
+    .isLength({ min: 10, max: 300 })
+    .withMessage("The Justification provided must contain atleast 10 characters and atmost 300 characters!"),
+
+    catchAsync( async(req, res, next) => {
+
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return next(new ErrorHandler(errors.array().map((err)=>err.msg).join(","), 400));
+        }
+
+        const { product } = req.params;
+        const { justification } = req.body;
+
+        const orders = await Orders.find({ "order_items.seller" : { $eq: req.user._id }, "order_items.product" : { $eq: product } });
+        if(!orders){
+            return next(new ErrorHandler("No orders of this product are found!", 404));
+        }
+
+        for ( const order of orders ){
+
+            const user = await Users.findById(order.user);
+
+            let noOrders = true;
+            let totalItemsPrice = 0;
+            order.order_items = order.order_items.map((item) => {
+                if(item.product.toString() === product.toString()){
+                    item.product_status = 'Cancelled';
+                    return item
+                }
+                noOrders = false
+                totalItemsPrice += item.price
+                return item
+            })
+
+            order.items_price = totalItemsPrice;
+            order.tax_price = totalItemsPrice * 18/100;
+            order.total_price = order.items_price + order.tax_price + order.shipping_cost;
+
+            await order.save({ validateBeforeSave: false });
+
+            const html = orderHtml({
+                head: "Order Cancelled!",
+                user_name: user.name,
+                head_caption: `We regret to inform you that your order has been canceled by your seller, ${req.user.name}. Below are the details of your cancelled order:`,
+                order: (noOrders) ? "": order,
+                order_caption: `<strong>Seller's Justification for this inconvinience:</strong> ${justification}`,
+                button_url: "#",
+                button_text: "Check Order Status",
+                mail_caption: "We apologize for any inconvenience we may have caused. If you have any questions or concerns, please don't hesitate to reply to this Mail."
+            });
+
+            sendEmail({
+                email: user.email,
+                subject: "Order Cancelled:(",
+                html
+            })
+        }
+
+        return res.json({
+            success: true,
+            message: `Successfully cancelled all the orders of your product!`
+        })
+    })
+]
+
+
+
+export const updateMyProductOrderStatus = catchAsync( async(req, res, next) => {
+    const { order_id, product } = req.query;
+    const { status } = req.body;
+
+    const order = await Orders.findById(order_id);
+    if(!order){
+        return next(new ErrorHandler("Order not found!", 404));
+    }
+
+    order.order_items = order.order_items.map(item => {
+        if(item.product.toString() === product.toString()){
+            item.product_status = status;
+            return item;
+        }
+        return item;
+    });
+
+    order.save({ validateBeforeSave: false });
+
+    return res.json({
+        success: true,
+        message: `Successfully updated the order status to ${status}`,
+    })
+});

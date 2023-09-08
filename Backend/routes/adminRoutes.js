@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { isAdmin } from "../middleware/isAdminAuthenticated.js";
+import { isAdmin } from "../middleware/isAdmin.js";
 import {
+    deleteAnyUser,
     getAllSellersAndBuyers,
+    getAnyUserDetails,
     updateUserRole
 } from "../controllers/adminControllers.js";
 
@@ -9,9 +11,12 @@ import {
 const router = Router();
 
 // ADMIN ROUTES
-router.route("/admin/users/getall").get( isAdmin ,getAllSellersAndBuyers);
+router.route("/admin/users/all").get( isAdmin ,getAllSellersAndBuyers);
 
-router.route("/admin/updateuser/:id").put(isAdmin, updateUserRole )
+router.route("/admin/user/:id")
+    .get(isAdmin, getAnyUserDetails)
+    .put(isAdmin, updateUserRole)
+    .delete(isAdmin, deleteAnyUser)
 
 
 export default router

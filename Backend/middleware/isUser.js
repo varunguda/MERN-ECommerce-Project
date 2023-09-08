@@ -3,7 +3,7 @@ import { ErrorHandler } from "../utils/errorHandler.js";
 import { Users } from "../models/userModel.js";
 
 
-export const isUserAuthenticated = async(req, res, next) => {
+export const isUser = async(req, res, next) => {
     const { token } = req.cookies;
     if(!token){
         return next(new ErrorHandler("Please login before accessing this url", 400));
