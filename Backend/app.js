@@ -1,8 +1,8 @@
 import express from 'express';
-import productRoute from './routes/productRoute.js';
-import userRoute from './routes/userRoute.js';
+import productRoute from './routes/productRoutes.js';
+import userRoute from './routes/userRoutes.js';
 import adminRoute from './routes/adminRoutes.js';
-import orderRoute from "./routes/orderRoute.js";
+import orderRoute from "./routes/orderRoutes.js";
 import { ErrorHandler } from './utils/errorHandler.js';
 import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';

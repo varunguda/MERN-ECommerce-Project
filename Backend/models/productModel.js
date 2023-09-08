@@ -25,8 +25,9 @@ const schema = new Schema({
 
     price: {
         type: Number,
-        required: [ true, "Please enter product Price" ],
-        maxLength: [ 8, "Price exceeded the limit!" ]
+        required: [true, "Please enter product Price"],
+        min: [0, "Price cannot be negative"],
+        max: [999999, "Price exceeded the limit!"]
     },
 
     category: {
@@ -37,7 +38,7 @@ const schema = new Schema({
     rating: {
         type: Number,
         default: 0,
-        maxLength: [ 5, "Rate the product in 0-5 star range" ]
+        max: [ 5, "Rate the product in 0-5 star range" ]
     },
 
     images: [
@@ -56,7 +57,7 @@ const schema = new Schema({
     stock: {
         type: Number,
         default: 1,
-        maxLength: [ 4, "Stock cannot exceed 4 numbers"]
+        max: [ 99999, "Stock is too large!"]
     },
 
     discount_price: {
@@ -93,7 +94,7 @@ const schema = new Schema({
             rating: {
                 type: Number,
                 required: true,
-                maxLength: [5, "Rate the product in 0-5 star range"]
+                max: [5, "Rate the product in 0-5 star range"]
             },
             images: [
                 {

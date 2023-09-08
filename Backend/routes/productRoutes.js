@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { isAdmin } from "../middleware/isAdminAuthenticated.js";
-import { isUserAuthenticated } from "../middleware/isUserAuthenticated.js"
+import { isAdmin } from "../middleware/isAdmin.js";
+import { isUser } from "../middleware/isUser.js"
 import { isAdminOrSeller } from "../middleware/isAdminOrSeller.js";
-import { isSeller } from "../middleware/isSellerAuthenticated.js";
+import { isSeller } from "../middleware/isSeller.js";
 import {
     craeateProductReview,
     createProduct,
@@ -24,11 +24,11 @@ const router = Router();
 // All
 router.route('/products').get(getAllProducts);
 
-router.route('/products/addreview/:id').post(isUserAuthenticated, craeateProductReview);
+router.route('/products/addreview/:id').post(isUser, craeateProductReview);
 
 router.route('/products/reviews/:id').get(getAllProductReviews);
 
-router.route('/products/deletereview/:id').delete(isUserAuthenticated, deleteReview);
+router.route('/products/deletereview/:id').delete(isUser, deleteReview);
 
 router.route('/products/:id').get(getProductDetails);
 

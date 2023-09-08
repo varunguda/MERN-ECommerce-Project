@@ -168,7 +168,6 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
     const resetPasswordURL = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`
 
     const html = `<html>
-
     <head>
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
       <style>
