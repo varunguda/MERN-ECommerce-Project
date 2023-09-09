@@ -33,6 +33,10 @@ router.route('/logout').get(isUser, logoutUser);
 
 router.route('/password/forgot').post(forgotPassword);
 
-router.route("/password/reset/:resetToken").put(recoverPassword)
+router.route("/password/reset/:resetToken").put(recoverPassword);
+
+// router.route("/cart").get(isUser, )
+
+
 
 export default router;

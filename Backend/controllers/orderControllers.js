@@ -1,6 +1,6 @@
 import { orderHtml } from "../html/orderHtml.js";
 import { Orders } from "../models/orderModel.js";
-import { Products } from "../models/productModel.js";
+import { Product } from "../models/productModel.js";
 import { Users } from "../models/userModel.js";
 import { ApiFeatures } from "../utils/apiFeatures.js";
 import catchAsync from "../utils/catchAsync.js";
@@ -16,7 +16,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
 
     for (const order of order_items) {
 
-        const product = await Products.findById(order.product);
+        const product = await Product.findById(order.product);
         if (!product) {
             return next(new ErrorHandler("Product not found!", 404));
         }
@@ -179,7 +179,7 @@ export const getAllOrders = catchAsync( async(req, res, next) => {
     
     const ordersCount = await Orders.countDocuments()
     const apiFeatures = new ApiFeatures(Orders.find({}), req.query ).pagination(10);
-    const orders = await apiFeatures.products;
+    const orders = await apiFeatures.Product;
 
     return res.json({
         success: true,
@@ -236,14 +236,14 @@ export const getMyProductsOrders = catchAsync( async(req, res, next) => {
     // Getting the orders including sellers id in them
     const orders = await Orders.find({ "order_items.seller" : { $in: req.user._id } });
 
-    // Showing seller his products that are bought by different buyers, instead of revealing the other orders of buyers to the seller which are placed along with seller's products.
+    // Showing seller his Product that are bought by different buyers, instead of revealing the other orders of buyers to the seller which are placed along with seller's Product.
     const orderDetails = orders.map(order=>{
-        const products = order.order_items.filter(item=>item.seller.toString() === req.user._id.toString());
+        const Product = order.order_items.filter(item=>item.seller.toString() === req.user._id.toString());
         return {
             _id: order._id,
             user: order.user,
             shipping_info: order.shipping_info,
-            products,
+            Product,
         }
     });
     

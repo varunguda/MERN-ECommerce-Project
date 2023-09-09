@@ -1,4 +1,4 @@
-import { Products } from '../models/productModel.js'
+import { Product } from '../models/productModel.js'
 import { ErrorHandler } from '../utils/errorHandler.js';
 import catchAsync from '../utils/catchAsync.js';
 import { ApiFeatures } from '../utils/apiFeatures.js';
@@ -6,10 +6,10 @@ import { ApiFeatures } from '../utils/apiFeatures.js';
 
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
-
-    const productCount = await Products.countDocuments()
-    const apiFeatures = new ApiFeatures(Products.find(), req.query).search().filter().pagination(10)
+    const productCount = await Product.countDocuments();
+    const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter().pagination(10)
     const products = await apiFeatures.products;
+
     return res.json({
         success: true,
         products,
@@ -22,7 +22,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
 export const getProductDetails = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findById(id);
+    const product = await Product.findById(id);
     if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
@@ -35,17 +35,17 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
 
 
 export const createProduct = catchAsync(async (req, res, next) => {
+    const { name, description, price, category, stock, discount_percent, variations, color, ram, rom, resolution, brand } = req.body;
 
-    const { name, description, price, category, stock } = req.body;
+    const final_price = Math.round(price - (price * discount_percent/100));
 
-    const product = await Products.create({ name, description, price, stock, category, seller_id: req.user._id });
+    const product = await Product.create({ name, description, stock, price, discount_percent, final_price, stock, category, variations, color, resolution, ram, rom, brand, seller_id: req.user._id });
 
     return res.status(201).json({
         success: true,
         message: "Product added successfully!",
         product
     })
-
 })
 
 
@@ -54,7 +54,7 @@ export const updateAnyProduct = catchAsync(async (req, res, next) => {
 
     const { id } = req.params;
 
-    const product = await Products.findByIdAndUpdate(id, req.body,
+    const product = await Product.findByIdAndUpdate(id, req.body,
         {
             new: true,
             runValidators: true
@@ -74,7 +74,7 @@ export const updateAnyProduct = catchAsync(async (req, res, next) => {
 export const deleteAnyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findByIdAndDelete(id);
+    const product = await Product.findByIdAndDelete(id);
     if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
@@ -89,15 +89,15 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
 
 export const getMyProducts = catchAsync(async (req, res, next) => {
 
-    const apiFeatures = new ApiFeatures(Products.find({ seller_id: req.user._id }), req.query).search().pagination(10);
+    const apiFeatures = new ApiFeatures(Product.find({ seller_id: req.user._id }), req.query).search().pagination(10);
 
-    const products = await apiFeatures.products;
+    const Product = await apiFeatures.Product;
 
-    const product_count = products.length;
+    const product_count = Product.length;
 
     return res.json({
         success: true,
-        products,
+        Product,
         product_count
     })
 })
@@ -108,7 +108,7 @@ export const updateMyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
     const { name, description, price, category, images, stock, discount_price } = req.body;
-    const product = await Products.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { name, description, price, category, images, stock, discount_price },
+    const product = await Product.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { name, description, price, category, images, stock, discount_price },
         {
             new: true,
             runValidators: true
@@ -129,7 +129,7 @@ export const updateMyProduct = catchAsync(async (req, res, next) => {
 export const deleteMyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findOneAndDelete({ _id: id, seller_id: req.user._id })
+    const product = await Product.findOneAndDelete({ _id: id, seller_id: req.user._id })
     if (!product) {
         return next(new ErrorHandler("Product not found", 404))
     }
@@ -155,7 +155,7 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
         comment
     }
 
-    let product = await Products.findById(id);
+    let product = await Product.findById(id);
     if (!product) {
         return next(new ErrorHandler("Product not found!", 404));
     }
@@ -202,7 +202,7 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
 export const getAllProductReviews = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findById(id);
+    const product = await Product.findById(id);
     if (!product) {
         next(new ErrorHandler("Product not found!", 404))
     }
@@ -218,7 +218,7 @@ export const getAllProductReviews = catchAsync(async (req, res, next) => {
 export const deleteReview = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Products.findById(id);
+    const product = await Product.findById(id);
     if (!product) {
         return next(new ErrorHandler("Product not found!", 404));
     }
