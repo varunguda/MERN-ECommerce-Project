@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import validator from "validator";
 
 const schema = new mongoose.Schema({
@@ -6,8 +6,8 @@ const schema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Please Enter Your Name"],
-        maxLength: [30, "Name cannot exceed 30 characters"],
         minLength: [3, "Name should have more than 4 characters"],
+        maxLength: [30, "Name cannot exceed 30 characters"],
     },
 
     email: {
@@ -30,7 +30,7 @@ const schema = new mongoose.Schema({
         },
         url: {
             type: String,
-        }
+        },
     },
 
     address: [
@@ -63,6 +63,25 @@ const schema = new mongoose.Schema({
         }
     ],
 
+    cart_items: [
+        {
+            product:{
+                type: Schema.Types.ObjectId,
+                ref: "Products",
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true,
+                default: 1
+            },
+            name:{
+                type: String,
+                required: true,
+            }
+        }
+    ],
+
     is_seller: {
         type: Boolean,
         default: false,
@@ -72,6 +91,12 @@ const schema = new mongoose.Schema({
     is_admin: {
         type: Boolean,
         default: false,
+        select: false,
+    },
+
+    seller_merit:{
+        type: Number,
+        default: 0,
         select: false,
     },
 
