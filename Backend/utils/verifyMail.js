@@ -6,13 +6,13 @@ export const verifyMail = catchAsync(async (req, res, next) => {
 
   const { name, email, password } = req.body;
 
-  // Two approaches I've come up to Verify user before creating his account:
-  // 1. User enters his details his details are stored in a 'tempusers' collection in database until his email is verified.
-  // 2. His data is temperorily stored in express session until his mail is is verified.
+  // Two approaches I've come up with to Verify a user before creating his account:
+  // 1. User enters his details his details are stored in a 'tempusers' collection in the database until his email is verified, and gets added to the Users database once verified
+  // 2. His data is temporarily stored in express session until his mail is verified.
 
   // Also two methods of verifying the mail
-  // 1. I send a url, on which upon clicking, user account is created
-  // 2. A confirmation code is sent to users mail. This way I wouldnt have to worry about browser specific nature of sessions.
+  // 1. I send a URL, on which upon clicking, users account get created
+  // 2. A confirmation code is sent to the user's mail. This way I wouldn't have to worry about the browser-specific nature of sessions.
 
 
 
