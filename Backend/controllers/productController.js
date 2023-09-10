@@ -2,7 +2,9 @@ import { Product } from '../models/productModel.js'
 import { ErrorHandler } from '../utils/errorHandler.js';
 import catchAsync from '../utils/catchAsync.js';
 import { ApiFeatures } from '../utils/apiFeatures.js';
-
+import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from 'uuid';
+import { areSameKeyValues } from '../utils/extras.js';
 
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
@@ -22,46 +24,198 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
 export const getProductDetails = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
+    let allProducts = [];
     const product = await Product.findById(id);
     if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
+
+    allProducts.push(product);
+
+    if(product.product_id){
+        const similarProducts = await Product.find({product_id: product.product_id, _id: { $ne : product._id}});
+        allProducts = allProducts.concat(similarProducts)
+    }
+
     return res.json({
         success: true,
-        product
+        products: allProducts
     })
 })
 
 
 
 export const createProduct = catchAsync(async (req, res, next) => {
-    const { name, description, price, category, stock, discount_percent, variations, color, ram, rom, resolution, brand } = req.body;
 
-    const final_price = Math.round(price - (price * discount_percent/100));
+    const products = req.body;
+    const createdProducts = [];
+    const product_id = (products.length>1) ? uuidv4() : undefined;
+    
+    const areSame = areSameKeyValues(products, ["brand", "category", "variations"]);
+    if(!areSame){
+        return next(new ErrorHandler("The Brand, Category and Variations of similar products must be the same!", 400))
+    }
 
-    const product = await Product.create({ name, description, stock, price, discount_percent, final_price, stock, category, variations, color, resolution, ram, rom, brand, seller_id: req.user._id });
+    for(const product of products){
+
+        const {
+            name,
+            description,
+            price,
+            category,
+            stock,
+            discount_percent,
+            images,
+            brand,
+            variations,
+            color,
+            ram,
+            rom,
+            resolution,
+            sizes,
+            storage,
+            processor,
+            quantity
+        } = product;
+
+        const final_price = Math.round(price - (price * discount_percent/100));
+
+        const commonFields  = {
+            name,
+            description,
+            price,
+            category,
+            stock,
+            discount_percent,
+            images,
+            brand,
+            variations,
+            final_price
+        }
+
+        let productFields; 
+
+        switch(product.category){
+
+            case("Mobile Phone"):{
+                productFields = {
+                    ...commonFields,
+                    ram,
+                    rom,
+                    color,
+                    resolution,
+                    processor,
+                }
+                break;
+            }
+
+            case("Computer"):
+            case("Laptop"):{
+                productFields = {
+                    ...commonFields,
+                    color,
+                    ram,
+                    resolution,
+                    storage,
+                    processor,
+                }
+                break;
+            }
+
+            case("Monitor"):{
+                productFields = {
+                    ...commonFields,
+                    color,
+                    resolution,
+                };
+                break;
+            }
+
+            case("Clothing"):
+            case("Shoes"):{
+                productFields = {
+                    ...commonFields,
+                    color,
+                    sizes,
+                };
+                break;
+            }
+
+            case("Watches"):{
+                productFields = {
+                    ...commonFields,
+                    color,
+                };
+                break;
+            }
+
+            case("Telivision"):{
+                productFields = {
+                    ...commonFields,
+                    color,
+                    resolution,
+                    storage,
+                };
+                break;
+            }
+
+            case("Refrigerator"):{
+                productFields = {
+                    ...commonFields,
+                    color,
+                    storage,
+                };
+                break;
+            }
+
+            case("Computer Accessories"):
+            case("Headphones & Earphones"):
+            case("Mobile Accessories"):{
+                productFields = {
+                    ...commonFields,
+                    color,
+                    storage,
+                };
+                break;
+            }
+
+            case("Beauty & Health"):{
+                productFields = {
+                    ...commonFields,
+                    color,
+                    quantity
+                };
+                break;
+            }
+        }
+
+        const createdProduct = await Product.create({
+            seller_id: req.user._id,
+            product_id,
+            ...productFields,
+        });
+
+        createdProducts.push(createdProduct);
+    }
 
     return res.status(201).json({
         success: true,
-        message: "Product added successfully!",
-        product
+        message: "Products added successfully!",
+        products: createdProducts,
     })
 })
 
 
 
 export const updateAnyProduct = catchAsync(async (req, res, next) => {
-
     const { id } = req.params;
 
-    const product = await Product.findByIdAndUpdate(id, req.body,
-        {
-            new: true,
-            runValidators: true
-        });
+    const product = await Product.findById(id);
     if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     return res.json({
         success: true,

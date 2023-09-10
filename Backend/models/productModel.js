@@ -14,6 +14,16 @@ const productCategories = [
     "Mobile Accessories",
     "Beauty & Health",
     "Headphones & Earphones"
+];
+
+const productVariations = [
+    "color",
+    "ram",
+    "rom",
+    "storage",
+    "quantity",
+    "resolution",
+    "processor"
 ]
 
 
@@ -25,11 +35,15 @@ const ProductSchema = new Schema({
         required: true
     },
 
+    product_id:{
+        type: String
+    },
+
     name: {
         type: String,
         required: [true, "Please enter product Name"],
         minLength: [5, "Product name must contain atleast 5 characters!"],
-        maxLength: [80, "Product name is too large!"]
+        maxLength: [80, "Product name is too large!"],
     },
 
     description: {
@@ -51,6 +65,40 @@ const ProductSchema = new Schema({
         maxLength: [80, "Product brand name is too large!"]
     },
 
+    stock: {
+        type: Number,
+        required: true,
+        maxLength: [99999, "Product stock is too large!"]
+    },
+
+    images: [
+        {
+            pub_id: {
+                type: String,
+                required: true
+            },
+            image_url: {
+                type: String,
+                required: true
+            }
+        }
+    ],
+
+    price: {
+        type: Number,
+        required: true,
+    },
+
+    discount_percent: {
+        type: Number,
+        default: 0
+    },
+
+    final_price: {
+        type: Number,
+        required: true,
+    },
+
     rating: {
         type: Number,
         default: 0,
@@ -64,8 +112,12 @@ const ProductSchema = new Schema({
                 ref: "Users",
                 required: true
             },
-            isVerifiedPurchase: {
+            is_verified_purchase: {
                 type: Boolean,
+                required: true
+            },
+            product_name: {
+                type: String,
                 required: true
             },
             name: {
@@ -124,39 +176,6 @@ const ProductSchema = new Schema({
 
     // CUSTOM FIELDS FOR VARIOUS CATEGORIES -- product variations -- for various category
     // Common requirements
-    stock: {
-        type: Number,
-        required: true,
-        maxLength: [99999, "Product stock is too large!"]
-    },
-
-    images: [
-        {
-            pub_id: {
-                type: String,
-                required: true
-            },
-            image_url: {
-                type: String,
-                required: true
-            }
-        }
-    ],
-
-    price: {
-        type: Number,
-        required: true,
-    },
-
-    discount_percent: {
-        type: Number,
-        default: 0
-    },
-
-    final_price: {
-        type: Number,
-        required: true,
-    },
 
     color: {
         type: String,
@@ -212,41 +231,14 @@ const ProductSchema = new Schema({
         type: String
     },
 
-    variations:[{
-        product:{
-            type: Schema.Types.ObjectId,
-            ref:"Product",
-            required: true,
-        },
-        color:{
-            type: String,
-        },
-        ram: {
-            type: String,
-        },
-        rom: {
-            type: String,
-        },
-        storage: {
-            type: String,
-        },
-        processer: {
-            type: String,
-        },
-        resolution: {
-            type: String
-        },
-        image:{
-            pub_id: {
+    variations:[
+        {
+            name:{
                 type: String,
-                required: true
-            },
-            image_url: {
-                type: String,
-                required: true
+                enum: productVariations,
             }
         }
-    }],
+    ],
 
     options: [
         {
