@@ -56,13 +56,15 @@ const ProductSchema = new Schema({
     category: {
         type: String,
         required: [true, "Please select a category"],
-        enum: productCategories
+        enum: productCategories,
+        immutable: true,
     },
 
     brand: {
         type: String,
         required: true,
-        maxLength: [80, "Product brand name is too large!"]
+        maxLength: [80, "Product brand name is too large!"],
+        immutable: true,
     },
 
     stock: {
@@ -171,7 +173,8 @@ const ProductSchema = new Schema({
     created_at: {
         type: Date,
         default: Date.now,
-        select: false
+        select: false,
+        immutable: true,
     },
 
     // CUSTOM FIELDS FOR VARIOUS CATEGORIES
@@ -211,6 +214,10 @@ const ProductSchema = new Schema({
             }
         }
     ],
+
+    size:{
+        type: String,
+    },
 
     // Category -- Laptops & Computers
     storage: {

@@ -3,7 +3,64 @@ import { ErrorHandler } from '../utils/errorHandler.js';
 import catchAsync from '../utils/catchAsync.js';
 import { ApiFeatures } from '../utils/apiFeatures.js';
 import { v4 as uuidv4 } from 'uuid';
-import { areSameKeyValues } from '../utils/extras.js';
+
+
+
+const allProperties = [ "name", "description", "price", "images", "stock", "discount_price", "final_price", "options", "bundles", "color", "ram", "rom", "processor", "resolution", "storage", "final_price", "size", "sizes", "quantity", "variations", "brand", "category", "reviews", "rating", "total_reviews" ]
+
+const commonProperties = ["name", "description", "price", "images", "stock", "discount_price", "options", "bundles" ]
+
+const categoryConfig = {
+
+    "Mobile Phone": {
+        properties: [ ...commonProperties, "ram", "rom", "color", "resolution", "processor" ]
+    },
+
+    "Laptop":{
+        properties: [...commonProperties, "ram", "color", "resolution", "processor", "storage", "size"]
+    },
+
+    "Monitor":{
+        properties:[ ...commonProperties, "color", "resolution", "size" ]
+    },
+
+    "Clothing":{
+        properties: [...commonProperties, "sizes", "color" ]
+    },
+
+    "Shoes":{
+        properties: [...commonProperties, "colors", "sizes"]
+    },
+
+    "Watches": {
+        properties: [ ...commonProperties, "color" ]
+    },
+
+    "Telivision": {
+        properties: [...commonProperties, "color", "resolution", "size" ],
+    },
+
+    "Refrigerator":{
+        properties:[...commonProperties, "color", "storage"],
+    },
+
+    "Computer Accessories":{
+        properties: [...commonProperties, "color", "size"],
+    },
+    
+    "Mobile Accessories":{
+        properties: [...commonProperties, "color", "size"]
+    },
+
+    "Headphones & Earphones":{
+        properties: [...commonProperties, "color", "size"],
+    },
+
+    "Beauty & Health":{
+        properties: [...commonProperties, "color", "quantity"],
+    }
+}
+
 
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
@@ -40,160 +97,41 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
         success: true,
         products: allProducts
     })
-})
+});
 
 
 
 export const createProduct = catchAsync(async (req, res, next) => {
 
-    const products = req.body;
+    const { products, variations, category, brand } = req.body;
     const createdProducts = [];
     const product_id = (products.length>1) ? uuidv4() : undefined;
-    
-    const areSame = areSameKeyValues(products, ["brand", "category", "variations"]);
-    if(!areSame){
-        return next(new ErrorHandler("The Brand, Category and Variations of similar products must be the same!", 400))
+
+    if(!categoryConfig.hasOwnProperty(category)){
+        return next(new ErrorHandler("This category is not available!", 400));
     }
+
+    const { properties } = categoryConfig[category];
 
     for(const product of products){
 
-        const {
-            name,
-            description,
-            price,
-            category,
-            stock,
-            discount_percent,
-            images,
-            brand,
-            variations,
-            color,
-            ram,
-            rom,
-            resolution,
-            sizes,
-            storage,
-            processor,
-            quantity
-        } = product;
+        const final_price = Math.round(product.price - ( product.price * product.discount_percent/100));
 
-        const final_price = Math.round(price - (price * discount_percent/100));
+        // creating a product with all the data provided by the seller
+        const createdProduct = await Product.create({...product, brand, category, variations, seller_id: req.user._id, product_id});
 
-        const commonFields  = {
-            name,
-            description,
-            price,
-            category,
-            stock,
-            discount_percent,
-            images,
-            brand,
-            variations,
-            final_price
-        }
-
-        let productFields; 
-
-        switch(product.category){
-
-            case("Mobile Phone"):{
-                productFields = {
-                    ...commonFields,
-                    ram,
-                    rom,
-                    color,
-                    resolution,
-                    processor,
-                }
-                break;
+        // All properties has all the flags that are present in a mongo document, to prevent a seller to fill irrelevent flags in the db, we are setting all the falg values which are not relevant to a category to undefined.
+        allProperties.forEach((property) => {
+            if(!properties.includes(property)){
+                createdProduct[property] = undefined;
             }
+        })
+        
+        createdProduct.final_price = final_price;
+        createdProduct.created_at = new Date(Date.now());
 
-            case("Computer"):
-            case("Laptop"):{
-                productFields = {
-                    ...commonFields,
-                    color,
-                    ram,
-                    resolution,
-                    storage,
-                    processor,
-                }
-                break;
-            }
-
-            case("Monitor"):{
-                productFields = {
-                    ...commonFields,
-                    color,
-                    resolution,
-                };
-                break;
-            }
-
-            case("Clothing"):
-            case("Shoes"):{
-                productFields = {
-                    ...commonFields,
-                    color,
-                    sizes,
-                };
-                break;
-            }
-
-            case("Watches"):{
-                productFields = {
-                    ...commonFields,
-                    color,
-                };
-                break;
-            }
-
-            case("Telivision"):{
-                productFields = {
-                    ...commonFields,
-                    color,
-                    resolution,
-                    storage,
-                };
-                break;
-            }
-
-            case("Refrigerator"):{
-                productFields = {
-                    ...commonFields,
-                    color,
-                    storage,
-                };
-                break;
-            }
-
-            case("Computer Accessories"):
-            case("Headphones & Earphones"):
-            case("Mobile Accessories"):{
-                productFields = {
-                    ...commonFields,
-                    color,
-                    storage,
-                };
-                break;
-            }
-
-            case("Beauty & Health"):{
-                productFields = {
-                    ...commonFields,
-                    color,
-                    quantity
-                };
-                break;
-            }
-        }
-
-        const createdProduct = await Product.create({
-            seller_id: req.user._id,
-            product_id,
-            ...productFields,
-        });
-
+        // Updating the product saved
+        createdProduct.save({ validateBeforeSave: false });
         createdProducts.push(createdProduct);
     }
 
@@ -209,12 +147,13 @@ export const createProduct = catchAsync(async (req, res, next) => {
 export const updateAnyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Product.findById(id);
+    const product = await Product.findByIdAndUpdate(id, {...req.body}, {
+        new: true,
+        runValidators: true,
+    });
     if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     return res.json({
         success: true,
@@ -243,14 +182,12 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
 export const getMyProducts = catchAsync(async (req, res, next) => {
 
     const apiFeatures = new ApiFeatures(Product.find({ seller_id: req.user._id }), req.query).search().pagination(10);
-
-    const Product = await apiFeatures.Product;
-
-    const product_count = Product.length;
+    const products = await apiFeatures.Product;
+    const product_count = products.length;
 
     return res.json({
         success: true,
-        Product,
+        products,
         product_count
     })
 })
@@ -260,16 +197,20 @@ export const getMyProducts = catchAsync(async (req, res, next) => {
 export const updateMyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const { name, description, price, category, images, stock, discount_price } = req.body;
-    const product = await Product.findOneAndUpdate({ _id: id, seller_id: req.user._id }, { name, description, price, category, images, stock, discount_price },
-        {
-            new: true,
-            runValidators: true
-        }
-    )
+    const product = await Product.findOne({ _id: id, seller_id: req.user._id })
     if (!product) {
         return next(new ErrorHandler("Product not found!", 404));
     }
+
+    if(categoryConfig.hasOwnProperty(product.category)){
+        const { properties } = categoryConfig[product.category];
+
+        properties.forEach((property) => {
+            product[property] = req.body[property] || undefined;
+        })
+    }
+
+    product.save({validateBeforeSave: false})
 
     return res.json({
         success: true,
