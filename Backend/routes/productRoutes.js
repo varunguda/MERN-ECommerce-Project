@@ -33,19 +33,16 @@ router.route('/products/deletereview/:id').delete(isUser, deleteReview);
 router.route('/products/:id').get(getProductDetails);
 
 
-
 // Admin
 router.route('/admin/products/:id')
     .put( isAdmin, updateAnyProduct)
     .delete( isAdmin ,deleteAnyProduct)
 
 
-
 // Seller
 router.route("/seller/myproducts/:id")
     .put(isSeller, updateMyProduct )
     .delete(isSeller, deleteMyProduct)
-
 
 
 // Admin & Seller
