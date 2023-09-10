@@ -174,7 +174,7 @@ const ProductSchema = new Schema({
         select: false
     },
 
-    // CUSTOM FIELDS FOR VARIOUS CATEGORIES -- product variations -- for various category
+    // CUSTOM FIELDS FOR VARIOUS CATEGORIES
     // Common requirements
 
     color: {
