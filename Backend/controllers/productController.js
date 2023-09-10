@@ -2,7 +2,6 @@ import { Product } from '../models/productModel.js'
 import { ErrorHandler } from '../utils/errorHandler.js';
 import catchAsync from '../utils/catchAsync.js';
 import { ApiFeatures } from '../utils/apiFeatures.js';
-import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from 'uuid';
 import { areSameKeyValues } from '../utils/extras.js';
 
