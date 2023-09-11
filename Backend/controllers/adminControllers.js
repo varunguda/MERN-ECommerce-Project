@@ -1,3 +1,4 @@
+import { body } from "express-validator";
 import { Users } from "../models/userModel.js";
 import catchAsync from "../utils/catchAsync.js";
 import { ErrorHandler } from "../utils/errorHandler.js";
@@ -48,8 +49,9 @@ export const updateUserRole = catchAsync( async(req, res, next) => {
 
     user.is_seller = is_seller;
     user.is_admin = is_admin;
+    user.seller_merit = 100;
 
-    user.save();
+    user.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,
@@ -79,3 +81,38 @@ export const deleteAnyUser = catchAsync( async(req, res, next) => {
         message: `${user.name} account has been permanently removed!`
     });
 })
+
+
+
+export const setSellerMerit = [
+    
+    body("merit")
+    .isNumeric()
+    .withMessage("Invalid Merit format!")
+    .isLength({ max: 3 }) //////////////////////////////////////////////////////////////////
+    .withMessage('Price must be a number in between the range of 0 and 100'),
+    
+    catchAsync( async(req, res, next) => {
+        
+        const { id } = req.params;
+    
+        const { merit } = req.body;
+    
+        const user = await Users.findById(id).select("+is_seller");
+        if(!user){
+            return next(new ErrorHandler("User not found!", 404));
+        }
+        if(!user.is_seller){
+            return next(new ErrorHandler(`${user.name} is not a seller!`, 400));
+        }
+    
+        user.seller_merit = merit;
+        user.save({ validateBeforeSave: false });
+    
+        return res.json({
+            success: true,
+            message: "Seller's merit has been updated!"
+        })
+    
+    })
+] 
