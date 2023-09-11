@@ -4,6 +4,8 @@ import { isUser } from "../middleware/isUser.js"
 import { isAdminOrSeller } from "../middleware/isAdminOrSeller.js";
 import { isSeller } from "../middleware/isSeller.js";
 import {
+    addBundle,
+    addOptions,
     craeateProductReview,
     createProduct,
     deleteAnyProduct,
@@ -40,9 +42,14 @@ router.route('/admin/products/:id')
 
 
 // Seller
+router.route("/seller/myproducts/bundles/:id").post(isSeller, addBundle);
+
+router.route("/seller/myproducts/options/:id").post(isSeller, addOptions);
+
 router.route("/seller/myproducts/:id")
     .put(isSeller, updateMyProduct )
     .delete(isSeller, deleteMyProduct)
+
 
 
 // Admin & Seller
