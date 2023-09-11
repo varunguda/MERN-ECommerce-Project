@@ -13,7 +13,6 @@ export class ApiFeatures{
         }: {};
 
         this.products = this.products.find({...keyword});
-
         return this;
     }
 
