@@ -103,7 +103,7 @@ export const loginUser = catchAsync( async(req, res, next) => {
 export const updateUserDetails = catchAsync( async(req, res, next) => {
     const { name, email, address, avatar } = req.body;
 
-    await Users.findByIdAndUpdate(req.user._id, { name, email, address, avatar }, 
+    const user = await Users.findByIdAndUpdate(req.user._id, { name, email, address, avatar }, 
         {
             new: true,
             runValidators: true,
@@ -111,7 +111,8 @@ export const updateUserDetails = catchAsync( async(req, res, next) => {
 
     return res.json({
         success: true,
-        message: "User details updated successfully!"
+        message: "User details updated successfully!",
+        user
     })
 
 })
@@ -133,9 +134,9 @@ export const logoutUser = catchAsync( async(req, res, next) => {
 export const deleteUser = catchAsync( async(req, res, next) => {
     
     const user = await Users.findById(req.user._id).select("+password")
-    const { name, email, password, is_seller, address, created_at, user_image_url } = user;
+    const { name, email, password, address, created_at, user_image_url } = user;
     
-    await DeletedUsers.create({ name, email, password, is_seller, address, created_at, user_image_url, expires_at: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)});
+    await DeletedUsers.create({ name, email, password, address, created_at, user_image_url, expires_at: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)});
 
     user.deleteOne()
 
@@ -298,9 +299,3 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
     addCookie(user, `${user.name} password has been changed and Loggedin successfully!`, 200, req, res, next);
 
 });
-
-
-
-// export const getCartItems = catchAsync( async(req, res, next) => {
-//     const user = 
-// })

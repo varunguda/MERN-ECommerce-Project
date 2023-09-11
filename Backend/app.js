@@ -7,6 +7,7 @@ import { ErrorHandler } from './utils/errorHandler.js';
 import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';
 import session from 'express-session';
+import { isAdmin } from './middleware/isAdmin.js';
 
 config({
     path: "./config/config.env"
@@ -26,7 +27,7 @@ app.use(session({
 // Using routes
 app.use('/api/v1', adminRoute)
 app.use('/api/v1', userRoute)
-app.use('/api/v1/', productRoute)
+app.use('/api/v1', productRoute)
 app.use("/api/v1", orderRoute)
 
 

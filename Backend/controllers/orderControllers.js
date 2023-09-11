@@ -5,6 +5,7 @@ import { Users } from "../models/userModel.js";
 import { ApiFeatures } from "../utils/apiFeatures.js";
 import catchAsync from "../utils/catchAsync.js";
 import { ErrorHandler } from "../utils/errorHandler.js";
+import { MeritMeter } from "../utils/meritMeter.js";
 import { sendEmail } from "../utils/sendMail.js";
 import { body, validationResult } from "express-validator";
 
@@ -29,20 +30,24 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         }
 
         product.stock -= order.quantity;
-        product.save();
+        await product.save({ validateBeforeSave: false });
 
         order.seller = product.seller_id;
         order.name = product.name;
         order.price = product.price;
         // order.image = product.images[0].image_url;
-        order.discount_price = product.discount_price;
+        order.discount_price = product.discount_percent || 0;
+        order.final_price = product.final_price;
+
+        const meritMeter = new MeritMeter( order.quantity, product.seller_id);
+        meritMeter.addMerit();
     }
 
-    const order = await Orders.create({ user: req.user._id, order_items, paid_at: Date.now(), shipping_info });
+    const order = await Orders.create({ user: req.user._id, order_items, paid_at: new Date(Date.now()), shipping_info });
 
     let totalItemsPrice = 0;
     let taxPrice = 0;
-    let shippingCost = 0;
+    let shippingCost = 0; 
     let totalPrice = 0;
 
     order.order_items.forEach((order) => {
@@ -54,10 +59,10 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
     shippingCost = (totalPrice > 500) ? 0 : 100;
     totalPrice += shippingCost;
 
-    order.tax_price = taxPrice;
-    order.items_price = totalItemsPrice;
+    order.tax_price = Math.round(taxPrice);
+    order.items_price = Math.round(totalItemsPrice);
     order.shipping_cost = shippingCost;
-    order.total_price = totalPrice;
+    order.total_price = Math.round(totalPrice);
 
     await order.save({ validateBeforeSave: false });
 
@@ -80,7 +85,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         html
     })
 
-    res.status(201).json({
+    return res.status(201).json({
         success: true,
         message: "Order placed successfully!",
         order
@@ -91,11 +96,12 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
 
 
 export const getOrderDetails = catchAsync( async(req, res, next) => {
+    
     const { id } = req.params;
 
     const order = await Orders.findById(id);
     if(!order){
-        return next( new ErrorHandler("Order not found", 404));
+        return next(new ErrorHandler("Order not found", 404));
     }
 
     if(order.user.toString() !== req.user._id.toString()){
@@ -148,7 +154,7 @@ export const deleteMyOrder = catchAsync( async(req, res, next) => {
 
     // order.deleteOne();
 
-    order.save();
+    order.save({ validateBeforeSave: false });
 
     const html = orderHtml({
         head: "Order Cancellation Confirmation",
@@ -176,7 +182,7 @@ export const deleteMyOrder = catchAsync( async(req, res, next) => {
 
 
 export const getAllOrders = catchAsync( async(req, res, next) => {
-    
+
     const ordersCount = await Orders.countDocuments()
     const apiFeatures = new ApiFeatures(Orders.find({}), req.query ).pagination(10);
     const orders = await apiFeatures.Product;
@@ -221,7 +227,7 @@ export const updateAnyOrderStatus = catchAsync( async(req, res, next) => {
         item.product_status = status;
     }
 
-    order.save();
+    order.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,
@@ -306,6 +312,9 @@ export const cancelOrderOfMyProduct = [
 
         await order.save({ validateBeforeSave: false });
 
+        const meritMeter = new MeritMeter(1, req.user._id);
+        meritMeter.reduceMerit()
+
         const html = orderHtml({
             head: "Order Cancelled!",
             user_name: req.user.name,
@@ -321,7 +330,7 @@ export const cancelOrderOfMyProduct = [
             email: user.email,
             subject: "Order Cancelled:(",
             html
-        })
+        });
 
         return res.json({
             success: true,
@@ -393,6 +402,9 @@ export const cancelAllOrderOfMyProduct = [
                 html
             })
         }
+
+        const meritMeter = new MeritMeter(orders.length, req.user._id)
+        meritMeter.reduceMerit();
 
         return res.json({
             success: true,
