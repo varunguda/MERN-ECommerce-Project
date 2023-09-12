@@ -91,7 +91,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         order
     })
 
-})
+});
 
 
 
@@ -154,7 +154,7 @@ export const deleteMyOrder = catchAsync( async(req, res, next) => {
 
     // order.deleteOne();
 
-    order.save({ validateBeforeSave: false });
+    await order.save({ validateBeforeSave: false });
 
     const html = orderHtml({
         head: "Order Cancellation Confirmation",
@@ -176,6 +176,7 @@ export const deleteMyOrder = catchAsync( async(req, res, next) => {
     return res.json({
         success: true,
         message: "Successfully cancelled your order!",
+        order
     })
 })
 
@@ -207,7 +208,8 @@ export const deleteAnyOrder = catchAsync( async(req, res, next) => {
 
     return res.json({
         success: true,
-        message: "Order deleted successfully!"
+        message: "Order deleted successfully!",
+        order
     })
 })
 
@@ -231,7 +233,8 @@ export const updateAnyOrderStatus = catchAsync( async(req, res, next) => {
 
     return res.json({
         success: true,
-        message: `Order status updated to ${status}`
+        message: `Order status updated to ${status}`,
+        order
     })
 })
 
@@ -249,7 +252,7 @@ export const getMyProductsOrders = catchAsync( async(req, res, next) => {
             _id: order._id,
             user: order.user,
             shipping_info: order.shipping_info,
-            Product,
+            product: Product,
         }
     });
     
@@ -408,7 +411,8 @@ export const cancelAllOrderOfMyProduct = [
 
         return res.json({
             success: true,
-            message: `Successfully cancelled all the orders of your product!`
+            message: `Successfully cancelled all the orders of your product!`,
+            orders
         })
     })
 ]
@@ -437,5 +441,6 @@ export const updateMyProductOrderStatus = catchAsync( async(req, res, next) => {
     return res.json({
         success: true,
         message: `Successfully updated the order status to ${status}`,
+        order
     })
 });

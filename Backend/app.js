@@ -7,7 +7,6 @@ import { ErrorHandler } from './utils/errorHandler.js';
 import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';
 import session from 'express-session';
-import { isAdmin } from './middleware/isAdmin.js';
 
 config({
     path: "./config/config.env"

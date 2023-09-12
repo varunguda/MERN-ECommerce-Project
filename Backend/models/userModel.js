@@ -5,21 +5,21 @@ const schema = new mongoose.Schema({
 
     name: {
         type: String,
-        required: [true, "Please Enter Your Name"],
+        required: [true, "Please enter your Name"],
         minLength: [3, "Name should have more than 4 characters"],
         maxLength: [30, "Name cannot exceed 30 characters"],
     },
 
     email: {
         type: String,
-        required: [true, "Please Enter Your Email"],
+        required: [true, "Please enter your Email"],
         unique: true,
-        validate: [validator.isEmail, "Please Enter a valid Email"],
+        validate: [validator.isEmail, "Please enter a valid Email"],
     },
 
     password: {
         type: String,
-        required: [true, "Please Enter Your Password"],
+        required: [true, "Please enter your Password"],
         minLength: [8, "Password should be greater than 8 characters"],
         select: false,
     },
