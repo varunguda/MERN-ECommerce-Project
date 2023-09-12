@@ -96,8 +96,13 @@ const schema = new mongoose.Schema({
 
     seller_merit:{
         type: Number,
-        default: 0,
+        default: undefined,
         max: 101,
+    },
+
+    total_sales:{
+        type: Number,
+        default: undefined,
     },
 
     created_at: {

@@ -49,7 +49,8 @@ export const updateUserRole = catchAsync( async(req, res, next) => {
 
     user.is_seller = is_seller;
     user.is_admin = is_admin;
-    user.seller_merit = 100;
+    user.seller_merit = 80;
+    user.total_sales = 0;
 
     user.save({ validateBeforeSave: false });
 
@@ -91,12 +92,16 @@ export const setSellerMerit = [
     .withMessage("Invalid Merit format!")
     .isLength({ max: 3 }) //////////////////////////////////////////////////////////////////
     .withMessage('Price must be a number in between the range of 0 and 100'),
+
+    body("sales")
+    .isNumeric()
+    .withMessage("Invalid Sales format!"),
     
     catchAsync( async(req, res, next) => {
         
         const { id } = req.params;
     
-        const { merit } = req.body;
+        const { merit, sales } = req.body;
     
         const user = await Users.findById(id).select("+is_seller");
         if(!user){
@@ -107,11 +112,12 @@ export const setSellerMerit = [
         }
     
         user.seller_merit = merit;
+        user.total_sales = sales;
         user.save({ validateBeforeSave: false });
     
         return res.json({
             success: true,
-            message: "Seller's merit has been updated!"
+            message: "Seller's merit has been updated!",
         })
     
     })
