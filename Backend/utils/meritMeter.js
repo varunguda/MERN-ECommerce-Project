@@ -15,33 +15,23 @@ export class MeritMeter {
     const seller = await Users.findById(this.sellerId);
     this.sellerMerit = seller.seller_merit;
 
-    let meritToAdd = Math.sqrt(100 - this.sellerMerit) / Math.log(this.orderCount + Math.E);
+    seller.total_sales += this.orderCount;
 
-    this.sellerMerit += meritToAdd;
+    let multiplyingFactor = 1 + (seller.total_sales / 200);
+
+    for (let i = 0; i < this.orderCount; i++) {
+      let meritToAdd = ((100 - this.sellerMerit) / 140) * multiplyingFactor ;
+      this.sellerMerit += meritToAdd;
+    }
 
     if (this.sellerMerit > 100) {
       this.sellerMerit = 100;
     }
 
-    seller.seller_merit = Math.floor(this.sellerMerit * 10) / 10;
+    seller.seller_merit = this.sellerMerit;
     await seller.save({ validateBeforeSave: false });
 
     return this.sellerMerit;
-
-    // Below are some scenarios on how algorithm behaves based on the sellers merit and the orders he got
-
-    // 1. A seller with a merit of 30 got 10 orders
-    // The merit to be added would be Math.sqrt(100 - 30) / Math.log(10 + Math.E) = 8.37 / 2.61 = 3.2 (approximately).
-
-    // 2. A seller with a merit of 50 and has got 20 orders
-    // The merit to be added would be Math.sqrt(100 - 50) / Math.log(20 + Math.E) = 7.07 / 3.09 = 2.3 (approximately).
-
-    // 3. A seller with a merit of 70 and has got 30 orders
-    // The merit to be added would be Math.sqrt(100 - 70) / Math.log(30 + Math.E) = 5.48 / 3.43 = 1.6 (approximately).
-
-    // 4. A seller with a merit of 90 and has got 40 orders
-    // The merit to be added would be Math.sqrt(100 - 90) / Math.log(40 + Math.E) = 3.16 / 3.71 = 0.85 (approximately).
-
   }
 
   async reduceMerit() {
@@ -53,12 +43,12 @@ export class MeritMeter {
       this.sellerMerit -= 1;
     }
     else {
-      let reductions = Math.floor(this.orderCount / 8);
+      let reductions = this.orderCount / 8;
       let meritToReduce = reductions;
       this.sellerMerit -= meritToReduce;
     }
 
-    seller.seller_merit = Math.floor(this.sellerMerit * 10) / 10;
+    seller.seller_merit = this.sellerMerit * 10;
     if (this.sellerMerit < 30) {
       this.dropSeller();
     }
