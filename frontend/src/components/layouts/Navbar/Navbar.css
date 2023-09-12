@@ -1,0 +1,221 @@
+.navbar {
+    font-weight: 700;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 40px);
+    height: 80px;
+    padding: 0 20px;
+    color: white;
+    background-color: var(--primary-color);
+}
+
+.nav-elems{
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    letter-spacing: 0.02rem;
+    gap: 5px;
+    padding: 7px 15px;
+    border-radius: 30px;
+    transition: all 0.1s;
+    line-height: 18px;
+    cursor: pointer;
+}
+
+
+.nav-elems .cart-items{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-size: 12px;
+    background-color: var(--secondary-color);
+    color: var(--primary-font-color);
+    padding: 0px 5px;
+    border-radius: 50%;
+    border: 2px solid rgb(157, 60, 0);
+}
+
+
+.nav-elems:hover{
+    background-color: var(--primary-hover-color);
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1;
+    padding: 30px 20px 30px 30px;
+}
+
+.logo-new{
+    position: relative;
+}
+
+.logo-new::after{
+    content: '';
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    right: -2px;
+    background-color: var(--secondary-color);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
+    z-index: -2;
+}
+
+
+@media only screen and (min-width: 400px) {
+    .navbar-logo-icon {
+        height: 24px;
+    }
+}
+
+.navbar-logo-text {
+    display: none;
+    height: 19px;
+}
+
+@media only screen and (min-width: 400px) {
+    .navbar-logo-text {
+        display: block;
+    }
+}
+
+.navbar-menu {
+    display: flex;
+    transition: 0.3s;
+    gap: 40px;
+    margin-right: 10px;
+}
+
+@media only screen and (min-width: 600px) {
+    .navbar-menu {
+        justify-content: center;
+    }
+}
+
+
+
+.secondary-navbar button {
+    border: 0;
+    padding: 0;
+    font-family: inherit;
+    background-color: var(--secondary-color);
+    color: inherit;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.secondary-navbar {
+    position: fixed;
+    z-index: 1;
+    top: 81px;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    background-color: var(--primary-color);
+    color: #f9f9f9;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+@media only screen and (min-width: 600px) {
+    .secondary-navbar {
+        justify-content: space-between;
+    }
+}
+
+.search {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 auto;
+    font-size: 13px;
+    height: 40px;
+    padding-left: 46px;
+    border: 0;
+    border-radius: 30px;
+    visibility: hidden;
+    opacity: 0;
+    outline: none;
+}
+
+.secondary-navbar .open .search {
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    border-radius: 0;
+    visibility: visible;
+    background: #19191c;
+    width: 100%;
+    height: 72px;
+    margin: 0;
+    padding-left: 76px;
+}
+
+input {
+    font-family: var(--primary-font-family);
+}
+
+@media only screen and (min-width: 600px) {
+    .search {
+        opacity: 1;
+        visibility: visible;
+        flex: 0 0 360px;
+        margin-right: auto;
+        transition-property: opacity, visibility;
+        transition-duration: 0.3s;
+    }
+}
+
+.search::placeholder {
+    color: #939393;
+}
+
+.search-toggle {
+    position: fixed;
+    left: 16px;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: 0.3s;
+}
+
+@media only screen and (min-width: 600px) {
+    .search-toggle {
+        translate: 10px 0;
+        scale: 0.65;
+        pointer-events: none;
+    }
+}
+
+.secondary-navbar-menu {
+    display: flex;
+}
+
+.secondary-navbar-menu>button {
+    position: relative;
+    flex: 0 0 40px;
+    display: grid;
+    place-items: center;
+    font-size: 28px;
+    height: 72px;
+    width: 40px;
+    opacity: 0.3;
+}
+
+.secondary-navbar-menu>button.active {
+    opacity: 1;
+}
