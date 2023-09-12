@@ -44,7 +44,7 @@ const schema = new Schema({
                 type: String,
                 required: true,
                 default: "Processing",
-                enum: [ "Processing", "Shipped", "In-transit" , "Out for delivery", "Delivered" ]
+                enum: [ "Processing", "Shipped", "In-transit" , "Out for delivery", "Delivered", "Cancelled" ],
             }
         }
     ],

@@ -30,7 +30,7 @@ router.route('/products/addreview/:id').post(isUser, craeateProductReview);
 
 router.route('/products/reviews/:id').get(getAllProductReviews);
 
-router.route('/products/deletereview/:id').delete(isUser, deleteReview);
+router.route('/products/reviews/:id').delete(isUser, deleteReview);
 
 router.route('/products/:id').get(getProductDetails);
 
