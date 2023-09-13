@@ -1,5 +1,6 @@
 import React from 'react';
 import './Footer.css';
+import '../../../index.css';
 
 
 const Footer = () => {
@@ -8,9 +9,7 @@ const Footer = () => {
             <section className='footer-section'>
                 <footer className="top">
                     <div className='logo-desc'>
-                        <div className='logo'>
-                            ManyIN
-                        </div>
+                        <div className='logo-new'>ManyIN</div>
                         <div className='desc'>Your Marketplace, Your Way</div>
                     </div>
                     <div className="links">
@@ -42,10 +41,10 @@ const Footer = () => {
                             <h2>Contact</h2>
                             <div className="socials">
                                 <a href='https://www.linkedin.com/in/varunguda' target='_blank' rel='noreferrer'>
-                                    <i className="fa-brands fa-linkedin" style={{ color: "#000000" }}></i>
+                                    <i className="fa-brands fa-linkedin" style={{ color: "#ffc220" }}></i>
                                 </a>
                                 <a href='https://github.com/varunguda' target='_blank' rel='noreferrer'>
-                                    <i className="fa-brands fa-github" style={{ color: "#000000" }}></i>
+                                    <i className="fa-brands fa-github" style={{ color: "#ffc220" }}></i>
                                 </a>
                             </div>
                         </div>

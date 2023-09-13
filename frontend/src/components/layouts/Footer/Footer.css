@@ -1,9 +1,10 @@
 
 .footer-section {
   position: relative;
-  left: 0;
-  bottom: 0px;
-  width: calc(100% - 60px);
+  background-color: var(--primary-color);
+  color: white;
+  top: 200vh;
+  width: 100%;
   padding: 60px 30px 0px 30px;
 }
 
@@ -15,6 +16,27 @@ footer .logo-desc{
   margin: 0 auto 50px;
   width: fit-content;
 }
+
+
+footer .logo-new {
+  position: relative;
+  font-size: 40px;
+  z-index: 0;
+}
+
+footer .logo-new::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  height: 46px;
+  width: 46px;
+  border-radius: 50%;
+  right: -2px;
+  background-color: var(--secondary-color);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
+  z-index: -1;
+}
+
 
 footer .logo-desc .desc{
   font-size: 10px;
@@ -30,7 +52,8 @@ footer .logo-desc .logo{
 }
 
 footer a{
-  color: var(--primary-font-color);
+  color: white;
+  font-size: 14px;
 }
 
 footer a:hover{
