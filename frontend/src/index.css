@@ -1,11 +1,12 @@
+
 :root {
     --primary-color: #0071dc;
     --primary-hover-color: #0055a5;
     --secondary-color: #ffc220;
-    --logo-font-family: 'Playfair Display', serif;
     --primary-footer: #F9F7F7;
     --primary-font-family: 'Lato', sans-serif;
     --primary-font-color: #1B1B1B;
+    --secondary-font-color: #46474a;
     --black-font-color: #00000;
     --border-color: gainsboro;
 }
@@ -13,6 +14,7 @@
 *,
 *::after,
 *::before {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
@@ -29,11 +31,34 @@ body {
 }
 
 
-.logo {
-    font-family: "Playfair Display", serif;
+.logo-new {
+    position: relative;
+    font-size: 24px;
+}
+
+.logo-new::after {
+    content: '₹';/*  */
+    text-shadow:  2px 2px rgba(0, 0, 0, 0.314);
+    padding-left: 8px;
+    padding-top: 1px;
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    /* right: -2px; */
+    background-color: var(--secondary-color);
+    /* box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px; */
+    box-shadow: rgba(0, 0, 0, 0.315) 2px 2px;
+    z-index: -1;
 }
 
 
 .main-container{
     position: relative;
+    height: 200vh;
+}
+
+.content-container{
+    position: relative;
+    top: 150px;
 }
