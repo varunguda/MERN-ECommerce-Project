@@ -1,0 +1,6 @@
+{
+    "html-to-css-autocompletion.getSelectorsFromFileTypes": [
+        ".jsx"
+    ],
+    "html-to-css-autocompletion.triggerCharacters": true
+}
