@@ -1,0 +1,44 @@
+
+.carousel-container{
+    margin: 25px 15px;
+}
+
+
+.left-arrow,
+.right-arrow {
+    position: absolute;
+    z-index: 2;
+    top: calc(20% - 15px);
+    cursor: pointer;
+    background-color: white;
+    border-radius: 50%;
+    border: 1px solid black;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.right-arrow{
+    right: 0px;
+}
+
+.left-arrow{
+    left: 0px;
+}
+
+.right-arrow:active, .left-arrow:active{
+    border: 2px solid black;
+}
+
+
+.product-carousel .title{
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.product-carousel .caption{
+    font-size: var(--medium-content-font-size);
+    color: var(--light-font-color);
+}

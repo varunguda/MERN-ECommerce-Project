@@ -2,13 +2,12 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Routes,
-  Link
+  Routes
 } from "react-router-dom"
 
 import Footer from './components/layouts/Footer/Footer.jsx';
 import Navbar from './components/layouts/Navbar/Navbar.jsx';
-import Home from "./components/layouts/Home/Home.jsx";
+import Home from "./components/Home/Home.jsx";
 
 const App = () => {
   return (

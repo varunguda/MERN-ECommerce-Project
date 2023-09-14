@@ -1,0 +1,11 @@
+
+.star-container{
+    width: fit-content;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 2px;
+}
+
+.star-icon{
+    color: black;
+}
