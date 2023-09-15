@@ -5,6 +5,7 @@
     min-width: 140px;
     border-radius: 3px;
     overflow: hidden;
+    animation: popin 0.5s forwards;
 }
 
 .product-card-container .product-card {

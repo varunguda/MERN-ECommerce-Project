@@ -68,11 +68,23 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     
     const productCount = await Product.countDocuments();
     const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter().pagination(10)
-    const products = await apiFeatures.products;
+    let products = await apiFeatures.products;
+
+    const updatedProducts = [];
+
+    for (let i = 0; i < products.length; i++) {
+        if(products[i].review_id){
+            const review_data = await Review.findById(products[i].review_id);
+            updatedProducts.push({...review_data._doc, ...products[i]._doc});
+        }
+        else{
+            updatedProducts.push({...products[i]._doc})
+        }
+    }
 
     return res.json({
         success: true,
-        products,
+        products: updatedProducts,
         product_count: productCount,
     })
 })
