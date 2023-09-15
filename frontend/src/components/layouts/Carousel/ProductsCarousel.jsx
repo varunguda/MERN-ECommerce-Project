@@ -51,42 +51,49 @@ const ProductsCarousel = ({ products }) => {
             <div className="caption">Upto 60% off</div>
 
             <div className="carousel-container">
-                <Carousel
-                    additionalTransfrom={0}
-                    arrows
-                    autoPlaySpeed={3000}
-                    centerMode={false}
-                    className=""
-                    containerClass="container"
-                    customLeftArrow={<CustomLeftArrow />}
-                    customRightArrow={<CustomRightArrow />}
-                    dotListClass=""
-                    draggable
-                    focusOnSelect={false}
-                    itemClass=""
-                    keyBoardControl
-                    minimumTouchDrag={80}
-                    pauseOnHover
-                    renderArrowsWhenDisabled={false}
-                    renderButtonGroupOutside={true}
-                    rewind={false}
-                    rewindWithAnimation={false}
-                    rtl={false}
-                    shouldResetAutoplay
-                    showDots={false}
-                    sliderClass=""
-                    slidesToSlide={1}
-                    swipeable
-                    responsive={responsive}
-                >
 
-                    {
-                        products && products.map((product) => (
-                            <ProductCard product={product} height="400px" width="90%" />
-                        ))
-                    }
+                {
+                    products && 
+                    (
 
-                </Carousel>
+                        <Carousel
+                            additionalTransfrom={0}
+                            arrows
+                            autoPlaySpeed={3000}
+                            centerMode={false}
+                            className=""
+                            containerClass="container"
+                            customLeftArrow={<CustomLeftArrow />}
+                            customRightArrow={<CustomRightArrow />}
+                            dotListClass=""
+                            draggable
+                            focusOnSelect={false}
+                            itemClass=""
+                            keyBoardControl
+                            minimumTouchDrag={80}
+                            pauseOnHover
+                            renderArrowsWhenDisabled={false}
+                            renderButtonGroupOutside={true}
+                            rewind={false}
+                            rewindWithAnimation={false}
+                            rtl={false}
+                            shouldResetAutoplay
+                            showDots={false}
+                            sliderClass=""
+                            slidesToSlide={1}
+                            swipeable
+                            responsive={responsive}
+                        >
+                            
+                            {
+                                products.map((product, _index) => (
+                                    <ProductCard key={_index} height="400px" width="90%" product={product} />
+                                ))
+                            }
+
+                        </Carousel>
+                    )
+                }
 
             </div>
         </div>

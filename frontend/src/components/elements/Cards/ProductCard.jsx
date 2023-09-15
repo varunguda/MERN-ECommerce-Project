@@ -30,7 +30,7 @@ const ProductCard = ({ product, height, width }) => {
 
   return (
     <div className='product-card-container' style={{ height, width }}>
-      <Link className='product-card' to={product._id} >
+      <Link className='product-card' to={`/products/${product._id}`} target='_blank' >
 
         <div className="image-container">
           <img src={product.images[0]} alt={product.name} />
@@ -47,7 +47,7 @@ const ProductCard = ({ product, height, width }) => {
           <p>{product.name}</p>
 
           <div className='review-container'>
-            <Stars value={product.ratings} size={window.innerWidth > 600 ? "12px" : "10px"} />
+            <Stars value={product.rating} size={window.innerWidth > 600 ? "12px" : "10px"} />
             <span>{product.total_reviews}</span>
           </div>
 
@@ -69,4 +69,4 @@ const ProductCard = ({ product, height, width }) => {
   )
 }
 
-export default ProductCard
+export default ProductCard;

@@ -30,6 +30,18 @@
     filter: grayscale(1);
     transition: 0.1s;
     cursor: pointer;
+    animation: popin 0.5s forwards;
+}
+
+@keyframes popin {
+    0%{
+        scale: 0;
+        opacity: 0;
+    }
+    100%{
+        scale: 1;
+        opacity: 1;
+    }
 }
 
 .banner:hover {
