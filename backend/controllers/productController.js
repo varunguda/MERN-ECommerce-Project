@@ -107,9 +107,21 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
         allProducts = allProducts.concat(similarProducts);
     }
 
+    const updatedProducts = [];
+
+    for (let i = 0; i < allProducts.length; i++) {
+        if(allProducts[i].review_id){
+            const review_data = await Review.findById(allProducts[i].review_id);
+            updatedProducts.push({...review_data._doc, ...allProducts[i]._doc});
+        }
+        else{
+            updatedProducts.push({...allProducts[i]._doc})
+        }
+    }
+
     return res.json({
         success: true,
-        products: allProducts
+        products: updatedProducts
     })
 });
 

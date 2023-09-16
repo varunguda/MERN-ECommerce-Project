@@ -1,0 +1,408 @@
+.product-page-container {
+    position: relative;
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    top: 40px;
+    padding-left: 140px;
+    padding-right: 140px;
+    overflow: hidden;
+}
+
+.page-section1 {
+    position: relative;
+    flex: 0.66;
+}
+
+.page-section2 {
+    position: relative;
+    flex: 0.34;
+    overflow: hidden;
+}
+
+.product-images {
+    position: relative;
+    display: flex;
+    height: 600px;
+    width: 100%;
+    gap: 30px;
+}
+
+.image-carousel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 0.13;
+    width: 100%;
+    margin: 20px 0px;
+    padding: 10px 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.image-carousel::-webkit-scrollbar {
+    width: 3px;
+}
+
+.image-carousel::-webkit-scrollbar-track {
+    background: white;
+}
+
+.image-carousel:hover::-webkit-scrollbar-track {
+    background: #e8e8e8;
+}
+
+.image-carousel::-webkit-scrollbar-thumb {
+    background: #e8e8e8;
+    border-radius: 8px;
+}
+
+.image-carousel:hover::-webkit-scrollbar-thumb {
+    background: #555;
+}
+
+.image-wrapper {
+    position: relative;
+    /* min-height: 90px; */
+    height: 90px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.image-carousel .image-wrapper:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.image-carousel img {
+    height: 100%;
+    width: 100%;
+}
+
+.image-carousel img:hover {
+    scale: 1.05;
+}
+
+
+.product-image {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0.87;
+    margin: 0px 20px;
+    overflow: hidden;
+    transition: transform;
+    cursor: crosshair;
+}
+
+.product-image img {
+    position: relative;
+    width: 100%;
+}
+
+.image-btn {
+    position: absolute;
+    z-index: 3;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.prev-image {
+    left: 15%;
+    top: 50%;
+}
+
+.next-image {
+    right: -2.5%;
+    top: 50%;
+}
+
+.image-btn.disabled {
+    filter: grayscale(1);
+    pointer-events: none;
+}
+
+.product-image:hover {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    outline: 1px solid black;
+}
+
+.image-carousel .active:after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    width: 90%;
+    padding-top: 4px;
+    left: 5%;
+    border-radius: 10px;
+    background-color: var(--primary-color);
+    animation: strech 0.2s linear;
+}
+
+@keyframes strech {
+    0% {
+        width: 0;
+        left: 50%;
+        right: 50%;
+    }
+
+    100% {
+        width: 90%;
+        left: 5%;
+        right: 5%;
+    }
+}
+
+
+.page-section1 .caption {
+    position: relative;
+    text-align: center;
+    left: 9%;
+    margin-top: 50px;
+}
+
+.page-section1 .caption .zoom-caption {
+    margin-bottom: 20px;
+}
+
+.page-section1 .caption .zoom-icon {
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+
+
+
+.product-detail-section {
+    position: relative;
+    border: 1px solid var(--border-color);
+    color: var(--black-font-color);
+    font-size: var(--medium-content-font-size);
+    padding: 30px 30px 20px 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-part {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.product-detail-section .wishlist-icon {
+    align-self: flex-end;
+    cursor: pointer;
+}
+
+.product-detail-section .brand-name {
+    width: fit-content;
+    font-weight: 200;
+    text-decoration: 1px underline;
+    cursor: pointer;
+}
+
+.product-detail-section .brand-name:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.product-detail-section .product-name {
+    font-size: var(--large-content-font-size);
+    font-weight: 600;
+    line-height: 29px;
+    text-transform: capitalize;
+}
+
+.product-detail-section .star-rating {
+    display: flex;
+    gap: 5px;
+    font-size: 14px;
+    color: var(--light-font-color);
+    margin: 12px 0px;
+}
+
+.product-detail-section .star-rating .reviews-count {
+    text-decoration: 1px underline;
+}
+
+.product-detail-section .price-container {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.product-detail-section .price-sp {
+    color: var(--highlight-font-color);
+    font-size: 27px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.product-detail-section .price-p {
+    color: var(--light-font-color);
+    text-decoration: line-through;
+}
+
+.product-detail-section .save-price {
+    margin: 10px 0px;
+    color: var(--highlight-font-color);
+    font-size: 14px;
+}
+
+.product-detail-section .highlight-text {
+    margin-right: 8px;
+    font-weight: 600;
+    background-color: var(--highlight-background-color);
+    padding: 4px 7px;
+    border-radius: 7px;
+}
+
+.product-detail-section .primary-button {
+    margin: 18px 0px;
+    width: fit-content;
+    padding: 11px 22px;
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.product-detail-section .section-part::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: -10px;
+    border-top: 1px dotted var(--border-color);
+}
+
+
+.product-detail-section .seller-details {
+    position: relative;
+    margin: 30px 0px;
+    font-size: 14px;
+    color: var(--secondary-font-color);
+}
+
+.product-detail-section .about-seller {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.product-detail-section .about-seller .icon {
+    margin-right: 10px;
+}
+
+.product-detail-section .about-seller .seller-name {
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.product-detail-section .about-seller .seller-name:hover {
+    text-decoration: underline;
+}
+
+.product-detail-section .merit {
+    margin-left: 35px;
+}
+
+.product-detail-section .merit>span {
+    color: var(--highlight-font-color);
+    font-weight: 600;
+    font-size: var(--large-content-font-size);
+}
+
+.product-detail-section .seller-details::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -20px;
+    width: 100%;
+    border-top: 1px dotted var(--border-color);
+}
+
+
+.product-detail-section .secondary-button {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    border: none;
+    background-color: white;
+    color: var(--secondary-font-color);
+    align-self: center;
+    margin-top: 10px;
+    font-size: 15px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.more-options {
+    margin-top: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 30px;
+}
+
+.more-options .option-head {
+    color: var(--black-font-color);
+    font-weight: 600;
+    font-size: var(--large-content-font-size);
+    margin-bottom: 6px;
+}
+
+.more-options .option-description {
+    font-size: var(--regular-content-font-size);
+}
+
+.more-options .options {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.more-options .options>div:nth-last-child(2) {
+    margin-bottom: 20px;
+}
+
+.more-options .options>div:nth-last-child(2)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 35px;
+    width: 100%;
+    border-top: 1px dotted var(--border-color);
+}
+
+.checkboxes label {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.checkboxes input[type="checkbox"] {
+    display: none;
+}
+
+.checkboxes input[type="checkbox"]+label:before {
+    content: "";
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    outline: 1px solid var(--black-font-color);
+    outline-offset: 3px;
+}
+
+.checkboxes input[type="checkbox"]:checked+label::before {
+    background-color: var(--black-font-color);
+}
