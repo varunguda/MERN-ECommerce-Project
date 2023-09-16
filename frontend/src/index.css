@@ -9,11 +9,13 @@
     --secondary-font-color: #46474a;
     --light-font-color: #74767c;
     --highlight-font-color: #2a8703;
-    --black-font-color: #00000;
+    --highlight-background-color: #eaf3e6;
+    --black-font-color: #2e2f32;
     --border-color: gainsboro;
 
     --large-content-font-size: 20px;
     --medium-content-font-size: 15px;
+    --regular-content-font-size: 14px;
     --small-content-font-size: 13px;
 }
 
@@ -28,7 +30,7 @@
 
 body {
     font-family: var(--primary-font-family);
-    color: var(--primary-font-color);
+    color: #515357;
 }
 
 
