@@ -8,7 +8,10 @@ import {
     PRODUCT_DETAILS_FAILURE,
     PRODUCT_DETAILS_SUCCESS,
 
-    CLEAR_ERRORS,
+    SELLER_PRODUCT_FAILURE,
+    SELLER_PRODUCT_REQUEST,
+    SELLER_PRODUCT_SUCCESS
+
 } from "../constants/ProductConstants.js";
 
 export const productReducer = ( state = { products: [] }, action ) => {
@@ -35,13 +38,6 @@ export const productReducer = ( state = { products: [] }, action ) => {
                 loading: false,
                 error: action.payload,
             })
-        }
-
-        case CLEAR_ERRORS:{
-            return({
-                ...state,
-                error: null
-            });
         }
 
         default:{
@@ -74,16 +70,39 @@ export const productDetailsReducer = ( state = { products: [] }, action ) => {
                 error: action.payload,
             })
         }
-
-        case CLEAR_ERRORS:{
-            return({
-                loading: false,
-                error: null,
-            })
-        }
     
         default:{
             return state
+        }
+    }
+}
+
+
+export const sellerProductsReducer = ( state = [], action ) => {
+    switch (action.type) {
+        case SELLER_PRODUCT_REQUEST:{
+            return({
+                sellersProductsLoading: true,
+                sellersProducts: []
+            })
+        }
+
+        case SELLER_PRODUCT_SUCCESS:{
+            return({
+                sellersProductsLoading: false,
+                sellersProducts: action.payload,
+            })
+        }
+
+        case SELLER_PRODUCT_FAILURE:{
+            return({
+                sellersProductsLoading: false,
+                sellersProductsError: action.payload,
+            })
+        }
+        
+        default:{
+            return state;
         }
     }
 }

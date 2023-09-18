@@ -1,4 +1,5 @@
-import { Product } from '../models/productModel.js'
+import { Product } from '../models/productModel.js';
+import { Users } from "../models/userModel.js";
 import { ErrorHandler } from '../utils/errorHandler.js';
 import catchAsync from '../utils/catchAsync.js';
 import { ApiFeatures } from '../utils/apiFeatures.js';
@@ -7,57 +8,57 @@ import { Review } from '../models/reviewModel.js';
 
 
 
-const allProperties = [ "name", "description", "price", "images", "stock", "discount_price", "final_price", "options", "bundles", "color", "ram", "rom", "processor", "resolution", "storage", "size", "sizes", "quantity", "variations", "brand", "category", "review_id" ]
+const allProperties = ["name", "description", "price", "images", "stock", "discount_price", "final_price", "options", "bundles", "color", "ram", "rom", "processor", "resolution", "storage", "size", "sizes", "quantity", "variations", "brand", "category", "review_id"]
 
-const commonProperties = ["name", "description", "price", "images", "stock", "discount_price", "options", "bundles" ]
+const commonProperties = ["name", "description", "price", "images", "stock", "discount_price", "options", "bundles"]
 
 const categoryConfig = {
 
     "Mobile Phone": {
-        properties: [ ...commonProperties, "ram", "rom", "color", "resolution", "processor" ]
+        properties: [...commonProperties, "ram", "rom", "color", "resolution", "processor"]
     },
 
-    "Laptop":{
+    "Laptop": {
         properties: [...commonProperties, "ram", "color", "resolution", "processor", "storage", "size"]
     },
 
-    "Monitor":{
-        properties:[ ...commonProperties, "color", "resolution", "size" ]
+    "Monitor": {
+        properties: [...commonProperties, "color", "resolution", "size"]
     },
 
-    "Clothing":{
-        properties: [...commonProperties, "sizes", "color" ]
+    "Clothing": {
+        properties: [...commonProperties, "sizes", "color"]
     },
 
-    "Shoes":{
+    "Shoes": {
         properties: [...commonProperties, "colors", "sizes"]
     },
 
     "Watches": {
-        properties: [ ...commonProperties, "color" ]
+        properties: [...commonProperties, "color"]
     },
 
     "Telivision": {
-        properties: [...commonProperties, "color", "resolution", "size" ],
+        properties: [...commonProperties, "color", "resolution", "size"],
     },
 
-    "Refrigerator":{
-        properties:[...commonProperties, "color", "storage"],
+    "Refrigerator": {
+        properties: [...commonProperties, "color", "storage"],
     },
 
-    "Computer Accessories":{
+    "Computer Accessories": {
         properties: [...commonProperties, "color", "size"],
     },
-    
-    "Mobile Accessories":{
+
+    "Mobile Accessories": {
         properties: [...commonProperties, "color", "size"]
     },
 
-    "Headphones & Earphones":{
+    "Headphones & Earphones": {
         properties: [...commonProperties, "color", "size"],
     },
 
-    "Beauty & Health":{
+    "Beauty & Health": {
         properties: [...commonProperties, "color", "quantity"],
     }
 }
@@ -65,7 +66,7 @@ const categoryConfig = {
 
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
-    
+
     const productCount = await Product.countDocuments();
     const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter().pagination(10)
     let products = await apiFeatures.products;
@@ -73,12 +74,12 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     const updatedProducts = [];
 
     for (let i = 0; i < products.length; i++) {
-        if(products[i].review_id){
+        if (products[i].review_id) {
             const review_data = await Review.findById(products[i].review_id);
-            updatedProducts.push({...review_data._doc, ...products[i]._doc});
+            updatedProducts.push({ ...review_data._doc, ...products[i]._doc });
         }
-        else{
-            updatedProducts.push({...products[i]._doc})
+        else {
+            updatedProducts.push({ ...products[i]._doc })
         }
     }
 
@@ -100,28 +101,21 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Product not found!", 400));
     }
 
-    allProducts.push(product);
-
-    if(product.product_id){
-        const similarProducts = await Product.find({product_id: product.product_id, _id: { $ne : product._id}});
+    if (product.product_id) {
+        const similarProducts = await Product.find({ product_id: product.product_id });
         allProducts = allProducts.concat(similarProducts);
+    }else{
+        allProducts.push(product);
     }
 
-    const updatedProducts = [];
-
-    for (let i = 0; i < allProducts.length; i++) {
-        if(allProducts[i].review_id){
-            const review_data = await Review.findById(allProducts[i].review_id);
-            updatedProducts.push({...review_data._doc, ...allProducts[i]._doc});
-        }
-        else{
-            updatedProducts.push({...allProducts[i]._doc})
-        }
+    if (product.review_id) {
+        const review_data = await Review.findById(product.review_id);
+        allProducts[0] = { ...review_data._doc, ...allProducts[0]._doc };
     }
 
     return res.json({
         success: true,
-        products: updatedProducts
+        products: allProducts,
     })
 });
 
@@ -131,28 +125,28 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
     const { products, variations, category, brand } = req.body;
     const createdProducts = [];
-    const product_id = (products.length>1) ? uuidv4() : undefined;
+    const product_id = (products.length > 1) ? uuidv4() : undefined;
 
-    if(!categoryConfig.hasOwnProperty(category)){
+    if (!categoryConfig.hasOwnProperty(category)) {
         return next(new ErrorHandler("This category is not available!", 400));
     }
 
     const { properties } = categoryConfig[category];
 
-    for(const product of products){
+    for (const product of products) {
 
-        const final_price = Math.round(product.price - ( product.price * product.discount_percent/100));
+        const final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
 
         // creating a product with all the data provided by the seller
-        const createdProduct = await Product.create({...product, brand, category, variations, seller_id: req.user._id, product_id, final_price});
+        const createdProduct = await Product.create({ ...product, brand, category, variations, seller_id: req.user._id, product_id, final_price });
 
         // All properties has all the flags that are present in a mongo document, to prevent a seller to fill irrelevent flags in the db, we are setting all the falg values which are not relevant to a category to undefined.
         allProperties.forEach((property) => {
-            if(!properties.includes(property)){
+            if (!properties.includes(property)) {
                 createdProduct[property] = undefined;
             }
         })
-        
+
         createdProduct.final_price = final_price;
         createdProduct.brand = brand;
         createdProduct.category = category;
@@ -176,7 +170,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
 export const updateAnyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Product.findByIdAndUpdate(id, {...req.body}, {
+    const product = await Product.findByIdAndUpdate(id, { ...req.body }, {
         new: true,
         runValidators: true,
     });
@@ -230,7 +224,7 @@ export const updateMyProduct = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Product not found!", 404));
     }
 
-    if(categoryConfig.hasOwnProperty(product.category)){
+    if (categoryConfig.hasOwnProperty(product.category)) {
         const { properties } = categoryConfig[product.category];
 
         properties.forEach((property) => {
@@ -238,7 +232,7 @@ export const updateMyProduct = catchAsync(async (req, res, next) => {
         })
     }
 
-    product.save({validateBeforeSave: false})
+    product.save({ validateBeforeSave: false })
 
     return res.json({
         success: true,
@@ -283,12 +277,12 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Product not found!", 404));
     }
 
-    if(!product.review_id){
+    if (!product.review_id) {
         const productReviews = await Review.create({});
         product.review_id = productReviews._id;
         product.save({ validateBeforeSave: false })
 
-        if(product.product_id){
+        if (product.product_id) {
             const products = await Product.find({ product_id: product.product_id });
             products.forEach(product => {
                 product.review_id = productReviews._id;
@@ -318,8 +312,8 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
     if (isReviewed) {
         // If user has already reviewed the product, users old review gets updated to his new review
         productReview.reviews = productReview.reviews.map((review) => {
-            if(review.user_id.toString() === req.user._id.toString()){
-                let updatedRating = ((productReview.rating * productReview.total_reviews) - review.rating + userReview.rating) / productReview.total_reviews ;
+            if (review.user_id.toString() === req.user._id.toString()) {
+                let updatedRating = ((productReview.rating * productReview.total_reviews) - review.rating + userReview.rating) / productReview.total_reviews;
                 productReview.rating = Math.round(updatedRating * 10) / 10;
                 return userReview;
             }
@@ -344,7 +338,7 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
     })
 
     const totalRating = total / productReview.reviews.length;
-    productReview.rating = Math.round(totalRating * 10)/10;
+    productReview.rating = Math.round(totalRating * 10) / 10;
 
     await productReview.save({ validateBeforeSave: false });
 
@@ -365,7 +359,7 @@ export const getAllProductReviews = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Product not found!", 404))
     }
 
-    if(!product.review_id){
+    if (!product.review_id) {
         return res.json({
             success: true,
             reviews: [],
@@ -389,8 +383,8 @@ export const deleteReview = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Product not found!", 404));
     }
 
-    if(!product.review_id){
-        return next( new ErrorHandler("This product has not been reviewed yet!", 400));
+    if (!product.review_id) {
+        return next(new ErrorHandler("This product has not been reviewed yet!", 400));
     }
 
     const productReviews = await Review.findById(product.review_id);
@@ -412,10 +406,10 @@ export const deleteReview = catchAsync(async (req, res, next) => {
     });
 
     const totalRating = total / productReviews.reviews.length;
-    productReviews.rating = Math.round(totalRating*10)/10;
+    productReviews.rating = Math.round(totalRating * 10) / 10;
     productReviews.total_reviews = productReviews.reviews.length;
 
-    if(productReviews.reviews.length === 0){
+    if (productReviews.reviews.length === 0) {
         product.review_id = undefined;
         product.save({ validateBeforeSave: false })
     }
@@ -431,33 +425,33 @@ export const deleteReview = catchAsync(async (req, res, next) => {
 
 
 
-export const addBundle = catchAsync( async(req, res, next) => {
+export const addBundle = catchAsync(async (req, res, next) => {
 
     const { id } = req.params;
     const { name, description, discount_percent, products } = req.body;
 
     const product = await Product.findById(id);
-    if(!product){
+    if (!product) {
         return next(new ErrorHandler("Product not found", 404));
     }
 
-    if(product.seller_id.toString() !== req.user._id.toString()){
+    if (product.seller_id.toString() !== req.user._id.toString()) {
         return next(new ErrorHandler("You are not allowed to perform this action", 403));
     }
 
     let bundlePrice = 0;
-    for(const bundleProduct of products){
+    for (const bundleProduct of products) {
         const product = await Product.findById(bundleProduct.product_id);
-        if(!product){
+        if (!product) {
             return next(new ErrorHandler("Products in the bundle not found!", 404));
         }
-        if(product.seller_id.toString() !== req.user._id.toString()){
+        if (product.seller_id.toString() !== req.user._id.toString()) {
             return next(new ErrorHandler("Only the products with a common seller can be bundled together!", 400));
         }
         bundlePrice += product.price;
     }
 
-    let final_price = Math.round((bundlePrice) - bundlePrice * discount_percent/100);
+    let final_price = Math.round((bundlePrice) - bundlePrice * discount_percent / 100);
 
     const bundle = {
         name,
@@ -481,21 +475,21 @@ export const addBundle = catchAsync( async(req, res, next) => {
 
 
 
-export const addOptions = catchAsync(async(req, res, next) => {
-    
+export const addOptions = catchAsync(async (req, res, next) => {
+
     const { id } = req.params;
     const { name, discount_percent, description, price } = req.body;
 
     const product = await Product.findById(id);
-    if(!product){
-        return next( new ErrorHandler("Product not found!", 404));
+    if (!product) {
+        return next(new ErrorHandler("Product not found!", 404));
     }
 
-    if(product.seller_id.toString() !== req.user._id.toString()){
+    if (product.seller_id.toString() !== req.user._id.toString()) {
         return next(new ErrorHandler("You are not allowed to perform this action!", 403));
     }
 
-    let final_price = Math.round((price) - price * discount_percent/100);
+    let final_price = Math.round((price) - price * discount_percent / 100);
 
     const option = {
         name,
@@ -512,5 +506,27 @@ export const addOptions = catchAsync(async(req, res, next) => {
         success: true,
         message: "Options added successfully!",
         options: product.options
+    })
+})
+
+
+export const getProductsOfSeller = catchAsync( async(req, res, next) => {
+    
+    const { id } = req.params;
+
+    const user = await Users.findById(id).select("+is_seller");
+    if(!user){
+        return next(new ErrorHandler("User doesn't exist!", 400));
+    }
+
+    if(!user.is_seller){
+        return next(new ErrorHandler("Seller not found!", 404));
+    }
+
+    const products = await Product.find({seller_id: user._id});
+
+    return res.json({
+        success: true,
+        products
     })
 })

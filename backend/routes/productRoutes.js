@@ -15,6 +15,7 @@ import {
     getAllProducts,
     getMyProducts,
     getProductDetails,
+    getProductsOfSeller,
     updateAnyProduct,
     updateMyProduct
 } from "../controllers/productController.js";
@@ -33,6 +34,8 @@ router.route('/products/reviews/:id').get(getAllProductReviews);
 router.route('/products/reviews/:id').delete(isUser, deleteReview);
 
 router.route('/products/:id').get(getProductDetails);
+
+router.route("/products/seller/:id").get(getProductsOfSeller);
 
 
 // Admin
