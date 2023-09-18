@@ -9,7 +9,10 @@ import {
     PRODUCT_DETAILS_SUCCESS,
     PRODUCT_DETAILS_REQUEST,
 
-    CLEAR_ERRORS
+    SELLER_PRODUCT_REQUEST,
+    SELLER_PRODUCT_FAILURE,
+    SELLER_PRODUCT_SUCCESS,
+
 } from "../constants/ProductConstants.js";
 
 
@@ -54,9 +57,22 @@ export const getProductDetails = ({ id }) => async(dispatch) => {
 }
 
 
+export const getAllProductsOfSeller = (id) => async(dispatch) => {
+    try {
+        
+        dispatch({ type : SELLER_PRODUCT_REQUEST });
 
-export const clearErrors = () => async(dispatch) => {
-    dispatch({
-        type: CLEAR_ERRORS,
-    })
-}
+        const { data } = await axios(`/api/v1/products/seller/${id}`); 
+
+        dispatch({
+            type: SELLER_PRODUCT_SUCCESS,
+            payload: data.products,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: SELLER_PRODUCT_FAILURE,
+            payload: error.response.data.message
+        })
+    }
+} 

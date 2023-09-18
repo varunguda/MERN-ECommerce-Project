@@ -9,6 +9,7 @@ import { HiOutlineUserPlus } from "react-icons/hi2";
 import { PiTShirt, PiGraphThin } from "react-icons/pi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
 
@@ -103,7 +104,9 @@ const Navbar = () => {
                 <nav className="navbar">
 
                     <h1 className="navbar-logo">
-                        <div className='logo-new'>ManyIN</div>
+                        <div className='logo-new'>
+                            <Link className='link' to="/">ManyIN</Link>
+                        </div>
                     </h1>
 
                     <div className='menu-icon' onClick={showSidebar} >

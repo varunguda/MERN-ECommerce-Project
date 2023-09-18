@@ -15,17 +15,17 @@ const ProductCard = ({ product, height, width }) => {
 
   const handleAddClick = (e) => {
     e.preventDefault()
-    setQuantity(prev => prev+1);
+    setQuantity(prev => prev + 1);
   }
 
   const handlePlusClick = (e) => {
     e.preventDefault();
-    setQuantity(prev => prev+1 )
+    setQuantity(prev => prev + 1)
   }
 
   const handleMinusClick = (e) => {
     e.preventDefault();
-    setQuantity(prev => prev-1 )
+    setQuantity(prev => prev - 1)
   }
 
   return (
@@ -47,8 +47,14 @@ const ProductCard = ({ product, height, width }) => {
           <p>{product.name}</p>
 
           <div className='review-container'>
-            <Stars value={product.rating} size={window.innerWidth > 600 ? "12px" : "10px"} />
-            <span>{product.total_reviews}</span>
+            {
+              product.rating && (
+                <>
+                  <Stars value={product.rating} size={window.innerWidth > 600 ? "12px" : "10px"} />
+                  <span>{product.total_reviews}</span>
+                </>
+              )
+            }
           </div>
 
           {
