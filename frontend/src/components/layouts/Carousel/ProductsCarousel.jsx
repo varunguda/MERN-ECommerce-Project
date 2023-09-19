@@ -24,7 +24,7 @@ const CustomRightArrow = ({ onClick, ...rest }) => {
 };
 
 
-const ProductsCarousel = ({ products, desktopItems, tabletItems, flipItems, mobileItems }) => {
+const ProductsCarousel = ({ products, desktopItems, tabletItems, flipItems, mobileItems, heading, caption }) => {
 
     const responsive = {
         desktop: {
@@ -52,8 +52,8 @@ const ProductsCarousel = ({ products, desktopItems, tabletItems, flipItems, mobi
     return (
         <div className='product-carousel'>
 
-            <div className="title">Featured Products</div>
-            <div className="caption">Upto 60% off</div>
+            <div className="title">{heading}</div>
+            <div className="caption">{caption}</div>
 
             <div className="carousel-container">
 
