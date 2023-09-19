@@ -7,13 +7,17 @@ import Metadata from '../Metadata';
 import Loader from '../layouts/Loader/Loader';
 import { RxZoomIn } from "react-icons/rx";
 import { CiHeart, CiShop } from "react-icons/ci";
-import { FcNext, FcPrevious } from "react-icons/fc";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { BiLike, BiDislike } from "react-icons/bi";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 import "./ProductPage.css";
 import Stars from '../elements/Cards/Stars';
 import { toast } from 'react-toastify';
 import ProductVariations from './ProductVariations';
 import ProductsCarousel from '../layouts/Carousel/ProductsCarousel';
+import Accordion from './Accordion.jsx';
+import ProductCard from '../elements/Cards/ProductCard';
 
 
 const images = [
@@ -62,28 +66,22 @@ const bundles = [
         description: "A bundle for your home office setup.",
         price: 138270,
         discount_percent: 10,
-        final_price: 138270,
+        final_price: 12000,
         products: [
             {
-                product_id: "60b4169f141e040012345679"
-            },
-            {
-                product_id: "60b4169f141e04001234567A"
+                product_id: "650743d24d7b9a9ea8648bec"
             }
         ]
     },
     {
         name: "Home Office Bundle",
         description: "A bundle for your home office setup.",
-        price: 138270,
+        price: 1380,
         discount_percent: 10,
-        final_price: 138270,
+        final_price: 1200,
         products: [
             {
-                product_id: "60b4169f141e040012345679"
-            },
-            {
-                product_id: "60b4169f141e04001234567A"
+                product_id: "6508bd4db7a6c5f4413ae967"
             }
         ]
     }
@@ -91,7 +89,7 @@ const bundles = [
 
 
 
-const ProductPage = () => {
+const ProductPage = (props) => {
 
     const { loading, products, error } = useSelector((state) => state.detailedProducts);
 
@@ -106,6 +104,7 @@ const ProductPage = () => {
     const [origin, setOrigin] = useState('50% 50%');
     const [selectedPlan, setSelectedPlan] = useState('No Plan');
     const [zoom, setZoom] = useState(1);
+    const [bundleProducts, setBundleProducts] = useState([]);
 
     const dispatch = useDispatch();
 
@@ -125,6 +124,54 @@ const ProductPage = () => {
         }
         // eslint-disable-next-line
     }, [products, id]);
+
+
+    useEffect(() => {
+
+        setBundleProducts([]);
+
+        // if((mainProduct.bundles && mainProduct.bundles.length > 0)){
+        const fetchData = async () => {
+            try {
+
+                for (const bundle of bundles) {
+                    for (const product of bundle.products) {
+                        const response = await fetch(`/api/v1/products/${product.product_id}`);
+                        const data = await response.json();
+                        for (const prod of data.products) {
+                            if (prod._id === product.product_id) {
+                                if (!bundleProducts.some((existingProduct) => existingProduct._id === prod._id)) {
+                                    setBundleProducts((prev) => [...prev, prod]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error fetching bundle products:', error);
+            }
+        }
+
+        if (mainProduct && Object.keys(mainProduct).length > 0 && (bundleProducts.length !== (bundles.reduce((count, bundle) => count += bundle.products.length, 1)))) {
+            setBundleProducts([mainProduct]);
+            fetchData();
+        }
+
+        return () => {
+            // Clear bundleProducts when the component unmounts or when a new page is loaded.
+            setBundleProducts([]);
+        };
+
+        // }
+        // eslint-disable-next-line
+    }, [id, mainProduct]);
+
+
+    useEffect(() => {
+        console.log(bundleProducts);
+    }, [bundleProducts])
+
 
     useEffect(() => {
         toast.error(error, {
@@ -192,7 +239,7 @@ const ProductPage = () => {
 
 
     const handleMouseEnter = () => {
-        setZoom(2); // Adjust this value to change the zoom level
+        setZoom(2);
     };
 
     const handleMouseLeave = () => {
@@ -251,7 +298,7 @@ const ProductPage = () => {
                                         </div>
 
                                         <div onClick={handlePrevImageClick} className={`image-btn prev-image ${!images[currentImageIndex - 1] ? "disabled" : ""} `} disabled={true} >
-                                            <FcPrevious size={30} />
+                                            <GrFormPrevious size={30} />
                                         </div>
                                         <div
                                             onMouseEnter={handleMouseEnter}
@@ -263,7 +310,7 @@ const ProductPage = () => {
 
                                         </div>
                                         <div onClick={handleNextImageClick} className={`image-btn next-image ${!images[currentImageIndex + 1] ? "disabled" : ""} `}>
-                                            <FcNext size={30} />
+                                            <GrFormNext size={30} />
                                         </div>
 
                                     </div>
@@ -271,6 +318,31 @@ const ProductPage = () => {
                                         <div className='zoom-caption'>Roll over image to zoom in</div>
                                         <RxZoomIn className='zoom-icon' size="30px" />
                                     </div>
+
+                                    <div className="quick-highlights">
+                                        <div className="heading">Quick highlights</div>
+                                        <div className="highlight-section">
+                                            <div className="elem elem1">
+                                                <span className="highlight-name">Brand</span><span className="highlight-text">{mainProduct.brand}</span>
+                                            </div>
+                                            <div className="elem elem2">
+                                                <span className="highlight-name"></span><span className="highlight-text"></span>
+                                            </div>
+                                            <div className="elem elem3">
+                                                <span className="highlight-name"></span><span className="highlight-text"></span>
+                                            </div>
+                                            <div className="elem elem4">
+                                                <span className="highlight-name"></span><span className="highlight-text"></span>
+                                            </div>
+                                            <div className="elem elem5">
+                                                <span className="highlight-name"></span><span className="highlight-text"></span>
+                                            </div>
+                                            <div className="elem elem6">
+                                                <span className="highlight-name"></span><span className="highlight-text"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </section>
 
                                 <section className="page-column2">
@@ -331,16 +403,16 @@ const ProductPage = () => {
                                         <button className='secondary-button'><CiHeart size={20} />Add to list</button>
                                     </div>
 
-                                    <div className="more-options">
-                                        <div className="section-part">
-                                            <div className="option-head">
-                                                Protect yout purchase
-                                            </div>
-                                            <div className="option-description">
-                                                Secure your product with these options
-                                            </div>
+                                    {options &&
+                                        <div className="more-options">
+                                            <div className="section-part">
+                                                <div className="option-head">
+                                                    Protect yout purchase
+                                                </div>
+                                                <div className="option-description">
+                                                    Secure your product with these options
+                                                </div>
 
-                                            {options &&
 
                                                 <div className="options">
                                                     {
@@ -359,26 +431,172 @@ const ProductPage = () => {
                                                         <label htmlFor="no-plan">I don't need protection at this time</label>
                                                     </div>
                                                 </div>
-                                            }
+
+                                            </div>
 
                                         </div>
-
-                                    </div>
+                                    }
 
                                 </section>
 
                             </section>
 
 
-
-
                             <section className="page-section1">
 
                                 <section className="page-column1">
 
-                                    {(sellersProducts && sellersProducts.length > 0) && (
-                                        <ProductsCarousel products={sellersProducts} desktopItems={4} tabletItems={3} flipItems={2} mobileItems={1} />
+                                    <div className="about-product">
+                                        <div className="heading">
+                                            About this item
+                                        </div>
+                                        <Accordion title="Product details" content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur.Mollit officia sunt tempor do incididunt nulla do irure nisi voluptate culpa amet adipisicing anim.In veniam ullamco dolore consequat.Tempor velit sit consequat non id nisi Lorem nisi in commodo veniam fugiat.Anim tempor cupidatat veniam nisi laboris esse.Ut dolor aliqua fugiat commodo sunt.Quis excepteur deserunt nulla voluptate adipisicing laborum deserunt est irure nostrud.Fugiat et nostrud consequat ullamco quis adipisicing reprehenderit." />
+                                        <Accordion title="Specifications" content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur.Mollit officia sunt tempor do incididunt nulla do irure nisi voluptate culpa amet adipisicing anim.In veniam ullamco dolore consequat.Tempor velit sit consequat non id nisi Lorem nisi in commodo veniam fugiat.Anim tempor cupidatat veniam nisi laboris esse.Ut dolor aliqua fugiat commodo sunt.Quis excepteur deserunt nulla voluptate adipisicing laborum deserunt est irure nostrud.Fugiat et nostrud consequat ullamco quis adipisicing reprehenderit." />
+                                        <Accordion title="Warranty" content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur." />
+                                        <Accordion title="Warnings" content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur." />
+                                    </div>
+
+
+                                    {/* { mainProduct && (bundleProducts.length === (bundles.reduce((count, bundle) => count += bundle.products.length, 1))) && (
+                                        <div className="bundles-container">
+                                            <div className="heading">Often bought together</div>
+                                            <div className="bundles-caption">Get this product at great value in bundles</div>
+                                            {bundles.map((bundle, index) => {
+                                                return (
+                                                    <div key={index} className="bundle-container">
+                                                        <div className="bundle-name">{bundle.name}</div>
+                                                        <div className="bundle-description">{bundle.description}</div>
+                                                        <div className="bundle-products">
+
+                                                            {[{...mainProduct}, ...bundle.products].map((product, index) => (
+                                                                bundleProducts.map((prod, index) => {
+                                                                    if ((prod._id === product.product_id) || (prod._id === product._id)) {
+                                                                        return (
+                                                                            <div key={index} className="bundle-product">
+                                                                                <ProductCard key={index} height="auto" width="180px" product={prod} noreviews={true} />
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                    return null;
+                                                                })
+                                                            ))}
+
+                                                            <div className="bundle-price">
+                                                                <div className="price-sp">Get for ₹{bundle.final_price}</div>
+                                                                <div className="price-p">₹{bundle.price}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                            }
+                                        </div>
+                                    )} */}
+
+
+                                    {(mainProduct) && (bundleProducts.length === (bundles.reduce((count, bundle) => count += bundle.products.length, 1))) && (
+                                        <div className="bundles-container">
+                                            <div className="heading">Often bought together</div>
+                                            <div className="bundles-caption">Get this product at great value in bundles</div>
+                                            {bundles.map((bundle, bundleIndex) => (
+                                                <div key={bundleIndex} className="bundle-container">
+                                                    <div className="bundle-name">{bundle.name}</div>
+                                                    <div className="bundle-description">{bundle.description}</div>
+                                                    <div className="bundle-products">
+                                                        {bundleProducts.map((product, productIndex) => {
+                                                            // Check if the product is part of the current bundle
+                                                            if (bundle.products.some(bundleProduct => (bundleProduct.product_id === product._id) || (mainProduct._id === product._id ) )) {
+                                                                return (
+                                                                    <div key={productIndex} className="bundle-product">
+                                                                        <ProductCard
+                                                                            key={product._id}
+                                                                            height="auto"
+                                                                            width="180px"
+                                                                            product={product}
+                                                                            noreviews={true}
+                                                                        />
+                                                                    </div>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        })}
+                                                        <div className="bundle-price">
+                                                            <div className="price-sp">Get for ₹{bundle.final_price}</div>
+                                                            <div className="price-p">₹{bundle.price}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     )}
+
+
+
+                                    {(sellersProducts && sellersProducts.length > 0) && (
+                                        <ProductsCarousel products={sellersProducts} desktopItems={4} tabletItems={3} flipItems={2} mobileItems={1} heading="More products from the seller" />
+                                    )}
+
+
+                                    {(products[0].rating && products[0].reviews.length > 0) ? (
+                                        <div className="customer-reviews-container">
+                                            <div className="heading">Customer reviews & ratings</div>
+
+                                            <div className="rating-container">
+
+                                                <div className="rating-section">
+                                                    <div className="total-rating">{products[0].rating}<span> out of </span>5</div>
+                                                    <Stars value={products[0].rating} size="13px" /><span>{`(${products[0].total_reviews} reviews)`}</span>
+                                                    <br />
+                                                    <button className='primary-button'>
+                                                        Write a review
+                                                    </button>
+                                                </div>
+
+
+                                                <div className="reviews-section">
+
+                                                    <ResponsiveMasonry
+                                                        columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 2 }}
+                                                    >
+                                                        <Masonry gutter='20px'>
+                                                            {products[0].reviews.map((review, index) => {
+                                                                return (
+                                                                    <div key={index} className="review-card">
+                                                                        <Stars value={review.rating} size="11px" />
+                                                                        <span className='verified-review'>&nbsp; Verified Purchaser</span>
+                                                                        <div className='review-product'>{(review.product_name) ? review.product_name.slice(0, 30) : mainProduct.name.slice(0, 30)}</div>
+
+                                                                        <div className="review-content">
+
+                                                                            <div className="review-title">{review.title}</div>
+                                                                            <div className="review-comment">{review.comment}</div>
+
+                                                                            <div className="reviewer-name">{review.name}</div>
+                                                                            <div className="likes-dislikes">
+                                                                                <div>
+                                                                                    <BiLike /><span>{review.likes || 0}</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <BiDislike /><span>{review.dislikes || 0}</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            })}
+
+                                                        </Masonry>
+                                                    </ResponsiveMasonry>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+
 
                                 </section>
 

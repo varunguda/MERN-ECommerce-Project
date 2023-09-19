@@ -5,7 +5,7 @@ import { CiHeart } from "react-icons/ci";
 
 import "./ProductCard.css";
 
-const ProductCard = ({ product, height, width }) => {
+const ProductCard = ({ product, height, width, noreviews=false }) => {
 
   const [quantity, setQuantity] = useState(0);
 
@@ -33,7 +33,7 @@ const ProductCard = ({ product, height, width }) => {
       <Link className='product-card' to={`/products/${product._id}`} target='_blank' >
 
         <div className="image-container">
-          <img src={product.images[0]} alt={product.name} />
+          <img src={product.images[0] || "https://images.unsplash.com/photo-1659540176095-c20ae944260e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"} alt={product.name} />
           <CiHeart onClick={handleWishlistClick} className='wishlist' />
         </div>
 
@@ -48,7 +48,7 @@ const ProductCard = ({ product, height, width }) => {
 
           <div className='review-container'>
             {
-              product.rating && (
+              !noreviews && product.rating && (
                 <>
                   <Stars value={product.rating} size={window.innerWidth > 600 ? "12px" : "10px"} />
                   <span>{product.total_reviews}</span>

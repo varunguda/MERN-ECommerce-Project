@@ -12,6 +12,7 @@
     --highlight-background-color: #eaf3e6;
     --black-font-color: #2e2f32;
     --border-color: gainsboro;
+    --highlight-background-color: #f8f8f8;
 
     --large-content-font-size: 20px;
     --medium-content-font-size: 15px;
@@ -35,7 +36,6 @@ body {
 
 
 ::selection {
-    /* background-color: rgb(41, 41, 41); */
     background-color: var(--primary-hover-color);
     color: white;
 }

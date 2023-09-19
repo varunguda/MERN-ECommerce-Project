@@ -523,10 +523,12 @@ export const getProductsOfSeller = catchAsync( async(req, res, next) => {
         return next(new ErrorHandler("Seller not found!", 404));
     }
 
-    const products = await Product.find({seller_id: user._id});
+    const apiFeatures = new ApiFeatures(Product.find({seller_id: user._id}), req.query).pagination(10);
+    const products = await apiFeatures.products;
 
     return res.json({
         success: true,
         products
     })
 })
+
