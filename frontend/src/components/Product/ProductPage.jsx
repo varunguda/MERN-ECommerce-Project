@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actionCreators } from "../../State/action-creators";
+import { actionCreators, modalActionCreators } from "../../State/action-creators";
 import { useParams } from 'react-router';
 import Metadata from '../Metadata';
 import Loader from '../layouts/Loader/Loader';
@@ -59,42 +59,14 @@ const options = [
     }
 ];
 
-// eslint-disable-next-line
-const bundles = [
-    {
-        name: "Home Office Bundle",
-        description: "A bundle for your home office setup.",
-        price: 138270,
-        discount_percent: 10,
-        final_price: 12000,
-        products: [
-            {
-                product_id: "650743d24d7b9a9ea8648bec"
-            }
-        ]
-    },
-    {
-        name: "Home Office Bundle",
-        description: "A bundle for your home office setup.",
-        price: 1380,
-        discount_percent: 10,
-        final_price: 1200,
-        products: [
-            {
-                product_id: "6508bd4db7a6c5f4413ae967"
-            }
-        ]
-    }
-]
-
-
 
 const ProductPage = (props) => {
 
     const { loading, products, error } = useSelector((state) => state.detailedProducts);
 
     // eslint-disable-next-line
-    const { sellersProductsLoading, sellersProducts, sellersProductsError } = useSelector((state) => state.sellerProducts);
+    const { sellersProducts } = useSelector((state) => state.sellerProducts);
+    const { bundles } = useSelector((state) => state.bundleProducts);
 
     const [mainProduct, setMainProduct] = useState({});
 
@@ -104,11 +76,11 @@ const ProductPage = (props) => {
     const [origin, setOrigin] = useState('50% 50%');
     const [selectedPlan, setSelectedPlan] = useState('No Plan');
     const [zoom, setZoom] = useState(1);
-    const [bundleProducts, setBundleProducts] = useState([]);
+    const reviewRef = useRef(null);
 
     const dispatch = useDispatch();
-
-    const { getProductDetails, getAllProductsOfSeller } = bindActionCreators(actionCreators, dispatch);
+    const { getProductDetails, getAllProductsOfSeller, getBundleProducts } = bindActionCreators(actionCreators, dispatch);
+    const { openModal } = bindActionCreators(modalActionCreators, dispatch);
 
     const id = useParams();
 
@@ -124,53 +96,6 @@ const ProductPage = (props) => {
         }
         // eslint-disable-next-line
     }, [products, id]);
-
-
-    useEffect(() => {
-
-        setBundleProducts([]);
-
-        // if((mainProduct.bundles && mainProduct.bundles.length > 0)){
-        const fetchData = async () => {
-            try {
-
-                for (const bundle of bundles) {
-                    for (const product of bundle.products) {
-                        const response = await fetch(`/api/v1/products/${product.product_id}`);
-                        const data = await response.json();
-                        for (const prod of data.products) {
-                            if (prod._id === product.product_id) {
-                                if (!bundleProducts.some((existingProduct) => existingProduct._id === prod._id)) {
-                                    setBundleProducts((prev) => [...prev, prod]);
-                                }
-                            }
-                        }
-                    }
-                }
-
-            } catch (error) {
-                console.error('Error fetching bundle products:', error);
-            }
-        }
-
-        if (mainProduct && Object.keys(mainProduct).length > 0 && (bundleProducts.length !== (bundles.reduce((count, bundle) => count += bundle.products.length, 1)))) {
-            setBundleProducts([mainProduct]);
-            fetchData();
-        }
-
-        return () => {
-            // Clear bundleProducts when the component unmounts or when a new page is loaded.
-            setBundleProducts([]);
-        };
-
-        // }
-        // eslint-disable-next-line
-    }, [id, mainProduct]);
-
-
-    useEffect(() => {
-        console.log(bundleProducts);
-    }, [bundleProducts])
 
 
     useEffect(() => {
@@ -192,7 +117,15 @@ const ProductPage = (props) => {
             getAllProductsOfSeller(products[0].seller_id);
         }
         // eslint-disable-next-line
-    }, [products])
+    }, [products]);
+
+
+    useEffect(() => {
+        if( mainProduct.bundles && mainProduct.bundles.length > 0){
+            getBundleProducts(mainProduct._id);
+        }
+        // eslint-disable-next-line
+    }, [mainProduct])
 
 
     const getImageIndex = (images, image) => {
@@ -263,6 +196,14 @@ const ProductPage = (props) => {
         setSelectedPlan(event.target.value);
     };
 
+
+    const handleScrollToReviews = () => {
+        if (reviewRef.current) {
+            window.scrollTo(0, reviewRef.current.offsetTop);
+        }
+    };
+
+
     return (
         <>
             {
@@ -325,21 +266,7 @@ const ProductPage = (props) => {
                                             <div className="elem elem1">
                                                 <span className="highlight-name">Brand</span><span className="highlight-text">{mainProduct.brand}</span>
                                             </div>
-                                            <div className="elem elem2">
-                                                <span className="highlight-name"></span><span className="highlight-text"></span>
-                                            </div>
-                                            <div className="elem elem3">
-                                                <span className="highlight-name"></span><span className="highlight-text"></span>
-                                            </div>
-                                            <div className="elem elem4">
-                                                <span className="highlight-name"></span><span className="highlight-text"></span>
-                                            </div>
-                                            <div className="elem elem5">
-                                                <span className="highlight-name"></span><span className="highlight-text"></span>
-                                            </div>
-                                            <div className="elem elem6">
-                                                <span className="highlight-name"></span><span className="highlight-text"></span>
-                                            </div>
+
                                         </div>
                                     </div>
 
@@ -361,7 +288,7 @@ const ProductPage = (props) => {
                                                 {mainProduct.name}
                                             </div>
 
-                                            <div className="star-rating">
+                                            <div onClick={handleScrollToReviews} className="star-rating">
                                                 <Stars value={products[0].rating ? products[0].rating : 0} />
                                                 <div className="rating">{products[0].rating ? `(${products[0].rating})` : "(0)"}</div>
                                                 <div className="reviews-count">
@@ -457,44 +384,7 @@ const ProductPage = (props) => {
                                     </div>
 
 
-                                    {/* { mainProduct && (bundleProducts.length === (bundles.reduce((count, bundle) => count += bundle.products.length, 1))) && (
-                                        <div className="bundles-container">
-                                            <div className="heading">Often bought together</div>
-                                            <div className="bundles-caption">Get this product at great value in bundles</div>
-                                            {bundles.map((bundle, index) => {
-                                                return (
-                                                    <div key={index} className="bundle-container">
-                                                        <div className="bundle-name">{bundle.name}</div>
-                                                        <div className="bundle-description">{bundle.description}</div>
-                                                        <div className="bundle-products">
-
-                                                            {[{...mainProduct}, ...bundle.products].map((product, index) => (
-                                                                bundleProducts.map((prod, index) => {
-                                                                    if ((prod._id === product.product_id) || (prod._id === product._id)) {
-                                                                        return (
-                                                                            <div key={index} className="bundle-product">
-                                                                                <ProductCard key={index} height="auto" width="180px" product={prod} noreviews={true} />
-                                                                            </div>
-                                                                        )
-                                                                    }
-                                                                    return null;
-                                                                })
-                                                            ))}
-
-                                                            <div className="bundle-price">
-                                                                <div className="price-sp">Get for ₹{bundle.final_price}</div>
-                                                                <div className="price-p">₹{bundle.price}</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                            }
-                                        </div>
-                                    )} */}
-
-
-                                    {(mainProduct) && (bundleProducts.length === (bundles.reduce((count, bundle) => count += bundle.products.length, 1))) && (
+                                    { (mainProduct.bundles && mainProduct.bundles.length > 0) && (bundles && bundles.length > 0) && (
                                         <div className="bundles-container">
                                             <div className="heading">Often bought together</div>
                                             <div className="bundles-caption">Get this product at great value in bundles</div>
@@ -503,26 +393,23 @@ const ProductPage = (props) => {
                                                     <div className="bundle-name">{bundle.name}</div>
                                                     <div className="bundle-description">{bundle.description}</div>
                                                     <div className="bundle-products">
-                                                        {bundleProducts.map((product, productIndex) => {
-                                                            // Check if the product is part of the current bundle
-                                                            if (bundle.products.some(bundleProduct => (bundleProduct.product_id === product._id) || (mainProduct._id === product._id ) )) {
-                                                                return (
-                                                                    <div key={productIndex} className="bundle-product">
-                                                                        <ProductCard
-                                                                            key={product._id}
-                                                                            height="auto"
-                                                                            width="180px"
-                                                                            product={product}
-                                                                            noreviews={true}
-                                                                        />
-                                                                    </div>
-                                                                );
-                                                            }
-                                                            return null;
+                                                        {bundle.products.map((product, productIndex) => {
+                                                            return (
+                                                                <div key={productIndex} className="bundle-product">
+                                                                    <ProductCard
+                                                                        height="auto"
+                                                                        width="180px"
+                                                                        product={product}
+                                                                        noreviews={true}
+                                                                    />
+                                                                </div>
+                                                            );
                                                         })}
                                                         <div className="bundle-price">
-                                                            <div className="price-sp">Get for ₹{bundle.final_price}</div>
-                                                            <div className="price-p">₹{bundle.price}</div>
+                                                            <div className="price-sp">Get for ₹{bundle.final_price || bundle.price}</div>
+                                                            {bundle.final_price && (
+                                                                <div className="price-p">₹{bundle.price}</div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -531,14 +418,13 @@ const ProductPage = (props) => {
                                     )}
 
 
-
                                     {(sellersProducts && sellersProducts.length > 0) && (
                                         <ProductsCarousel products={sellersProducts} desktopItems={4} tabletItems={3} flipItems={2} mobileItems={1} heading="More products from the seller" />
                                     )}
 
 
                                     {(products[0].rating && products[0].reviews.length > 0) ? (
-                                        <div className="customer-reviews-container">
+                                        <div ref={reviewRef} className="customer-reviews-container">
                                             <div className="heading">Customer reviews & ratings</div>
 
                                             <div className="rating-container">
@@ -547,7 +433,7 @@ const ProductPage = (props) => {
                                                     <div className="total-rating">{products[0].rating}<span> out of </span>5</div>
                                                     <Stars value={products[0].rating} size="13px" /><span>{`(${products[0].total_reviews} reviews)`}</span>
                                                     <br />
-                                                    <button className='primary-button'>
+                                                    <button onClick={() => { openModal() }} className='primary-button'>
                                                         Write a review
                                                     </button>
                                                 </div>
@@ -563,7 +449,9 @@ const ProductPage = (props) => {
                                                                 return (
                                                                     <div key={index} className="review-card">
                                                                         <Stars value={review.rating} size="11px" />
-                                                                        <span className='verified-review'>&nbsp; Verified Purchaser</span>
+                                                                        {review.is_verified_purchase && (
+                                                                            <span className='verified-review'>&nbsp; Verified Purchaser</span>
+                                                                        )}
                                                                         <div className='review-product'>{(review.product_name) ? review.product_name.slice(0, 30) : mainProduct.name.slice(0, 30)}</div>
 
                                                                         <div className="review-content">

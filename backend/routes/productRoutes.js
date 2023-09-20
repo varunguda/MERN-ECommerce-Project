@@ -11,6 +11,7 @@ import {
     deleteAnyProduct,
     deleteMyProduct,
     deleteReview,
+    getAllBundleProducts,
     getAllProductReviews,
     getAllProducts,
     getMyProducts,
@@ -36,6 +37,8 @@ router.route('/products/reviews/:id').delete(isUser, deleteReview);
 router.route('/products/:id').get(getProductDetails);
 
 router.route("/products/seller/:id").get(getProductsOfSeller);
+
+router.route("/products/bundles/:id").get(getAllBundleProducts);
 
 
 // Admin
