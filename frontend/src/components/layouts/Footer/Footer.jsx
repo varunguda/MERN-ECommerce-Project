@@ -2,6 +2,8 @@ import React from 'react';
 import './Footer.css';
 import '../../../index.css';
 
+import { BsLinkedin, BsGithub } from "react-icons/bs";
+
 
 const Footer = () => {
     return (
@@ -41,10 +43,10 @@ const Footer = () => {
                             <h2>Contact</h2>
                             <div className="socials">
                                 <a href='https://www.linkedin.com/in/varunguda' target='_blank' rel='noreferrer'>
-                                    <i className="fa-brands fa-linkedin" style={{ color: "#ffc220" }}></i>
+                                    <BsLinkedin size={18} />
                                 </a>
                                 <a href='https://github.com/varunguda' target='_blank' rel='noreferrer'>
-                                    <i className="fa-brands fa-github" style={{ color: "#ffc220" }}></i>
+                                    <BsGithub size={18} />
                                 </a>
                             </div>
                         </div>

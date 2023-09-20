@@ -48,10 +48,10 @@ const ProductCard = ({ product, height, width, noreviews=false }) => {
 
           <div className='review-container'>
             {
-              !noreviews && product.rating && (
+              !noreviews && (
                 <>
-                  <Stars value={product.rating} size={window.innerWidth > 600 ? "12px" : "10px"} />
-                  <span>{product.total_reviews}</span>
+                  <Stars value={product.rating || 0} size={window.innerWidth > 600 ? "12px" : "10px"} />
+                  <span>{product.total_reviews || 0}</span>
                 </>
               )
             }

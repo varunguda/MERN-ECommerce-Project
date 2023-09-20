@@ -1,5 +1,4 @@
 import axios from "axios";
-
 import {
     ALL_PRODUCT_REQUEST,
     ALL_PRODUCT_FAILURE,
@@ -12,6 +11,10 @@ import {
     SELLER_PRODUCT_REQUEST,
     SELLER_PRODUCT_FAILURE,
     SELLER_PRODUCT_SUCCESS,
+
+    BUNDLE_PRODUCTS_FAILURE,
+    BUNDLE_PRODUCTS_REQUEST,
+    BUNDLE_PRODUCTS_SUCCESS
 
 } from "../constants/ProductConstants.js";
 
@@ -30,7 +33,7 @@ export const getProducts = () => async(dispatch) => {
     } catch (error) {
         dispatch({
             type: ALL_PRODUCT_FAILURE,
-            payload: error.response.data.message
+            payload: error.response.data.message,
         })
     }
 }
@@ -62,7 +65,7 @@ export const getAllProductsOfSeller = (id) => async(dispatch) => {
         
         dispatch({ type : SELLER_PRODUCT_REQUEST });
 
-        const { data } = await axios(`/api/v1/products/seller/${id}`); 
+        const { data } = await axios.get(`/api/v1/products/seller/${id}`); 
 
         dispatch({
             type: SELLER_PRODUCT_SUCCESS,
@@ -76,3 +79,24 @@ export const getAllProductsOfSeller = (id) => async(dispatch) => {
         })
     }
 } 
+
+
+export const getBundleProducts = (id) => async(dispatch) => {
+    try {
+
+        dispatch({ type: BUNDLE_PRODUCTS_REQUEST });
+
+        const { data } = await axios.get(`/api/v1/products/bundles/${id}`);
+
+        dispatch({
+            type: BUNDLE_PRODUCTS_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: BUNDLE_PRODUCTS_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}

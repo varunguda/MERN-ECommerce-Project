@@ -5,6 +5,7 @@ import catchAsync from '../utils/catchAsync.js';
 import { ApiFeatures } from '../utils/apiFeatures.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Review } from '../models/reviewModel.js';
+import { Orders } from '../models/orderModel.js';
 
 
 
@@ -104,7 +105,7 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
     if (product.product_id) {
         const similarProducts = await Product.find({ product_id: product.product_id });
         allProducts = allProducts.concat(similarProducts);
-    }else{
+    } else {
         allProducts.push(product);
     }
 
@@ -290,6 +291,24 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
             });
         }
 
+        const orders = await Orders.find({ user: req.user._id });
+        if (!orders) {
+            userReview.is_verified_purchase = false;
+        }
+
+        orders.map((order) => {
+            order.order_items.map((item) => {
+                if ((item.product.toString() === product._id.toString()) || item.product_status === "Delivered") {
+                    userReview.is_verified_purchase = true;
+                }
+                else{
+                    userReview.is_verified_purchase = false;
+                }
+            })
+        })
+
+        userReview.product_name = product.name;
+
         productReviews.reviews = productReviews.reviews.push(userReview);
         productReviews.total_reviews = productReviews.reviews.length;
         productReviews.rating = Math.round(rating);
@@ -328,6 +347,23 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
             review: productReview,
         });
     }
+
+    const orders = await Orders.find({ user: req.user._id });
+    if (!orders) {
+        userReview.is_verified_purchase = false;
+    }
+
+    orders.map((order) => {
+        order.order_items.map((item) => {
+            if ((item.product.toString() === product._id.toString()) || item.product_status === "Delivered") {
+                userReview.is_verified_purchase = true;
+            }else{
+                userReview.is_verified_purchase = false;
+            }
+        })
+    })
+
+    userReview.product_name = product.name;
 
     productReview.reviews.push(userReview);
     productReview.total_reviews = productReview.reviews.length;
@@ -456,7 +492,7 @@ export const addBundle = catchAsync(async (req, res, next) => {
     const bundle = {
         name,
         description,
-        price: bundlePrice + product.price,
+        price: Math.round(bundlePrice + product.price),
         discount_percent,
         products,
         final_price
@@ -510,20 +546,20 @@ export const addOptions = catchAsync(async (req, res, next) => {
 })
 
 
-export const getProductsOfSeller = catchAsync( async(req, res, next) => {
-    
+export const getProductsOfSeller = catchAsync(async (req, res, next) => {
+
     const { id } = req.params;
 
     const user = await Users.findById(id).select("+is_seller");
-    if(!user){
+    if (!user) {
         return next(new ErrorHandler("User doesn't exist!", 400));
     }
 
-    if(!user.is_seller){
+    if (!user.is_seller) {
         return next(new ErrorHandler("Seller not found!", 404));
     }
 
-    const apiFeatures = new ApiFeatures(Product.find({seller_id: user._id}), req.query).pagination(10);
+    const apiFeatures = new ApiFeatures(Product.find({ seller_id: user._id }), req.query).pagination(10);
     const products = await apiFeatures.products;
 
     return res.json({
@@ -532,3 +568,43 @@ export const getProductsOfSeller = catchAsync( async(req, res, next) => {
     })
 })
 
+
+export const getAllBundleProducts = catchAsync(async (req, res, next) => {
+
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+    if (!product) {
+        return next(new ErrorHandler("Product not found!", 404));
+    }
+
+    if (product.bundles.length === 0) {
+        return next(new ErrorHandler("This product has no bundles", 400));
+    }
+
+    const newBundles = [];
+    let i = 0;
+    for (const bundle of product.bundles) {
+        let j = 0;
+        newBundles.push({ ...bundle._doc });
+        for (let prod of bundle.products) {
+            const bundleProduct = await Product.findById(prod.product_id);
+            if (!bundleProduct) {
+                return next(new ErrorHandler("This product is no longer available", 400));
+            }
+            if (!j) {
+                newBundles[i].products = [{ ...product._doc }, { ...bundleProduct._doc }];
+            } else {
+                newBundles[i].products.push({ ...bundleProduct._doc })
+            }
+            j++;
+        }
+        i++;
+    }
+
+    return res.json({
+        success: true,
+        bundles: newBundles
+    })
+
+})

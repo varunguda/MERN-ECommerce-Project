@@ -10,7 +10,11 @@ import {
 
     SELLER_PRODUCT_FAILURE,
     SELLER_PRODUCT_REQUEST,
-    SELLER_PRODUCT_SUCCESS
+    SELLER_PRODUCT_SUCCESS,
+
+    BUNDLE_PRODUCTS_FAILURE,
+    BUNDLE_PRODUCTS_REQUEST,
+    BUNDLE_PRODUCTS_SUCCESS
 
 } from "../constants/ProductConstants.js";
 
@@ -103,6 +107,37 @@ export const sellerProductsReducer = ( state = [], action ) => {
         
         default:{
             return state;
+        }
+    }
+}
+
+
+export const bundleProductsReducer = ( state = {}, action ) => {
+
+    switch (action.type) {
+        case BUNDLE_PRODUCTS_REQUEST:{
+            return({
+                bundleLoading: true,
+                bundles: []
+            })
+        }
+
+        case BUNDLE_PRODUCTS_FAILURE:{
+            return({
+                bundleLoading: false,
+                bundlesError: action.payload,
+            })
+        }
+
+        case BUNDLE_PRODUCTS_SUCCESS: {
+            return({
+                bundleLoading: false,
+                bundles: action.payload.bundles,
+            })
+        }
+    
+        default:{
+            return state
         }
     }
 }
