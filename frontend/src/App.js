@@ -7,6 +7,7 @@ import {
 import Footer from './components/layouts/Footer/Footer.jsx';
 import Navbar from './components/layouts/Navbar/Navbar.jsx';
 import Home from "./components/Home/Home.jsx";
+import ProductsPage from "./components/Product/ProductsPage.jsx"; 
 import ProductPage from "./components/Product/ProductPage.jsx";
 import { ToastContainer } from 'react-toastify';
 import Modal from './components/elements/Modals/Modal.jsx';
@@ -50,7 +51,8 @@ const App = () => {
         <div className='content-container'>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path="/products/:id" element={<ProductPage />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
           </Routes>
         </div>
         <Footer />

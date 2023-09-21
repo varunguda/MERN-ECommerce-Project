@@ -10,6 +10,7 @@ import { PiTShirt, PiGraphThin } from "react-icons/pi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import SearchBar from './SearchBar';
 
 const Navbar = () => {
 
@@ -161,18 +162,8 @@ const Navbar = () => {
 
 
                 <nav className="secondary-navbar">
-
-                    <input
-                        type="text"
-                        className="search"
-                        id="search"
-                        spellCheck="false"
-                        placeholder="Search anything here..."
-                    />
-
-                    <button type="button" className="search-toggle" >
-                        <TfiSearch color='black' size={"22px"} />
-                    </button>
+                    
+                    <SearchBar />
 
                     <nav className={sidebar ? "secondary-navbar-menu active" : "secondary-navbar-menu"}>
                         <div className="sec-nav-elems">Deals</div>

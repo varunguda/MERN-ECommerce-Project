@@ -236,7 +236,7 @@
 
 .secondary-navbar button {
     position: absolute;
-    left: 20px;
+    left: 0;
     border: 0;
     padding: 0;
     background-color: var(--secondary-color);
@@ -263,9 +263,15 @@
 }
 
 
-.search {
+.searchbar-container{
     position: relative;
     flex: 0.4;
+    margin-left: 20px;
+}
+
+.search {
+    position: relative;
+    width: 100%;
     font-size: 13px;
     height: 40px;
     padding-left: 46px;

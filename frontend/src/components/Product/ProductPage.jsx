@@ -468,7 +468,7 @@ const ProductPage = (props) => {
                                     )}
 
 
-                                    {(products && products.length > 0) && (
+                                    {(products && products.length > 0 && products[0].rating) ? (
                                         <div ref={reviewRef} className="customer-reviews-container">
                                             <div className="heading">Customer reviews & ratings</div>
 
@@ -545,10 +545,26 @@ const ProductPage = (props) => {
                                                 <Paginate total={products[0].total_reviews} pageSize={10} onChange={handleReviewPageClick} current={reviewPage} />
 
                                             </div>
+                                        </div>
 
+                                    ) : (
+
+                                        <div ref={reviewRef} className="customer-reviews-container">
+                                            <div className="heading">Customer reviews & ratings</div>
+
+                                            <div className="rating-container">
+
+                                                <div className="rating-section">
+                                                    <div className="total-rating">No reviews yet!</div>
+                                                    <Stars value={0} size="13px" /><span>&nbsp;&nbsp; Be the first to write a review!</span>
+                                                    <br />
+                                                    <button onClick={() => { openModal("an", "ans") }} className='primary-button'>
+                                                        Write a review
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
-
 
                                 </section>
 
