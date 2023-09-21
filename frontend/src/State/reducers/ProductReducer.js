@@ -14,7 +14,11 @@ import {
 
     BUNDLE_PRODUCTS_FAILURE,
     BUNDLE_PRODUCTS_REQUEST,
-    BUNDLE_PRODUCTS_SUCCESS
+    BUNDLE_PRODUCTS_SUCCESS,
+
+    PRODUCT_REVIEWS_FAILURE,
+    PRODUCT_REVIEWS_SUCCESS,
+    PRODUCT_REVIEWS_REQUEST
 
 } from "../constants/ProductConstants.js";
 
@@ -138,6 +142,38 @@ export const bundleProductsReducer = ( state = {}, action ) => {
     
         default:{
             return state
+        }
+    }
+}
+
+
+
+export const productReviewReducer = ( state = {}, action ) => {
+
+    switch (action.type) {
+        case PRODUCT_REVIEWS_REQUEST:{
+            return ({
+                reviewsLoading: true,
+                reviews: []
+            })
+        }
+
+        case PRODUCT_REVIEWS_SUCCESS: {
+            return ({
+                reviewsLoading: false,
+                reviews: action.payload.reviews,
+            })
+        }
+
+        case PRODUCT_REVIEWS_FAILURE:{
+            return ({
+                reviewsLoading: false,
+                reviews: action.payload,
+            })
+        }
+    
+        default:{
+            return state;
         }
     }
 }

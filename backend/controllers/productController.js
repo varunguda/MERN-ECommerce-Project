@@ -72,17 +72,33 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter().pagination(10)
     let products = await apiFeatures.products;
 
-    const updatedProducts = [];
+    let updatedProducts = [];
 
     for (let i = 0; i < products.length; i++) {
         if (products[i].review_id) {
             const review_data = await Review.findById(products[i].review_id);
-            updatedProducts.push({ ...review_data._doc, ...products[i]._doc });
+            updatedProducts.push({ rating: review_data.rating, total_reviews: review_data.total_reviews, ...products[i]._doc });
         }
         else {
             updatedProducts.push({ ...products[i]._doc })
         }
     }
+
+    updatedProducts = updatedProducts.map(({ _id, rating, total_reviews, product_id, name, description, category, brand, stock, price, final_price, discount_percent, images }) => ({
+        _id,
+        rating,
+        total_reviews,
+        product_id,
+        name,
+        description,
+        category,
+        brand,
+        stock,
+        price,
+        final_price,
+        discount_percent,
+        images,
+    }));
 
     return res.json({
         success: true,
@@ -109,9 +125,9 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
         allProducts.push(product);
     }
 
-    if (product.review_id) {
-        const review_data = await Review.findById(product.review_id);
-        allProducts[0] = { ...review_data._doc, ...allProducts[0]._doc };
+    if (allProducts[0].review_id) {
+        const review_data = await Review.findById(allProducts[0].review_id);
+        allProducts[0] = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...allProducts[0]._doc }
     }
 
     return res.json({
@@ -301,7 +317,7 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
                 if ((item.product.toString() === product._id.toString()) || item.product_status === "Delivered") {
                     userReview.is_verified_purchase = true;
                 }
-                else{
+                else {
                     userReview.is_verified_purchase = false;
                 }
             })
@@ -323,10 +339,17 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
     }
 
     const productReview = await Review.findById(product.review_id);
+    if (!productReview) {
+        product.review_id = undefined;
+        product.save({ validateBeforeSave: false })
+        return next(new ErrorHandler("Something went wrong, please try again!", 400));
+    }
 
-    const isReviewed = productReview.reviews.find((review) => {
-        return review.user_id.toString() === req.user._id.toString();
-    });
+    let isReviewed = false;
+
+    if (productReview && productReview.reviews) {
+        isReviewed = productReview.reviews.some((review) => review.user_id.toString() === req.user._id.toString());
+    }
 
     if (isReviewed) {
         // If user has already reviewed the product, users old review gets updated to his new review
@@ -353,11 +376,12 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
         userReview.is_verified_purchase = false;
     }
 
+
     orders.map((order) => {
         order.order_items.map((item) => {
             if ((item.product.toString() === product._id.toString()) || item.product_status === "Delivered") {
                 userReview.is_verified_purchase = true;
-            }else{
+            } else {
                 userReview.is_verified_purchase = false;
             }
         })
@@ -389,6 +413,7 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
 
 export const getAllProductReviews = catchAsync(async (req, res, next) => {
     const { id } = req.params;
+    const { page } = req.query;
 
     const product = await Product.findById(id);
     if (!product) {
@@ -401,13 +426,46 @@ export const getAllProductReviews = catchAsync(async (req, res, next) => {
             reviews: [],
         })
     }
+
     const reviews = await Review.findById(product.review_id);
+    if (!reviews) {
+        product.review_id = undefined;
+        product.save({ validateBeforeSave: false });
+        return next(new ErrorHandler("Something went wrong, please try again!", 400));
+    }
+    const currentPage = page || 1;
+    let productReviews = reviews.reviews.slice(10 * (currentPage - 1), (10 * (currentPage - 1)) + 10);
+
+    let liked = false;
+    let disliked = false;
+
+    if (req.user && productReviews.length > 0) {
+        productReviews = productReviews.map((rev) => {
+            if (rev.liked_users && rev.liked_users.some((user) => user.user_id.toString() === req.user._id.toString())) {
+                liked = true;
+            }
+            else if (rev.disliked_users && rev.disliked_users.some((user) => user.user_id.toString() === req.user._id.toString())) {
+                disliked = true;
+            }
+            return { ...rev._doc, liked, disliked }
+        })
+
+    } else if (productReviews.length > 0) {
+
+        productReviews = productReviews.map((rev) => {
+            return { ...rev._doc, liked, disliked }
+        })
+
+    }
+
+    const newReviews = { ...reviews._doc, reviews: productReviews, page: Number(currentPage) };
+
 
     return res.json({
         success: true,
-        reviews
+        reviews: newReviews,
     })
-})
+});
 
 
 
@@ -569,6 +627,7 @@ export const getProductsOfSeller = catchAsync(async (req, res, next) => {
 })
 
 
+
 export const getAllBundleProducts = catchAsync(async (req, res, next) => {
 
     const { id } = req.params;
@@ -607,4 +666,116 @@ export const getAllBundleProducts = catchAsync(async (req, res, next) => {
         bundles: newBundles
     })
 
+})
+
+
+
+export const toggleLikeOfAReview = catchAsync(async (req, res, next) => {
+    const { reviews, review } = req.query;
+
+    const prodReview = await Review.findById(reviews);
+    if (!prodReview) {
+        return next(new ErrorHandler("Reviews not found!", 404));
+    }
+
+    if (!prodReview.reviews) {
+        return next(new ErrorHandler("This product has not been reviewed yet!", 400));
+    }
+
+    if (prodReview.reviews.some((rev) => (rev._id.toString() !== review.toString()))) {
+        return next(new ErrorHandler("Review not found!", 404));
+    }
+
+    let liked = false;
+    prodReview.reviews = prodReview.reviews.map((rev) => {
+        if (rev._id.toString() === review.toString()) {
+
+            if (rev.liked_users.some((user) => user.user_id.toString() !== req.user._id)) {
+                rev.liked_users = rev.liked_users.filter((user) => { user.user_id.toString() === req.user._id.toString() });
+                rev.likes = rev.liked_users.length;
+                liked = true;
+            }
+            else {
+                rev.disliked_users = rev.disliked_users.filter((user) => {
+                    console.log(user.user_id.toString() === req.user._id.toString());
+                    user.user_id.toString() === req.user._id.toString()
+                });
+
+                rev.liked_users.push({ user_id: req.user._id });
+                rev.likes = rev.liked_users.length;
+                rev.dislikes = rev.disliked_users.length;
+            }
+
+        }
+        return rev;
+    })
+
+    await prodReview.save({ validateBeforeSave: false });
+
+    if (!liked) {
+        return res.json({
+            success: true,
+            message: "Successfully liked review",
+        })
+    }
+    else {
+        return res.json({
+            success: true,
+            message: "Successfully removed your like!"
+        })
+    }
+})
+
+
+
+export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
+    const { reviews, review } = req.query;
+
+    const prodReview = await Review.findById(reviews);
+    if (!prodReview) {
+        return next(new ErrorHandler("Reviews not found!", 404));
+    }
+
+    if (!prodReview.reviews) {
+        return next(new ErrorHandler("This product has not been reviewed yet!", 400));
+    }
+
+    if (prodReview.reviews.some((rev) => (rev._id.toString() !== review.toString()))) {
+        return next(new ErrorHandler("Review not found!", 404));
+    }
+
+    let disliked = false;
+    prodReview.reviews = prodReview.reviews.map((rev) => {
+        if (rev._id.toString() === review.toString()) {
+
+            if (rev.disliked_users.some((user) => user.user_id.toString() !== req.user._id)) {
+                rev.disliked_users = rev.disliked_users.filter((user) => { user.user_id.toString() === req.user._id.toString() });
+                rev.dislikes = rev.disliked_users.length;
+                disliked = true;
+            }
+            else {
+                rev.liked_users = rev.liked_users.filter((user) => { user.user_id.toString() === req.user._id.toString() });
+
+                rev.disliked_users.push({ user_id: req.user._id });
+                rev.dislikes = rev.disliked_users.length;
+                rev.likes = rev.liked_users.length;
+            }
+        }
+        return rev;
+    })
+
+    await prodReview.save({ validateBeforeSave: false });
+
+    if (!disliked) {
+        return res.json({
+            success: true,
+            message: "Successfully !",
+        })
+    }
+    else {
+        return res.json({
+            success: true,
+            message: "Successfully removed your dislike!"
+        })
+    }
 })
