@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 
 const App = () => {
 
-  const { open, content, heading } = useSelector((state) => state.modal);
+  const { open, content, heading, noOutClick } = useSelector((state) => state.modal);
 
   useEffect(()=>{
     if(open){
@@ -43,7 +43,7 @@ const App = () => {
         theme="light"
       />
 
-      <Modal open={open} content={content} heading={heading} />
+      <Modal open={open} content={content} heading={heading} noOutClick={noOutClick} />
 
       <Router>
         <Navbar />

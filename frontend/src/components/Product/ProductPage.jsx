@@ -478,7 +478,7 @@ const ProductPage = (props) => {
                                                     <div className="total-rating">{products[0].rating}<span> out of </span>5</div>
                                                     <Stars value={products[0].rating} size="13px" /><span>{`(${products[0].total_reviews} reviews)`}</span>
                                                     <br />
-                                                    <button onClick={() => { openModal() }} className='primary-button'>
+                                                    <button onClick={() => { openModal("an", "ans") }} className='primary-button'>
                                                         Write a review
                                                     </button>
                                                 </div>
@@ -486,7 +486,7 @@ const ProductPage = (props) => {
 
 
                                                 <div className="reviews-section">
-                                                    {(reviewsLoading) ? (<span class="loader"></span>) : (reviews && reviews.reviews && reviews.reviews.length > 0) && (
+                                                    {(reviewsLoading) ? (<span className="loader"></span>) : (reviews && reviews.reviews && reviews.reviews.length > 0) && (
 
                                                         <ResponsiveMasonry
                                                             columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 2 }}
