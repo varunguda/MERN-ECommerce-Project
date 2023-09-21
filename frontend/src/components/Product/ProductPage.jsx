@@ -8,7 +8,7 @@ import Loader from '../layouts/Loader/Loader';
 import { RxZoomIn } from "react-icons/rx";
 import { CiHeart, CiShop } from "react-icons/ci";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
-import { BiLike, BiDislike } from "react-icons/bi";
+import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from "react-icons/bi";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 import "./ProductPage.css";
@@ -66,6 +66,7 @@ const ProductPage = (props) => {
 
     // eslint-disable-next-line
     const { sellersProducts } = useSelector((state) => state.sellerProducts);
+    const { reviews } = useSelector((state) => state.productReviews);
     const { bundles } = useSelector((state) => state.bundleProducts);
 
     const [mainProduct, setMainProduct] = useState({});
@@ -79,7 +80,7 @@ const ProductPage = (props) => {
     const reviewRef = useRef(null);
 
     const dispatch = useDispatch();
-    const { getProductDetails, getAllProductsOfSeller, getBundleProducts } = bindActionCreators(actionCreators, dispatch);
+    const { getProductDetails, getAllProductsOfSeller, getBundleProducts, getProductReviews } = bindActionCreators(actionCreators, dispatch);
     const { openModal } = bindActionCreators(modalActionCreators, dispatch);
 
     const id = useParams();
@@ -121,7 +122,29 @@ const ProductPage = (props) => {
 
 
     useEffect(() => {
-        if( mainProduct.bundles && mainProduct.bundles.length > 0){
+
+        let isFetched = false;
+        const fetchReviews = () => {
+            if ((window.scrollY > 800) && !isFetched && !reviews) {
+                if (products && products.length > 0 && products[0].review_id) {
+                    getProductReviews(products[0]._id);
+                    isFetched = true;
+                }
+            }
+        }
+
+        window.addEventListener("scroll", fetchReviews);
+
+        return () => {
+            window.removeEventListener("scroll", fetchReviews);
+        }
+
+        // eslint-disable-next-line
+    }, [products]);
+
+
+    useEffect(() => {
+        if (mainProduct.bundles && mainProduct.bundles.length > 0) {
             getBundleProducts(mainProduct._id);
         }
         // eslint-disable-next-line
@@ -198,9 +221,17 @@ const ProductPage = (props) => {
 
 
     const handleScrollToReviews = () => {
-        if (reviewRef.current) {
-            window.scrollTo(0, reviewRef.current.offsetTop);
+        if (!reviews) {
+            getProductReviews(products[0]._id);
         }
+
+        let scrolled = false;
+        setInterval(() => {
+            if (reviewRef.current && !scrolled) {
+                window.scrollTo(0, reviewRef.current.offsetTop);
+                scrolled = true;
+            }
+        }, 100)
     };
 
 
@@ -384,7 +415,7 @@ const ProductPage = (props) => {
                                     </div>
 
 
-                                    { (mainProduct.bundles && mainProduct.bundles.length > 0) && (bundles && bundles.length > 0) && (
+                                    {(mainProduct.bundles && mainProduct.bundles.length > 0) && (bundles && bundles.length > 0) && (
                                         <div className="bundles-container">
                                             <div className="heading">Often bought together</div>
                                             <div className="bundles-caption">Get this product at great value in bundles</div>
@@ -423,15 +454,15 @@ const ProductPage = (props) => {
                                     )}
 
 
-                                    {(products[0].rating && products[0].reviews.length > 0) ? (
+                                    {(reviews && reviews.reviews && reviews.reviews.length > 0) ? (
                                         <div ref={reviewRef} className="customer-reviews-container">
                                             <div className="heading">Customer reviews & ratings</div>
 
                                             <div className="rating-container">
 
                                                 <div className="rating-section">
-                                                    <div className="total-rating">{products[0].rating}<span> out of </span>5</div>
-                                                    <Stars value={products[0].rating} size="13px" /><span>{`(${products[0].total_reviews} reviews)`}</span>
+                                                    <div className="total-rating">{reviews.rating}<span> out of </span>5</div>
+                                                    <Stars value={reviews.rating} size="13px" /><span>{`(${reviews.total_reviews} reviews)`}</span>
                                                     <br />
                                                     <button onClick={() => { openModal() }} className='primary-button'>
                                                         Write a review
@@ -445,7 +476,7 @@ const ProductPage = (props) => {
                                                         columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 2 }}
                                                     >
                                                         <Masonry gutter='20px'>
-                                                            {products[0].reviews.map((review, index) => {
+                                                            {reviews.reviews.map((review, index) => {
                                                                 return (
                                                                     <div key={index} className="review-card">
                                                                         <Stars value={review.rating} size="11px" />
@@ -462,10 +493,26 @@ const ProductPage = (props) => {
                                                                             <div className="reviewer-name">{review.name}</div>
                                                                             <div className="likes-dislikes">
                                                                                 <div>
-                                                                                    <BiLike /><span>{review.likes || 0}</span>
+                                                                                    {(review.liked) ? (
+                                                                                        <>
+                                                                                            <BiSolidLike /><span>{review.likes || 0}</span>
+                                                                                        </>
+                                                                                    ) : (
+                                                                                        <>
+                                                                                            <BiLike /><span>{review.likes || 0}</span>
+                                                                                        </>
+                                                                                    )}
                                                                                 </div>
                                                                                 <div>
-                                                                                    <BiDislike /><span>{review.dislikes || 0}</span>
+                                                                                    {(review.disliked) ? (
+                                                                                        <>
+                                                                                            <BiSolidDislike /><span>{review.dislikes || 0}</span>
+                                                                                        </>
+                                                                                    ) : (
+                                                                                        <>
+                                                                                            <BiDislike /><span>{review.dislikes || 0}</span>
+                                                                                        </>
+                                                                                    )}
                                                                                 </div>
                                                                             </div>
 

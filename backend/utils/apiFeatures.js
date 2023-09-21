@@ -28,7 +28,7 @@ export class ApiFeatures{
     }
 
     pagination(resultsPerPage){
-        const currentPage = this.queryStr.page ? this.queryStr.page : 1;
+        const currentPage = this.queryStr.page || 1;
         const skip = resultsPerPage * (currentPage - 1);
 
         this.products = this.products.limit(resultsPerPage).skip(skip);

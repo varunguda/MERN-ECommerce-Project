@@ -14,9 +14,14 @@ import {
 
     BUNDLE_PRODUCTS_FAILURE,
     BUNDLE_PRODUCTS_REQUEST,
-    BUNDLE_PRODUCTS_SUCCESS
+    BUNDLE_PRODUCTS_SUCCESS,
+
+    PRODUCT_REVIEWS_REQUEST,
+    PRODUCT_REVIEWS_FAILURE,
+    PRODUCT_REVIEWS_SUCCESS
 
 } from "../constants/ProductConstants.js";
+
 
 
 export const getProducts = () => async(dispatch) => {
@@ -37,6 +42,7 @@ export const getProducts = () => async(dispatch) => {
         })
     }
 }
+
 
 
 export const getProductDetails = ({ id }) => async(dispatch) => {
@@ -60,6 +66,7 @@ export const getProductDetails = ({ id }) => async(dispatch) => {
 }
 
 
+
 export const getAllProductsOfSeller = (id) => async(dispatch) => {
     try {
         
@@ -81,6 +88,7 @@ export const getAllProductsOfSeller = (id) => async(dispatch) => {
 } 
 
 
+
 export const getBundleProducts = (id) => async(dispatch) => {
     try {
 
@@ -96,6 +104,28 @@ export const getBundleProducts = (id) => async(dispatch) => {
     } catch (error) {
         dispatch({
             type: BUNDLE_PRODUCTS_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const getProductReviews = (id) => async(dispatch) => {
+    try {
+
+        dispatch({ type: PRODUCT_REVIEWS_REQUEST });
+
+        const { data } = await axios.get(`/api/v1/products/reviews/${id}`);
+
+        dispatch({
+            type: PRODUCT_REVIEWS_SUCCESS,
+            payload: data,
+        })
+        
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_REVIEWS_FAILURE,
             payload: error.response.data.message,
         })
     }

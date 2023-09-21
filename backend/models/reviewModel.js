@@ -65,14 +65,30 @@ const ReviewSchema = new Schema({
             likes: {
                 type: Number,
                 default: 0,
-                select: false,
             },
-        
+
+            liked_users: [
+                {
+                    user_id:{
+                        type: Schema.Types.ObjectId,
+                        ref: "Users",
+                    },
+                },
+            ],
+            
             dislikes: {
                 type: Number,
                 default: 0,
-                select: false,
             },
+
+            disliked_users: [
+                {
+                    user_id:{
+                        type: Schema.Types.ObjectId,
+                        ref: "Users",
+                    },
+                },
+            ],
         }
     ],
 

@@ -17,9 +17,12 @@ import {
     getMyProducts,
     getProductDetails,
     getProductsOfSeller,
+    toggleDislikeOfAReview,
+    toggleLikeOfAReview,
     updateAnyProduct,
     updateMyProduct
 } from "../controllers/productController.js";
+import { isLoggedIn } from "../middleware/isLoggedIn.js";
 
 
 const router = Router();
@@ -30,7 +33,11 @@ router.route('/products').get(getAllProducts);
 
 router.route('/products/addreview/:id').post(isUser, craeateProductReview);
 
-router.route('/products/reviews/:id').get(getAllProductReviews);
+router.route('/products/reviews/like').get(isUser, toggleLikeOfAReview);
+
+router.route('/products/reviews/dislike').get(isUser, toggleDislikeOfAReview);
+
+router.route('/products/reviews/:id').get(isLoggedIn, getAllProductReviews);
 
 router.route('/products/reviews/:id').delete(isUser, deleteReview);
 
@@ -55,7 +62,6 @@ router.route("/seller/myproducts/options/:id").post(isSeller, addOptions);
 router.route("/seller/myproducts/:id")
     .put(isSeller, updateMyProduct )
     .delete(isSeller, deleteMyProduct)
-
 
 
 // Admin & Seller
