@@ -18,6 +18,7 @@ import ProductVariations from './ProductVariations';
 import ProductsCarousel from '../layouts/Carousel/ProductsCarousel';
 import Accordion from './Accordion.jsx';
 import ProductCard from '../elements/Cards/ProductCard';
+import Paginate from '../elements/Pagination/Paginate';
 
 
 const images = [
@@ -66,7 +67,7 @@ const ProductPage = (props) => {
 
     // eslint-disable-next-line
     const { sellersProducts } = useSelector((state) => state.sellerProducts);
-    const { reviews } = useSelector((state) => state.productReviews);
+    const { reviewsLoading, reviews } = useSelector((state) => state.productReviews);
     const { bundles } = useSelector((state) => state.bundleProducts);
 
     const [mainProduct, setMainProduct] = useState({});
@@ -78,6 +79,7 @@ const ProductPage = (props) => {
     const [selectedPlan, setSelectedPlan] = useState('No Plan');
     const [zoom, setZoom] = useState(1);
     const reviewRef = useRef(null);
+    const [reviewPage, setReviewPage] = useState(null);
 
     const dispatch = useDispatch();
     const { getProductDetails, getAllProductsOfSeller, getBundleProducts, getProductReviews } = bindActionCreators(actionCreators, dispatch);
@@ -128,6 +130,7 @@ const ProductPage = (props) => {
             if ((window.scrollY > 800) && !isFetched && !reviews) {
                 if (products && products.length > 0 && products[0].review_id) {
                     getProductReviews(products[0]._id);
+                    setReviewPage(1);
                     isFetched = true;
                 }
             }
@@ -222,7 +225,7 @@ const ProductPage = (props) => {
 
     const handleScrollToReviews = () => {
         if (!reviews) {
-            getProductReviews(products[0]._id);
+            getProductReviews(products[0]._id, reviewPage);
         }
 
         let scrolled = false;
@@ -233,6 +236,17 @@ const ProductPage = (props) => {
             }
         }, 100)
     };
+
+    const handleReviewPageClick = (page) => {
+        setReviewPage(page);
+    }
+
+    useEffect(() => {
+        if (reviewPage) {
+            getProductReviews(products[0]._id, reviewPage);
+        }
+        // eslint-disable-next-line
+    }, [reviewPage])
 
 
     return (
@@ -454,15 +468,15 @@ const ProductPage = (props) => {
                                     )}
 
 
-                                    {(reviews && reviews.reviews && reviews.reviews.length > 0) ? (
+                                    {(products && products.length > 0) && (
                                         <div ref={reviewRef} className="customer-reviews-container">
                                             <div className="heading">Customer reviews & ratings</div>
 
                                             <div className="rating-container">
 
                                                 <div className="rating-section">
-                                                    <div className="total-rating">{reviews.rating}<span> out of </span>5</div>
-                                                    <Stars value={reviews.rating} size="13px" /><span>{`(${reviews.total_reviews} reviews)`}</span>
+                                                    <div className="total-rating">{products[0].rating}<span> out of </span>5</div>
+                                                    <Stars value={products[0].rating} size="13px" /><span>{`(${products[0].total_reviews} reviews)`}</span>
                                                     <br />
                                                     <button onClick={() => { openModal() }} className='primary-button'>
                                                         Write a review
@@ -470,66 +484,69 @@ const ProductPage = (props) => {
                                                 </div>
 
 
+
                                                 <div className="reviews-section">
+                                                    {(reviewsLoading) ? (<span class="loader"></span>) : (reviews && reviews.reviews && reviews.reviews.length > 0) && (
 
-                                                    <ResponsiveMasonry
-                                                        columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 2 }}
-                                                    >
-                                                        <Masonry gutter='20px'>
-                                                            {reviews.reviews.map((review, index) => {
-                                                                return (
-                                                                    <div key={index} className="review-card">
-                                                                        <Stars value={review.rating} size="11px" />
-                                                                        {review.is_verified_purchase && (
-                                                                            <span className='verified-review'>&nbsp; Verified Purchaser</span>
-                                                                        )}
-                                                                        <div className='review-product'>{(review.product_name) ? review.product_name.slice(0, 30) : mainProduct.name.slice(0, 30)}</div>
+                                                        <ResponsiveMasonry
+                                                            columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 2 }}
+                                                        >
+                                                            <Masonry gutter='20px'>
+                                                                {reviews.reviews.map((review, index) => {
+                                                                    return (
+                                                                        <div key={index} className="review-card">
+                                                                            <Stars value={review.rating} size="11px" />
+                                                                            {review.is_verified_purchase && (
+                                                                                <span className='verified-review'>&nbsp; Verified Purchaser</span>
+                                                                            )}
+                                                                            <div className='review-product'>{(review.product_name) ? review.product_name.slice(0, 30) : mainProduct.name.slice(0, 30)}</div>
 
-                                                                        <div className="review-content">
+                                                                            <div className="review-content">
 
-                                                                            <div className="review-title">{review.title}</div>
-                                                                            <div className="review-comment">{review.comment}</div>
+                                                                                <div className="review-title">{review.title}</div>
+                                                                                <div className="review-comment">{review.comment}</div>
 
-                                                                            <div className="reviewer-name">{review.name}</div>
-                                                                            <div className="likes-dislikes">
-                                                                                <div>
-                                                                                    {(review.liked) ? (
-                                                                                        <>
-                                                                                            <BiSolidLike /><span>{review.likes || 0}</span>
-                                                                                        </>
-                                                                                    ) : (
-                                                                                        <>
-                                                                                            <BiLike /><span>{review.likes || 0}</span>
-                                                                                        </>
-                                                                                    )}
+                                                                                <div className="reviewer-name">{review.name}</div>
+                                                                                <div className="likes-dislikes">
+                                                                                    <div>
+                                                                                        {(review.liked) ? (
+                                                                                            <>
+                                                                                                <BiSolidLike /><span>{review.likes || 0}</span>
+                                                                                            </>
+                                                                                        ) : (
+                                                                                            <>
+                                                                                                <BiLike /><span>{review.likes || 0}</span>
+                                                                                            </>
+                                                                                        )}
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        {(review.disliked) ? (
+                                                                                            <>
+                                                                                                <BiSolidDislike /><span>{review.dislikes || 0}</span>
+                                                                                            </>
+                                                                                        ) : (
+                                                                                            <>
+                                                                                                <BiDislike /><span>{review.dislikes || 0}</span>
+                                                                                            </>
+                                                                                        )}
+                                                                                    </div>
                                                                                 </div>
-                                                                                <div>
-                                                                                    {(review.disliked) ? (
-                                                                                        <>
-                                                                                            <BiSolidDislike /><span>{review.dislikes || 0}</span>
-                                                                                        </>
-                                                                                    ) : (
-                                                                                        <>
-                                                                                            <BiDislike /><span>{review.dislikes || 0}</span>
-                                                                                        </>
-                                                                                    )}
-                                                                                </div>
+
                                                                             </div>
-
                                                                         </div>
-                                                                    </div>
-                                                                )
-                                                            })}
+                                                                    )
+                                                                })}
 
-                                                        </Masonry>
-                                                    </ResponsiveMasonry>
-
+                                                            </Masonry>
+                                                        </ResponsiveMasonry>
+                                                    )}
                                                 </div>
+
+                                                <Paginate total={products[0].total_reviews} pageSize={10} onChange={handleReviewPageClick} current={reviewPage} />
+
                                             </div>
 
                                         </div>
-                                    ) : (
-                                        ""
                                     )}
 
 

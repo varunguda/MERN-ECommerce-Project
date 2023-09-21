@@ -3,7 +3,7 @@
   position: relative;
   background-color: var(--primary-color);
   color: white;
-  top: 200vh;
+  margin-top: 200px;
   width: 100%;
   padding: 60px 30px 0px 30px;
 }

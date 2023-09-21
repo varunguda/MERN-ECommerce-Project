@@ -778,7 +778,7 @@
 
 .customer-reviews-container {
     position: relative;
-    min-height: 100vh;
+    min-height: 120vh;
 }
 
 .rating-container {
@@ -812,13 +812,39 @@
     background-color: var(--primary-hover-color);
 }
 
-.reviews-section{
+.reviews-section {
     position: relative;
     width: 100%;
     padding: 10px;
+    min-height: 500px;
 }
 
-.review-card{
+.loader {
+    position: relative;
+    top: 230px;
+    left: 48%;
+    width: 60px;
+    height: 60px;
+    border: 5px solid var(--secondary-color);
+    border-bottom-color: var(--primary-color);
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+.review-card {
     width: 100%;
     background-color: white;
     padding: 20px;
@@ -826,22 +852,22 @@
     border-radius: 10px;
 }
 
-.verified-review{
+.verified-review {
     color: var(--highlight-font-color);
     font-size: var(--small-content-font-size);
     font-weight: 600;
 }
 
-.review-product{
+.review-product {
     color: var(--light-font-color);
     font-size: var(--small-content-font-size);
 }
 
-.review-content{
+.review-content {
     margin-left: 5px;
 }
 
-.review-title{
+.review-title {
     margin-top: 20px;
     margin-bottom: 10px;
     color: var(--black-font-color);
@@ -849,28 +875,28 @@
     font-size: var(--medium-content-font-size);
 }
 
-.review-comment{
+.review-comment {
     margin: 10px 0px;
 }
 
-.reviewer-name{
+.reviewer-name {
     font-size: var(--small-content-font-size);
     color: var(--light-font-color);
     margin-bottom: 5px;
 }
 
-.likes-dislikes{
+.likes-dislikes {
     display: flex;
     gap: 20px;
     color: var(--light-font-color);
 }
 
-.likes-dislikes div{
+.likes-dislikes div {
     display: flex;
     gap: 1px;
     cursor: pointer;
 }
 
-.likes-dislikes span{
+.likes-dislikes span {
     font-size: var(--small-content-font-size);
 }

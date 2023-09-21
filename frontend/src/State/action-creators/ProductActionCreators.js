@@ -18,7 +18,13 @@ import {
 
     PRODUCT_REVIEWS_REQUEST,
     PRODUCT_REVIEWS_FAILURE,
-    PRODUCT_REVIEWS_SUCCESS
+    PRODUCT_REVIEWS_SUCCESS,
+
+    // DISLIKE_REVIEW_FAILURE,
+    // DISLIKE_REVIEW_SUCCESS,
+
+    // LIKE_REVIEW_FAILURE,
+    // LIKE_REVIEW_SUCCESS,
 
 } from "../constants/ProductConstants.js";
 
@@ -111,12 +117,12 @@ export const getBundleProducts = (id) => async(dispatch) => {
 
 
 
-export const getProductReviews = (id) => async(dispatch) => {
+export const getProductReviews = (id, page) => async(dispatch) => {
     try {
 
         dispatch({ type: PRODUCT_REVIEWS_REQUEST });
 
-        const { data } = await axios.get(`/api/v1/products/reviews/${id}`);
+        const { data } = await axios.get(`/api/v1/products/reviews/${id}?page=${page?page:1}`);
 
         dispatch({
             type: PRODUCT_REVIEWS_SUCCESS,
@@ -130,3 +136,15 @@ export const getProductReviews = (id) => async(dispatch) => {
         })
     }
 }
+
+
+// export const likeReview = ( reviews_id, review_id ) => (dispatch) => {
+//     try {
+        
+//     } catch (error) {
+//         dispatch({
+//             type: LIKE_REVIEW_FAILURE,
+//             payload: 
+//         })
+//     }
+// }
