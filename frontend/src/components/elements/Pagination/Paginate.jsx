@@ -15,9 +15,6 @@ const Paginate = ({ onChange, total, pageSize, current }) => {
                 current={current}
                 nextIcon={<GrFormNext size={20} />}
                 prevIcon={<GrFormPrevious size={20} />}
-                // showSizeChanger={showSizeChanger}
-                // itemRender={PrevNextArrow}
-                // onShowSizeChange={PerPageChange}
             />
         </>
     )

@@ -15,19 +15,18 @@ const Modal = (props) => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
+            if (modalRef.current && !modalRef.current.contains(event.target) && !props.noOutClick) {
                 closeModal();
             }
         }
-
+        
         window.addEventListener('mousedown', handleClickOutside);
 
         return () => {
             window.removeEventListener('mousedown', handleClickOutside);
         };
          // eslint-disable-next-line
-    }, []);
-
+    }, [props.noOutClick]);
 
     return (
         <div className={`modal-container ${props.open ? "open" : ""}`}>

@@ -1,10 +1,11 @@
 
-export const openModal = (heading, content) => (dispatch) => {
+export const openModal = (heading, content, noOutClick) => (dispatch) => {
     dispatch({
         type: "open",
         payload: {
             heading: heading || "Modal Window",
-            content: content || "Empty content"
+            content: content || "Empty content",
+            noOutClick: noOutClick ? true : false,
         },
     })
 }
@@ -14,7 +15,8 @@ export const closeModal = () => (dispatch) => {
         type: "close",
         payload: {
             heading: "",
-            content: ""
+            content: "",
+            noOutClick: false,
         },
     })
 }

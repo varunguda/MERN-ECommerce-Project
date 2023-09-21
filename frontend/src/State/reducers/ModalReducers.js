@@ -6,7 +6,8 @@ export const modalReducer = (state = false, action) => {
             return ({
                 open: true,
                 content: action.payload.content,
-                heading: action.payload.heading
+                heading: action.payload.heading,
+                noOutClick: action.payload.noOutClick,
             })
         }
 
@@ -15,6 +16,7 @@ export const modalReducer = (state = false, action) => {
                 open: false,
                 content: action.payload.content,
                 heading: action.payload.heading,
+                noOutClick: action.payload.noOutClick,
             })
         }
 
