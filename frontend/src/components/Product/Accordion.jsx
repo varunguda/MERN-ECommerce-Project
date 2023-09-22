@@ -23,7 +23,7 @@ const Accordion = (props) => {
             <div
                 className={`accordion ${active ? "active" : ""}`}
             >
-                <p className="accordion__title">{props.title}</p>
+                <p className="accordion__title" style={{...props.style}}>{props.title}</p>
                 <span className="accordion-toggle-icon" onClick={toggleAccordion} style={{ marginLeft: "20px" }}>{active ? <BsChevronUp /> : <BsChevronDown />}</span>
             </div>
             <div

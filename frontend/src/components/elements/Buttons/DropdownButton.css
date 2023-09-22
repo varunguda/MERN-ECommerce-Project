@@ -1,0 +1,52 @@
+
+.dropdown-button-container .dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dd-button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 20px;
+    padding: 6px 18px;
+    color: var(--black-font-color);
+    font-size: var(--regular-content-font-size);
+    cursor: pointer;
+    white-space: nowrap;
+    transform: rotate(0deg);
+}
+
+.dd-button:hover {
+    background-color: #eeeeee;
+}
+
+
+.dd-input {
+    display: none;
+}
+
+.dd-menu {
+    font-size: var(--regular-content-font-size);
+    position: absolute;
+    color: var(--black-font-color);
+    top: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    min-width: 100%;
+    min-height: 10px;
+    padding: 7px;
+    margin: 1px 0 0 0;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    list-style-type: none;
+    z-index: 10;
+}
+
+.dd-input+.dd-menu {
+    display: none;
+}
+
+.dd-input:checked+.dd-menu {
+    display: block;
+}

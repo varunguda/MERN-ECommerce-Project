@@ -33,7 +33,7 @@ const ProductCard = ({ product, height, width, noreviews=false }) => {
       <Link className='product-card' to={`/product/${product._id}`} target='_blank' >
 
         <div className="image-container">
-          <img src={product.images[0] || "https://images.unsplash.com/photo-1659540176095-c20ae944260e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"} alt={product.name} />
+          <img src={product.images[0] || "https://images.unsplash.com/photo-1682685797736-dabb341dc7de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"} alt={product.name} />
           <CiHeart onClick={handleWishlistClick} className='wishlist' />
         </div>
 

@@ -37,7 +37,7 @@ export const productReducer = ( state = { products: [] }, action ) => {
             return({
                 loading: false,
                 products: action.payload.products,
-                productCount: action.payload.productCount,
+                productCount: action.payload.product_count,
             })
         }
 
