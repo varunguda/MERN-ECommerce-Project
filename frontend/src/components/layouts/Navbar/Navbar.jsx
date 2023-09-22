@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './Navbar.css';
 
-import { TfiSearch } from "react-icons/tfi";
 import { BiCategory } from "react-icons/bi";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { FiShoppingCart } from "react-icons/fi";

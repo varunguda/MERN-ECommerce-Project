@@ -68,10 +68,12 @@ const categoryConfig = {
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
 
-    const productCount = await Product.countDocuments();
     const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter().pagination(10)
     let products = await apiFeatures.products;
+    let productCount = await apiFeatures.productsCount;
 
+    console.log(productCount);
+    
     let updatedProducts = [];
 
     for (let i = 0; i < products.length; i++) {

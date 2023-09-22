@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
 import { TfiSearch } from 'react-icons/tfi';
+import { useNavigate } from 'react-router';
 
 const SearchBar = () => {
 
     const [ keyword, setKeyword ] = useState("");
 
+    const navigate = useNavigate();
+
     const handleSearchHandler = (e) => {
-        
+        e.preventDefault();
+        if(keyword.trim()){
+            navigate(`/products?keyword=${keyword}`);
+        }
     }
 
     return (

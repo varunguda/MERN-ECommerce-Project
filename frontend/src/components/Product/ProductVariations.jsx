@@ -48,7 +48,7 @@ const ProductVariations = ({ products, mainProduct, images }) => {
 
                 if ((product[e.target.name] === e.target.value) && (product[variation] === mainProduct[variation])) {
                     found = true
-                    navigate(`/products/${product._id}`);
+                    navigate(`/product/${product._id}`);
                     break
                 }
             }
@@ -57,7 +57,7 @@ const ProductVariations = ({ products, mainProduct, images }) => {
         if (!found) {
             for (const product of products) {
                 if (product[e.target.name] === e.target.value) {
-                    navigate(`/products/${product._id}`,  { state: { key: product._id } });
+                    navigate(`/product/${product._id}`,  { state: { key: product._id } });
                     break
                 }
             }

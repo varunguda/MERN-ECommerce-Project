@@ -13,6 +13,7 @@
     --black-font-color: #2e2f32;
     --border-color: gainsboro;
     --highlight-background-color: #f8f8f8;
+    --grey-background-color: #f1f1f2;
 
     --large-content-font-size: 20px;
     --medium-content-font-size: 15px;
@@ -66,13 +67,11 @@ body {
 
 .main-container {
     position: relative;
-    min-height: 200vh;
 }
 
 .content-container {
     position: relative;
-    top: 150px;
-    min-height: calc(100vh - 40vh);
+    margin-top: 150px;
 }
 
 .placeholder {
