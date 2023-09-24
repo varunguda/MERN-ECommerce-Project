@@ -30,11 +30,25 @@ import {
 
 
 
-export const getProducts = () => async(dispatch) => {
+export const getProducts = () => async(dispatch, getState) => {
     try {
         dispatch({ type: ALL_PRODUCT_REQUEST });
 
-        const { data } = await axios.get("/api/v1/products");
+        const state = getState();
+
+        const queryParams = [
+            state.urlParams.keyword && `keyword=${state.urlParams.keyword}`,
+            state.urlParams.minPrice && `pricemin=${state.urlParams.minPrice}`,
+            state.urlParams.maxPrice && `pricemax=${state.urlParams.maxPrice}`,
+            state.urlParams.category && `category=${state.urlParams.category}`,
+            state.urlParams.availability && `availability=${state.urlParams.availability}`,
+            state.urlParams.brand && `brand=${state.urlParams.brand}`,
+            state.urlParams.page && `page=${state.urlParams.page}`
+        ].filter(Boolean).join('&');
+
+        let link = `/api/v1/products?${queryParams}`;
+
+        const { data } = await axios.get(link);
         
         dispatch({
             type: ALL_PRODUCT_SUCCESS,

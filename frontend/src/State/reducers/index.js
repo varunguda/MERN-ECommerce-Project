@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import { productReducer, productDetailsReducer, sellerProductsReducer, bundleProductsReducer, productReviewReducer } from "./ProductReducer";
 import { modalReducer } from "./ModalReducers";
+import { navigationReducer } from "./NavigationReducers";
 
 
 const reducers = combineReducers({
@@ -10,6 +11,7 @@ const reducers = combineReducers({
     modal: modalReducer,
     bundleProducts: bundleProductsReducer,
     productReviews: productReviewReducer,
+    urlParams: navigationReducer,
 });
 
 

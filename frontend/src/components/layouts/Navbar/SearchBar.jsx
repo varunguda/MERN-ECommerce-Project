@@ -1,17 +1,22 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { TfiSearch } from 'react-icons/tfi';
-import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { navigationActionCreators } from '../../../State/action-creators';
 
 const SearchBar = () => {
 
-    const [ keyword, setKeyword ] = useState("");
+    const [ searchText, setSearchText ] = useState("");
+    const inputRef = useRef(null);
 
-    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { setKeyword } = bindActionCreators( navigationActionCreators, dispatch );
 
     const handleSearchHandler = (e) => {
         e.preventDefault();
-        if(keyword.trim()){
-            navigate(`/products?keyword=${keyword}`);
+        if(searchText.trim()){
+            setKeyword(searchText);
+            inputRef.current.blur();
         }
     }
 
@@ -24,8 +29,9 @@ const SearchBar = () => {
                 spellCheck="false"
                 placeholder="Search anything here..."
                 onChange={(e)=>{
-                    setKeyword(e.target.value)
+                    setSearchText(e.target.value)
                 }}
+                ref={inputRef}
             />
 
             <button type="submit" className="search-toggle" >

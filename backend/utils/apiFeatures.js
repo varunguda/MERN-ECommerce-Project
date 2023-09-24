@@ -1,98 +1,49 @@
-// export class ApiFeatures{
-//     constructor(products, queryStr){
-//         this.products = products,
-//         this.queryStr = queryStr,
-//         this.productsCount = 0
-//     }
+export class ApiFeatures{
 
-//     search(){
-//         const keyword = this.queryStr.keyword ? {
-//             name: {
-//                 $regex: this.queryStr.keyword,
-//                 $options: "i"
-//             }
-//         }: {};
-
-//         this.products = this.products.find({...keyword});
-//         this.productsCount = this.products.countDocuments();
-//         return this;
-//     }
-
-//     filter(){
-//         const { category, pricemin, pricemax } = this.queryStr;
-//         if(category){
-//             this.products = this.products.find({category})
-//         }
-//         if(pricemin && pricemax){
-//             this.products = this.products.find({price: { $gte: parseFloat(pricemin), $lte:  parseFloat(pricemax)}})
-//         }
-//         this.productsCount = this.products.countDocuments();
-//         return this;
-//     }
-
-//     pagination(resultsPerPage){
-//         const currentPage = this.queryStr.page || 1;
-//         const skip = resultsPerPage * (currentPage - 1);
-
-//         this.products = this.products.limit(resultsPerPage).skip(skip);
-//         return this;
-//     }
-// }
-
-
-
-
-
-export class ApiFeatures {
-    constructor(products, queryStr) {
-        this.products = products;
-        this.queryStr = queryStr;
-        this.productsCount = 0;
+    constructor(products, queryStr){
+        this.products = products,
+        this.queryStr = queryStr
     }
 
-    search() {
+    search(){
         const keyword = this.queryStr.keyword ? {
             name: {
                 $regex: this.queryStr.keyword,
                 $options: "i"
-            }
-        } : {};
+            },
+        }: {};
 
-        this.products = this.products.filter(product => {
-            const name = product.name.toLowerCase();
-            return name.includes(keyword.name.$regex.toLowerCase());
-        });
-
-        this.productsCount = this.products.length;
+        this.products = this.products.find({ ...keyword });
         return this;
     }
 
-    filter() {
-        const { category, pricemin, pricemax } = this.queryStr;
-        if (category) {
-            this.products = this.products.filter(product => product.category === category);
+    filter(){
+        const { category, pricemin, pricemax, brand, availability } = this.queryStr;
+        if(category){
+            this.products = this.products.find({category})
         }
-        if (pricemin && pricemax) {
-            this.products = this.products.filter(product => {
-                const price = parseFloat(product.price);
-                return price >= parseFloat(pricemin) && price <= parseFloat(pricemax);
-            });
+        if(brand){
+            let brandArr = brand.split(",")
+            this.products = this.products.find({ brand: { $in: brandArr } })
         }
-        this.productsCount = this.products.length;
-        return this;
-    }
-
-    pagination(resultsPerPage) {
-        const currentPage = this.queryStr.page || 1;
-        const startIndex = (currentPage - 1) * resultsPerPage;
-        const endIndex = startIndex + resultsPerPage;
-
-        this.products = this.products.slice(startIndex, endIndex);
+        if(pricemin){
+            this.products = this.products.find({final_price: { $gte: parseFloat(pricemin) }})
+        }
+        if(pricemax){
+            this.products = this.products.find({final_price: { $lte:  parseFloat(pricemax) }})
+        }
+        if(!availability || availability !== "oos"){
+            this.products = this.products.find({ stock: {$ne: 0} });
+        }
         return this;
     }
 }
 
-const apiFeatures = new ApiFeatures(products, req.query).search().filter().pagination(10);
 
-const products = apiFeatures.products;
-const productCount = apiFeatures.productsCount;
+export const pagination = (products, resultsPerPage, page) => {
+    const currentPage = page || 1;
+    const skip = resultsPerPage * (currentPage - 1);
+
+    products = products.slice(skip, skip + resultsPerPage)
+    return products;
+}

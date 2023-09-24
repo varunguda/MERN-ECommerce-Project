@@ -2,7 +2,7 @@ import { Product } from '../models/productModel.js';
 import { Users } from "../models/userModel.js";
 import { ErrorHandler } from '../utils/errorHandler.js';
 import catchAsync from '../utils/catchAsync.js';
-import { ApiFeatures } from '../utils/apiFeatures.js';
+import { ApiFeatures, pagination } from '../utils/apiFeatures.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Review } from '../models/reviewModel.js';
 import { Orders } from '../models/orderModel.js';
@@ -68,12 +68,41 @@ const categoryConfig = {
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
 
-    const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter().pagination(10)
-    let products = await apiFeatures.products;
-    let productCount = await apiFeatures.productsCount;
+    let apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter();
 
-    console.log(productCount);
-    
+    const allProducts = await apiFeatures.products;
+    const productCount = allProducts.length;
+    let exist = false;
+
+    const { keyword } = req.query;
+    if(keyword){
+        const existProducts = await Product.find({ name: { $regex: keyword, $options: "i" } });
+        if(existProducts && existProducts.length > 0){
+            exist = true;
+        }
+    }
+    else{
+        exist = true;
+    }
+
+    let maxPrice = 0;
+    let brands = [];
+    allProducts.forEach((prod) => {
+        if(!brands.includes(prod.brand)){
+            brands.push(prod.brand)
+        }
+        if(prod.final_price > maxPrice){
+            maxPrice = prod.final_price;
+        }
+    });
+
+    const categories = [];
+    for(let i=0; i < Object.keys(categoryConfig).length; i++ ){
+        categories.push(Object.keys(categoryConfig)[i]);
+    }
+
+    const products = pagination(allProducts, 20, req.query.page);
+
     let updatedProducts = [];
 
     for (let i = 0; i < products.length; i++) {
@@ -106,6 +135,10 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         success: true,
         products: updatedProducts,
         product_count: productCount,
+        max_price: maxPrice,
+        exist,
+        brands,
+        categories
     })
 })
 
@@ -222,9 +255,11 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
 
 
 export const getMyProducts = catchAsync(async (req, res, next) => {
-    const apiFeatures = new ApiFeatures(Product.find({ seller_id: req.user._id }), req.query).search().pagination(10);
-    const products = await apiFeatures.products;
-    const product_count = (products.length > 0) ? products.length : 0;
+    const apiFeatures = new ApiFeatures(Product.find({ seller_id: req.user._id }), req.query).search();
+    const allProducts = await apiFeatures.products;
+    const product_count = allProducts.length;
+
+    const products = pagination(allProducts, 10, req.query.page);
 
     return res.json({
         success: true,
@@ -619,8 +654,8 @@ export const getProductsOfSeller = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Seller not found!", 404));
     }
 
-    const apiFeatures = new ApiFeatures(Product.find({ seller_id: user._id }), req.query).pagination(10);
-    const products = await apiFeatures.products;
+    const allProducts = await Product.find({ seller_id: user._id });
+    const products = pagination(allProducts, 10, req.query.page);
 
     return res.json({
         success: true,

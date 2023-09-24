@@ -14,7 +14,7 @@
     padding: 0px 20px;
     border-bottom: 1px solid var(--border-color);
     background-color: white;
-    z-index: 100;
+    z-index: 1;
 }
 
 .products-page-header .header-section {
@@ -39,22 +39,110 @@
     overflow-y: scroll;
 }
 
+.products-page-sidebar.active{
+    position: fixed;
+    padding: 0px 10px;
+    background-color: white;
+    z-index: 4;
+    top: 210px;
+    width: 260px;
+    box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+}
+
 .products-page-content {
     position: relative;
     flex: 0.79;
     margin-top: 60px;
 }
 
-.products-grid{
+.products-page-content.fill {
+    flex: 1;
+}
+
+.products-grid {
     width: 100%;
+    min-height: 100vh;
     padding: 30px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    /* grid-template-rows: repeat(5, 1fr); */
     grid-column-gap: 30px;
     grid-row-gap: 30px;
 }
 
-.products-page-container .rc-pagination{
+.products-page-container .rc-pagination {
     margin: 0;
+}
+
+
+.products-page-banner {
+    position: relative;
+    height: calc(100vh - 200px);
+    width: 100%;
+    display: grid;
+    place-items: center;
+}
+
+.products-page-banner .link {
+    color: var(--primary-color);
+}
+
+.products-page-banner .link:hover {
+    text-decoration: 1px var(--secondary-color) underline;
+}
+
+
+.header-section .primary-btn{
+    background-color: #f1f1f1f2;
+    color: var(--black-font-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0px 10px;
+    border: none;
+    border-radius: 20px;
+}
+
+
+.products-page-section .checkboxes {
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+ 
+.products-page-section .checkboxes input[type="checkbox"]:checked+label::before {
+    background-color: var(--primary-hover-color);
+}
+
+
+
+@media screen and (max-width: 1200px) {
+    .products-grid {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        /* grid-template-rows: repeat(7, 1fr); */
+        grid-column-gap: 20px;
+        grid-row-gap: 20px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .products-grid {
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-column-gap: 16px;
+        grid-row-gap: 16px;
+    }
+
+    .header-section{
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .header-section.header1{
+        display: none;
+    }
 }

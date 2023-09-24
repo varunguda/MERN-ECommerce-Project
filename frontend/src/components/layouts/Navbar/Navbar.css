@@ -105,7 +105,7 @@
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
     animation: slideout 0.3s forwards;
-    z-index: 3;
+    z-index: 999;
 }
 
 @keyframes slideout {
@@ -286,17 +286,14 @@ input {
 }
 
 @media only screen and (max-width: 900px) {
-    .search {
+    .searchbar-container {
         flex: 1;
+        margin-left: 0px;
     }
 
     .secondary-navbar {
         padding: 0px 5px;
         width: 100%;
-    }
-
-    .secondary-navbar button {
-        left: 5px;
     }
 }
 
