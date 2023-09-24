@@ -38,6 +38,10 @@ export const productReducer = ( state = { products: [] }, action ) => {
                 loading: false,
                 products: action.payload.products,
                 productCount: action.payload.product_count,
+                productsMaxPrice: action.payload.max_price,
+                productsExist: action.payload.exist,
+                productsBrands: action.payload.brands,
+                allCategories: action.payload.categories,
             })
         }
 

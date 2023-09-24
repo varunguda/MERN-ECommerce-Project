@@ -34,7 +34,7 @@ const DropdownButton = ({ name, content, style}) => {
     return (
         <div ref={buttonRef} className='dropdown-button-container'>
             <label className="dropdown">
-                <div onClick={handleButtonClick} className="dd-button" style={{...style}}>
+                <div onClick={handleButtonClick} className="dd-button">
                     {name}
                     <span style={{transform: `rotate(${rotate}deg)`}}>
                         <BsChevronDown size={11}/>
@@ -42,7 +42,7 @@ const DropdownButton = ({ name, content, style}) => {
                 </div>
 
                 <input onChange={handleCheckClick} type="checkbox" checked={isChecked} className="dd-input" id="test" />
-                <ul className="dd-menu">
+                <ul className="dd-menu" style={{...style}}>
                     {content}
                 </ul>
             </label>

@@ -12,6 +12,7 @@ import ProductPage from "./components/Product/ProductPage.jsx";
 import { ToastContainer } from 'react-toastify';
 import Modal from './components/elements/Modals/Modal.jsx';
 import { useSelector } from 'react-redux';
+import NavigationComponent from './components/NavigationComponent.jsx';
 
 
 const App = () => {
@@ -46,12 +47,14 @@ const App = () => {
 
       <Modal open={open} content={content} heading={heading} noOutClick={noOutClick} />
 
+
       <Router>
+      <NavigationComponent />
         <Navbar />
         <div className='content-container'>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/products/" element={<ProductsPage />} />
             <Route path="/product/:id" element={<ProductPage />} />
           </Routes>
         </div>
