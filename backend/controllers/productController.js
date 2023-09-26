@@ -75,29 +75,36 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     let exist = false;
 
     const { keyword } = req.query;
-    if(keyword){
-        const existProducts = await Product.find({ name: { $regex: keyword, $options: "i" } });
-        if(existProducts && existProducts.length > 0){
+
+    let minPrice = allProducts[0] ? allProducts[0].final_price : 0;
+    let maxPrice = 0;
+    if (keyword) {
+        const existProducts = await Product.find({ $or: [{ name: { $regex: keyword, $options: "i" } }, { brand: { $regex: keyword, $options: "i" } }] });
+        if (existProducts && existProducts.length > 0) {
             exist = true;
         }
+        existProducts.forEach((prod) => {
+            if (prod.final_price > maxPrice) {
+                maxPrice = prod.final_price;
+            }
+            if (prod.final_price < minPrice) {
+                minPrice = prod.final_price;
+            }
+        })
     }
-    else{
+    else {
         exist = true;
     }
 
-    let maxPrice = 0;
     let brands = [];
     allProducts.forEach((prod) => {
-        if(!brands.includes(prod.brand)){
+        if (!brands.includes(prod.brand)) {
             brands.push(prod.brand)
-        }
-        if(prod.final_price > maxPrice){
-            maxPrice = prod.final_price;
         }
     });
 
     const categories = [];
-    for(let i=0; i < Object.keys(categoryConfig).length; i++ ){
+    for (let i = 0; i < Object.keys(categoryConfig).length; i++) {
         categories.push(Object.keys(categoryConfig)[i]);
     }
 
@@ -136,6 +143,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         products: updatedProducts,
         product_count: productCount,
         max_price: maxPrice,
+        min_price: minPrice,
         exist,
         brands,
         categories

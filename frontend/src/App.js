@@ -12,7 +12,6 @@ import ProductPage from "./components/Product/ProductPage.jsx";
 import { ToastContainer } from 'react-toastify';
 import Modal from './components/elements/Modals/Modal.jsx';
 import { useSelector } from 'react-redux';
-import NavigationComponent from './components/NavigationComponent.jsx';
 
 
 const App = () => {
@@ -49,13 +48,12 @@ const App = () => {
 
 
       <Router>
-      <NavigationComponent />
         <Navbar />
         <div className='content-container'>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path="/products/" element={<ProductsPage />} />
             <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/:keyword" element={<ProductsPage />} />
           </Routes>
         </div>
         <Footer />
