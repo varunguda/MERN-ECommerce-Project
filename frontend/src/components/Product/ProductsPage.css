@@ -118,6 +118,17 @@
     direction: rtl;
 }
 
+.products-page-sidebar .secondary-btn{
+    width: fit-content;
+    color: var(--primary-hover-color);
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.products-page-sidebar .secondary-btn:hover{
+    text-decoration: 1px var(--secondary-color) underline;
+}
+
 
 
 @media screen and (max-width: 1200px) {

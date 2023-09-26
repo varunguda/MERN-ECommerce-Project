@@ -8,28 +8,31 @@ import { modalActionCreators } from '../../../State/action-creators';
 const Modal = (props) => {
 
     const modalRef = useRef(null);
+    const modalContainerRef = useRef(null)
 
     const dispatch = useDispatch();
 
-    const { closeModal } = bindActionCreators(modalActionCreators, dispatch )
+    const { closeModal } = bindActionCreators(modalActionCreators, dispatch)
 
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (modalRef.current && !modalRef.current.contains(event.target) && !props.noOutClick) {
-                closeModal();
+                if(modalContainerRef && modalContainerRef.current.classList.contains("open")){
+                    closeModal();
+                }
             }
         }
-        
+
         window.addEventListener('mousedown', handleClickOutside);
 
         return () => {
             window.removeEventListener('mousedown', handleClickOutside);
         };
-         // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [props.noOutClick]);
 
     return (
-        <div className={`modal-container ${props.open ? "open" : ""}`}>
+        <div ref={modalContainerRef} className={`modal-container ${props.open ? "open" : ""}`}>
 
             <div className="background" />
             <div ref={modalRef} className="modal">

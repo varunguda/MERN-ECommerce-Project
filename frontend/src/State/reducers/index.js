@@ -1,5 +1,11 @@
 import { combineReducers } from "redux";
-import { productReducer, productDetailsReducer, sellerProductsReducer, bundleProductsReducer, productReviewReducer } from "./ProductReducer";
+import {
+    productReducer,
+    productDetailsReducer,
+    sellerProductsReducer,
+    bundleProductsReducer,
+    productReviewReducer
+} from "./ProductReducer";
 import { modalReducer } from "./ModalReducers";
 import { navigationReducer } from "./NavigationReducers";
 

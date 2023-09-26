@@ -1,5 +1,4 @@
 
-
 export const navigationReducer = (initialState = {
     keyword: "",
     minPrice: 0,

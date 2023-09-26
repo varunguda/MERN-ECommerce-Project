@@ -43,15 +43,15 @@ const Home = () => {
         //     if(window.scrollY > 100 && !isCalled){
 
 
-        setKeyword("");
-        setAvailability("");
-        setBrand("");
-        setCategory("");
-        setMaxPrice(0);
-        setMinPrice(0);
-        setPage(0);
+        // setKeyword("");
+        // setAvailability("");
+        // setBrand("");
+        // setCategory("");
+        // setMaxPrice(0);
+        // setMinPrice(0);
+        // setPage(0);
 
-        getProducts();
+        // getProducts();
 
 
 
