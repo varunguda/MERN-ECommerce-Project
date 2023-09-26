@@ -76,8 +76,10 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
 
     const { keyword } = req.query;
 
-    let minPrice = allProducts[0] ? allProducts[0].final_price : 0;
+    let minPrice = allProducts[0] ? allProducts[0].final_price : 100000;
     let maxPrice = 0;
+    let brands = [];
+
     if (keyword) {
         const existProducts = await Product.find({ $or: [{ name: { $regex: keyword, $options: "i" } }, { brand: { $regex: keyword, $options: "i" } }] });
         if (existProducts && existProducts.length > 0) {
@@ -90,18 +92,15 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
             if (prod.final_price < minPrice) {
                 minPrice = prod.final_price;
             }
+            if (!brands.includes(prod.brand)) {
+                brands.push(prod.brand)
+            }
         })
     }
     else {
         exist = true;
     }
 
-    let brands = [];
-    allProducts.forEach((prod) => {
-        if (!brands.includes(prod.brand)) {
-            brands.push(prod.brand)
-        }
-    });
 
     const categories = [];
     for (let i = 0; i < Object.keys(categoryConfig).length; i++) {

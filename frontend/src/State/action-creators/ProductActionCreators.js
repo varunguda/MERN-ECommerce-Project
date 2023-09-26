@@ -30,20 +30,18 @@ import {
 
 
 
-export const getProducts = () => async(dispatch, getState) => {
+export const getProducts = (keyword="", minPrice=0, maxPrice=0, page=0, category="", brand="", availability="") => async(dispatch) => {
     try {
         dispatch({ type: ALL_PRODUCT_REQUEST });
 
-        const state = getState();
-
         const queryParams = [
-            state.urlParams.keyword && `keyword=${state.urlParams.keyword}`,
-            state.urlParams.minPrice && `pricemin=${state.urlParams.minPrice}`,
-            state.urlParams.maxPrice && `pricemax=${state.urlParams.maxPrice}`,
-            state.urlParams.category && `category=${state.urlParams.category}`,
-            state.urlParams.availability && `availability=${state.urlParams.availability}`,
-            state.urlParams.brand && `brand=${state.urlParams.brand}`,
-            state.urlParams.page && `page=${state.urlParams.page}`
+            keyword && `keyword=${keyword}`,
+            minPrice && `pricemin=${minPrice}`,
+            maxPrice && `pricemax=${maxPrice}`,
+            category && `category=${category}`,
+            availability && `availability=${availability}`,
+            brand && `brand=${brand}`,
+            page && `page=${page}`
         ].filter(Boolean).join('&');
 
         let link = `/api/v1/products${queryParams ? '?'+queryParams : ''}`;
@@ -62,6 +60,38 @@ export const getProducts = () => async(dispatch, getState) => {
         })
     }
 }
+// export const getProducts = () => async(dispatch, getState) => {
+//     try {
+//         dispatch({ type: ALL_PRODUCT_REQUEST });
+
+//         const state = getState();
+
+//         const queryParams = [
+//             state.urlParams.keyword && `keyword=${state.urlParams.keyword}`,
+//             state.urlParams.minPrice && `pricemin=${state.urlParams.minPrice}`,
+//             state.urlParams.maxPrice && `pricemax=${state.urlParams.maxPrice}`,
+//             state.urlParams.category && `category=${state.urlParams.category}`,
+//             state.urlParams.availability && `availability=${state.urlParams.availability}`,
+//             state.urlParams.brand && `brand=${state.urlParams.brand}`,
+//             state.urlParams.page && `page=${state.urlParams.page}`
+//         ].filter(Boolean).join('&');
+
+//         let link = `/api/v1/products${queryParams ? '?'+queryParams : ''}`;
+
+//         const { data } = await axios.get(link);
+        
+//         dispatch({
+//             type: ALL_PRODUCT_SUCCESS,
+//             payload: data,
+//         });
+
+//     } catch (error) {
+//         dispatch({
+//             type: ALL_PRODUCT_FAILURE,
+//             payload: error.response.data.message,
+//         })
+//     }
+// }
 
 
 

@@ -34,9 +34,10 @@ const ProductsPage = () => {
     const [price, setPrice] = useState([0, 100000]);
     const [sidebar, setSidebar] = useState(() => window.innerWidth < 1000 ? false : true);
     const [btnActive, setBtnActive] = useState(() => window.innerWidth < 1000 ? true : false);
-    const [allBrands, setAllBrands] = useState([]);
     // eslint-disable-next-line
-    const [brandsSelected, setAllSelectedBrands] = useState([]);
+    const [selectedBrands, setAllSelectedBrands] = useState([]);
+    const [expandCategories, setExpandCategories] = useState(false);
+    const [expandBrands, setExpandBrands] = useState(false);
     const sidebarRef = useRef(null);
     const btnRef = useRef(null);
 
@@ -79,7 +80,7 @@ const ProductsPage = () => {
         queryBrand ?
             setBrand(queryBrand) :
             setBrand("")
-
+            
         queryAvailability ?
             setAvailability(queryAvailability) :
             setAvailability("")
@@ -92,7 +93,6 @@ const ProductsPage = () => {
     useEffect(() => {
 
         if (keyword) {
-
             const urlQuery = [
                 minPrice && `pricemin=${encodeURIComponent(minPrice)}`,
                 maxPrice && `pricemax=${encodeURIComponent(maxPrice)}`,
@@ -108,14 +108,20 @@ const ProductsPage = () => {
         }
         // eslint-disable-next-line
     }, [keyword, minPrice, maxPrice, page, category, brand, availability]);
-
-
+    
+    
     useEffect(() => {
         if (keyword) {
-            getProducts();
+            console.log("fetching...");
+            getProducts(keyword, minPrice, maxPrice, page, category, brand, availability);
         }
         // eslint-disable-next-line
     }, [keyword, minPrice, maxPrice, page, category, brand, availability]);
+
+
+    useEffect(()=>{
+        console.log(minPrice);
+    }, [minPrice])
 
 
     useEffect(() => {
@@ -140,6 +146,7 @@ const ProductsPage = () => {
 
 
     useEffect(() => {
+
         const handleSidebarOutClick = (e) => {
             if (btnActive && sidebarRef.current && btnRef.current) {
                 if (!sidebarRef.current.contains(e.target) && !btnRef.current.contains(e.target)) {
@@ -164,39 +171,20 @@ const ProductsPage = () => {
         }
         else {
             if (productsMinPrice && productsMaxPrice) {
-                if ( (productsMinPrice !== productsMaxPrice) && (!price.every((val, index) => val === [productsMinPrice, productsMaxPrice][index]))) {
+                if ((productsMinPrice !== productsMaxPrice) && (!price.every((val, index) => val === [productsMinPrice, productsMaxPrice][index]))) {
                     setPrice([productsMinPrice, productsMaxPrice]);
                 }
             }
         }
 
         // eslint-disable-next-line
-    }, [productsMinPrice, productsMaxPrice,  minPrice, maxPrice]);
+    }, [productsMinPrice, productsMaxPrice, minPrice, maxPrice]);
 
 
-    useEffect(() => {
-        console.log(productsMinPrice, productsMaxPrice);
-    }, [productsMinPrice, productsMaxPrice])
-
-    useEffect(() => {
-        console.log(price);
-    }, [price])
-
-
-    useEffect(() => {
-        if (productsBrands && (productsBrands.length > 0) && (allBrands.length === 0)) {
-            setAllBrands(productsBrands);
-        }
-        // eslint-disable-next-line
-    }, [productsBrands]);
-
-
-    useEffect(() => {
-        if (productsBrands && productsBrands.length > 0) {
-            setAllSelectedBrands(productsBrands);
-        }
-    }, [productsBrands])
-
+    useEffect(()=>{
+        setBrand(selectedBrands.join(","));
+    // eslint-disable-next-line
+    }, [selectedBrands])
 
     const pageChangeHandler = (page) => {
         setPage(page);
@@ -213,7 +201,18 @@ const ProductsPage = () => {
     }
 
     const brandsHandler = (e) => {
-        setAllSelectedBrands(prev => prev.filter((brand) => (brand !== e.target.name)))
+        let exist = false;
+        selectedBrands.forEach((brand) => {
+            if(brand === e.target.name){
+                exist = true;
+            }
+        })
+        if(!exist){
+            setAllSelectedBrands((prev) => [...prev].concat([e.target.name]));
+        }
+        else{
+            setAllSelectedBrands((prev) => prev.filter((brand) => brand !== e.target.name));
+        }
     }
 
     const availabilityHandler = () => {
@@ -224,6 +223,15 @@ const ProductsPage = () => {
             setAvailability("oos")
         }
     }
+
+    const toggleExpandCategories = () => {
+        setExpandCategories(prev => !prev);
+    }
+
+    const toggleExpandBrands = () => {
+        setExpandBrands(prev => !prev);
+    }
+
 
     return (
         <>
@@ -237,6 +245,7 @@ const ProductsPage = () => {
                             <div className="products-page-header">
 
                                 <div className="header-section header1">
+
                                     <DropdownButton
                                         style={{ backgroundColor: "#f1f1f2" }}
                                         name={"Price"}
@@ -270,14 +279,21 @@ const ProductsPage = () => {
                                             title="Department"
                                             style={{ fontSize: "15px", fontWeight: "600" }}
                                             content={
-                                                (allCategories && (allCategories.length > 0) && allCategories.map((category, index) => {
-                                                    return (
-                                                        <div key={index} className='checkboxes'>
-                                                            <input onClick={availabilityHandler} type="checkbox" name={`${category}`} id={`${category}`} readOnly />
-                                                            <label htmlFor={`${category}`}>{category}</label>
-                                                        </div>
-                                                    )
-                                                }))
+                                                <>
+                                                    {allCategories && (allCategories.length > 0) && allCategories.slice(0, expandCategories ? allCategories.length : 5).map((category, index) => {
+                                                        return (
+                                                            <div key={index} className='checkboxes'>
+                                                                <input onClick={availabilityHandler} type="checkbox" name={`${category}`} id={`${category}`} readOnly />
+                                                                <label htmlFor={`${category}`}>{category}</label>
+                                                            </div>
+                                                        )
+                                                    })
+                                                    }
+
+                                                    <div className='secondary-btn' onClick={toggleExpandCategories}>
+                                                        {(allCategories && allCategories.length > 5 && !expandCategories) ? "Show more" : "Show less"}
+                                                    </div>
+                                                </>
                                             }
                                         />
 
@@ -303,14 +319,25 @@ const ProductsPage = () => {
                                             title="Brand"
                                             style={{ fontSize: "15px", fontWeight: "600" }}
                                             content={
-                                                (allBrands && (allBrands.length > 0) && allBrands.map((brand, index) => {
-                                                    return (
-                                                        <div key={index} className='checkboxes'>
-                                                            <input onClick={brandsHandler} checked={productsBrands.includes(brand)} type="checkbox" name={`${brand}`} id={`${brand}`} readOnly />
-                                                            <label htmlFor={`${brand}`}>{brand}</label>
-                                                        </div>
-                                                    )
-                                                }))
+                                                <>
+                                                    {
+                                                        (productsBrands && (productsBrands.length > 0) && productsBrands.slice(0, expandBrands ? expandBrands.length : 5).map((brand, index) => {
+                                                            return (
+                                                                <div key={index} className='checkboxes'>
+                                                                    <input onClick={brandsHandler} checked={selectedBrands.includes(brand)} type="checkbox" name={`${brand}`} id={`${brand}`} readOnly />
+                                                                    <label htmlFor={`${brand}`}>{brand}</label>
+                                                                </div>
+                                                            )
+                                                        }))
+                                                    }
+
+                                                    <div className='secondary-btn' onClick={toggleExpandBrands}>
+                                                        {(productsBrands && productsBrands.length > 5) && (
+                                                            (!expandBrands) ? "Show more" : "Show less"
+                                                        )}
+                                                    </div>
+
+                                                </>
                                             }
                                         />
 
@@ -348,7 +375,9 @@ const ProductsPage = () => {
                                                 }
                                             </div>
 
-                                            <Paginate total={productCount} pageSize={20} current={page} onChange={pageChangeHandler} />
+                                            {productCount > 20 && (
+                                                <Paginate total={productCount} pageSize={20} current={page} onChange={pageChangeHandler} />
+                                            )}
                                         </>
                                     ) : (
                                         <div className='products-page-banner'>
@@ -401,6 +430,10 @@ const StyledThumb = styled.div`
     &:focus {
         outline: none;
         border-color: #4CAF50;
+    }
+
+    &:hover {
+        border-color: #ffc220;
     }
 `;
 
