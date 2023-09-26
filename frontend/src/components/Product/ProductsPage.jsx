@@ -157,22 +157,6 @@ const ProductsPage = () => {
     }, [])
 
 
-    // useEffect(() => {
-    //     if (productsMaxPrice && (productsMaxPrice > 0) && (priceMax < productsMaxPrice)) {
-    //         setPriceMax(productsMaxPrice);
-    //     }
-    //     // eslint-disable-next-line
-    // }, [productsMaxPrice]);
-
-
-    // useEffect(() => {
-    //     if (productsMinPrice && (productsMinPrice > 0) && (priceMin > productsMinPrice)) {
-    //         setPriceMin(productsMinPrice);
-    //     }
-    //     // eslint-disable-next-line
-    // }, [productsMinPrice]);
-
-
     useEffect(() => {
 
         if (minPrice && maxPrice) {
