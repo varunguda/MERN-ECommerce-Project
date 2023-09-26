@@ -32,8 +32,6 @@ const ProductsPage = () => {
 
 
     const [price, setPrice] = useState([0, 100000]);
-    // const [priceMax, setPriceMax] = useState(0);
-    // const [priceMin, setPriceMin] = useState(100000);
     const [sidebar, setSidebar] = useState(() => window.innerWidth < 1000 ? false : true);
     const [btnActive, setBtnActive] = useState(() => window.innerWidth < 1000 ? true : false);
     const [allBrands, setAllBrands] = useState([]);
