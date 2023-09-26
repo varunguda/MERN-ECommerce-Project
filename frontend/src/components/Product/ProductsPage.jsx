@@ -44,7 +44,7 @@ const ProductsPage = () => {
 
     const { getProducts } = bindActionCreators(actionCreators, dispatch);
 
-
+    
     useEffect(() => {
 
         const queryParams = new URLSearchParams(location.search);
@@ -89,6 +89,10 @@ const ProductsPage = () => {
         // eslint-disable-next-line
     }, [location.search]);
 
+    // useEffect(()=>{
+    //     console.log(brand);
+    //     setAllSelectedBrands(brand.split(","))
+    // }, [brand])
 
     useEffect(() => {
 
@@ -112,16 +116,26 @@ const ProductsPage = () => {
     
     useEffect(() => {
         if (keyword) {
-            console.log("fetching...");
-            getProducts(keyword, minPrice, maxPrice, page, category, brand, availability);
+            getProducts();
         }
         // eslint-disable-next-line
     }, [keyword, minPrice, maxPrice, page, category, brand, availability]);
 
 
     useEffect(()=>{
-        console.log(minPrice);
-    }, [minPrice])
+        if(brand && brand.split(",").length > 0 && selectedBrands.length === 0){
+            setAllSelectedBrands(brand.split(","));
+        }
+        // eslint-disable-next-line
+    }, [brand]);
+
+
+    useEffect(()=>{
+        if(selectedBrands.join(",") !== brand){
+            setBrand(selectedBrands.join(","));
+        }
+        // eslint-disable-next-line
+    }, [selectedBrands])
 
 
     useEffect(() => {
@@ -181,11 +195,6 @@ const ProductsPage = () => {
     }, [productsMinPrice, productsMaxPrice, minPrice, maxPrice]);
 
 
-    useEffect(()=>{
-        setBrand(selectedBrands.join(","));
-    // eslint-disable-next-line
-    }, [selectedBrands])
-
     const pageChangeHandler = (page) => {
         setPage(page);
     }
@@ -201,12 +210,7 @@ const ProductsPage = () => {
     }
 
     const brandsHandler = (e) => {
-        let exist = false;
-        selectedBrands.forEach((brand) => {
-            if(brand === e.target.name){
-                exist = true;
-            }
-        })
+        let exist = selectedBrands.some((brand) => brand === e.target.name);
         if(!exist){
             setAllSelectedBrands((prev) => [...prev].concat([e.target.name]));
         }
