@@ -46,7 +46,7 @@ export const getProducts = () => async(dispatch, getState) => {
             state.urlParams.page && `page=${state.urlParams.page}`
         ].filter(Boolean).join('&');
 
-        let link = `/api/v1/products?${queryParams}`;
+        let link = `/api/v1/products${queryParams ? '?'+queryParams : ''}`;
 
         const { data } = await axios.get(link);
         

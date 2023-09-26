@@ -1,24 +1,31 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { TfiSearch } from 'react-icons/tfi';
-import { useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { navigationActionCreators } from '../../../State/action-creators';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router';
 
 const SearchBar = () => {
+
+    const { keyword } = useSelector((state)=> state.urlParams);
 
     const [ searchText, setSearchText ] = useState("");
     const inputRef = useRef(null);
 
-    const dispatch = useDispatch();
-    const { setKeyword } = bindActionCreators( navigationActionCreators, dispatch );
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const handleSearchHandler = (e) => {
         e.preventDefault();
         if(searchText.trim()){
-            setKeyword(searchText);
+            if(location.pathname !== `/${searchText}`){
+                navigate(`/${encodeURIComponent(searchText)}?keyword=${encodeURIComponent(searchText)}`, { replace: false });
+            }
             inputRef.current.blur();
         }
     }
+
+    useEffect(()=>{
+        setSearchText(keyword);
+    }, [ keyword ])
 
     return (
         <form onSubmit={handleSearchHandler} className='searchbar-container'>
@@ -31,6 +38,7 @@ const SearchBar = () => {
                 onChange={(e)=>{
                     setSearchText(e.target.value)
                 }}
+                value={searchText}
                 ref={inputRef}
             />
 

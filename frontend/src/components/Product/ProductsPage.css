@@ -114,6 +114,10 @@
     background-color: var(--primary-hover-color);
 }
 
+.accordion__text .thumb-1{
+    direction: rtl;
+}
+
 
 
 @media screen and (max-width: 1200px) {

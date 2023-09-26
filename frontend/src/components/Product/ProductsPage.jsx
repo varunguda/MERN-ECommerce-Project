@@ -5,7 +5,7 @@ import DropdownButton from '../elements/Buttons/DropdownButton';
 import Accordian from "../Product/Accordion.jsx";
 import ProductCard from "../elements/Cards/ProductCard.jsx";
 import Paginate from "../elements/Pagination/Paginate.jsx";
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 import "./ProductsPage.css";
 import Metadata from '../Metadata';
@@ -13,76 +13,111 @@ import { bindActionCreators } from 'redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators, navigationActionCreators } from '../../State/action-creators';
 import Loader from '../layouts/Loader/Loader';
-import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { FiMoreHorizontal } from 'react-icons/fi';
 
 const ProductsPage = () => {
 
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    
-    const keyword = queryParams.get('keyword') || "";
-    const page = queryParams.get('page') || "";
-    const minPrice = queryParams.get('pricemin') || "";
-    const maxPrice = queryParams.get('pricemax') || "";
-    const category = queryParams.get('category') || "";
-    const availability = queryParams.get('availability') || "";
-    const brand = queryParams.get('brand') || "";
-    
-    
+    const { keyword, minPrice, maxPrice, page, category, brand, availability } = useSelector((state) => state.urlParams);
+
+    const { loading, products, productCount, productsMaxPrice, productsMinPrice, productsExist, allCategories, productsBrands } = useSelector((state) => state.products);
+
     const dispatch = useDispatch();
 
-    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability } = bindActionCreators( navigationActionCreators, dispatch );
+    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability } = bindActionCreators(navigationActionCreators, dispatch);
 
 
-    const [price, setPrice] = useState([0, 10000]);
-    const [priceMax, setPriceMax] = useState(0);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+
+    const [price, setPrice] = useState([0, 100000]);
+    // const [priceMax, setPriceMax] = useState(0);
+    // const [priceMin, setPriceMin] = useState(100000);
     const [sidebar, setSidebar] = useState(() => window.innerWidth < 1000 ? false : true);
     const [btnActive, setBtnActive] = useState(() => window.innerWidth < 1000 ? true : false);
     const [allBrands, setAllBrands] = useState([]);
+    // eslint-disable-next-line
     const [brandsSelected, setAllSelectedBrands] = useState([]);
     const sidebarRef = useRef(null);
     const btnRef = useRef(null);
 
-    const { loading, products, productCount, productsMaxPrice, productsExist, allCategories, productsBrands } = useSelector((state) => state.products);
 
     const { getProducts } = bindActionCreators(actionCreators, dispatch);
 
 
-    useEffect(()=>{
-        setKeyword(keyword);
-    }, [keyword])
+    useEffect(() => {
 
-    useEffect(()=>{
-        setMinPrice(minPrice);
-    }, [minPrice])
+        const queryParams = new URLSearchParams(location.search);
 
-    useEffect(()=>{
-        setMaxPrice(maxPrice);
-    }, [maxPrice])
+        const queryKeyword = queryParams.get('keyword');
+        const queryPage = queryParams.get('page');
+        const queryMinPrice = queryParams.get('pricemin');
+        const queryMaxPrice = queryParams.get('pricemax');
+        const queryCategory = queryParams.get('category');
+        const queryAvailability = queryParams.get('availability');
+        const queryBrand = queryParams.get('brand');
 
-    useEffect(()=>{
-        setCategory(category);
-    }, [category])
-    
-    useEffect(()=>{
-        setBrand(brand);
-    }, [brand])
+        queryKeyword ?
+            setKeyword(queryKeyword) :
+            setKeyword("")
 
-    useEffect(()=>{
-        setPage(page);
-    }, [page])
+        queryMinPrice ?
+            setMinPrice(queryMinPrice) :
+            setMinPrice(0)
 
-    useEffect(()=>{
-        setAvailability(availability);
-    }, [availability])
+        queryMaxPrice ?
+            setMaxPrice(queryMaxPrice) :
+            setMaxPrice(0)
+
+        queryCategory ?
+            setCategory(queryCategory) :
+            setCategory("")
+
+        queryPage ?
+            setPage(queryPage) :
+            setPage(0)
+
+        queryBrand ?
+            setBrand(queryBrand) :
+            setBrand("")
+
+        queryAvailability ?
+            setAvailability(queryAvailability) :
+            setAvailability("")
+
+
+        // eslint-disable-next-line
+    }, [location.search]);
 
 
     useEffect(() => {
-        getProducts();
+
+        if (keyword) {
+
+            const urlQuery = [
+                minPrice && `pricemin=${encodeURIComponent(minPrice)}`,
+                maxPrice && `pricemax=${encodeURIComponent(maxPrice)}`,
+                category && `category=${encodeURIComponent(category)}`,
+                availability && `availability=${encodeURIComponent(availability)}`,
+                brand && `brand=${encodeURIComponent(brand)}`,
+                page && `page=${encodeURIComponent(page)}`
+            ].filter(Boolean).join('&');
+
+            if (location.pathname + location.search !== `/${keyword}?keyword=${keyword}${urlQuery ? "&" + urlQuery : ""}`) {
+                navigate(`?keyword=${keyword}${urlQuery ? "&" + urlQuery : ""}`, { replace: false });
+            }
+        }
         // eslint-disable-next-line
-    }, [dispatch, keyword, minPrice, maxPrice, page, category, brand, availability]);
+    }, [keyword, minPrice, maxPrice, page, category, brand, availability]);
+
+
+    useEffect(() => {
+        if (keyword) {
+            getProducts();
+        }
+        // eslint-disable-next-line
+    }, [keyword, minPrice, maxPrice, page, category, brand, availability]);
 
 
     useEffect(() => {
@@ -124,25 +159,46 @@ const ProductsPage = () => {
     }, [])
 
 
-    
+    // useEffect(() => {
+    //     if (productsMaxPrice && (productsMaxPrice > 0) && (priceMax < productsMaxPrice)) {
+    //         setPriceMax(productsMaxPrice);
+    //     }
+    //     // eslint-disable-next-line
+    // }, [productsMaxPrice]);
+
+
+    // useEffect(() => {
+    //     if (productsMinPrice && (productsMinPrice > 0) && (priceMin > productsMinPrice)) {
+    //         setPriceMin(productsMinPrice);
+    //     }
+    //     // eslint-disable-next-line
+    // }, [productsMinPrice]);
+
+
     useEffect(() => {
-        if(price.every((val, index) => val !== [0, productsMaxPrice][index])){
-            setPrice([0, productsMaxPrice]);
-        }
-        // eslint-disable-next-line
-    }, []);
 
-    useEffect(()=>{
-        setPrice([minPrice, maxPrice]);
-    }, [minPrice, maxPrice])
+        if (minPrice && maxPrice) {
+            setPrice([minPrice, maxPrice]);
+        }
+        else {
+            if (productsMinPrice && productsMaxPrice) {
+                if ( (productsMinPrice !== productsMaxPrice) && (!price.every((val, index) => val === [productsMinPrice, productsMaxPrice][index]))) {
+                    setPrice([productsMinPrice, productsMaxPrice]);
+                }
+            }
+        }
+
+        // eslint-disable-next-line
+    }, [productsMinPrice, productsMaxPrice,  minPrice, maxPrice]);
 
 
     useEffect(() => {
-        if (productsMaxPrice && (productsMaxPrice > 0) && (priceMax === 0)) {
-            setPriceMax(productsMaxPrice);
-        }
-        // eslint-disable-next-line
-    }, [productsMaxPrice])
+        console.log(productsMinPrice, productsMaxPrice);
+    }, [productsMinPrice, productsMaxPrice])
+
+    useEffect(() => {
+        console.log(price);
+    }, [price])
 
 
     useEffect(() => {
@@ -165,6 +221,7 @@ const ProductsPage = () => {
     }
 
     const priceAfterChangeHandler = (newPriceRange) => {
+        setPrice([newPriceRange[0], newPriceRange[1]]);
         setMinPrice(newPriceRange[0]);
         setMaxPrice(newPriceRange[1]);
     }
@@ -174,18 +231,14 @@ const ProductsPage = () => {
     }
 
     const brandsHandler = (e) => {
-        setAllSelectedBrands(prev => prev.map((brand) => {
-            if (brand !== e.target.name) {
-                return brand;
-            }
-        }))
+        setAllSelectedBrands(prev => prev.filter((brand) => (brand !== e.target.name)))
     }
 
     const availabilityHandler = () => {
-        if(availability === "oos"){
+        if (availability === "oos") {
             setAvailability(undefined)
         }
-        else{
+        else {
             setAvailability("oos")
         }
     }
@@ -195,11 +248,12 @@ const ProductsPage = () => {
             {loading ? <Loader /> : (
                 <>
                     <Metadata title={`${keyword ? keyword.toUpperCase() : "Products"} - ManyIN`} />
-                    {(priceMax > 0 && productsExist) ? (
+                    {(productsMaxPrice > 0 && productsExist) ? (
 
                         <div className='products-page-container'>
 
                             <div className="products-page-header">
+
                                 <div className="header-section header1">
                                     <DropdownButton
                                         style={{ backgroundColor: "#f1f1f2" }}
@@ -207,37 +261,6 @@ const ProductsPage = () => {
                                         content={"hnn"}
                                     />
 
-                                    <DropdownButton
-                                        style={{ backgroundColor: "#f1f1f2" }}
-                                        name={"Price"}
-                                        content={"hnn"}
-                                    />
-                                    <DropdownButton
-                                        style={{ backgroundColor: "#f1f1f2" }}
-                                        name={"Price"}
-                                        content={"hnn"}
-                                    />
-
-                                    <DropdownButton
-                                        style={{
-                                            width: "260px",
-                                            padding: "40px 20px 30px 20px"
-                                        }}
-                                        name={"Price"}
-                                        content={
-                                            <>
-                                                <StyledSlider
-                                                    defaultValue={price}
-                                                    renderTrack={Track}
-                                                    renderThumb={Thumb}
-                                                    min={0}
-                                                    max={priceMax}
-                                                    minDistance={10}
-                                                    onAfterChange={priceAfterChangeHandler}
-                                                />
-                                            </>
-                                        }
-                                    />
                                 </div>
 
                                 <div className="header-section">
@@ -265,10 +288,10 @@ const ProductsPage = () => {
                                             title="Department"
                                             style={{ fontSize: "15px", fontWeight: "600" }}
                                             content={
-                                                (allCategories && (allCategories.length>0) && allCategories.map((category, index) => {
+                                                (allCategories && (allCategories.length > 0) && allCategories.map((category, index) => {
                                                     return (
                                                         <div key={index} className='checkboxes'>
-                                                            <input onClick={availabilityHandler} type="checkbox" name={`${category}`} id={`${category}`} readOnly/>
+                                                            <input onClick={availabilityHandler} type="checkbox" name={`${category}`} id={`${category}`} readOnly />
                                                             <label htmlFor={`${category}`}>{category}</label>
                                                         </div>
                                                     )
@@ -276,32 +299,32 @@ const ProductsPage = () => {
                                             }
                                         />
 
-                                        <Accordian
-                                            title="Price"
-                                            style={{ fontSize: "15px", fontWeight: "600" }}
-                                            content={
-                                                <>
+                                        {(productsMinPrice !== productsMaxPrice) && (price[0] >= productsMinPrice && price[1] <= productsMaxPrice) && (
+                                            <Accordian
+                                                title="Price"
+                                                style={{ fontSize: "15px", fontWeight: "600" }}
+                                                content={
                                                     <StyledSlider
                                                         defaultValue={price}
                                                         renderTrack={Track}
                                                         renderThumb={Thumb}
-                                                        min={0}
-                                                        max={priceMax}
-                                                        minDistance={10}
+                                                        min={productsMinPrice}
+                                                        max={productsMaxPrice}
+                                                        minDistance={0}
                                                         onAfterChange={priceAfterChangeHandler}
                                                     />
-                                                </>
-                                            }
-                                        />
+                                                }
+                                            />
+                                        )}
 
                                         <Accordian
                                             title="Brand"
                                             style={{ fontSize: "15px", fontWeight: "600" }}
                                             content={
-                                                (allBrands && (allBrands.length>0) && allBrands.map((brand, index) => {
+                                                (allBrands && (allBrands.length > 0) && allBrands.map((brand, index) => {
                                                     return (
                                                         <div key={index} className='checkboxes'>
-                                                            <input onClick={brandsHandler} checked={productsBrands.includes(brand)} type="checkbox" name={`${brand}`} id={`${brand}`} readOnly/>
+                                                            <input onClick={brandsHandler} checked={productsBrands.includes(brand)} type="checkbox" name={`${brand}`} id={`${brand}`} readOnly />
                                                             <label htmlFor={`${brand}`}>{brand}</label>
                                                         </div>
                                                     )
@@ -319,7 +342,7 @@ const ProductsPage = () => {
                                             style={{ fontSize: "15px", fontWeight: "600" }}
                                             content={
                                                 <div className='checkboxes'>
-                                                    <input onClick={availabilityHandler} checked={availability==="oos"} type="checkbox" name="availabilty" id="availability" readOnly/>
+                                                    <input onClick={availabilityHandler} checked={availability === "oos"} type="checkbox" name="availabilty" id="availability" readOnly />
                                                     <label htmlFor='availability'>Include Out of Stock</label>
                                                 </div>
                                             }
@@ -392,7 +415,6 @@ const StyledThumb = styled.div`
     border: 3px solid #0055a5;
     border-radius: 50%;
     cursor: pointer;
-    direction: rtl;
 
     &:focus {
         outline: none;
