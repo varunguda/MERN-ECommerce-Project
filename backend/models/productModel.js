@@ -106,10 +106,6 @@ const ProductSchema = new Schema({
         ref: "Review",
     },
 
-    // review_data:{
-    //     type: Object,
-    // },
-
     created_at: {
         type: Date,
         default: Date.now,
@@ -126,10 +122,6 @@ const ProductSchema = new Schema({
 
     // Category -- Mobiles
     ram: {
-        type: String,
-    },
-
-    rom: {
         type: String,
     },
 

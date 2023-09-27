@@ -37,6 +37,7 @@
     top: 210px;
     overflow-x: hidden;
     overflow-y: scroll;
+    letter-spacing: 0.02rem;
 }
 
 .products-page-sidebar.active{
@@ -132,6 +133,7 @@
 .products-page-sidebar .sb-label{
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
 }
 
