@@ -129,6 +129,18 @@
     text-decoration: 1px var(--secondary-color) underline;
 }
 
+.products-page-sidebar .sb-label{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.products-page-sidebar .sb-label span{
+    font-size: var(--small-content-font-size);
+    color: var(--light-font-color);
+}
+
+
 
 
 @media screen and (max-width: 1200px) {

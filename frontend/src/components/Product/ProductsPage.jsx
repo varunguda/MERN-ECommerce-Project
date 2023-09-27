@@ -36,6 +36,7 @@ const ProductsPage = () => {
     const [btnActive, setBtnActive] = useState(() => window.innerWidth < 1000 ? true : false);
     // eslint-disable-next-line
     const [selectedBrands, setAllSelectedBrands] = useState([]);
+    const [selectedCategories, setAllSelectedCategories] = useState([]);
     const [expandCategories, setExpandCategories] = useState(false);
     const [expandBrands, setExpandBrands] = useState(false);
     const sidebarRef = useRef(null);
@@ -44,7 +45,7 @@ const ProductsPage = () => {
 
     const { getProducts } = bindActionCreators(actionCreators, dispatch);
 
-    
+
     useEffect(() => {
 
         const queryParams = new URLSearchParams(location.search);
@@ -80,7 +81,7 @@ const ProductsPage = () => {
         queryBrand ?
             setBrand(queryBrand) :
             setBrand("")
-            
+
         queryAvailability ?
             setAvailability(queryAvailability) :
             setAvailability("")
@@ -89,10 +90,6 @@ const ProductsPage = () => {
         // eslint-disable-next-line
     }, [location.search]);
 
-    // useEffect(()=>{
-    //     console.log(brand);
-    //     setAllSelectedBrands(brand.split(","))
-    // }, [brand])
 
     useEffect(() => {
 
@@ -112,8 +109,8 @@ const ProductsPage = () => {
         }
         // eslint-disable-next-line
     }, [keyword, minPrice, maxPrice, page, category, brand, availability]);
-    
-    
+
+
     useEffect(() => {
         if (keyword) {
             getProducts();
@@ -123,19 +120,65 @@ const ProductsPage = () => {
 
 
     useEffect(()=>{
-        if(brand && brand.split(",").length > 0 && selectedBrands.length === 0){
+        setAllSelectedCategories([]);
+        setAllSelectedBrands([]);
+    }, [keyword])
+
+
+    useEffect(() => {
+        if (brand && brand.split(",").length > 0 && selectedBrands.length === 0) {
             setAllSelectedBrands(brand.split(","));
         }
         // eslint-disable-next-line
     }, [brand]);
 
 
-    useEffect(()=>{
-        if(selectedBrands.join(",") !== brand){
+    useEffect(() => {
+        if (selectedBrands.join(",") !== brand) {
             setBrand(selectedBrands.join(","));
         }
         // eslint-disable-next-line
-    }, [selectedBrands])
+    }, [selectedBrands]);
+
+
+    useEffect(() => {
+
+        if (category && category.split(",").length > 0 && selectedCategories.length === 0) {
+            setAllSelectedCategories(category.split(","));
+        }
+        else if (allCategories && (Object.keys(allCategories).length > 0) && selectedCategories.length === 0) {
+            Object.keys(allCategories).forEach(category => {
+                if (allCategories[category] > 0) {
+                    setAllSelectedCategories(prev => [...prev].concat([category]))
+                }
+            });
+        }
+        // eslint-disable-next-line
+    }, [category, allCategories]);
+
+
+    useEffect(() => {
+
+        if (allCategories && (Object.keys(allCategories).length > 0) && selectedCategories.length > 0) {
+
+            const checkCategory = () => {
+                if (selectedCategories.join(",") === Object.keys(allCategories).filter((category) => allCategories[category] > 0).join(",")) {
+                    return true;
+                }
+                return false;
+            }
+
+            if (!checkCategory()) {
+                if(selectedCategories.join(",") !== category){
+                    setCategory(selectedCategories.join(","));
+                }
+            }else{
+                setCategory("");
+            }
+        }
+
+        // eslint-disable-next-line
+    }, [selectedCategories])
 
 
     useEffect(() => {
@@ -211,10 +254,10 @@ const ProductsPage = () => {
 
     const brandsHandler = (e) => {
         let exist = selectedBrands.some((brand) => brand === e.target.name);
-        if(!exist){
+        if (!exist) {
             setAllSelectedBrands((prev) => [...prev].concat([e.target.name]));
         }
-        else{
+        else {
             setAllSelectedBrands((prev) => prev.filter((brand) => brand !== e.target.name));
         }
     }
@@ -234,6 +277,16 @@ const ProductsPage = () => {
 
     const toggleExpandBrands = () => {
         setExpandBrands(prev => !prev);
+    }
+
+    const selectCategoryHandler = (e) => {
+        let exist = selectedCategories.some((category) => category === e.target.name);
+        if (!exist) {
+            setAllSelectedCategories((prev) => [...prev].concat([e.target.name]));
+        }
+        else {
+            setAllSelectedCategories((prev) => prev.filter((category) => category !== e.target.name));
+        }
     }
 
 
@@ -284,11 +337,15 @@ const ProductsPage = () => {
                                             style={{ fontSize: "15px", fontWeight: "600" }}
                                             content={
                                                 <>
-                                                    {allCategories && (allCategories.length > 0) && allCategories.slice(0, expandCategories ? allCategories.length : 5).map((category, index) => {
+                                                    {Object.keys(allCategories) && (Object.keys(allCategories).length > 0) && Object.keys(allCategories).slice(0, expandCategories ? Object.keys(allCategories).length : 5).map((category, index) => {
                                                         return (
                                                             <div key={index} className='checkboxes'>
-                                                                <input onClick={availabilityHandler} type="checkbox" name={`${category}`} id={`${category}`} readOnly />
-                                                                <label htmlFor={`${category}`}>{category}</label>
+                                                                <input onClick={selectCategoryHandler} checked={selectedCategories.includes(category)} type="checkbox" name={`${category}`} id={`${category}`} readOnly />
+                                                                <label htmlFor={`${category}`}>
+                                                                    <div className='sb-label'>
+                                                                        {category}<span>{allCategories[category]}</span>
+                                                                    </div>
+                                                                </label>
                                                             </div>
                                                         )
                                                     })
