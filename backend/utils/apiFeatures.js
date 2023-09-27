@@ -30,7 +30,8 @@ export class ApiFeatures{
     filter(){
         const { category, pricemin, pricemax, brand, availability } = this.queryStr;
         if(category){
-            this.products = this.products.find({category})
+            let categoryArr = category.split(",")
+            this.products = this.products.find({ category: { $in: categoryArr } })
         }
         if(brand){
             let brandArr = brand.split(",")
