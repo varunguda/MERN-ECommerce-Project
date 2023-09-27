@@ -54,3 +54,11 @@ export const setPage = (page) => (dispatch) => {
         payload: page,
     })
 }
+
+
+export const setFacets = (facets) => (dispatch) => {
+    dispatch({
+        type: "SET_FACETS",
+        payload: facets
+    })
+}

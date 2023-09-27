@@ -122,7 +122,7 @@ const ProductSchema = new Schema({
 
     // Category -- Mobiles
     ram: {
-        type: String,
+        type: Number,
     },
 
     // Category -- Clothing, Shoes

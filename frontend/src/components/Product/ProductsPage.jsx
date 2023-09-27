@@ -19,13 +19,13 @@ import { ramFormatter, storageFormatter } from './utils';
 
 const ProductsPage = () => {
 
-    const { keyword, minPrice, maxPrice, page, category, brand, availability } = useSelector((state) => state.urlParams);
+    const { keyword, minPrice, maxPrice, page, category, brand, availability, facets } = useSelector((state) => state.urlParams);
 
     const { loading, products, productCount, productsMaxPrice, productsMinPrice, productsExist, allCategories, productsBrands, productsFilters } = useSelector((state) => state.products);
 
     const dispatch = useDispatch();
 
-    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability } = bindActionCreators(navigationActionCreators, dispatch);
+    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability, setFacets } = bindActionCreators(navigationActionCreators, dispatch);
 
 
     const location = useLocation();
@@ -35,11 +35,14 @@ const ProductsPage = () => {
     const [price, setPrice] = useState([0, 100000]);
     const [sidebar, setSidebar] = useState(() => window.innerWidth < 1000 ? false : true);
     const [btnActive, setBtnActive] = useState(() => window.innerWidth < 1000 ? true : false);
-    // eslint-disable-next-line
     const [selectedBrands, setAllSelectedBrands] = useState([]);
     const [selectedCategories, setAllSelectedCategories] = useState([]);
     const [expandCategories, setExpandCategories] = useState(false);
     const [expandBrands, setExpandBrands] = useState(false);
+    const [ selectedColors, setSelectedColors ] = useState([]);
+    const [ selectedRam, setSelectedRam ] = useState([]);
+    const [ selectedStorage, setSelectedStorage ] = useState([]);
+    const [ selectedQuantity, setSelectedQuantity ] = useState([]);
     const sidebarRef = useRef(null);
     const btnRef = useRef(null);
 
@@ -58,6 +61,7 @@ const ProductsPage = () => {
         const queryCategory = queryParams.get('category');
         const queryAvailability = queryParams.get('availability');
         const queryBrand = queryParams.get('brand');
+        const queryFacets = queryParams.get("facets");
 
         queryKeyword ?
             setKeyword(queryKeyword) :
@@ -87,6 +91,10 @@ const ProductsPage = () => {
             setAvailability(queryAvailability) :
             setAvailability("")
 
+        queryFacets ? 
+            setFacets(queryFacets) : 
+            setFacets("")
+
 
 
         // eslint-disable-next-line
@@ -102,7 +110,8 @@ const ProductsPage = () => {
                 category && `category=${encodeURIComponent(category)}`,
                 availability && `availability=${encodeURIComponent(availability)}`,
                 brand && `brand=${encodeURIComponent(brand)}`,
-                page && `page=${encodeURIComponent(page)}`
+                page && `page=${encodeURIComponent(page)}`,
+                facets && `facets=${encodeURIComponent(facets)}`
             ].filter(Boolean).join('&');
 
             if (location.pathname + location.search !== `/${keyword}?keyword=${keyword}${urlQuery ? "&" + urlQuery : ""}`) {
@@ -110,7 +119,7 @@ const ProductsPage = () => {
             }
         }
         // eslint-disable-next-line
-    }, [keyword, minPrice, maxPrice, page, category, brand, availability]);
+    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets]);
 
 
     useEffect(() => {
@@ -181,6 +190,34 @@ const ProductsPage = () => {
 
 
     useEffect(() => {
+
+        if (minPrice && maxPrice) {
+            setPrice([minPrice, maxPrice]);
+        }
+        else {
+            if (productsMinPrice && productsMaxPrice) {
+                if ((productsMinPrice !== productsMaxPrice) && (!price.every((val, index) => val === [productsMinPrice, productsMaxPrice][index]))) {
+                    setPrice([productsMinPrice, productsMaxPrice]);
+                }
+            }
+        }
+
+        // eslint-disable-next-line
+    }, [productsMinPrice, productsMaxPrice, minPrice, maxPrice]);
+
+
+    
+    useEffect(()=> {
+        console.log(facets);
+    }, [facets])
+
+
+
+
+
+
+
+    useEffect(() => {
         const hideSidebar = () => {
             if (window.innerWidth < 1000) {
                 setSidebar(false);
@@ -219,22 +256,6 @@ const ProductsPage = () => {
         // eslint-disable-next-line
     }, [])
 
-
-    useEffect(() => {
-
-        if (minPrice && maxPrice) {
-            setPrice([minPrice, maxPrice]);
-        }
-        else {
-            if (productsMinPrice && productsMaxPrice) {
-                if ((productsMinPrice !== productsMaxPrice) && (!price.every((val, index) => val === [productsMinPrice, productsMaxPrice][index]))) {
-                    setPrice([productsMinPrice, productsMaxPrice]);
-                }
-            }
-        }
-
-        // eslint-disable-next-line
-    }, [productsMinPrice, productsMaxPrice, minPrice, maxPrice]);
 
 
     const pageChangeHandler = (page) => {
@@ -285,6 +306,46 @@ const ProductsPage = () => {
         }
         else {
             setAllSelectedCategories((prev) => prev.filter((category) => category !== e.target.name));
+        }
+    }
+
+    const selectColorHandler = (e) =>{
+        let exist = selectedColors.some((color) => color === e.target.name);
+        if (!exist) {
+            setSelectedColors((prev) => [...prev].concat([e.target.name]));
+        }
+        else {
+            setSelectedColors((prev) => prev.filter((color) => color !== e.target.name));
+        }
+    }
+
+    const selectQuantityHandler = (e) => {
+        let exist = selectedQuantity.some((quan) => quan === e.target.name);
+        if (!exist) {
+            setSelectedQuantity((prev) => [...prev].concat([e.target.name]));
+        }
+        else {
+            setSelectedQuantity((prev) => prev.filter((quan) => quan !== e.target.name));
+        }
+    }
+
+    const selectRamHandler = (e) => {
+        let exist = selectedRam.some((ram) => ram === e.target.name);
+        if (!exist) {
+            setSelectedRam((prev) => [...prev].concat([e.target.name]));
+        }
+        else {
+            setSelectedRam((prev) => prev.filter((ram) => ram !== e.target.name));
+        }
+    }
+
+    const selectStorageHandler = (e) => {
+        let exist = selectedStorage.some((storage) => storage === e.target.name);
+        if (!exist) {
+            setSelectedStorage((prev) => [...prev].concat([e.target.name]));
+        }
+        else {
+            setSelectedStorage((prev) => prev.filter((storage) => storage !== e.target.name));
         }
     }
 
@@ -351,7 +412,7 @@ const ProductsPage = () => {
                                                     }
 
                                                     <div className='secondary-btn' onClick={toggleExpandCategories}>
-                                                        {(allCategories && allCategories.length > 5 && !expandCategories) ? "Show more" : "Show less"}
+                                                        {(!expandCategories && allCategories && Object.keys(allCategories).length > 5) ? "Show more" : "Show less"}
                                                     </div>
                                                 </>
                                             }
@@ -416,7 +477,23 @@ const ProductsPage = () => {
                                                                     
                                                                     return (
                                                                         <div key={index} className='checkboxes'>
-                                                                            <input type="checkbox" name={type} id={type} />
+                                                                            <input 
+                                                                                type="checkbox" 
+                                                                                name={type} 
+                                                                                id={type}
+                                                                                onClick={(e)=>{
+                                                                                    (filter === 'ram') ? selectRamHandler(e) : 
+                                                                                    (filter === 'storage') ? selectStorageHandler(e) : 
+                                                                                    (filter === 'quantity') ? selectQuantityHandler(e) :
+                                                                                    selectColorHandler(e);
+                                                                                }}
+                                                                                checked = {
+                                                                                    (filter === 'ram') ? selectedRam.includes(type) : 
+                                                                                    (filter === 'storage') ? selectedStorage.includes(type) : 
+                                                                                    (filter === 'quantity') ? selectedQuantity.includes(type) :
+                                                                                    selectedColors.includes(type)
+                                                                                }
+                                                                            />
 
                                                                             <label htmlFor={type}>
                                                                                 <div className='sb-label'>

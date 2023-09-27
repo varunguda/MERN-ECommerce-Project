@@ -556,7 +556,7 @@ const ProductPage = (props) => {
 
                                                 <div className="rating-section">
                                                     <div className="total-rating">No reviews yet!</div>
-                                                    <Stars value={0} size="13px" /><span>&nbsp;&nbsp; Be the first to write a review!</span>
+                                                    <Stars value={0} size="13px" /><span>&nbsp;&nbsp; Be the first to review this product!</span>
                                                     <br />
                                                     <button onClick={() => { openModal("an", "ans") }} className='primary-button'>
                                                         Write a review

@@ -39,6 +39,10 @@ export const navigationReducer = (initialState = {
             return ({ ...initialState, brand: action.payload })
         }
 
+        case "SET_FACETS": {
+            return ({...initialState, facets: action.payload });
+        }
+
         default: {
             return { ...initialState };
         }

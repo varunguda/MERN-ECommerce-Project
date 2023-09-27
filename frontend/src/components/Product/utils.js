@@ -48,7 +48,7 @@ export const ramFormatter = (num) => {
 
 export const storageFormatter = (num) =>{
     if(Number(num) >= 1000){
-        return `${Math.round(num/1000)}TB`
+        return `1TB & Up`
     }
     else{
         return `${num}GB`

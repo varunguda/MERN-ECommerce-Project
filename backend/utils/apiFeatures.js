@@ -1,11 +1,11 @@
-export class ApiFeatures{
+export class ApiFeatures {
 
-    constructor(products, queryStr){
+    constructor(products, queryStr) {
         this.products = products,
-        this.queryStr = queryStr
+            this.queryStr = queryStr
     }
 
-    search(){
+    search() {
         const keyword = this.queryStr.keyword ? {
             $or: [
                 {
@@ -21,35 +21,70 @@ export class ApiFeatures{
                     }
                 }
             ]
-        }: {};
+        } : {};
 
         this.products = this.products.find({ ...keyword });
         return this;
     }
 
-    filter(){
-        const { category, pricemin, pricemax, brand, availability } = this.queryStr;
-        if(category){
-            let categoryArr = category.split(",")
-            this.products = this.products.find({ category: { $in: categoryArr } })
+    filter() {
+        const { category, pricemin, pricemax, brand, availability, facets } = this.queryStr;
+        let query = {};
+
+        if (category) {
+            query.category = { $in: category.split(",") };
         }
-        if(brand){
-            let brandArr = brand.split(",")
-            this.products = this.products.find({ brand: { $in: brandArr } })
+
+        if (brand) {
+            query.brand = { $in: brand.split(",") };
         }
-        if(pricemin){
-            this.products = this.products.find({final_price: { $gte: parseFloat(pricemin) }})
+
+        if (pricemin) {
+            query.final_price = { $gte: parseFloat(pricemin) };
         }
-        if(pricemax){
-            this.products = this.products.find({final_price: { $lte:  parseFloat(pricemax) }})
+
+        if (pricemax) {
+            query.final_price = { ...query.final_price, $lte: parseFloat(pricemax) };
         }
-        if(!availability || availability !== "oos"){
-            this.products = this.products.find({ stock: {$ne: 0} });
+
+        if (!availability || availability !== "oos") {
+            query.stock = { $ne: 0 };
         }
+
+        if (facets) {
+
+            const facetsArray = facets.split('||');
+            console.log(facetsArray);
+
+            facetsArray.forEach(facet => {
+                const [key, value] = facet.split(':');
+
+                if(query[key] !== undefined){
+                    if(!Array.isArray(query[key])){
+                        query[key] = [value]
+                    }
+                    query[key].push(value);
+                }
+                else{
+                    query[key] = [value]
+                }
+
+
+                // if (key === '') {
+                    query = {
+                        $and: [
+                            { $and: [ { ram: { $eq: 32 } }, { ram: { $gte: 16 } } ] },
+                            { storage: { $gte: 1000 } }
+                        ]
+                    }
+                // }
+            })
+        }
+
+        this.products = this.products.find(query);
+
         return this;
     }
-
-    brands
 }
 
 
