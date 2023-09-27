@@ -24,6 +24,7 @@
 .accordion__title {
     color: var(--black-font-color);
     font-size: 15px;
+    text-transform: capitalize;
 }
 
 .accordion__icon {

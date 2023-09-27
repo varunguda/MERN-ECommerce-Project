@@ -30,3 +30,27 @@ export const getAllVariations = (products) => {
 
     return result;
 };
+
+
+
+export const ramFormatter = (num) => {
+    if(Number(num) === 16){
+        return `${num}GB & Up`
+    }
+    if(Number(num) === 3){
+        return `${num}GB & Under`
+    }
+    else{
+        return `${num}GB`
+    }
+}
+
+
+export const storageFormatter = (num) =>{
+    if(Number(num) >= 1000){
+        return `${Math.round(num/1000)}TB`
+    }
+    else{
+        return `${num}GB`
+    }
+}

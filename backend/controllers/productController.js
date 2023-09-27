@@ -16,7 +16,7 @@ const commonProperties = ["name", "description", "price", "images", "stock", "di
 const categoryConfig = {
 
     "Mobile Phone": {
-        properties: [...commonProperties, "ram", "rom", "color", "resolution", "processor"]
+        properties: [...commonProperties, "ram", "storage", "color", "resolution", "processor"]
     },
 
     "Laptop": {
@@ -83,6 +83,21 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     for (let i = 0; i < Object.keys(categoryConfig).length; i++) {
         categories[Object.keys(categoryConfig)[i]] = 0;
     }
+
+    // variations
+    let colorOptions = {};
+    let ramOptions = {
+        16 : 0,
+        12 : 0,
+        8 : 0,
+        6 : 0,
+        4 : 0,
+        3 : 0,
+    };
+    let storageOptions = {};
+    let processorOptions = [];
+    let quantityOptions = [];
+    
     
     if (keyword) {
         const existProducts = await Product.find({ $or: [{ name: { $regex: keyword, $options: "i" } }, { brand: { $regex: keyword, $options: "i" } }] });
@@ -99,13 +114,48 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
             if (!brands.includes(prod.brand)) {
                 brands.push(prod.brand)
             }
+            if(prod.color){
+                if(colorOptions[prod.color] === undefined){
+                    colorOptions[prod.color] = 1;
+                }
+                else if(colorOptions[prod.color] >= 0){
+                    colorOptions[prod.color] += 1;
+                }
+            }
+            if(prod.ram){
+                if( ramOptions[prod.ram] !== undefined && ramOptions[prod.ram] >= 0){
+                    ramOptions[prod.ram] += 1;
+                }
+                else if(prod.ram > 16){
+                    ramOptions[16] += 1;
+                }
+                else if(prod.ram < 3){
+                    ramOptions[3] += 1;
+                }
+            }
+            if(prod.storage){
+                if(storageOptions[prod.storage] === undefined){
+                    storageOptions[prod.storage] = 1;
+                }
+                else if(storageOptions[prod.storage] >= 0){
+                    storageOptions[prod.storage] += 1;
+                }
+            }
+            if(prod.processer && !processorOptions.includes(prod.processer)){
+                processorOptions.push(prod.processer);
+            }
+            if(prod.quantity && !quantityOptions.includes(prod.quantity)){
+                quantityOptions.push(prod.quantity);
+            }
             categories[prod.category] += 1;
         })
     }
     else {
         exist = true;
+        allProducts.forEach((prod) => {
+            categories[prod.category] += 1;
+        })
     }
-
 
 
     const products = pagination(allProducts, 20, req.query.page);
@@ -138,6 +188,25 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         images,
     }));
 
+
+    let filters = {};
+
+    if(Object.keys(colorOptions).reduce((count, color) =>{ return count + colorOptions[color] },0)){
+        filters = {...filters, colors: colorOptions}
+    }
+    if(Object.keys(ramOptions).reduce((count, ram) =>{ return count + ramOptions[ram] },0)){
+        filters = {...filters, ram: ramOptions}
+    }
+    if(Object.keys(storageOptions).reduce((count, storage) =>{ return count + storageOptions[storage] },0)){
+        filters = {...filters, storage: storageOptions}
+    }
+    if(quantityOptions.length){
+        filters.push("quantities");
+    }
+    if(processorOptions.length){
+        filters.push("processor type");
+    }
+
     return res.json({
         success: true,
         products: updatedProducts,
@@ -146,8 +215,9 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         min_price: minPrice,
         exist,
         brands,
-        categories
-    })
+        categories,
+        filters,
+    });
 })
 
 

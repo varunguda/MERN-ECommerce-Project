@@ -15,12 +15,13 @@ import { actionCreators, navigationActionCreators } from '../../State/action-cre
 import Loader from '../layouts/Loader/Loader';
 import { Link } from 'react-router-dom';
 import { FiMoreHorizontal } from 'react-icons/fi';
+import { ramFormatter, storageFormatter } from './utils';
 
 const ProductsPage = () => {
 
     const { keyword, minPrice, maxPrice, page, category, brand, availability } = useSelector((state) => state.urlParams);
 
-    const { loading, products, productCount, productsMaxPrice, productsMinPrice, productsExist, allCategories, productsBrands } = useSelector((state) => state.products);
+    const { loading, products, productCount, productsMaxPrice, productsMinPrice, productsExist, allCategories, productsBrands, productsFilters } = useSelector((state) => state.products);
 
     const dispatch = useDispatch();
 
@@ -87,6 +88,7 @@ const ProductsPage = () => {
             setAvailability("")
 
 
+
         // eslint-disable-next-line
     }, [location.search]);
 
@@ -119,12 +121,6 @@ const ProductsPage = () => {
     }, [keyword, minPrice, maxPrice, page, category, brand, availability]);
 
 
-    useEffect(()=>{
-        setAllSelectedCategories([]);
-        setAllSelectedBrands([]);
-    }, [keyword])
-
-
     useEffect(() => {
         if (brand && brand.split(",").length > 0 && selectedBrands.length === 0) {
             setAllSelectedBrands(brand.split(","));
@@ -143,15 +139,18 @@ const ProductsPage = () => {
 
     useEffect(() => {
 
-        if (category && category.split(",").length > 0 && selectedCategories.length === 0) {
+        if (category && category.split(",").length > 0 && selectedCategories.join(",") !== category) {
             setAllSelectedCategories(category.split(","));
         }
-        else if (allCategories && (Object.keys(allCategories).length > 0) && selectedCategories.length === 0) {
-            Object.keys(allCategories).forEach(category => {
-                if (allCategories[category] > 0) {
-                    setAllSelectedCategories(prev => [...prev].concat([category]))
-                }
-            });
+        else if (!category) {
+            setAllSelectedCategories([]);
+            if (allCategories && (Object.keys(allCategories).length > 0) && selectedCategories.length === 0) {
+                Object.keys(allCategories).forEach(category => {
+                    if (allCategories[category] > 0) {
+                        setAllSelectedCategories(prev => [...prev].concat([category]))
+                    }
+                })
+            }
         }
         // eslint-disable-next-line
     }, [category, allCategories]);
@@ -169,10 +168,10 @@ const ProductsPage = () => {
             }
 
             if (!checkCategory()) {
-                if(selectedCategories.join(",") !== category){
+                if (selectedCategories.join(",") !== category) {
                     setCategory(selectedCategories.join(","));
                 }
-            }else{
+            } else {
                 setCategory("");
             }
         }
@@ -402,10 +401,48 @@ const ProductsPage = () => {
                                             }
                                         />
 
-                                        <Accordian
-                                            title="Color"
-                                            style={{ fontSize: "15px", fontWeight: "600" }}
-                                        />
+
+                                        { productsFilters && Object.keys(productsFilters).length > 0 && (
+                                            Object.keys(productsFilters).map((filter, index) => (
+                                                <>
+                                                <Accordian
+                                                    key={index}
+                                                    title={filter}
+                                                    style={{ fontSize: "15px", fontWeight: "600" }}
+                                                    content={
+                                                        <>
+                                                            {
+                                                                (productsFilters[filter] && (Object.keys(productsFilters[filter]).length > 0) && Object.keys(productsFilters[filter]).map((type, index) => {
+                                                                    
+                                                                    return (
+                                                                        <div key={index} className='checkboxes'>
+                                                                            <input type="checkbox" name={type} id={type} />
+
+                                                                            <label htmlFor={type}>
+                                                                                <div className='sb-label'>
+                                                                                    {
+                                                                                        (filter === 'ram') ? ramFormatter(type) : 
+                                                                                        (filter === 'storage') ? storageFormatter(type) : 
+                                                                                        (filter === 'quantity') ? "" :
+                                                                                        type
+                                                                                    }
+                                                                                    <span>
+                                                                                        {productsFilters[filter][type]}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </label>
+                                                                        </div>
+                                                                    )
+                                                                }))
+                                                            }
+                                                        </>
+                                                    }
+                                                />
+                                                </>
+                                            ))
+                                        )}
+
+
 
                                         <Accordian
                                             title="Availability"
