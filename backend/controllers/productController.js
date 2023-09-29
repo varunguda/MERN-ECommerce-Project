@@ -188,11 +188,10 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         images,
     }));
 
-
     let filters = {};
 
     if(Object.keys(colorOptions).reduce((count, color) =>{ return count + colorOptions[color] },0)){
-        filters = {...filters, colors: colorOptions}
+        filters = {...filters, color: colorOptions}
     }
     if(Object.keys(ramOptions).reduce((count, ram) =>{ return count + ramOptions[ram] },0)){
         filters = {...filters, ram: ramOptions}

@@ -54,35 +54,77 @@ export class ApiFeatures {
         if (facets) {
 
             const facetsArray = facets.split('||');
-            console.log(facetsArray);
+            let ramValues = [];
 
             facetsArray.forEach(facet => {
                 const [key, value] = facet.split(':');
 
-                if(query[key] !== undefined){
-                    if(!Array.isArray(query[key])){
+
+                if (key === 'ram') {
+                    ramValues.push(parseInt(value));
+                } else if (query[key] !== undefined) {
+                    if (!Array.isArray(query[key])) {
                         query[key] = [value]
                     }
                     query[key].push(value);
                 }
-                else{
+                else {
                     query[key] = [value]
                 }
-
-
-                // if (key === '') {
-                    query = {
-                        $and: [
-                            { $and: [ { ram: { $eq: 32 } }, { ram: { $gte: 16 } } ] },
-                            { storage: { $gte: 1000 } }
-                        ]
-                    }
-                // }
             })
+
+            if (ramValues.length) {
+
+                if (ramValues.includes(16)) {
+                    query['$or'] = [{ 'ram': { $gte: parseInt(16) } }, ...query['$or'] || []];
+                }
+                if (ramValues.includes(3)) {
+                    query['$or'] = [{ 'ram': { $lte: parseInt(3) } }, ...query['$or'] || []];
+                }
+
+                let newRamValues = ramValues.filter(value => value !== 16 && value !== 3);
+
+                if (newRamValues.length === 0) {
+                    if (query["$or"].length === 1) {
+                        query.ram = { ...query['$or'][0]["ram"] }
+                        delete query["$or"];
+                    }
+                }
+                else if (newRamValues.length > 0) {
+                    if (newRamValues.length === ramValues.length) {
+                        query.ram = { $in: newRamValues }
+                    }
+                    else {
+                        query['$or'] = [{ 'ram': { $in: newRamValues } }, ...query['$or'] || []];
+                    }
+                }
+
+            }
+        }
+
+        const keyword = this.queryStr.keyword ? {
+            $or: [
+                {
+                    name: {
+                        $regex: this.queryStr.keyword,
+                        $options: "i"
+                    }
+                },
+                {
+                    brand: {
+                        $regex: this.queryStr.keyword,
+                        $options: "i",
+                    }
+                }
+            ]
+        } : {};
+
+        if(query["$or"]){
+            query['$and'] = [{ $or: query["$or"]}, {...keyword}];
+            delete query["$or"];
         }
 
         this.products = this.products.find(query);
-
         return this;
     }
 }

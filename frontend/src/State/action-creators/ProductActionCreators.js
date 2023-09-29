@@ -38,13 +38,13 @@ export const getProducts = () => async(dispatch, getState) => {
 
         const queryParams = [
             state.urlParams.keyword && `keyword=${state.urlParams.keyword}`,
+            state.urlParams.category && `category=${state.urlParams.category}`,
+            state.urlParams.brand && `brand=${state.urlParams.brand}`,
+            state.urlParams.facets && `facets=${state.urlParams.facets}`,
             state.urlParams.minPrice && `pricemin=${state.urlParams.minPrice}`,
             state.urlParams.maxPrice && `pricemax=${state.urlParams.maxPrice}`,
-            state.urlParams.category && `category=${state.urlParams.category}`,
             state.urlParams.availability && `availability=${state.urlParams.availability}`,
-            state.urlParams.brand && `brand=${state.urlParams.brand}`,
-            state.urlParams.page && `page=${state.urlParams.page}`,
-            state.urlParams.facets && `page=${state.urlParams.facets}`
+            state.urlParams.page && `page=${state.urlParams.page}`
         ].filter(Boolean).join('&');
 
         let link = `/api/v1/products${queryParams ? '?'+queryParams : ''}`;
