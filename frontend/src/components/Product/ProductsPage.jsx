@@ -137,7 +137,7 @@ const ProductsPage = () => {
         }
         // eslint-disable-next-line
     }, [brand]);
-
+    
 
     useEffect(() => {
         if (selectedBrands.join(",") !== brand) {
