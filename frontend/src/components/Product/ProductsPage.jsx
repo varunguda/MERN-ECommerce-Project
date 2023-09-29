@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ReactSlider from "react-slider";
 import DropdownButton from '../elements/Buttons/DropdownButton';
@@ -15,7 +15,7 @@ import { actionCreators, navigationActionCreators } from '../../State/action-cre
 import Loader from '../layouts/Loader/Loader';
 import { Link } from 'react-router-dom';
 import { FiMoreHorizontal } from 'react-icons/fi';
-import { ramFormatter, storageFormatter } from './utils';
+import { ramFormatter, removeDoublePipe, storageFormatter } from './utils';
 
 const ProductsPage = () => {
 
@@ -39,10 +39,10 @@ const ProductsPage = () => {
     const [selectedCategories, setAllSelectedCategories] = useState([]);
     const [expandCategories, setExpandCategories] = useState(false);
     const [expandBrands, setExpandBrands] = useState(false);
-    const [ selectedColors, setSelectedColors ] = useState([]);
-    const [ selectedRam, setSelectedRam ] = useState([]);
-    const [ selectedStorage, setSelectedStorage ] = useState([]);
-    const [ selectedQuantity, setSelectedQuantity ] = useState([]);
+    const [selectedColors, setSelectedColors] = useState([]);
+    const [selectedRam, setSelectedRam] = useState([]);
+    const [selectedStorage, setSelectedStorage] = useState([]);
+    const [selectedQuantity, setSelectedQuantity] = useState([]);
     const sidebarRef = useRef(null);
     const btnRef = useRef(null);
 
@@ -91,11 +91,9 @@ const ProductsPage = () => {
             setAvailability(queryAvailability) :
             setAvailability("")
 
-        queryFacets ? 
-            setFacets(queryFacets) : 
+        queryFacets ?
+            setFacets(queryFacets) :
             setFacets("")
-
-
 
         // eslint-disable-next-line
     }, [location.search]);
@@ -127,12 +125,15 @@ const ProductsPage = () => {
             getProducts();
         }
         // eslint-disable-next-line
-    }, [keyword, minPrice, maxPrice, page, category, brand, availability]);
+    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets]);
 
 
     useEffect(() => {
-        if (brand && brand.split(",").length > 0 && selectedBrands.length === 0) {
+        if (brand && brand.split(",").length > 0 && selectedBrands.length !== brand.split(",").length) {
             setAllSelectedBrands(brand.split(","));
+        }
+        else if (brand === "") {
+            setAllSelectedBrands([]);
         }
         // eslint-disable-next-line
     }, [brand]);
@@ -206,14 +207,126 @@ const ProductsPage = () => {
     }, [productsMinPrice, productsMaxPrice, minPrice, maxPrice]);
 
 
-    
-    useEffect(()=> {
-        console.log(facets);
-    }, [facets])
+
+    useEffect(() => {
+
+        if (facets && facets.split("||").length > 0 && productsFilters && Object.keys(productsFilters).length > 0) {
+
+            let facetColors = [];
+            let facetStorages = [];
+            let facetRams = [];
+            let facetQuantities = [];
+
+            facets.split("||").forEach((part) => {
+                const [key, val] = part.split(":");
+
+                (key === "color") && facetColors.push(val);
+                (key === "storage") && facetStorages.push(val);
+                (key === "ram") && facetRams.push(val);
+                (key === "quantity") && facetQuantities.push(val);
+
+                if (key === "color" && Object.keys(productsFilters).includes("color") && !selectedColors.includes(val)) {
+                    setSelectedColors(prev => [...prev].concat([val]));
+                }
+                else if (key === 'storage' && Object.keys(productsFilters).includes("storage") && !selectedStorage.includes(val)) {
+                    setSelectedStorage(prev => [...prev].concat([val]));
+                }
+                else if (key === 'ram' && Object.keys(productsFilters).includes("ram") && !selectedRam.includes(val)) {
+                    setSelectedRam(prev => [...prev].concat([val]));
+                }
+                else if (key === 'quantity' && Object.keys(productsFilters).includes("quantity") && !selectedQuantity.includes(val)) {
+                    setSelectedQuantity(prev => [...prev].concat([val]));
+                }
+            });
+
+
+            if (facetColors.length && facetColors.length < selectedColors.length) {
+                setSelectedColors(prev => prev.filter((color) => facetColors.includes(color)))
+            }
+            if (facetStorages.length < selectedStorage.length) {
+                setSelectedStorage(prev => prev.filter((storage) => facetStorages.includes(storage)))
+            }
+            if (facetRams.length < selectedRam.length) {
+                setSelectedRam(prev => prev.filter((ram) => facetRams.includes(ram)))
+            }
+            if (facetQuantities.length < selectedQuantity.length) {
+                setSelectedQuantity(prev => prev.filter((quantity) => facetQuantities.includes(quantity)))
+            }
+
+        }
+        else if (facets === "") {
+            setSelectedColors([]);
+            setSelectedRam([]);
+            setSelectedStorage([]);
+            setSelectedQuantity([]);
+        }
+
+        // eslint-disable-next-line
+    }, [facets, productsFilters]);
 
 
 
+    const applyFilter = (selectedValues, filterKey, facets, setFacets, defaultValue) => {
 
+        if (selectedValues && facets && facets !== "") {
+            if (selectedValues.length > 0) {
+                selectedValues.forEach((value) => {
+                    const parts = facets.split("||");
+                    let exist = false;
+
+                    parts.forEach((elem) => {
+                        const [key, val] = elem.split(":");
+                        if (key === filterKey && value === val) {
+                            exist = true;
+                        }
+                        if (key === filterKey && !selectedValues.includes(val)) {
+                            let newFacets = facets.replace(`${filterKey}:${val}`, "");
+                            setFacets(removeDoublePipe(newFacets));
+                        }
+                    });
+
+                    if (!exist) {
+                        let newFacets = facets + `||${filterKey}:${value}`;
+                        setFacets(removeDoublePipe(newFacets));
+                    }
+                });
+            } else {
+                const parts = facets.split("||");
+
+                parts.forEach((elem) => {
+                    const [key, val] = elem.split(":");
+
+                    if (key === filterKey) {
+                        let newFacets = facets.replace(`${filterKey}:${val}`, "");
+                        setFacets(removeDoublePipe(newFacets));
+                    }
+                });
+            }
+        } else if (facets === "" && selectedValues.length > 0) {
+            setFacets(`${filterKey}:${selectedValues[0]}`);
+        }
+    };
+
+
+    useEffect(() => {
+        applyFilter(selectedColors, 'color', facets, setFacets, '');
+        // eslint-disable-next-line
+    }, [selectedColors]);
+
+    useEffect(() => {
+        applyFilter(selectedRam, 'ram', facets, setFacets, '');
+        // eslint-disable-next-line
+    }, [selectedRam]);
+
+    useEffect(() => {
+        applyFilter(selectedStorage, 'storage', facets, setFacets, '');
+        // eslint-disable-next-line
+    }, [selectedStorage]);
+
+    useEffect(() => {
+        applyFilter(selectedQuantity, 'quantity', facets, setFacets, '');
+        // eslint-disable-next-line
+    }, [selectedQuantity]);
 
 
 
@@ -272,16 +385,6 @@ const ProductsPage = () => {
         setSidebar(prev => !prev);
     }
 
-    const brandsHandler = (e) => {
-        let exist = selectedBrands.some((brand) => brand === e.target.name);
-        if (!exist) {
-            setAllSelectedBrands((prev) => [...prev].concat([e.target.name]));
-        }
-        else {
-            setAllSelectedBrands((prev) => prev.filter((brand) => brand !== e.target.name));
-        }
-    }
-
     const availabilityHandler = () => {
         if (availability === "oos") {
             setAvailability(undefined)
@@ -299,55 +402,39 @@ const ProductsPage = () => {
         setExpandBrands(prev => !prev);
     }
 
-    const selectCategoryHandler = (e) => {
-        let exist = selectedCategories.some((category) => category === e.target.name);
-        if (!exist) {
-            setAllSelectedCategories((prev) => [...prev].concat([e.target.name]));
-        }
-        else {
-            setAllSelectedCategories((prev) => prev.filter((category) => category !== e.target.name));
-        }
-    }
+    const handleCheckboxSelection = (value, setSelectedValues, allSelectedValues) => {
+        const exist = allSelectedValues.includes(value);
 
-    const selectColorHandler = (e) =>{
-        let exist = selectedColors.some((color) => color === e.target.name);
         if (!exist) {
-            setSelectedColors((prev) => [...prev].concat([e.target.name]));
+            setSelectedValues((prev) => [...prev, value]);
+        } else {
+            setSelectedValues((prev) => prev.filter((val) => val !== value));
         }
-        else {
-            setSelectedColors((prev) => prev.filter((color) => color !== e.target.name));
-        }
-    }
+    };
+
+    const brandsHandler = (e) => {
+        handleCheckboxSelection(e.target.name, setAllSelectedBrands, selectedBrands);
+    };
+
+    const selectCategoryHandler = (e) => {
+        handleCheckboxSelection(e.target.name, setAllSelectedCategories, selectedCategories);
+    };
+
+    const selectColorHandler = (e) => {
+        handleCheckboxSelection(e.target.name, setSelectedColors, selectedColors);
+    };
 
     const selectQuantityHandler = (e) => {
-        let exist = selectedQuantity.some((quan) => quan === e.target.name);
-        if (!exist) {
-            setSelectedQuantity((prev) => [...prev].concat([e.target.name]));
-        }
-        else {
-            setSelectedQuantity((prev) => prev.filter((quan) => quan !== e.target.name));
-        }
-    }
+        handleCheckboxSelection(e.target.name, setSelectedQuantity, selectedQuantity);
+    };
 
     const selectRamHandler = (e) => {
-        let exist = selectedRam.some((ram) => ram === e.target.name);
-        if (!exist) {
-            setSelectedRam((prev) => [...prev].concat([e.target.name]));
-        }
-        else {
-            setSelectedRam((prev) => prev.filter((ram) => ram !== e.target.name));
-        }
-    }
+        handleCheckboxSelection(e.target.name, setSelectedRam, selectedRam);
+    };
 
     const selectStorageHandler = (e) => {
-        let exist = selectedStorage.some((storage) => storage === e.target.name);
-        if (!exist) {
-            setSelectedStorage((prev) => [...prev].concat([e.target.name]));
-        }
-        else {
-            setSelectedStorage((prev) => prev.filter((storage) => storage !== e.target.name));
-        }
-    }
+        handleCheckboxSelection(e.target.name, setSelectedStorage, selectedStorage);
+    };
 
 
     return (
@@ -463,59 +550,59 @@ const ProductsPage = () => {
                                         />
 
 
-                                        { productsFilters && Object.keys(productsFilters).length > 0 && (
+                                        {productsFilters && Object.keys(productsFilters).length > 0 && (
                                             Object.keys(productsFilters).map((filter, index) => (
-                                                <>
-                                                <Accordian
-                                                    key={index}
-                                                    title={filter}
-                                                    style={{ fontSize: "15px", fontWeight: "600" }}
-                                                    content={
-                                                        <>
-                                                            {
-                                                                (productsFilters[filter] && (Object.keys(productsFilters[filter]).length > 0) && Object.keys(productsFilters[filter]).map((type, index) => {
-                                                                    
-                                                                    return (
-                                                                        <div key={index} className='checkboxes'>
-                                                                            <input 
-                                                                                type="checkbox" 
-                                                                                name={type} 
-                                                                                id={type}
-                                                                                onClick={(e)=>{
-                                                                                    (filter === 'ram') ? selectRamHandler(e) : 
-                                                                                    (filter === 'storage') ? selectStorageHandler(e) : 
-                                                                                    (filter === 'quantity') ? selectQuantityHandler(e) :
-                                                                                    selectColorHandler(e);
-                                                                                }}
-                                                                                checked = {
-                                                                                    (filter === 'ram') ? selectedRam.includes(type) : 
-                                                                                    (filter === 'storage') ? selectedStorage.includes(type) : 
-                                                                                    (filter === 'quantity') ? selectedQuantity.includes(type) :
-                                                                                    selectedColors.includes(type)
-                                                                                }
-                                                                            />
+                                                <Fragment key={index}>
+                                                    <Accordian
+                                                        title={filter}
+                                                        style={{ fontSize: "15px", fontWeight: "600" }}
+                                                        content={
+                                                            <>
+                                                                {
+                                                                    (productsFilters[filter] && (Object.keys(productsFilters[filter]).length > 0) && Object.keys(productsFilters[filter]).map((type, index) => {
 
-                                                                            <label htmlFor={type}>
-                                                                                <div className='sb-label'>
-                                                                                    {
-                                                                                        (filter === 'ram') ? ramFormatter(type) : 
-                                                                                        (filter === 'storage') ? storageFormatter(type) : 
-                                                                                        (filter === 'quantity') ? "" :
-                                                                                        type
+                                                                        return (
+                                                                            <div key={index} className='checkboxes'>
+                                                                                <input
+                                                                                    type="checkbox"
+                                                                                    name={type}
+                                                                                    id={type}
+                                                                                    onClick={(e) => {
+                                                                                        (filter === 'ram') ? selectRamHandler(e) :
+                                                                                            (filter === 'storage') ? selectStorageHandler(e) :
+                                                                                                (filter === 'quantity') ? selectQuantityHandler(e) :
+                                                                                                    selectColorHandler(e);
+                                                                                    }}
+                                                                                    checked={
+                                                                                        (filter === 'ram') ? selectedRam.includes(type) :
+                                                                                            (filter === 'storage') ? selectedStorage.includes(type) :
+                                                                                                (filter === 'quantity') ? selectedQuantity.includes(type) :
+                                                                                                    selectedColors.includes(type)
                                                                                     }
-                                                                                    <span>
-                                                                                        {productsFilters[filter][type]}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </label>
-                                                                        </div>
-                                                                    )
-                                                                }))
-                                                            }
-                                                        </>
-                                                    }
-                                                />
-                                                </>
+                                                                                    readOnly
+                                                                                />
+
+                                                                                <label htmlFor={type}>
+                                                                                    <div className='sb-label'>
+                                                                                        {
+                                                                                            (filter === 'ram') ? ramFormatter(type) :
+                                                                                                (filter === 'storage') ? storageFormatter(type) :
+                                                                                                    (filter === 'quantity') ? "" :
+                                                                                                        type
+                                                                                        }
+                                                                                        <span>
+                                                                                            {productsFilters[filter][type]}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </label>
+                                                                            </div>
+                                                                        )
+                                                                    }))
+                                                                }
+                                                            </>
+                                                        }
+                                                    />
+                                                </Fragment>
                                             ))
                                         )}
 

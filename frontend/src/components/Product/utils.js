@@ -34,23 +34,36 @@ export const getAllVariations = (products) => {
 
 
 export const ramFormatter = (num) => {
-    if(Number(num) === 16){
+    if (Number(num) === 16) {
         return `${num}GB & Up`
     }
-    if(Number(num) === 3){
+    if (Number(num) === 3) {
         return `${num}GB & Under`
     }
-    else{
+    else {
         return `${num}GB`
     }
 }
 
 
-export const storageFormatter = (num) =>{
-    if(Number(num) >= 1000){
-        return `1TB & Up`
+export const storageFormatter = (num) => {
+    if (Number(num) >= 1000) {
+        return `${num / 1000}TB`
     }
-    else{
+    else {
         return `${num}GB`
     }
+}
+
+
+export const removeDoublePipe = (str) => {
+    while (str.startsWith('||')) {
+        str = str.slice(2);
+    }
+
+    while (str.endsWith('||')) {
+        str = str.slice(0, -2);
+    }
+
+    return str;
 }
