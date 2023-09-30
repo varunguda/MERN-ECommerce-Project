@@ -43,6 +43,7 @@ export const getProducts = () => async(dispatch, getState) => {
             state.urlParams.facets && `facets=${state.urlParams.facets}`,
             state.urlParams.minPrice && `pricemin=${state.urlParams.minPrice}`,
             state.urlParams.maxPrice && `pricemax=${state.urlParams.maxPrice}`,
+            state.urlParams.c_ratings && `c_ratings=${state.urlParams.c_ratings}`,
             state.urlParams.availability && `availability=${state.urlParams.availability}`,
             state.urlParams.page && `page=${state.urlParams.page}`
         ].filter(Boolean).join('&');

@@ -84,7 +84,8 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         categories[Object.keys(categoryConfig)[i]] = 0;
     }
 
-    // variations
+
+    // variations or facets
     let colorOptions = {};
     let ramOptions = {
         16 : 0,
@@ -158,6 +159,14 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     }
 
 
+    let customer_ratings = {
+        5: 0,
+        4: 0,
+        3: 0,
+        2: 0,
+        1: 0,
+    }
+
     const products = pagination(allProducts, 20, req.query.page);
 
     let updatedProducts = [];
@@ -166,9 +175,10 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         if (products[i].review_id) {
             const review_data = await Review.findById(products[i].review_id);
             updatedProducts.push({ rating: review_data.rating, total_reviews: review_data.total_reviews, ...products[i]._doc });
+            customer_ratings[review_data.rating] += 1;
         }
         else {
-            updatedProducts.push({ ...products[i]._doc })
+            updatedProducts.push({ ...products[i]._doc });
         }
     }
 
@@ -187,6 +197,13 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         discount_percent,
         images,
     }));
+
+    const queryRatings = req.query.c_ratings;
+    if(queryRatings && queryRatings.split(",").length > 0){
+        const reviewsArr =  queryRatings.split(",");
+        updatedProducts = updatedProducts.filter((prod) => prod.rating && reviewsArr.includes(prod.rating.toString()));
+    }
+
 
     let filters = {};
 
@@ -216,6 +233,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         brands,
         categories,
         filters,
+        customer_ratings
     });
 })
 

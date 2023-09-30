@@ -62,3 +62,11 @@ export const setFacets = (facets) => (dispatch) => {
         payload: facets
     })
 }
+
+
+export const setRatings = (rating) => (dispatch) => {
+    dispatch({
+        type: "SET_RATINGS",
+        payload: rating,
+    })
+}

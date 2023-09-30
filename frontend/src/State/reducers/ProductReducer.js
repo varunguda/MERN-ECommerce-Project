@@ -44,6 +44,7 @@ export const productReducer = ( state = { products: [] }, action ) => {
                 productsBrands: action.payload.brands,
                 allCategories: action.payload.categories,
                 productsFilters: action.payload.filters,
+                productsRatings: action.payload.customer_ratings
             })
         }
 
