@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { ramFormatter, removeDoublePipe, storageFormatter } from './utils';
 import Stars from '../elements/Cards/Stars';
+import CrossButton from '../elements/Buttons/CrossButton';
 
 const ProductsPage = () => {
 
@@ -162,13 +163,25 @@ const ProductsPage = () => {
             setSelectedCategories(category.split(","));
         }
         else if (!category) {
-            setSelectedCategories([]);
-            if (allCategories && (Object.keys(allCategories).length > 0) && selectedCategories.length === 0) {
-                Object.keys(allCategories).forEach(category => {
-                    if (allCategories[category] > 0) {
-                        setSelectedCategories(prev => [...prev].concat([category]))
+            
+            if (allCategories && (Object.keys(allCategories).length > 0)) {
+
+                let productCategories = Object.keys(allCategories).filter(category => allCategories[category] > 0);
+
+                console.log(productCategories);
+
+                productCategories.forEach(category => {
+                    if(!selectedCategories.includes(category)){
+                        setSelectedCategories(["MMM"]);
                     }
                 })
+
+                console.log(selectedCategories);
+
+                if(selectedCategories.length !== productCategories.length){
+                    let newSelectedCategories = selectedCategories.filter((category)=> productCategories.includes(category));
+                    setSelectedCategories(newSelectedCategories);
+                }
             }
         }
         // eslint-disable-next-line
@@ -196,27 +209,31 @@ const ProductsPage = () => {
         }
 
         // eslint-disable-next-line
-    }, [selectedCategories])
+    }, [selectedCategories]);
 
 
     useEffect(() => {
 
-        if (minPrice && maxPrice) {
+        if (minPrice === productsMinPrice && maxPrice === productsMaxPrice) {
+            setMinPrice(0);
+            setMaxPrice(0)
+        }
+
+        if (minPrice && maxPrice && (minPrice !== maxPrice)) {
             setPrice([minPrice, maxPrice]);
         }
-        else {
-            if (productsMinPrice && productsMaxPrice) {
-                if ((productsMinPrice !== productsMaxPrice) && (!price.every((val, index) => val === [productsMinPrice, productsMaxPrice][index]))) {
-                    setPrice([productsMinPrice, productsMaxPrice]);
-                }
+        else if (productsMinPrice && productsMaxPrice) {
+            if ((productsMinPrice !== productsMaxPrice) && (!price.every((val, index) => val === [productsMinPrice, productsMaxPrice][index]))) {
+                setPrice([productsMinPrice, productsMaxPrice]);
             }
         }
 
         // eslint-disable-next-line
-    }, [productsMinPrice, productsMaxPrice, minPrice, maxPrice]);
+    }, [minPrice, maxPrice, productsMinPrice, productsMaxPrice]);
 
 
     useEffect(() => {
+
 
         if (facets && facets.split("||").length > 0 && productsFilters && Object.keys(productsFilters).length > 0) {
 
@@ -233,6 +250,7 @@ const ProductsPage = () => {
                 (key === "ram") && facetRams.push(val);
                 (key === "quantity") && facetQuantities.push(val);
 
+                console.log(key === "color" && Object.keys(productsFilters).includes("color") && !selectedColors.includes(val));
                 if (key === "color" && Object.keys(productsFilters).includes("color") && !selectedColors.includes(val)) {
                     setSelectedColors(prev => [...prev].concat([val]));
                 }
@@ -262,7 +280,7 @@ const ProductsPage = () => {
             }
 
         }
-        else if (facets === "") {
+        else if (facets === "" && productsFilters && Object.keys(productsFilters).length > 0) {
             setSelectedColors([]);
             setSelectedRam([]);
             setSelectedStorage([]);
@@ -273,8 +291,7 @@ const ProductsPage = () => {
     }, [facets, productsFilters]);
 
 
-
-    const applyFilter = (selectedValues, filterKey, facets, setFacets, defaultValue) => {
+    const applyFilter = (selectedValues, filterKey, facets, setFacets) => {
 
         if (selectedValues && facets && facets !== "") {
             if (selectedValues.length > 0) {
@@ -317,22 +334,22 @@ const ProductsPage = () => {
 
 
     useEffect(() => {
-        applyFilter(selectedColors, 'color', facets, setFacets, '');
+        applyFilter(selectedColors, 'color', facets, setFacets);
         // eslint-disable-next-line
     }, [selectedColors]);
 
     useEffect(() => {
-        applyFilter(selectedRam, 'ram', facets, setFacets, '');
+        applyFilter(selectedRam, 'ram', facets, setFacets);
         // eslint-disable-next-line
     }, [selectedRam]);
 
     useEffect(() => {
-        applyFilter(selectedStorage, 'storage', facets, setFacets, '');
+        applyFilter(selectedStorage, 'storage', facets, setFacets);
         // eslint-disable-next-line
     }, [selectedStorage]);
 
     useEffect(() => {
-        applyFilter(selectedQuantity, 'quantity', facets, setFacets, '');
+        applyFilter(selectedQuantity, 'quantity', facets, setFacets);
         // eslint-disable-next-line
     }, [selectedQuantity]);
 
@@ -413,7 +430,7 @@ const ProductsPage = () => {
 
     const availabilityHandler = () => {
         if (availability === "oos") {
-            setAvailability(undefined)
+            setAvailability("")
         }
         else {
             setAvailability("oos")
@@ -429,13 +446,20 @@ const ProductsPage = () => {
     }
 
     const handleCheckboxSelection = (value, setSelectedValues, allSelectedValues) => {
+
         const exist = allSelectedValues.includes(value);
 
         if (!exist) {
             setSelectedValues((prev) => [...prev, value]);
         } else {
-            setSelectedValues((prev) => prev.filter((val) => val !== value));
+            if (allSelectedValues === selectedCategories && selectedCategories.length === 1) {
+                return;
+            }
+            else{
+                setSelectedValues((prev) => prev.filter((val) => val !== value));
+            }
         }
+
     };
 
     const brandsHandler = (e) => {
@@ -465,7 +489,13 @@ const ProductsPage = () => {
     const ratingsClickHandler = (e) => {
         handleCheckboxSelection(e.target.name, setSelectedRatings, selectedRatings);
     }
-    
+
+
+    const removeFilter = (val, setSelectedValues, allSelectedValues) => {
+        const newValues = allSelectedValues.filter((elem) => elem !== val);
+        setSelectedValues(newValues);
+    }
+
 
     return (
         <>
@@ -481,11 +511,95 @@ const ProductsPage = () => {
 
                                 <div className="header-section header1">
 
-                                    <DropdownButton
-                                        style={{ backgroundColor: "#f1f1f2" }}
-                                        name={"Price"}
-                                        content={"hnn"}
-                                    />
+                                    <div className='filters-shortcuts'>
+
+                                        {selectedCategories && selectedCategories.map((category, index) => {
+                                            return (
+                                                <CrossButton
+                                                    key={index}
+                                                    onClick={() => {
+                                                        if(selectedCategories.length > 1){
+                                                            removeFilter(category, setSelectedCategories, selectedCategories)
+                                                        }
+                                                    }}
+                                                    content={category}
+                                                />
+                                            )
+                                        })}
+
+                                        {((minPrice > 0) && (maxPrice > 0) && (minPrice !== productsMinPrice) && (maxPrice !== productsMaxPrice)) && (
+                                            <CrossButton
+                                                onClick={() => {
+                                                    setMinPrice(0);
+                                                    setMaxPrice(0);
+                                                }}
+                                                content={
+                                                    <>
+                                                        <span style={{ fontWeight: 600 }}>Range:</span>
+                                                        {`${minPrice} - ${maxPrice}`}
+                                                    </>
+                                                }
+                                            />
+                                        )}
+
+                                        {selectedBrands && selectedBrands.map((brand, index) => {
+                                            return (
+                                                <CrossButton
+                                                    key={index}
+                                                    onClick={() => removeFilter(brand, setSelectedBrands, selectedBrands)}
+                                                    content={brand}
+                                                />
+                                            )
+                                        })}
+
+                                        {selectedColors && selectedColors.map((col, index) => {
+                                            return (
+                                                <CrossButton
+                                                    key={index}
+                                                    onClick={() => removeFilter(col, setSelectedColors, selectedColors)}
+                                                    content={col}
+                                                />
+                                            )
+                                        })}
+
+                                        {selectedRam && selectedRam.map((ram, index) => {
+                                            return (
+                                                <CrossButton
+                                                    key={index}
+                                                    onClick={() => removeFilter(ram, setSelectedRam, selectedRam)}
+                                                    content={ramFormatter(ram)}
+                                                />
+                                            )
+                                        })}
+
+                                        {selectedStorage && selectedStorage.map((storage, index) => {
+                                            return (
+                                                <CrossButton
+                                                    key={index}
+                                                    onClick={() => removeFilter(storage, setSelectedStorage, selectedStorage)}
+                                                    content={storageFormatter(storage)}
+                                                />
+                                            )
+                                        })}
+
+                                        {selectedQuantity && selectedQuantity.map((quantity, index) => {
+                                            return (
+                                                <CrossButton
+                                                    key={index}
+                                                    onClick={() => removeFilter(quantity, setSelectedQuantity, selectedQuantity)}
+                                                    content={quantity}
+                                                />
+                                            )
+                                        })}
+
+                                        {availability && availability === 'oos' &&
+                                            <CrossButton
+                                                onClick={availabilityHandler}
+                                                content={"Out of stock"}
+                                            />
+                                        }
+
+                                    </div>
 
                                 </div>
 
