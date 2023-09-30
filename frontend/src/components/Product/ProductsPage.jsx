@@ -16,16 +16,17 @@ import Loader from '../layouts/Loader/Loader';
 import { Link } from 'react-router-dom';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { ramFormatter, removeDoublePipe, storageFormatter } from './utils';
+import Stars from '../elements/Cards/Stars';
 
 const ProductsPage = () => {
 
-    const { keyword, minPrice, maxPrice, page, category, brand, availability, facets } = useSelector((state) => state.urlParams);
+    const { keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings } = useSelector((state) => state.urlParams);
 
-    const { loading, products, productCount, productsMaxPrice, productsMinPrice, productsExist, allCategories, productsBrands, productsFilters } = useSelector((state) => state.products);
+    const { loading, products, productCount, productsMaxPrice, productsMinPrice, productsExist, allCategories, productsBrands, productsFilters, productsRatings } = useSelector((state) => state.products);
 
     const dispatch = useDispatch();
 
-    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability, setFacets } = bindActionCreators(navigationActionCreators, dispatch);
+    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability, setFacets, setRatings } = bindActionCreators(navigationActionCreators, dispatch);
 
 
     const location = useLocation();
@@ -35,14 +36,15 @@ const ProductsPage = () => {
     const [price, setPrice] = useState([0, 100000]);
     const [sidebar, setSidebar] = useState(() => window.innerWidth < 1000 ? false : true);
     const [btnActive, setBtnActive] = useState(() => window.innerWidth < 1000 ? true : false);
-    const [selectedBrands, setAllSelectedBrands] = useState([]);
-    const [selectedCategories, setAllSelectedCategories] = useState([]);
+    const [selectedBrands, setSelectedBrands] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [expandCategories, setExpandCategories] = useState(false);
     const [expandBrands, setExpandBrands] = useState(false);
     const [selectedColors, setSelectedColors] = useState([]);
     const [selectedRam, setSelectedRam] = useState([]);
     const [selectedStorage, setSelectedStorage] = useState([]);
     const [selectedQuantity, setSelectedQuantity] = useState([]);
+    const [selectedRatings, setSelectedRatings] = useState([]);
     const sidebarRef = useRef(null);
     const btnRef = useRef(null);
 
@@ -62,6 +64,7 @@ const ProductsPage = () => {
         const queryAvailability = queryParams.get('availability');
         const queryBrand = queryParams.get('brand');
         const queryFacets = queryParams.get("facets");
+        const queryRatings = queryParams.get("c_ratings");
 
         queryKeyword ?
             setKeyword(queryKeyword) :
@@ -95,6 +98,11 @@ const ProductsPage = () => {
             setFacets(queryFacets) :
             setFacets("")
 
+        queryRatings ?
+            setRatings(queryRatings) :
+            setRatings("");
+
+
         // eslint-disable-next-line
     }, [location.search]);
 
@@ -103,13 +111,14 @@ const ProductsPage = () => {
 
         if (keyword) {
             const urlQuery = [
+                category && `category=${encodeURIComponent(category)}`,
+                brand && `brand=${encodeURIComponent(brand)}`,
+                facets && `facets=${encodeURIComponent(facets)}`,
+                c_ratings && `c_ratings=${encodeURIComponent(c_ratings)}`,
+                availability && `availability=${encodeURIComponent(availability)}`,
                 minPrice && `pricemin=${encodeURIComponent(minPrice)}`,
                 maxPrice && `pricemax=${encodeURIComponent(maxPrice)}`,
-                category && `category=${encodeURIComponent(category)}`,
-                availability && `availability=${encodeURIComponent(availability)}`,
-                brand && `brand=${encodeURIComponent(brand)}`,
-                page && `page=${encodeURIComponent(page)}`,
-                facets && `facets=${encodeURIComponent(facets)}`
+                page && `page=${encodeURIComponent(page)}`
             ].filter(Boolean).join('&');
 
             if (location.pathname + location.search !== `/${keyword}?keyword=${keyword}${urlQuery ? "&" + urlQuery : ""}`) {
@@ -117,7 +126,7 @@ const ProductsPage = () => {
             }
         }
         // eslint-disable-next-line
-    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets]);
+    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings]);
 
 
     useEffect(() => {
@@ -125,19 +134,19 @@ const ProductsPage = () => {
             getProducts();
         }
         // eslint-disable-next-line
-    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets]);
+    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings]);
 
 
     useEffect(() => {
         if (brand && brand.split(",").length > 0 && selectedBrands.length !== brand.split(",").length) {
-            setAllSelectedBrands(brand.split(","));
+            setSelectedBrands(brand.split(","));
         }
         else if (brand === "") {
-            setAllSelectedBrands([]);
+            setSelectedBrands([]);
         }
         // eslint-disable-next-line
     }, [brand]);
-    
+
 
     useEffect(() => {
         if (selectedBrands.join(",") !== brand) {
@@ -150,14 +159,14 @@ const ProductsPage = () => {
     useEffect(() => {
 
         if (category && category.split(",").length > 0 && selectedCategories.join(",") !== category) {
-            setAllSelectedCategories(category.split(","));
+            setSelectedCategories(category.split(","));
         }
         else if (!category) {
-            setAllSelectedCategories([]);
+            setSelectedCategories([]);
             if (allCategories && (Object.keys(allCategories).length > 0) && selectedCategories.length === 0) {
                 Object.keys(allCategories).forEach(category => {
                     if (allCategories[category] > 0) {
-                        setAllSelectedCategories(prev => [...prev].concat([category]))
+                        setSelectedCategories(prev => [...prev].concat([category]))
                     }
                 })
             }
@@ -205,7 +214,6 @@ const ProductsPage = () => {
 
         // eslint-disable-next-line
     }, [productsMinPrice, productsMaxPrice, minPrice, maxPrice]);
-
 
 
     useEffect(() => {
@@ -329,6 +337,24 @@ const ProductsPage = () => {
     }, [selectedQuantity]);
 
 
+    useEffect(() => {
+        if (c_ratings && c_ratings.split(",").length > 0 && selectedRatings.length !== c_ratings.split(",").length) {
+            setSelectedRatings(c_ratings.split(","));
+        }
+        else if (c_ratings === "") {
+            setSelectedRatings([]);
+        }
+        // eslint-disable-next-line
+    }, [c_ratings]);
+
+
+    useEffect(() => {
+        if (selectedRatings.join(",") !== c_ratings) {
+            setRatings(selectedRatings.join(","));
+        }
+        // eslint-disable-next-line
+    }, [selectedRatings]);
+
 
     useEffect(() => {
         const hideSidebar = () => {
@@ -413,11 +439,11 @@ const ProductsPage = () => {
     };
 
     const brandsHandler = (e) => {
-        handleCheckboxSelection(e.target.name, setAllSelectedBrands, selectedBrands);
+        handleCheckboxSelection(e.target.name, setSelectedBrands, selectedBrands);
     };
 
     const selectCategoryHandler = (e) => {
-        handleCheckboxSelection(e.target.name, setAllSelectedCategories, selectedCategories);
+        handleCheckboxSelection(e.target.name, setSelectedCategories, selectedCategories);
     };
 
     const selectColorHandler = (e) => {
@@ -436,13 +462,18 @@ const ProductsPage = () => {
         handleCheckboxSelection(e.target.name, setSelectedStorage, selectedStorage);
     };
 
+    const ratingsClickHandler = (e) => {
+        handleCheckboxSelection(e.target.name, setSelectedRatings, selectedRatings);
+    }
+    
 
     return (
         <>
             {loading ? <Loader /> : (
                 <>
                     <Metadata title={`${keyword ? keyword.toUpperCase() : "Products"} - ManyIN`} />
-                    {(productsMaxPrice > 0 && productsExist) ? (
+
+                    {(productsExist && !loading) ? (
 
                         <div className='products-page-container'>
 
@@ -566,7 +597,7 @@ const ProductsPage = () => {
                                                                                 <input
                                                                                     type="checkbox"
                                                                                     name={type}
-                                                                                    id={type}
+                                                                                    id={filter + type}
                                                                                     onClick={(e) => {
                                                                                         (filter === 'ram') ? selectRamHandler(e) :
                                                                                             (filter === 'storage') ? selectStorageHandler(e) :
@@ -582,7 +613,7 @@ const ProductsPage = () => {
                                                                                     readOnly
                                                                                 />
 
-                                                                                <label htmlFor={type}>
+                                                                                <label htmlFor={filter + type}>
                                                                                     <div className='sb-label'>
                                                                                         {
                                                                                             (filter === 'ram') ? ramFormatter(type) :
@@ -619,15 +650,36 @@ const ProductsPage = () => {
                                             }
                                         />
 
+
                                         <Accordian
                                             title="Customer Rating"
                                             style={{ fontSize: "15px", fontWeight: "600" }}
+                                            content={
+                                                (productsRatings && (Object.keys(productsRatings).length > 0) && Object.keys(productsRatings).map((rating, index) => {
+                                                    return (
+
+                                                        <div key={index} className='checkboxes'>
+                                                            <input onClick={ratingsClickHandler} checked={selectedRatings.includes(rating)} type="checkbox" name={rating} id={`rating${rating}`} readOnly />
+
+                                                            <label htmlFor={`rating${rating}`}>
+                                                                <div className='sb-label'>
+                                                                    <Stars value={rating} size={11} />
+                                                                    <span>
+                                                                        {productsRatings[rating]}
+                                                                    </span>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    )
+                                                }))
+
+                                            }
                                         />
                                     </div>
                                 )}
 
                                 <div className={`products-page-content ${btnActive ? "fill" : ""}`}>
-                                    {(productCount > 0) ? (
+                                    {(productCount > 0 && products.length > 0) ? (
                                         <>
                                             <div className="products-grid">
                                                 {

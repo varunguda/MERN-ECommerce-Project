@@ -7,6 +7,8 @@ export const navigationReducer = (initialState = {
     page: 0,
     category: "",
     brand: "",
+    facets: "",
+    c_ratings: ""
 }, action) => {
 
     switch (action.type) {
@@ -41,6 +43,10 @@ export const navigationReducer = (initialState = {
 
         case "SET_FACETS": {
             return ({...initialState, facets: action.payload });
+        }
+
+        case "SET_RATINGS": {
+            return ({ ...initialState, c_ratings: action.payload })
         }
 
         default: {
