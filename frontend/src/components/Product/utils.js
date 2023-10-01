@@ -56,6 +56,13 @@ export const storageFormatter = (num) => {
 }
 
 
+
+export const ratingFormatter = (rating) => {
+    return `${rating} ${rating === rating.toString() ? "Star" : "Stars"} & up`;
+}
+
+
+
 export const removeDoublePipe = (str) => {
     while (str.startsWith('||')) {
         str = str.slice(2);
