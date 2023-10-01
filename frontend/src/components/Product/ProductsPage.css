@@ -10,6 +10,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 30px;
     height: 70px;
     padding: 0px 20px;
     border-bottom: 1px solid var(--border-color);
@@ -19,7 +20,37 @@
 
 .products-page-header .header-section {
     display: flex;
+    align-items: center;
     gap: 10px;
+}
+
+.products-page-header .header1{
+    flex: 1;
+    overflow: hidden;
+}
+
+.filters-shortcuts{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.filters-shortcuts::-webkit-scrollbar{
+    display: none;
+}
+
+.clear-filters-btn{
+    font-size: var(--regular-content-font-size);
+    text-decoration: underline;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.clear-filters-btn:active{
+    text-decoration: none;
 }
 
 .products-page-section {
@@ -141,7 +172,6 @@
     font-size: var(--small-content-font-size);
     color: var(--light-font-color);
 }
-
 
 
 

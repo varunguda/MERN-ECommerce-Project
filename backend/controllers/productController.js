@@ -160,7 +160,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
 
 
     let customer_ratings = {
-        5: 0,
         4: 0,
         3: 0,
         2: 0,
@@ -175,7 +174,12 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         if (products[i].review_id) {
             const review_data = await Review.findById(products[i].review_id);
             updatedProducts.push({ rating: review_data.rating, total_reviews: review_data.total_reviews, ...products[i]._doc });
-            customer_ratings[review_data.rating] += 1;
+            if(review_data.rating === 5){
+                customer_ratings[4] += 1;
+            }
+            else{
+                customer_ratings[Math.floor(review_data.rating)] += 1;
+            }
         }
         else {
             updatedProducts.push({ ...products[i]._doc });
@@ -201,7 +205,11 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     const queryRatings = req.query.c_ratings;
     if(queryRatings && queryRatings.split(",").length > 0){
         const reviewsArr =  queryRatings.split(",");
-        updatedProducts = updatedProducts.filter((prod) => prod.rating && reviewsArr.includes(prod.rating.toString()));
+        updatedProducts = updatedProducts.filter((prod) => {
+            if(prod.rating){
+                return ((prod.rating === 5) ? reviewsArr.includes('4') : reviewsArr.includes(Math.floor(prod.rating).toString()));
+            }
+        })
     }
 
 

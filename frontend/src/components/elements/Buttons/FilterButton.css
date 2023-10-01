@@ -1,0 +1,29 @@
+
+.filter-btn{
+    position: relative;
+    font-size: var(--regular-content-font-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: inset 0 0 0 0.0625rem #909196;
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.filter-btn:hover{
+    box-shadow: inset 0 0 0 0.11rem #909196;
+}
+
+.filter-btn:active{
+    background-color: var(--black-font-color);
+    color: white;
+    box-shadow: none;
+}
+
+.filter-btn .icon{
+    position: relative;
+    top: 1px;
+}

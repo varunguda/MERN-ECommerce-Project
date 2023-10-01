@@ -15,9 +15,9 @@ import { actionCreators, navigationActionCreators } from '../../State/action-cre
 import Loader from '../layouts/Loader/Loader';
 import { Link } from 'react-router-dom';
 import { FiMoreHorizontal } from 'react-icons/fi';
-import { ramFormatter, removeDoublePipe, storageFormatter } from './utils';
+import { ramFormatter, ratingFormatter, removeDoublePipe, storageFormatter } from './utils';
 import Stars from '../elements/Cards/Stars';
-import CrossButton from '../elements/Buttons/CrossButton';
+import FilterButton from '../elements/Buttons/FilterButton';
 
 const ProductsPage = () => {
 
@@ -163,25 +163,20 @@ const ProductsPage = () => {
             setSelectedCategories(category.split(","));
         }
         else if (!category) {
-            
+
             if (allCategories && (Object.keys(allCategories).length > 0)) {
 
                 let productCategories = Object.keys(allCategories).filter(category => allCategories[category] > 0);
 
-                console.log(productCategories);
+                let newSelectedCategories = selectedCategories.filter(category => productCategories.includes(category));
 
                 productCategories.forEach(category => {
-                    if(!selectedCategories.includes(category)){
-                        setSelectedCategories(["MMM"]);
+                    if (!newSelectedCategories.includes(category)) {
+                        newSelectedCategories.push(category);
                     }
-                })
+                });
 
-                console.log(selectedCategories);
-
-                if(selectedCategories.length !== productCategories.length){
-                    let newSelectedCategories = selectedCategories.filter((category)=> productCategories.includes(category));
-                    setSelectedCategories(newSelectedCategories);
-                }
+                setSelectedCategories(newSelectedCategories);
             }
         }
         // eslint-disable-next-line
@@ -214,9 +209,9 @@ const ProductsPage = () => {
 
     useEffect(() => {
 
-        if (minPrice === productsMinPrice && maxPrice === productsMaxPrice) {
+        if ((minPrice === productsMinPrice) && (maxPrice === productsMaxPrice)) {
             setMinPrice(0);
-            setMaxPrice(0)
+            setMaxPrice(0);
         }
 
         if (minPrice && maxPrice && (minPrice !== maxPrice)) {
@@ -233,7 +228,6 @@ const ProductsPage = () => {
 
 
     useEffect(() => {
-
 
         if (facets && facets.split("||").length > 0 && productsFilters && Object.keys(productsFilters).length > 0) {
 
@@ -419,9 +413,9 @@ const ProductsPage = () => {
     }
 
     const priceAfterChangeHandler = (newPriceRange) => {
-        setPrice([newPriceRange[0], newPriceRange[1]]);
         setMinPrice(newPriceRange[0]);
         setMaxPrice(newPriceRange[1]);
+        setPrice([newPriceRange[0], newPriceRange[1]]);
     }
 
     const moreClickHandler = () => {
@@ -455,7 +449,7 @@ const ProductsPage = () => {
             if (allSelectedValues === selectedCategories && selectedCategories.length === 1) {
                 return;
             }
-            else{
+            else {
                 setSelectedValues((prev) => prev.filter((val) => val !== value));
             }
         }
@@ -515,10 +509,10 @@ const ProductsPage = () => {
 
                                         {selectedCategories && selectedCategories.map((category, index) => {
                                             return (
-                                                <CrossButton
+                                                <FilterButton
                                                     key={index}
                                                     onClick={() => {
-                                                        if(selectedCategories.length > 1){
+                                                        if (selectedCategories.length > 1) {
                                                             removeFilter(category, setSelectedCategories, selectedCategories)
                                                         }
                                                     }}
@@ -528,15 +522,15 @@ const ProductsPage = () => {
                                         })}
 
                                         {((minPrice > 0) && (maxPrice > 0) && (minPrice !== productsMinPrice) && (maxPrice !== productsMaxPrice)) && (
-                                            <CrossButton
+                                            <FilterButton
                                                 onClick={() => {
                                                     setMinPrice(0);
                                                     setMaxPrice(0);
                                                 }}
                                                 content={
                                                     <>
-                                                        <span style={{ fontWeight: 600 }}>Range:</span>
-                                                        {`${minPrice} - ${maxPrice}`}
+                                                        <span style={{ fontWeight: 600 }}>Price: </span>
+                                                        {`₹${minPrice} - ₹${maxPrice}`}
                                                     </>
                                                 }
                                             />
@@ -544,7 +538,7 @@ const ProductsPage = () => {
 
                                         {selectedBrands && selectedBrands.map((brand, index) => {
                                             return (
-                                                <CrossButton
+                                                <FilterButton
                                                     key={index}
                                                     onClick={() => removeFilter(brand, setSelectedBrands, selectedBrands)}
                                                     content={brand}
@@ -554,7 +548,7 @@ const ProductsPage = () => {
 
                                         {selectedColors && selectedColors.map((col, index) => {
                                             return (
-                                                <CrossButton
+                                                <FilterButton
                                                     key={index}
                                                     onClick={() => removeFilter(col, setSelectedColors, selectedColors)}
                                                     content={col}
@@ -564,7 +558,7 @@ const ProductsPage = () => {
 
                                         {selectedRam && selectedRam.map((ram, index) => {
                                             return (
-                                                <CrossButton
+                                                <FilterButton
                                                     key={index}
                                                     onClick={() => removeFilter(ram, setSelectedRam, selectedRam)}
                                                     content={ramFormatter(ram)}
@@ -574,7 +568,7 @@ const ProductsPage = () => {
 
                                         {selectedStorage && selectedStorage.map((storage, index) => {
                                             return (
-                                                <CrossButton
+                                                <FilterButton
                                                     key={index}
                                                     onClick={() => removeFilter(storage, setSelectedStorage, selectedStorage)}
                                                     content={storageFormatter(storage)}
@@ -584,7 +578,7 @@ const ProductsPage = () => {
 
                                         {selectedQuantity && selectedQuantity.map((quantity, index) => {
                                             return (
-                                                <CrossButton
+                                                <FilterButton
                                                     key={index}
                                                     onClick={() => removeFilter(quantity, setSelectedQuantity, selectedQuantity)}
                                                     content={quantity}
@@ -593,13 +587,28 @@ const ProductsPage = () => {
                                         })}
 
                                         {availability && availability === 'oos' &&
-                                            <CrossButton
+                                            <FilterButton
                                                 onClick={availabilityHandler}
                                                 content={"Out of stock"}
                                             />
                                         }
 
+                                        {selectedRatings && selectedRatings.map((rating, index) => {
+                                            return (
+                                                <FilterButton
+                                                    key={index}
+                                                    onClick={() => removeFilter(rating, setSelectedRatings, selectedRatings)}
+                                                    content={ratingFormatter(rating)}
+                                                />
+                                            )
+                                        })}
+
                                     </div>
+
+                                    <div className="clear-filters-btn" onClick={() => { navigate(`/${keyword}?keyword=${keyword}`) }}>
+                                        Clear all
+                                    </div>
+
 
                                 </div>
 
@@ -661,7 +670,7 @@ const ProductsPage = () => {
                                                         renderThumb={Thumb}
                                                         min={productsMinPrice}
                                                         max={productsMaxPrice}
-                                                        minDistance={0}
+                                                        minDistance={10}
                                                         onAfterChange={priceAfterChangeHandler}
                                                     />
                                                 }
@@ -777,7 +786,9 @@ const ProductsPage = () => {
 
                                                             <label htmlFor={`rating${rating}`}>
                                                                 <div className='sb-label'>
-                                                                    <Stars value={rating} size={11} />
+                                                                    <div>
+                                                                        <Stars value={rating} size={11} /> & up
+                                                                    </div>
                                                                     <span>
                                                                         {productsRatings[rating]}
                                                                     </span>
@@ -810,7 +821,7 @@ const ProductsPage = () => {
                                     ) : (
                                         <div className='products-page-banner'>
                                             <div>
-                                                No Products available within these filters are available!
+                                                No Products within these filters are available!
                                             </div>
                                         </div>
                                     )}
