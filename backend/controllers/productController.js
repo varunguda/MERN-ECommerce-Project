@@ -2,7 +2,7 @@ import { Product } from '../models/productModel.js';
 import { Users } from "../models/userModel.js";
 import { ErrorHandler } from '../utils/errorHandler.js';
 import catchAsync from '../utils/catchAsync.js';
-import { ApiFeatures, pagination } from '../utils/apiFeatures.js';
+import { ApiFeatures, pagination, sortBy } from '../utils/apiFeatures.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Review } from '../models/reviewModel.js';
 import { Orders } from '../models/orderModel.js';
@@ -182,7 +182,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
             }
         }
         else {
-            updatedProducts.push({ ...products[i]._doc });
+            updatedProducts.push({ rating: 0, total_reviews: 0, ...products[i]._doc });
         }
     }
 
@@ -229,6 +229,12 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     }
     if(processorOptions.length){
         filters.push("processor type");
+    }
+
+
+    const { sort_by } = req.query;
+    if(sort_by){
+        updatedProducts = sortBy(updatedProducts, sort_by);
     }
 
     return res.json({

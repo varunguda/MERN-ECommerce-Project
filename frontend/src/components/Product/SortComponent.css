@@ -1,0 +1,30 @@
+
+.dropdown-elems{
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-container .sort-elem{
+    position: relative;
+    padding: 10px 10px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.dropdown-container .sort-elem label{
+    cursor: pointer;
+}
+
+.dropdown-container .sort-elem:not(:last-child)::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+}
+
+.dropdown-container .sort-elem input{
+    display: none;
+}
