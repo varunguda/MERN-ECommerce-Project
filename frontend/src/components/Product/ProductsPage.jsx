@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ReactSlider from "react-slider";
-import DropdownButton from '../elements/Buttons/DropdownButton';
 import Accordian from "../Product/Accordion.jsx";
 import ProductCard from "../elements/Cards/ProductCard.jsx";
 import Paginate from "../elements/Pagination/Paginate.jsx";
@@ -18,16 +17,17 @@ import { FiMoreHorizontal } from 'react-icons/fi';
 import { ramFormatter, ratingFormatter, removeDoublePipe, storageFormatter } from './utils';
 import Stars from '../elements/Cards/Stars';
 import FilterButton from '../elements/Buttons/FilterButton';
+import SortComponent from './SortComponent';
 
 const ProductsPage = () => {
 
-    const { keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings } = useSelector((state) => state.urlParams);
+    const { keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings, sort_by } = useSelector((state) => state.urlParams);
 
     const { loading, products, productCount, productsMaxPrice, productsMinPrice, productsExist, allCategories, productsBrands, productsFilters, productsRatings } = useSelector((state) => state.products);
 
     const dispatch = useDispatch();
 
-    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability, setFacets, setRatings } = bindActionCreators(navigationActionCreators, dispatch);
+    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability, setFacets, setRatings, setSort } = bindActionCreators(navigationActionCreators, dispatch);
 
 
     const location = useLocation();
@@ -46,6 +46,7 @@ const ProductsPage = () => {
     const [selectedStorage, setSelectedStorage] = useState([]);
     const [selectedQuantity, setSelectedQuantity] = useState([]);
     const [selectedRatings, setSelectedRatings] = useState([]);
+    // const [selectedSort, setSelectedSort] = 
     const sidebarRef = useRef(null);
     const btnRef = useRef(null);
 
@@ -66,6 +67,7 @@ const ProductsPage = () => {
         const queryBrand = queryParams.get('brand');
         const queryFacets = queryParams.get("facets");
         const queryRatings = queryParams.get("c_ratings");
+        const querySort = queryParams.get("sort_by")
 
         queryKeyword ?
             setKeyword(queryKeyword) :
@@ -103,6 +105,10 @@ const ProductsPage = () => {
             setRatings(queryRatings) :
             setRatings("");
 
+        querySort ? 
+            setSort(querySort) : 
+            setSort("");
+
 
         // eslint-disable-next-line
     }, [location.search]);
@@ -119,7 +125,8 @@ const ProductsPage = () => {
                 availability && `availability=${encodeURIComponent(availability)}`,
                 minPrice && `pricemin=${encodeURIComponent(minPrice)}`,
                 maxPrice && `pricemax=${encodeURIComponent(maxPrice)}`,
-                page && `page=${encodeURIComponent(page)}`
+                page && `page=${encodeURIComponent(page)}`,
+                sort_by && `sort_by=${encodeURIComponent(sort_by)}`
             ].filter(Boolean).join('&');
 
             if (location.pathname + location.search !== `/${keyword}?keyword=${keyword}${urlQuery ? "&" + urlQuery : ""}`) {
@@ -127,7 +134,7 @@ const ProductsPage = () => {
             }
         }
         // eslint-disable-next-line
-    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings]);
+    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings, sort_by]);
 
 
     useEffect(() => {
@@ -135,7 +142,7 @@ const ProductsPage = () => {
             getProducts();
         }
         // eslint-disable-next-line
-    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings]);
+    }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings, sort_by]);
 
 
     useEffect(() => {
@@ -613,10 +620,8 @@ const ProductsPage = () => {
                                 </div>
 
                                 <div className="header-section">
-                                    <DropdownButton
-                                        name={<><span style={{ fontWeight: "600" }}>Sort by </span>| &nbsp;Relevance</>}
-                                        content={"hnn"}
-                                    />
+
+                                    <SortComponent sort_by={sort_by}/>
 
                                     {btnActive && (
                                         <button ref={btnRef} className='primary-btn' onClick={moreClickHandler} >
@@ -624,6 +629,7 @@ const ProductsPage = () => {
                                             More Filters
                                         </button>
                                     )}
+
                                 </div>
                             </div>
 

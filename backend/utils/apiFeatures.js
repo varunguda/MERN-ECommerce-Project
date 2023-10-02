@@ -119,15 +119,54 @@ export class ApiFeatures {
             ]
         } : {};
 
-        if(query["$or"]){
-            query['$and'] = [{ $or: query["$or"]}, {...keyword}];
+        if (query["$or"]) {
+            query['$and'] = [{ $or: query["$or"] }, { ...keyword }];
             delete query["$or"];
         }
 
         this.products = this.products.find(query);
         return this;
-    }
+    }   
 }
+
+
+
+export const sortBy = (products, sortVal) => {
+
+    if (sortVal === "phtl") {
+        return products.sort((a, b) => b.final_price - a.final_price);
+    }
+    if(sortVal === "plth") {
+        return products.sort((a, b) => a.final_price - b.final_price);
+    }
+    if(sortVal === "dhtl") {
+        return products.sort((a, b) => b.discount_percent - a.discount_percent);
+    }
+    if(sortVal === "dlth") {
+        return products.sort((a, b) => a.discount_percent - b.discount_percent);
+    }
+    if(sortVal === "rhtl") {
+        return products.sort((a, b) => b.rating - a.rating);
+    }
+    if(sortVal === "rlth") {
+        return products.sort((a, b) => a.rating - b.rating);
+    }
+    if(sortVal === "trhtl") {
+        return products.sort((a, b) => b.total_reviews - a.total_reviews);
+    }
+    if(sortVal === "trlth") {
+        return products.sort((a, b) => a.total_reviews - b.total_reviews);
+    }
+    if (sortVal === "naz") {
+        return products.sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()));
+    }
+    if (sortVal === "nza") {
+        return products.sort((a, b) => b.name.toUpperCase().localeCompare(a.name.toUpperCase()));
+    }
+
+    return products;
+}
+
 
 
 export const pagination = (products, resultsPerPage, page) => {

@@ -70,3 +70,11 @@ export const setRatings = (rating) => (dispatch) => {
         payload: rating,
     })
 }
+
+
+export const setSort = (val) => (dispatch) => {
+    dispatch({
+        type: "SET_SORT",
+        payload: val,
+    })
+}

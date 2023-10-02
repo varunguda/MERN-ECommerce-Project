@@ -45,7 +45,8 @@ export const getProducts = () => async(dispatch, getState) => {
             state.urlParams.maxPrice && `pricemax=${state.urlParams.maxPrice}`,
             state.urlParams.c_ratings && `c_ratings=${state.urlParams.c_ratings}`,
             state.urlParams.availability && `availability=${state.urlParams.availability}`,
-            state.urlParams.page && `page=${state.urlParams.page}`
+            state.urlParams.page && `page=${state.urlParams.page}`,
+            state.urlParams.sort_by && `sort_by=${state.urlParams.sort_by}`
         ].filter(Boolean).join('&');
 
         let link = `/api/v1/products${queryParams ? '?'+queryParams : ''}`;
