@@ -8,6 +8,7 @@ import {
 } from "./ProductReducer";
 import { modalReducer } from "./ModalReducers";
 import { navigationReducer } from "./NavigationReducers";
+import { checkUserReducer } from "./UserReducers";
 
 
 const reducers = combineReducers({
@@ -18,6 +19,7 @@ const reducers = combineReducers({
     bundleProducts: bundleProductsReducer,
     productReviews: productReviewReducer,
     urlParams: navigationReducer,
+    checkUser: checkUserReducer,
 });
 
 

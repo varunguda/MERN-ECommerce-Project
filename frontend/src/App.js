@@ -1,65 +1,31 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
-  BrowserRouter as Router,
-  Route,
-  Routes
-} from "react-router-dom"
-import Footer from './components/layouts/Footer/Footer.jsx';
-import Navbar from './components/layouts/Navbar/Navbar.jsx';
-import Home from "./components/Home/Home.jsx";
-import ProductsPage from "./components/Product/ProductsPage.jsx"; 
-import ProductPage from "./components/Product/ProductPage.jsx";
-import { ToastContainer } from 'react-toastify';
-import Modal from './components/elements/Modals/Modal.jsx';
-import { useSelector } from 'react-redux';
+    Route,
+    BrowserRouter as Router,
+    Routes
+} from "react-router-dom";
+import Content from './Content.js';
+import LoginUser from './components/Users/LoginUser.jsx';
+import SignUpUser from './components/Users/SignUpUser.jsx';
 
 
 const App = () => {
 
-  const { open, content, heading, noOutClick } = useSelector((state) => state.modal);
+    return (
 
-  useEffect(()=>{
-    if(open){
-      document.body.style.overflow = "hidden"
-    }
-    else{
-      document.body.style.overflow = "auto"
-    }
-  }, [open])
+        <div className='main-container'>
 
-  return (
+            <Router>
+                <Routes>
+                    <Route path='/account/login' element={<LoginUser />} />
+                    <Route path='/account/signup' element={<SignUpUser />} />
+                </Routes>
 
-    <div className='main-container'>
+                <Content />
+            </Router>
 
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-
-      <Modal open={open} content={content} heading={heading} noOutClick={noOutClick} />
-
-
-      <Router>
-        <Navbar />
-        <div className='content-container'>
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path="/product/:id" element={<ProductPage />} />
-            <Route path="/:keyword" element={<ProductsPage />} />
-          </Routes>
         </div>
-        <Footer />
-      </Router>
-    </div>
-  )
+    )
 }
 
 export default App;

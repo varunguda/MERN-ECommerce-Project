@@ -12,18 +12,44 @@ import { verifyMail } from "../utils/verifyMail.js";
 
 // USER FUNCTIONS
 
+export const checkUser = catchAsync( async (req, res, next) => {
+
+    const { email } = req.body;
+
+    let exists = false;
+    const user = await Users.findOne({ email });
+    if(user){
+        exists = true;
+    }
+
+    if(!exists){
+        const deletedUser = await DeletedUsers.findOne({ email });
+        if(deletedUser){
+            exists = true;
+        }
+    }
+
+    return res.json({
+        success: true,
+        exists,
+        email,
+    })
+})
+
+
+
 export const createUser = catchAsync( async (req, res, next) => {
 
     const { email } = req.body;
 
-    let user = await Users.findOne({ email });
+    const user = await Users.findOne({ email });
     if(user){
-        return next(new ErrorHandler("This mail is already registered!", 400))
+        return next(new ErrorHandler("This Mail is already registered!", 400))
     }
 
     const deletedUser = await DeletedUsers.findOne({ email }).select("+password");
     if(deletedUser){
-        return next(new ErrorHandler("This mail is already registered!", 400));
+        return next(new ErrorHandler("This Mail is already registered!", 400));
     }
 
     verifyMail(req, res, next);

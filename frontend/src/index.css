@@ -8,6 +8,7 @@
     --primary-font-color: #1B1B1B;
     --secondary-font-color: #46474a;
     --light-font-color: #74767c;
+    --extra-light-font-color: #515357;
     --highlight-font-color: #2a8703;
     --highlight-background-color: #eaf3e6;
     --black-font-color: #2e2f32;
@@ -32,7 +33,7 @@
 
 body {
     font-family: var(--primary-font-family);
-    color: #515357;
+    color: var(--black-font-color);
 }
 
 
