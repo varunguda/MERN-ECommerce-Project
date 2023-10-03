@@ -131,9 +131,10 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
-    padding: 0px 10px;
+    padding: 10px 18px;
     border: none;
     border-radius: 20px;
+    cursor: pointer;
 }
 
 
@@ -202,6 +203,12 @@
     }
 
     .header-section.header1{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .header-section .primary-btn span{
         display: none;
     }
 }

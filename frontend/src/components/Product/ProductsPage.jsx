@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators, navigationActionCreators } from '../../State/action-creators';
 import Loader from '../layouts/Loader/Loader';
 import { Link } from 'react-router-dom';
-import { FiMoreHorizontal } from 'react-icons/fi';
+import { MdOutlineShortText } from 'react-icons/md';
 import { ramFormatter, ratingFormatter, removeDoublePipe, storageFormatter } from './utils';
 import Stars from '../elements/Cards/Stars';
 import FilterButton from '../elements/Buttons/FilterButton';
@@ -46,7 +46,6 @@ const ProductsPage = () => {
     const [selectedStorage, setSelectedStorage] = useState([]);
     const [selectedQuantity, setSelectedQuantity] = useState([]);
     const [selectedRatings, setSelectedRatings] = useState([]);
-    // const [selectedSort, setSelectedSort] = 
     const sidebarRef = useRef(null);
     const btnRef = useRef(null);
 
@@ -105,9 +104,14 @@ const ProductsPage = () => {
             setRatings(queryRatings) :
             setRatings("");
 
-        querySort ? 
-            setSort(querySort) : 
+        querySort ?
+            setSort(querySort) :
             setSort("");
+
+
+
+        setSidebar(() => window.innerWidth < 1000 ? false : true);
+        window.scrollTo(0,0);
 
 
         // eslint-disable-next-line
@@ -129,7 +133,7 @@ const ProductsPage = () => {
                 sort_by && `sort_by=${encodeURIComponent(sort_by)}`
             ].filter(Boolean).join('&');
 
-            if (location.pathname + location.search !== `/${keyword}?keyword=${keyword}${urlQuery ? "&" + urlQuery : ""}`) {
+            if (location.pathname + location.search !== `/search?keyword=${keyword}${urlQuery ? "&" + urlQuery : ""}`) {
                 navigate(`?keyword=${keyword}${urlQuery ? "&" + urlQuery : ""}`, { replace: false });
             }
         }
@@ -422,7 +426,6 @@ const ProductsPage = () => {
     const priceAfterChangeHandler = (newPriceRange) => {
         setMinPrice(newPriceRange[0]);
         setMaxPrice(newPriceRange[1]);
-        setPrice([newPriceRange[0], newPriceRange[1]]);
     }
 
     const moreClickHandler = () => {
@@ -612,7 +615,7 @@ const ProductsPage = () => {
 
                                     </div>
 
-                                    <div className="clear-filters-btn" onClick={() => { navigate(`/${keyword}?keyword=${keyword}`) }}>
+                                    <div className="clear-filters-btn" onClick={() => { navigate(`/search?keyword=${keyword}`) }}>
                                         Clear all
                                     </div>
 
@@ -621,12 +624,12 @@ const ProductsPage = () => {
 
                                 <div className="header-section">
 
-                                    <SortComponent sort_by={sort_by}/>
+                                    <SortComponent sort_by={sort_by} />
 
                                     {btnActive && (
                                         <button ref={btnRef} className='primary-btn' onClick={moreClickHandler} >
-                                            <FiMoreHorizontal size={"20px"} color="#212121" />
-                                            More Filters
+                                            <MdOutlineShortText size={"20px"} color="#212121" />
+                                            <span>More Filters</span>
                                         </button>
                                     )}
 

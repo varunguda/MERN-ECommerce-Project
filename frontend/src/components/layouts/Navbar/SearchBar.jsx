@@ -17,7 +17,7 @@ const SearchBar = () => {
         e.preventDefault();
         if(searchText.trim()){
             if(location.pathname !== `/${searchText}`){
-                navigate(`/${encodeURIComponent(searchText)}?keyword=${encodeURIComponent(searchText)}`, { replace: false });
+                navigate(`/search?keyword=${encodeURIComponent(searchText)}`, { replace: false });
             }
             inputRef.current.blur();
         }

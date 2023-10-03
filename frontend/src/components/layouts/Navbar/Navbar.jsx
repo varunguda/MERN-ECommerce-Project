@@ -142,13 +142,13 @@ const Navbar = () => {
                             </div>
                         </div>
 
-                        <div className='nav-elems main-elem'>
+                        <a href="/account/login" className='nav-elems main-elem link'>
                             <HiOutlineUserPlus size={"17px"} />
                             <div className='nav-elem-desc'>
                                 <div className='nav-elem-small'>Sign In&nbsp;</div>
                                 <div>Account</div>
                             </div>
-                        </div>
+                        </a>
 
                     </nav>
 
