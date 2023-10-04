@@ -104,9 +104,11 @@ const Navbar = () => {
                 <nav className="navbar">
 
                     <h1 className="navbar-logo">
-                        <div className='logo-new'>
-                            <Link className='link' to="/">ManyIN</Link>
-                        </div>
+                        <Link to="/" className='link'>
+                            <div className='logo-new'>
+                                ManyIN
+                            </div>
+                        </Link>
                     </h1>
 
                     <div className='menu-icon' onClick={showSidebar} >
@@ -161,7 +163,7 @@ const Navbar = () => {
 
 
                 <nav className="secondary-navbar">
-                    
+
                     <SearchBar />
 
                     <nav className={sidebar ? "secondary-navbar-menu active" : "secondary-navbar-menu"}>

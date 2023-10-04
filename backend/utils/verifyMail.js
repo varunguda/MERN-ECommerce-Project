@@ -115,7 +115,7 @@ export const verifyMail = catchAsync(async (req, res, next) => {
     
       `
 
-    await sendEmail({
+    sendEmail({
         email,
         subject: "Confirmation code for creating your MANYin account!",
         html

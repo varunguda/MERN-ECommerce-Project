@@ -1,7 +1,19 @@
 import {
     USER_CHECK_REQUEST,
     USER_CHECK_SUCCESS,
-    USER_CHECK_FAILURE
+    USER_CHECK_FAILURE,
+
+    LOGIN_USER_REQUEST,
+    LOGIN_USER_SUCCESS,
+    LOGIN_USER_FAILURE,
+
+    SIGNUP_USER_REQUEST,
+    SIGNUP_USER_SUCCESS,
+    SIGNUP_USER_FAILURE,
+
+    VERIFY_USER_REQUEST,
+    VERIFY_USER_SUCCESS,
+    VERIFY_USER_FAILURE,
 } from "../constants/UserConstants.js";
 
 
@@ -28,6 +40,105 @@ export const checkUserReducer = ( state = { userExist: false }, action ) => {
             return ({
                 checkingUser: false,
                 userCheckError: action.payload
+            })
+        }
+    
+        default:{
+            return state;
+        }
+    }
+}
+
+
+
+export const loginReducer = ( state={ loggedIn: false, loginMessage: "" }, action ) => {
+
+    switch (action.type) {
+        case LOGIN_USER_REQUEST:{
+            return ({
+                loginLoading: true,
+                loggedIn: false,
+            })
+        }
+
+        case LOGIN_USER_SUCCESS:{
+            return ({
+                loginLoading: false,
+                loggedIn: action.payload.success,
+            })
+        }
+
+        case LOGIN_USER_FAILURE:{
+            return ({
+                loginLoading: false,
+                loginMessage: action.payload
+            })
+        }
+    
+        default:{
+            return state;
+        }
+    }
+}
+
+
+export const signupReducer = ( state={ sentSignupCode: false, signupMessage: "" }, action ) => {
+
+    switch (action.type) {
+        case SIGNUP_USER_REQUEST:{
+            return ({
+                signupLoading: true,
+                sentSignupCode: false,
+            })
+        }
+
+        case SIGNUP_USER_SUCCESS:{
+            return ({
+                signupLoading: false,
+                sentSignupCode: action.payload.success,
+                signupMessage: action.payload.message
+            })
+        }
+
+        case SIGNUP_USER_FAILURE:{
+            return ({
+                signupLoading: false,
+                sentSignupCode: false,
+                signupError: action.payload
+            })
+        }
+    
+        default:{
+            return state;
+        }
+    }
+}
+
+
+
+export const verifcationReducer = ( state={ verifiedUser: false, verifcationMessage: "" }, action ) => {
+
+    switch (action.type) {
+        case VERIFY_USER_REQUEST:{
+            return ({
+                verifcationLoading: true,
+                verifiedUser: false,
+            })
+        }
+
+        case VERIFY_USER_SUCCESS:{
+            return ({
+                verifcationLoading: false,
+                verifiedUser: action.payload.success,
+                verifcationMessage: action.payload.message
+            })
+        }
+
+        case VERIFY_USER_FAILURE:{
+            return ({
+                verifcationLoading: false,
+                verifiedUser: false,
+                verifcationError: action.payload
             })
         }
     
