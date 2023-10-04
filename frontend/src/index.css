@@ -1,10 +1,13 @@
 :root {
     --primary-color: #0071dc;
     --primary-hover-color: #0055a5;
+    --primary-active-color: #003b72;
+    --primary-error-color: rgb(227, 61, 61);
     --secondary-color: #ffc220;
     --primary-footer: #F9F7F7;
     --primary-font-family: 'Lato', sans-serif;
     --secondary-font-family: 'Martel Sans', sans-serif;
+    --test-font-family: 'Josefin Sans', sans-serif;
     --primary-font-color: #1B1B1B;
     --secondary-font-color: #46474a;
     --light-font-color: #74767c;
@@ -144,4 +147,43 @@ body {
 .custom-tooltip:hover::before {
     opacity: 1;
     visibility: visible;
+}
+
+
+.main-btn{
+    border: none;
+    border-radius: 30px;
+    height: 42px;
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 700;
+    font-size: 0.94rem;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.main-btn:hover{
+    background-color: var(--primary-hover-color);
+}
+
+.main-btn:active{
+    background-color: var(--primary-active-color);
+}
+
+.inferior-btn{
+    font-family: inherit;
+    border: none;
+    background-color: inherit;
+    text-decoration: underline;
+    color: inherit;
+    cursor: pointer;
+}
+
+.inferior-btn:hover{
+    color: var(--primary-color);
+}
+
+.inferior-btn:active{
+    text-decoration: none;
 }

@@ -1,0 +1,99 @@
+
+.login-container{
+    position: relative;
+    min-height: 100vh;
+    min-width: 100vw;
+    display: flex;
+    justify-content: center;
+}
+
+.login-page-content{
+    font-family: var(--test-font-family);
+    font-size: 0.98rem;
+    letter-spacing: -0.025rem;
+    margin-top: 40px;
+    padding: 0px 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-page-content img{
+    height: 65px;
+    width: 65px;
+    filter: drop-shadow(3px 3px rgba(0, 0, 0, 0.315));
+    margin-bottom: 24px;
+}
+
+.login-page-content .login-head{
+    font-size: 1.20rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.login-page-content span{
+    margin-bottom: 4px;
+}
+
+.login-page-content form{
+    position: relative;
+    width: 360px;
+    min-width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+.login-page-content label{
+    margin-left: 5px;
+    font-size: 0.89rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.login-page-content input{
+    height: 56px;
+    margin-bottom: 16px;
+    border-radius: 5px;
+    border: 2px solid var(--border-color);
+    padding: 0px 16px;
+    font-size: 1rem;
+}
+
+.login-page-content input:hover{
+    border: 2px solid var(--black-font-color);
+}
+
+.login-page-content input:focus{
+    border: 3px solid var(--black-font-color);
+}
+
+.login-page-content form .form-caption{
+    margin: 16px 20px;
+}
+
+
+
+.login-page-content form .show-pass-btn{
+    position: absolute;
+    top: 38px;
+    right: 20px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.login-page-content form .forgot-pass-btn{
+    font-size: 0.9rem;
+    margin-top: 10px;
+    align-self: self-end;
+}
+
+.login-page-content .pass-form input{
+    padding: 0px 60px 0px 16px;
+}
+
+.login-page-content form .err-msg{
+    color: var(--primary-error-color);
+    margin: 0px 5px;
+    margin-bottom: 10px;
+}

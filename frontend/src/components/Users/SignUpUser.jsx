@@ -19,28 +19,28 @@ const SignUpUser = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [ user, setUser ] = useState({
+    const [user, setUser] = useState({
         mail: sessionStorage.getItem("mail") ? sessionStorage.getItem("mail") : "",
         name: "",
         pass: "",
         confirmPass: "",
     });
-    const [ verifyPage, setVerifyPage ] = useState(false);
-    const [ code, setCode ] = useState('');
+    const [verifyPage, setVerifyPage] = useState(false);
+    const [code, setCode] = useState('');
 
 
     useEffect(() => {
 
         const query = new URLSearchParams(location.search);
 
-        if(query.get("q") === "verify"){
+        if (query.get("q") === "verify") {
             setVerifyPage(true);
         }
 
     }, [location.search])
 
 
-    useEffect(()=> {
+    useEffect(() => {
         toast.error((signupError || verifcationError), {
             position: "bottom-center",
             autoClose: 5000,
@@ -62,8 +62,8 @@ const SignUpUser = () => {
     }, [user]);
 
 
-    useEffect(()=>{
-        if(sentSignupCode){
+    useEffect(() => {
+        if (sentSignupCode) {
             navigate("?q=verify")
         }
 
@@ -71,8 +71,8 @@ const SignUpUser = () => {
     }, [sentSignupCode]);
 
 
-    useEffect(()=>{
-        if(verifyPage && !sentSignupCode){
+    useEffect(() => {
+        if (verifyPage && !sentSignupCode) {
             navigate("/account/login")
         }
 
@@ -80,11 +80,11 @@ const SignUpUser = () => {
     }, [verifyPage, sentSignupCode]);
 
 
-    useEffect(()=>{
-        if(verifiedUser){
+    useEffect(() => {
+        if (verifiedUser) {
             navigate("/");
 
-            if(sessionStorage.getItem("mail")){
+            if (sessionStorage.getItem("mail")) {
                 sessionStorage.removeItem("mail")
             }
 
@@ -107,7 +107,7 @@ const SignUpUser = () => {
     const createAccountHandler = (e) => {
         e.preventDefault();
 
-        if(user.mail && user.name && user.confirmPass){
+        if (user.mail && user.name && user.confirmPass) {
             signupUser(user);
         }
     }
@@ -130,7 +130,7 @@ const SignUpUser = () => {
 
 
     const verifyCodeHandler = () => {
-        if(code.length === 5){
+        if (code.length === 5) {
             verifyUser(code);
         }
     }
@@ -163,16 +163,17 @@ const SignUpUser = () => {
                     </form>
 
                     <div className="signup-msg">{signupMessage}</div>
-
                 </>
+
             ) : (
+                
                 <>
-                <label htmlFor="code">Enter code</label>
-                <input onChange={(e) => setCode(e.target.value)} type="text" name="code" id="code"/>
+                    <label htmlFor="code">Enter code</label>
+                    <input onChange={(e) => setCode(e.target.value)} type="text" name="code" id="code" />
 
-                <div className="verification-msg">{verifcationMessage}</div>
+                    <div className="verification-msg">{verifcationMessage}</div>
 
-                <button onClick={verifyCodeHandler} type="button" disabled={(code.length !== 5) || verificationLoading}>Verify Code</button>
+                    <button onClick={verifyCodeHandler} type="button" disabled={(code.length !== 5) || verificationLoading}>Verify Code</button>
                 </>
             )}
         </>
