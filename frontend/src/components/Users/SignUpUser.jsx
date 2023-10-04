@@ -116,18 +116,9 @@ const SignUpUser = () => {
         navigate("/account/login");
     }
 
-    const passChangeHandler = (e) => {
-        setUser(prev => ({ ...prev, pass: e.target.value }));
+    const inputChangeHandler = (e) => {
+        setUser(prev => ({ ...prev, [e.target.name]: e.target.value }));
     }
-
-    const confirmPassHandler = (e) => {
-        setUser(prev => ({ ...prev, confirmPass: e.target.value }));
-    }
-
-    const nameChangeHandler = (e) => {
-        setUser(prev => ({ ...prev, name: e.target.value }));
-    }
-
 
     const verifyCodeHandler = () => {
         if (code.length === 5) {
@@ -150,13 +141,13 @@ const SignUpUser = () => {
 
                     <form onSubmit={createAccountHandler} method="post" >
                         <label htmlFor="name">Name</label>
-                        <input onChange={nameChangeHandler} type="text" name="name" id="name" />
+                        <input onChange={inputChangeHandler} type="text" name="name" id="name" />
 
                         <label htmlFor="pass">Create a new password</label>
-                        <input onChange={passChangeHandler} type="password" name="pass" id="pass" />
+                        <input onChange={inputChangeHandler} type="password" name="pass" id="pass" />
 
                         <label htmlFor="confirm-pass">Confirm password</label>
-                        <input onChange={confirmPassHandler} type="password" name="confirm-pass" id="confirm-pass" disabled={user.pass === ""} />
+                        <input onChange={inputChangeHandler} type="password" name="confirm-pass" id="confirm-pass" disabled={user.pass === ""} />
 
                         <button type="submit" disabled={signupLoading}>Create Account</button>
 

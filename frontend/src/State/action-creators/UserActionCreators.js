@@ -11,14 +11,19 @@ import {
     SIGNUP_USER_REQUEST,
     SIGNUP_USER_SUCCESS,
     SIGNUP_USER_FAILURE,
+
     VERIFY_USER_REQUEST,
     VERIFY_USER_SUCCESS,
     VERIFY_USER_FAILURE,
+    FORGOT_PASSWORD_FAILURE,
+    FORGOT_PASSWORD_REQUEST,
+    FORGOT_PASSWORD_SUCCESS,
 } from "../constants/UserConstants.js";
 
 
 
 export const checkUsersAccount = ( email ) => async(dispatch) => {
+
     try {
         
         dispatch({ type: USER_CHECK_REQUEST });
@@ -44,6 +49,7 @@ export const checkUsersAccount = ( email ) => async(dispatch) => {
 
 
 export const loginUser = (email, pass) => async(dispatch) => {
+
     try {
         
         dispatch({
@@ -71,6 +77,7 @@ export const loginUser = (email, pass) => async(dispatch) => {
 
 
 export const signupUser = (user) => async(dispatch) => {
+
     try {
         
         dispatch({
@@ -98,6 +105,7 @@ export const signupUser = (user) => async(dispatch) => {
 
 
 export const verifyUser = (code) => async(dispatch) => {
+
     try {
         
         dispatch({
@@ -117,6 +125,31 @@ export const verifyUser = (code) => async(dispatch) => {
 
         dispatch({
             type: VERIFY_USER_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const sendPassRecoveryMail = (email) => async(dispatch) => {
+
+    try {
+
+        dispatch({ type: FORGOT_PASSWORD_REQUEST });
+
+        const config = { headers: { "Content-Type" : "application/json" } };
+
+        const { data } = await axios.post(`/api/v1/password/forgot`, { email }, config);
+
+        dispatch({
+            type: FORGOT_PASSWORD_SUCCESS,
+            payload: data,
+        })
+        
+    } catch (error) {
+        dispatch({
+            type: FORGOT_PASSWORD_FAILURE,
             payload: error.response.data.message,
         })
     }

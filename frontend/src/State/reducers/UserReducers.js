@@ -6,6 +6,7 @@ import {
     LOGIN_USER_REQUEST,
     LOGIN_USER_SUCCESS,
     LOGIN_USER_FAILURE,
+    LOGIN_USER_RESET,
 
     SIGNUP_USER_REQUEST,
     SIGNUP_USER_SUCCESS,
@@ -14,6 +15,11 @@ import {
     VERIFY_USER_REQUEST,
     VERIFY_USER_SUCCESS,
     VERIFY_USER_FAILURE,
+
+    FORGOT_PASSWORD_REQUEST,
+    FORGOT_PASSWORD_SUCCESS,
+    FORGOT_PASSWORD_FAILURE,
+    FORGOT_PASSWORD_RESET,
 } from "../constants/UserConstants.js";
 
 
@@ -72,6 +78,13 @@ export const loginReducer = ( state={ loggedIn: false, loginMessage: "" }, actio
             return ({
                 loginLoading: false,
                 loginMessage: action.payload
+            })
+        }
+
+        case LOGIN_USER_RESET:{
+            return ({
+                loggedIn: false, 
+                loginMessage: ""
             })
         }
     
@@ -139,6 +152,47 @@ export const verifcationReducer = ( state={ verifiedUser: false, verifcationMess
                 verifcationLoading: false,
                 verifiedUser: false,
                 verifcationError: action.payload
+            })
+        }
+    
+        default:{
+            return state;
+        }
+    }
+}
+
+
+
+export const forgotPasswordReducer = ( state={ sentRecoveryMail: false, recoveryMailMessage: "" }, action ) => {
+
+    switch (action.type) {
+        case FORGOT_PASSWORD_REQUEST:{
+            return ({
+                sendingRecoveryMail: true,
+                sentRecoveryMail: false,
+            })
+        }
+
+        case FORGOT_PASSWORD_SUCCESS:{
+            return ({
+                sendingRecoveryMail: false,
+                sentRecoveryMail: action.payload.success,
+                recoveryMailMessage: action.payload.message
+            })
+        }
+
+        case FORGOT_PASSWORD_FAILURE:{
+            return ({
+                sendingRecoveryMail: false,
+                sentRecoveryMail: false,
+                recoveryMailError: action.payload
+            })
+        }
+
+        case FORGOT_PASSWORD_RESET:{
+            return ({
+                sentRecoveryMail: false,
+                recoveryMailMessage: ""
             })
         }
     

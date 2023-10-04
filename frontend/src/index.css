@@ -2,7 +2,7 @@
     --primary-color: #0071dc;
     --primary-hover-color: #0055a5;
     --primary-active-color: #003b72;
-    --primary-error-color: rgb(227, 61, 61);
+    --primary-error-color: rgb(227, 67, 67);
     --secondary-color: #ffc220;
     --primary-footer: #F9F7F7;
     --primary-font-family: 'Lato', sans-serif;
@@ -149,8 +149,8 @@ body {
     visibility: visible;
 }
 
-
 .main-btn{
+    position: relative;
     border: none;
     border-radius: 30px;
     height: 42px;

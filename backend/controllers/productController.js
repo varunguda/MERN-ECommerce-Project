@@ -285,6 +285,7 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
 export const createProduct = catchAsync(async (req, res, next) => {
 
     const { products, variations, category, brand } = req.body;
+
     const createdProducts = [];
     const product_id = (products.length > 1) ? uuidv4() : undefined;
 

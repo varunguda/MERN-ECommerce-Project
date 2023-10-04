@@ -176,11 +176,17 @@ export const deleteUser = catchAsync( async(req, res, next) => {
 
 
 export const forgotPassword = catchAsync( async(req, res, next) => {
+
+    console.log(req["[Symbol(kHeaders)]"]);
+    // console.log(Object.keys(req[[Symbol(kCapture)]]));
+
+    return next(new ErrorHandler("test", 400))
+
     const { email } = req.body;
 
     const user = await Users.findOne({ email });
     if(!user){
-        return next(new ErrorHandler("This mail has not yet been registered!", 400));
+        return next(new ErrorHandler("Account doesn't exist", 400));
     }
 
     const resetToken = crypto.randomBytes(20).toString("hex");
@@ -188,11 +194,11 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
     const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
     user.reset_password_token = resetPasswordToken;
-    user.reset_password_expire = new Date(Date.now() + 15 * 60 * 1000)
+    user.reset_password_expire = new Date(Date.now() + 15 * 60 * 1000);
 
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
-    const resetPasswordURL = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`
+    const resetPasswordURL = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
 
     const html = `<html>
     <head>
@@ -301,8 +307,9 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
 
 
 export const recoverPassword = catchAsync( async(req, res, next) => {
+
     const { resetToken } = req.params;
-    const { password, confirmPassword } = req.body
+    const { password, confirmPassword } = req.body;
 
     const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
