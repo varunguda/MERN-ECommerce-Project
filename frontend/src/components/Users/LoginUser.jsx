@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router';
 import { toast } from "react-toastify";
 
 import "./LoginUser.css";
+import { LOGIN_USER_RESET } from '../../State/constants/UserConstants';
+import Loader2 from '../layouts/Loader/Loader2';
 
 const LoginUser = () => {
 
@@ -38,7 +40,7 @@ const LoginUser = () => {
             progress: undefined,
             theme: "light",
         });
-    }, [userCheckError, loginError])
+    }, [userCheckError, loginError]);
 
 
     useEffect(() => {
@@ -67,7 +69,7 @@ const LoginUser = () => {
     }
 
     const passChangeHandler = (e) => {
-        if(passErrMsgRef.current && passErrMsgRef.current.innerHTML !== ""){
+        if (passErrMsgRef.current) {
             passErrMsgRef.current.innerHTML = "";
         }
         setPass(e.target.value);
@@ -104,58 +106,83 @@ const LoginUser = () => {
     }
 
 
+    const forgotPassClickHandler = () => {
+        dispatch({
+            type: LOGIN_USER_RESET,
+        })
+        navigate("/account/password/forgot");
+    }
+
+
     return (
-        <div className='login-container'>
-            
-            <Metadata title={"Login"} />
+        <div className='center-container'>
 
-            <div className="login-page-content">
+            <Metadata title={"Login - ManyIN"} />
 
+            <div className="secondary-page-content">
 
-                <img src="/ManyIN_LOGO.png" alt="logo" />
+                <img className='logo-image-small' src="/ManyIN_LOGO.png" alt="logo" />
 
                 {(!fetched) && (
 
                     <>
+                        <div className='secondary-head'>Sign in or create your account</div>
 
-                        <div className='login-head'>Sign in or create your account</div>
-                        <span>Not sure if you have an account?</span>
-                        <span>Enter your email and we'll check for you.</span>
+                        <p>Not sure if you have an account?<br />
+                        Enter your email and we'll check for you.</p>
 
                         <form onSubmit={mailSubmitHandler} method="post">
 
-                            <label htmlFor="email">Email Address</label>
-                            <input onChange={mailChangeHandler} value={mail} type="email" name="email" id="email" spellCheck={false} />
+                            <label htmlFor="email">Email Address *</label>
+                            <input
+                                onChange={mailChangeHandler}
+                                value={mail}
+                                type="email"
+                                name="email"
+                                id="email"
+                                spellCheck={false}
+                            />
 
-                            <button className='main-btn' type="submit" disabled={checkingUser}>Continue</button>
+                            <button className='main-btn' type="submit" disabled={checkingUser}>
+                                {checkingUser ? (<Loader2 />) : "Continue"}
+                            </button>
 
-                            <div className="form-caption">Securing your personal information is our priority.</div>
+                            <p className="form-caption">Securing your personal information is our priority.</p>
                         </form>
                     </>
-
 
                 )}
 
 
                 {(userExist && fetched) && (
-                    <>
 
-                        <div className='login-head'>Login to your account</div>
-                        <span>You are a ManyIN user.</span>
-                        <span>Please enter your password in the given field below.</span>
+                    <>
+                        <div className='secondary-head'>Login to your account</div>
+                        <p>You are already a ManyIN user.<br/>
+                        Please enter your password in the given field below.</p>
 
                         <form className='pass-form' onSubmit={passSubmitHandler} method="post">
 
-                            <label htmlFor="pass">Password</label>
-                            <input ref={passRef} onChange={passChangeHandler} type="password" name="pass" value={pass} id="pass" spellCheck={false} />
+                            <label htmlFor="pass">Password *</label>
+                            <input
+                                ref={passRef}
+                                onChange={passChangeHandler}
+                                type="password"
+                                name="pass"
+                                value={pass}
+                                id="pass"
+                                spellCheck={false}
+                            />
                             <span className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
 
 
-                            <div ref={passErrMsgRef} className='err-msg'>{loginMessage ? loginMessage : ""}</div>
+                            <p ref={passErrMsgRef} className='err-msg'>{loginMessage ? loginMessage : ""}</p>
 
-                            <button className='main-btn' type="submit" disabled={loginLoading}>Log In</button>
+                            <button className='main-btn' type="submit" disabled={loginLoading}>
+                                {loginLoading ? (<Loader2 />) : "Log in"}
+                            </button>
 
-                            <button className='inferior-btn forgot-pass-btn' type="button">Forgot Password?</button>
+                            <button onClick={forgotPassClickHandler} className='inferior-btn forgot-pass-btn' type="button">Forgot Password?</button>
 
                         </form>
                     </>

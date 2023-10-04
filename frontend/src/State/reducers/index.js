@@ -8,7 +8,7 @@ import {
 } from "./ProductReducer";
 import { modalReducer } from "./ModalReducers";
 import { navigationReducer } from "./NavigationReducers";
-import { checkUserReducer, loginReducer, signupReducer, verifcationReducer } from "./UserReducers";
+import { checkUserReducer, forgotPasswordReducer, loginReducer, signupReducer, verifcationReducer } from "./UserReducers";
 
 
 const reducers = combineReducers({
@@ -23,6 +23,7 @@ const reducers = combineReducers({
     login: loginReducer,
     signup: signupReducer,
     verifySignup: verifcationReducer,
+    forgotPassword: forgotPasswordReducer,
 });
 
 
