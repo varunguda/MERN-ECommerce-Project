@@ -12,16 +12,20 @@ const LoginUser = () => {
 
     const { checkingUser, userExist, userEmail, userCheckError } = useSelector(state => state.checkUser);
 
+    const { loginLoading, loggedIn, loginMessage, loginError } = useSelector(state => state.login);
+
     const dispatch = useDispatch();
-    const { checkUsersAccount } = bindActionCreators(userActionCreators, dispatch);
+    const { checkUsersAccount, loginUser } = bindActionCreators(userActionCreators, dispatch);
 
     const navigate = useNavigate();
 
-    const [mail, setMail] = useState(userEmail ? userEmail : "");
+    const [mail, setMail] = useState(sessionStorage.getItem("mail") ? sessionStorage.getItem("mail") : "");
     const [pass, setPass] = useState("");
+    const [fetched, setFetched] = useState(false);
+
 
     useEffect(()=> {
-        toast.error(userCheckError, {
+        toast.error((userCheckError || loginError), {
             position: "bottom-center",
             autoClose: 5000,
             hideProgressBar: false,
@@ -31,16 +35,28 @@ const LoginUser = () => {
             progress: undefined,
             theme: "light",
         });
-    }, [userCheckError])
+    }, [userCheckError, loginError])
+
 
     useEffect(()=>{
-        if(!userExist && userEmail && (userEmail.length > 0)){
-            console.log("navigated");
-            navigate("/account/signup")
+        if(!checkingUser && !userExist && fetched){
+            sessionStorage.setItem("mail", userEmail);
+            navigate("/account/signup");
         }
-
         // eslint-disable-next-line
-    }, [userExist, userEmail])
+    }, [checkingUser, userExist, fetched]);
+
+
+    useEffect(()=>{
+        if(loggedIn){
+            navigate("/");
+            
+            if(sessionStorage.getItem("mail")){
+                sessionStorage.removeItem("mail")
+            }
+        }
+        // eslint-disable-next-line
+    }, [loggedIn])
 
 
     const mailChangeHandler = (e) => {
@@ -56,14 +72,15 @@ const LoginUser = () => {
 
         if (mail) {
             checkUsersAccount(mail);
+            setFetched(true);
         }
     }
 
     const passSubmitHandler = (e) => {
         e.preventDefault();
 
-        if (pass) {
-            // checkUsersAccount(mail);
+        if (userEmail && pass) {
+            loginUser(userEmail, pass);
         }
     }
 
@@ -71,7 +88,7 @@ const LoginUser = () => {
         <>
             <Metadata title={"Login"} />
 
-            {(!userExist && !userEmail) && (
+            {(!fetched) && (
                 <form onSubmit={mailSubmitHandler} method="post">
                     <label htmlFor="email">Email Address</label>
                     <input onChange={mailChangeHandler} value={mail} type="email" name="email" id="email" />
@@ -81,13 +98,14 @@ const LoginUser = () => {
             )}
 
 
-            {(userExist) && (
+            {(userExist && fetched) && (
 
                 <form onSubmit={passSubmitHandler} method="post">
                     <label htmlFor="pass">Password</label>
                     <input onChange={passChangeHandler} type="password" name="pass" value={pass} id="pass" />
 
-                    <button type="submit">Log In</button>
+                    <div className='err-message'>{loginMessage ? loginMessage : ""}</div>
+                    <button type="submit" disabled={loginLoading}>Log In</button>
                 </form>
 
             )}
