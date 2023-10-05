@@ -123,7 +123,7 @@ export const verifyMail = catchAsync(async (req, res, next) => {
 
     return res.json({
         success: true,
-        message: `Verification mail has been sent to ${email}`
+        message: `A Verification code has been sent to ${email} successfully!`
     })
 
 })

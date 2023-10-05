@@ -171,6 +171,10 @@ body {
     background-color: var(--primary-active-color);
 }
 
+.main-btn:disabled{
+    background-color: #0072dca8;
+}
+
 .inferior-btn{
     font-family: inherit;
     border: none;
@@ -181,9 +185,9 @@ body {
 }
 
 .inferior-btn:hover{
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
 }
 
 .inferior-btn:active{
-    text-decoration: none;
+    text-decoration: none !important;
 }
