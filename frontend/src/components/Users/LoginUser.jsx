@@ -93,7 +93,7 @@ const LoginUser = () => {
         }
     }
 
-
+    
     const showPassClickHandler = () => {
         if (passRef && passRef.current && passRef.current.type === "text") {
             setShowPass(false);
@@ -161,12 +161,13 @@ const LoginUser = () => {
                         <p>You are already a ManyIN user.<br/>
                         Please enter your password in the given field below.</p>
 
-                        <form className='pass-form' onSubmit={passSubmitHandler} method="post">
+                        <form onSubmit={passSubmitHandler} method="post">
 
                             <label htmlFor="pass">Password *</label>
                             <input
                                 ref={passRef}
                                 onChange={passChangeHandler}
+                                className='pass-input'
                                 type="password"
                                 name="pass"
                                 value={pass}

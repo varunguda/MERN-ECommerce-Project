@@ -20,6 +20,11 @@ import {
     FORGOT_PASSWORD_SUCCESS,
     FORGOT_PASSWORD_FAILURE,
     FORGOT_PASSWORD_RESET,
+
+    RESET_PASSWORD_REQUEST,
+    RESET_PASSWORD_SUCCESS,
+    RESET_PASSWORD_FAILURE,
+    RESET_PASSWORD_RESET,
 } from "../constants/UserConstants.js";
 
 
@@ -193,6 +198,47 @@ export const forgotPasswordReducer = ( state={ sentRecoveryMail: false, recovery
             return ({
                 sentRecoveryMail: false,
                 recoveryMailMessage: ""
+            })
+        }
+    
+        default:{
+            return state;
+        }
+    }
+}
+
+
+
+export const resetPasswordReducer = ( state={ passwordChanged: false, resetPasswordMessage: "" }, action ) => {
+
+    switch (action.type) {
+        case RESET_PASSWORD_REQUEST:{
+            return ({
+                resettingPassword: true,
+                passwordChanged: false,
+            })
+        }
+
+        case RESET_PASSWORD_SUCCESS:{
+            return ({
+                resettingPassword: false,
+                passwordChanged: action.payload.success,
+                resetPasswordMessage: action.payload.message
+            })
+        }
+
+        case RESET_PASSWORD_FAILURE:{
+            return ({
+                resettingPassword: false,
+                passwordChanged: false,
+                resetPasswordError: action.payload
+            })
+        }
+
+        case RESET_PASSWORD_RESET:{
+            return ({
+                passwordChanged: false,
+                resetPasswordMessage: "",
             })
         }
     

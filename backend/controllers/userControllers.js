@@ -177,11 +177,6 @@ export const deleteUser = catchAsync( async(req, res, next) => {
 
 export const forgotPassword = catchAsync( async(req, res, next) => {
 
-    console.log(req["[Symbol(kHeaders)]"]);
-    // console.log(Object.keys(req[[Symbol(kCapture)]]));
-
-    return next(new ErrorHandler("test", 400))
-
     const { email } = req.body;
 
     const user = await Users.findOne({ email });
@@ -198,7 +193,7 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
 
     await user.save({ validateBeforeSave: false });
 
-    const resetPasswordURL = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
+    const resetPasswordURL = `${req.protocol}://${req.headers["x-forwarded-host"]}/account/password/reset/${resetToken}`;
 
     const html = `<html>
     <head>
@@ -306,6 +301,7 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
 });
 
 
+
 export const recoverPassword = catchAsync( async(req, res, next) => {
 
     const { resetToken } = req.params;
@@ -329,6 +325,11 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
 
     await user.save();
 
-    addCookie(user, `${user.name} password has been changed and Loggedin successfully!`, 200, req, res, next);
+    // addCookie(user, `${user.name}'s password has been changed!`, 200, req, res, next);
+
+    return res.json({
+        success:true,
+        message: `Your password has been successfully changed! Please login to continue.`
+    })
 
 });

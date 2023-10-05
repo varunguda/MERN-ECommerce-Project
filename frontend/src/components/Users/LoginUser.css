@@ -10,7 +10,6 @@
 .secondary-page-content{
     font-family: var(--test-font-family);
     font-size: 1rem;
-    /* font-weight: 300; */
     letter-spacing: -0.025rem;
     color: var(--light-font-color);
     margin-top: 40px;
@@ -26,6 +25,20 @@
     filter: drop-shadow(3px 3px rgba(0, 0, 0, 0.315));
     margin-bottom: 24px;
 }
+
+.logo-image-small:hover{
+    animation: rotate 1s linear;
+}
+
+@keyframes rotate {
+    0% {
+      transform: rotateY(0deg);
+    }
+    100% {
+      transform: rotateY(360deg);
+    }
+}
+
 
 .secondary-page-content .secondary-head{
     color: var(--black-font-color);
@@ -61,26 +74,30 @@
 }
 
 .secondary-page-content input{
-    height: 56px;
+    height: 54px;
     margin-bottom: 16px;
     border-radius: 5px;
-    border: 2px solid var(--border-color);
     padding: 0px 16px;
     font-size: 1rem;
+    border: none;
+    outline: 1px solid var(--black-font-color);
+}
+
+.secondary-page-content input.invalid{
+    outline-color: var(--primary-error-color);
 }
 
 .secondary-page-content input:hover{
-    border: 2px solid var(--black-font-color);
+    outline-width: 2px;
 }
 
 .secondary-page-content input:focus{
-    border: 3px solid var(--black-font-color);
+    outline-width: 3px;
 }
 
 .secondary-page-content form .form-caption{
     margin: 16px 20px;
 }
-
 
 .secondary-page-content form .show-pass-btn{
     position: absolute;
@@ -98,7 +115,7 @@
     color: var(--black-font-color);
 }
 
-.secondary-page-content .pass-form input{
+.secondary-page-content .pass-input{
     padding: 0px 60px 0px 16px;
 }
 
@@ -113,3 +130,52 @@
     height: 20px;
     width: 20px;
 }
+
+.secondary-page-content .mail-details{
+    color: var(--black-font-color);
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    margin-left: 5px;
+}
+
+.small-head{
+    font-size: 0.89rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--black-font-color);
+}
+
+.secondary-page-content .password-tips{
+    display: none;
+    margin: 5px;
+}
+
+.secondary-page-content .password-tips li{
+    color: var(--black-font-color);
+    font-size: 0.8 rem;
+    font-weight: 300;
+    margin: 2px;
+    margin-left: 26px;
+}
+
+.secondary-page-content .password-tips li.invalid{
+    color: var(--primary-error-color);
+    font-weight: 400;
+}
+
+.secondary-page-content .password-tips li.valid{
+    color: var(--highlight-font-color);
+    font-weight: 400;
+}
+
+.secondary-page-content .mail-details div{
+    display: flex;
+    gap: 10px;
+}
+
+.secondary-page-content .mail-details div span{
+    color: var(--light-font-color);
+}
+
+
