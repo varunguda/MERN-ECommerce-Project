@@ -19,14 +19,17 @@
     align-items: center;
 }
 
-.logo-image-small{
+.logo-image{
     height: 65px;
-    width: 65px;
     filter: drop-shadow(3px 3px rgba(0, 0, 0, 0.315));
     margin-bottom: 24px;
 }
 
-.logo-image-small:hover{
+.logo-image-extra-small{
+    height: 50px;
+}
+
+.logo-image:hover{
     animation: rotate 1s linear;
 }
 

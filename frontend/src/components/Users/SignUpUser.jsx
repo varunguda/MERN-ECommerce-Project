@@ -4,10 +4,10 @@ import { useLocation, useNavigate } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { userActionCreators } from '../../State/action-creators';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import Loader2 from '../layouts/Loader/Loader2';
 import { passLengthValidator, passLetterValidator, passNumberOrSpecialCharValidator } from './validators';
 import BannerPage from "../layouts/Banner/BannerPage.jsx";
+import { VERIFY_USER_RESET } from '../../State/constants/UserConstants';
 
 import "./SignUpUser.css";
 
@@ -33,32 +33,41 @@ const SignUpUser = () => {
     const passTipsRef = useRef(null);
     const [showPass, setShowPass] = useState(false);
     const passRef = useRef(null);
-
+    const errRef = useRef(null);
 
     const [otp, setOtp] = useState(Array(5).fill(''));
     const otpInputRefs = useRef([]);
+
 
     useEffect(() => {
         otpInputRefs.current = otpInputRefs.current.slice(0, otp.length);
     }, [otp]);
 
+
     const handleChange = (e, index) => {
+
+        if (errRef.current) {
+            errRef.current.innerHTML = "";
+        }
+
         const value = e.target.value;
 
         if (!isNaN(value)) {
-            setOtp([...otp.map((d, indx) => (indx === index ? value : d))]);
+
+            setOtp([...otp.map((d, indx) => (indx === index ? value.slice(0, 1) : d.slice(0, 1)))]);
 
             if (value === '' && index > 0) {
-                setTimeout(()=>{
+                setTimeout(() => {
                     otpInputRefs.current[index - 1].focus();
                 }, 0)
             } else if (index < otp.length - 1) {
-                setTimeout(()=>{
+                setTimeout(() => {
                     otpInputRefs.current[index + 1].focus();
                 }, 0)
             }
         }
     };
+
 
     const handleKeyDown = (e, index) => {
         if (e.keyCode === 8 && !otp[index] && otpInputRefs.current[index - 1]) {
@@ -75,20 +84,6 @@ const SignUpUser = () => {
         }
 
     }, [location.search])
-
-
-    useEffect(() => {
-        toast.error((signupError || verifcationError), {
-            position: "bottom-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
-    }, [signupError, verifcationError])
 
 
     useEffect(() => {
@@ -110,22 +105,17 @@ const SignUpUser = () => {
 
     useEffect(() => {
         if (verifiedUser) {
-            navigate("/");
-
             if (sessionStorage.getItem("mail")) {
                 sessionStorage.removeItem("mail")
             }
 
-            toast.success(verifcationMessage, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            setTimeout(()=> {
+                navigate("/");
+
+                dispatch({
+                    type: VERIFY_USER_RESET,
+                })
+            }, 3000);
         }
 
         // eslint-disable-next-line
@@ -154,11 +144,13 @@ const SignUpUser = () => {
         setUser(prev => ({ ...prev, [e.target.name]: e.target.value }));
     }
 
-    // const verifyCodeHandler = () => {
-    //     if (code.length === 5) {
-    //         verifyUser(code);
-    //     }
-    // }
+    const verifyOtpHandler = (e) => {
+        e.preventDefault();
+
+        if (otp.join('').length === 5) {
+            verifyUser(otp.join(''));
+        }
+    }
 
     const showPassClickHandler = () => {
         if (passRef && passRef.current && passRef.current.type === "text") {
@@ -183,7 +175,9 @@ const SignUpUser = () => {
 
                     <div className='secondary-page-content'>
 
-                        <img className='logo-image-small' src="/ManyIN_LOGO.png" alt="logo" />
+                        <img className='logo-image logo-image-extra-small' src="/ManyIN_LOGO.png" alt="logo" />
+
+                        <div className='secondary-head'>Create your ManyIN account</div>
 
                         <form onSubmit={createAccountHandler} method="post" >
 
@@ -240,7 +234,7 @@ const SignUpUser = () => {
                             </ul>
 
 
-                            <div className="err-msg"></div>
+                            <div className="err-msg">{signupError}</div>
 
                             <button
                                 className='main-btn'
@@ -275,42 +269,49 @@ const SignUpUser = () => {
 
             ) : (
 
-                <div>
+                (!verifiedUser) ? (
+                    <div>
 
-                    {/* <label htmlFor="code">Enter code</label>
-                    <input onChange={(e) => setCode(e.target.value)} type="text" name="code" id="code" />
-                    
-                    <div className="verification-msg">{verifcationMessage}</div>
-                    
-                    <button className='main-btn' onClick={verifyCodeHandler} type="button" disabled={(code.length !== 5) || verificationLoading}>Verify Code</button> */}
+                        <div className="verify-code-container">
+                            <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
+                            <div className='verify-head'>Enter Your 5 Digit OTP</div>
+
+                            <form onSubmit={verifyOtpHandler}>
+                                <div className="input_field_box">
+                                    {otp.map((data, index) => (
+                                        <input
+                                            type="number"
+                                            key={index}
+                                            value={data}
+                                            ref={ref => (otpInputRefs.current[index] = ref)}
+                                            onChange={e => handleChange(e, index)}
+                                            onKeyDown={e => handleKeyDown(e, index)}
+                                            disabled={(index > 0 && otp[index - 1] === "") || (index < otp.length - 1 && otp[index + 1] !== "")}
+                                        />
+                                    ))}
+                                </div>
+
+                                <button type='submit' className='main-btn' disabled={verificationLoading || otp.join('').length !== 5}>{verificationLoading ? <Loader2 /> : "Verify OTP"}</button>
+
+                                <div ref={errRef} className='err-msg'>{verifcationError}</div>
+                            </form>
+                        </div>
 
 
-                    <div className="verify-code-container">
-                        <img className='logo-image-small' src="/ManyIN_LOGO.png" alt="logo" />
-                        <div className='verify-head'>Enter Your 5 Digit OTP</div>
-
-                        <form>
-                            <div className="input_field_box">
-                                {otp.map((data, index) => (
-                                    <input
-                                        type="number"
-                                        key={index}
-                                        value={data}
-                                        ref={ref => (otpInputRefs.current[index] = ref)}
-                                        onChange={e => handleChange(e, index)}
-                                        onKeyDown={e => handleKeyDown(e, index)}
-                                        maxLength="1"
-                                        disabled={( index > 0 && otp[index - 1] === "" ) || ( index < otp.length - 1 && otp[index] !== "" )}
-                                    />
-                                ))}
-                            </div>
-
-                            <button type='submit' className='main-btn'>Verify OTP</button>
-                        </form>
                     </div>
+                ) : (
+                    <BannerPage
+                        type="done"
+                        onClick={() => { navigate("/") }}
+                        caption={
+                            <>
+                                <p>{verifcationMessage}</p>
 
-
-                </div>
+                                <button onClick={() => navigate("/")} type="button" className='inferior-btn' style={{ color: "#0071dc" }}>Home</button>
+                            </>
+                        }
+                    />
+                )
 
             )}
         </div>
