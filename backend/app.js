@@ -7,12 +7,17 @@ import { ErrorHandler } from './utils/errorHandler.js';
 import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';
 import session from 'express-session';
+import bodyParser from 'body-parser';
+import fileUpload from 'express-fileupload';
+
 
 config({
     path: "./config/config.env"
 })
 
+
 const app = express();
+
 
 // Using middleware
 app.use(express.json());
@@ -21,7 +26,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-}))
+}));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(fileUpload());
+
 
 // Using routes
 app.use('/api/v1', adminRoute)

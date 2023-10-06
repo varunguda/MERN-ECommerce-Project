@@ -90,7 +90,7 @@ export const signupUser = (user) => async(dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } }
 
-        const { data } = await axios.post("/api/v1/register", { name: user.name, email: user.mail , password: user.confirmPass }, config);
+        const { data } = await axios.post("/api/v1/register", { name: user.name, email: user.mail , password: user.confirmPass, avatar: user.avatar }, config);
 
         dispatch({
             type: SIGNUP_USER_SUCCESS,

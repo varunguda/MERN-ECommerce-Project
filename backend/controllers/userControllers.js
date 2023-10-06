@@ -70,7 +70,7 @@ export const createVerifiedUser = catchAsync( async(req, res, next) => {
         return next(new ErrorHandler("Resource not found! Please try again!", 404))
     }
 
-    const { name, email, password, code, codeExpireTime } = req.session.registrationDetails;
+    const { name, email, password, avatar, code, codeExpireTime } = req.session.registrationDetails;
     
     // const emailPayload = jwt.verify(token, process.env.JWT_SECRET);
     // if(emailPayload.email !== email){
@@ -87,7 +87,7 @@ export const createVerifiedUser = catchAsync( async(req, res, next) => {
 
     const hashPass = await hashPassword(password)
 
-    const user = await Users.create({ name, email, password: hashPass });
+    const user = await Users.create({ name, email, password: hashPass, avatar });
 
     delete req.session.registrationDetails;
 
