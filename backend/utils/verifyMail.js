@@ -1,8 +1,15 @@
 import catchAsync from "./catchAsync.js";
 import { sendEmail } from "./sendMail.js";
 import { codeGenerator } from './generateCode.js';
+import cloudinary from "cloudinary";
 
 export const verifyMail = catchAsync(async (req, res, next) => {
+
+    const myCloud = await cloudinary.v2.uploader.upload( req.body.avatar, {
+        folder: "avatars",
+        width: 150,
+        crop: "scale",
+    } )
 
     const { name, email, password } = req.body;
 
@@ -30,7 +37,7 @@ export const verifyMail = catchAsync(async (req, res, next) => {
         delete req.session.registrationDetails;
     }
 
-    req.session.registrationDetails = { name, email, password, code, codeExpireTime }
+    req.session.registrationDetails = { name, email, password, avatar:{ public_id: myCloud.public_id, url: myCloud.secure_url }, code, codeExpireTime }
 
     const html = `<html>
 

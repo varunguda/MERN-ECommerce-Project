@@ -28,10 +28,12 @@ const SignUpUser = () => {
         name: "",
         pass: "",
         confirmPass: "",
+        avatar: "/images/profileplaceholder.png"
     });
     const [verifyPage, setVerifyPage] = useState(false);
-    const passTipsRef = useRef(null);
     const [showPass, setShowPass] = useState(false);
+    const [avatarPreview, setAvatarPreview] = useState("/images/profileplaceholder.png");
+    const passTipsRef = useRef(null);
     const passRef = useRef(null);
     const errRef = useRef(null);
 
@@ -109,7 +111,7 @@ const SignUpUser = () => {
                 sessionStorage.removeItem("mail")
             }
 
-            setTimeout(()=> {
+            setTimeout(() => {
                 navigate("/");
 
                 dispatch({
@@ -152,6 +154,7 @@ const SignUpUser = () => {
         }
     }
 
+
     const showPassClickHandler = () => {
         if (passRef && passRef.current && passRef.current.type === "text") {
             setShowPass(false);
@@ -162,6 +165,30 @@ const SignUpUser = () => {
             passRef.current.type = "text";
         }
     }
+
+
+    const registerDataChange = (e) => {
+        if (e.target.name === "avatar") {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    setAvatarPreview(reader.result);
+                    setUser({ ...user, avatar: reader.result });
+                }
+            };
+
+            const file = e.target.files[0];
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                setAvatarPreview("/images/profileplaceholder.png");
+                setUser({ ...user, avatar: null });
+            }
+        }
+    };
+
 
 
     return (
@@ -181,15 +208,34 @@ const SignUpUser = () => {
 
                         <form onSubmit={createAccountHandler} method="post" >
 
+                            <div id="registerImage">
+
+                                <label htmlFor="avatar" className="custom-file-upload">
+
+                                    <span><img src={avatarPreview} alt="Avatar Preview" /></span>
+
+                                    <input
+                                        type="file"
+                                        id="avatar"
+                                        name="avatar"
+                                        accept="image/*"
+                                        onChange={registerDataChange}
+                                    />
+
+                                </label>
+
+                                <div className='small-head'>Add a profile picture</div>
+                            </div>
+
                             <div className="mail-details">
-                                <div className='small-head'>Email Address</div>
+                                <div className='small-head'>Email Address *</div>
                                 <div>
                                     <span>{user.mail}</span>
                                     <button className='inferior-btn' onClick={changeMailClickHandler} type='button'>Change</button>
                                 </div>
                             </div>
 
-                            <label htmlFor="name">Name</label>
+                            <label htmlFor="name">Name *</label>
                             <input
                                 className={`${((user.name.length < 3) && (user.name.length !== 0)) ? "invalid" : ""}`}
                                 onChange={inputChangeHandler}
@@ -198,7 +244,7 @@ const SignUpUser = () => {
                                 id="name"
                             />
 
-                            <label htmlFor="pass">Create a new password</label>
+                            <label htmlFor="pass">Create a new password *</label>
                             <input
                                 ref={passRef}
                                 className={`pass-input ${(!passLengthValidator(user.pass) || !passLetterValidator(user.pass) || !passNumberOrSpecialCharValidator(user.pass)) ? "invalid" : ""}`}
@@ -212,7 +258,7 @@ const SignUpUser = () => {
                             <span style={{ top: "174px" }} className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
 
 
-                            <label htmlFor="confirm-pass">Confirm password</label>
+                            <label htmlFor="confirm-pass">Confirm password *</label>
                             <input
                                 className={`pass-input ${((user.confirmPass.length !== 0) && user.confirmPass !== user.pass) ? "invalid" : ""}`}
                                 onChange={inputChangeHandler}
