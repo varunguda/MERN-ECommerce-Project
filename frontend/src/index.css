@@ -75,7 +75,7 @@ body {
 
 .content-container {
     position: relative;
-    margin-top: 150px;
+    margin-top: 140px;
     min-height: calc(100vh - 150px);
 }
 
@@ -173,6 +173,7 @@ body {
 
 .main-btn:disabled{
     background-color: #0072dca8;
+    cursor:default;
 }
 
 .inferior-btn{

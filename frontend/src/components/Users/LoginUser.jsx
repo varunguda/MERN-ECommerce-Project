@@ -121,7 +121,7 @@ const LoginUser = () => {
 
             <div className="secondary-page-content">
 
-                <img className='logo-image-small' src="/ManyIN_LOGO.png" alt="logo" />
+                <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
 
                 {(!fetched) && (
 

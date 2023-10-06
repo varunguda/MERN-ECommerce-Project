@@ -68,12 +68,12 @@ const ForgotPassword = () => {
                 <div className='center-container'>
 
                     <div className="secondary-page-content">
-                        <img className='logo-image-small' src="/ManyIN_LOGO.png" alt="logo" />
+                        <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
 
                         <div className="secondary-head">Reset Password</div>
 
-                        <p>Enter your email or mobile number and we'll send a link on your <br />
-                            email to reset your password.</p>
+                        <p>Enter your email and we'll send a link <br />
+                            to reset your password.</p>
 
                         <form onSubmit={mailSubmitHandler} method="post">
 

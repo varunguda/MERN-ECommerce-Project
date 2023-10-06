@@ -25,6 +25,7 @@ import {
     RESET_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAILURE,
     RESET_PASSWORD_RESET,
+    VERIFY_USER_RESET,
 } from "../constants/UserConstants.js";
 
 
@@ -157,6 +158,13 @@ export const verifcationReducer = ( state={ verifiedUser: false, verifcationMess
                 verifcationLoading: false,
                 verifiedUser: false,
                 verifcationError: action.payload
+            })
+        }
+
+        case VERIFY_USER_RESET:{
+            return ({
+                verifiedUser: false,
+                verifcationMessage: "",
             })
         }
     
