@@ -14,7 +14,7 @@ const LoginUser = () => {
 
     const { checkingUser, userExist, userEmail, userCheckError } = useSelector(state => state.checkUser);
 
-    const { loginLoading, loggedIn, loginMessage, loginError } = useSelector(state => state.login);
+    const { loginLoading, loggedIn, loginMessage, loginError } = useSelector(state => state.loggedIn);
 
     const dispatch = useDispatch();
     const { checkUsersAccount, loginUser } = bindActionCreators(userActionCreators, dispatch);
@@ -28,7 +28,7 @@ const LoginUser = () => {
     const passRef = useRef(null);
     const passErrMsgRef = useRef(null);
 
-
+    
     useEffect(() => {
         toast.error((userCheckError || loginError), {
             position: "bottom-center",
@@ -57,7 +57,7 @@ const LoginUser = () => {
             navigate("/");
 
             if (sessionStorage.getItem("mail")) {
-                sessionStorage.removeItem("mail")
+                sessionStorage.removeItem("mail");
             }
         }
         // eslint-disable-next-line

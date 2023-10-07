@@ -4,14 +4,17 @@ import './Navbar.css';
 import { BiCategory } from "react-icons/bi";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { FiShoppingCart } from "react-icons/fi";
-import { HiOutlineUserPlus } from "react-icons/hi2";
+import { HiOutlineUser, HiOutlineUserPlus } from "react-icons/hi2";
 import { PiTShirt, PiGraphThin } from "react-icons/pi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
+
+    const { loggedIn, user } = useSelector(state => state.loggedIn);
 
     const [sidebar, setSidebar] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -35,13 +38,23 @@ const Navbar = () => {
     const renderSidebarContent = () => (
         <>
             <div className='fixed'>
-                <div className='nav-elems main-elem'>
-                    <HiOutlineUserPlus size={"17px"} />
-                    <div className='nav-elem-desc'>
-                        <div className='nav-elem-small'>Sign In&nbsp;</div>
-                        <div>Account</div>
-                    </div>
-                </div>
+                {(!loggedIn) ? (
+                    <a href="/account/login" className='nav-elems main-elem link'>
+                        <HiOutlineUserPlus size={"17px"} />
+                        <div className='nav-elem-desc'>
+                            <div className='nav-elem-small'>Sign In&nbsp;</div>
+                            <div>Account</div>
+                        </div>
+                    </a>
+                ) : (
+                    <a href="/account" className='nav-elems main-elem link'>
+                        <HiOutlineUser size={"17px"} />
+                        <div className='nav-elem-desc'>
+                            <div className='nav-elem-small'>Hi, {user.name}&nbsp;</div>
+                            <div>Account</div>
+                        </div>
+                    </a>
+                )}
             </div>
 
             <div className="scrollable">
@@ -126,15 +139,19 @@ const Navbar = () => {
                             <span>Departments</span>
                         </div>
 
-                        <div className='nav-elems'>
-                            <PiGraphThin size={"20px"} />
-                            <span>Dashboard</span>
-                        </div>
+                        {(user && user.is_admin) && (
+                            <div className='nav-elems'>
+                                <PiGraphThin size={"20px"} />
+                                <span>Dashboard</span>
+                            </div>
+                        )}
 
-                        <div className='nav-elems'>
-                            <PiTShirt size={"17px"} />
-                            <span>My Products</span>
-                        </div>
+                        {(user && user.is_seller) && (
+                            <div className='nav-elems'>
+                                <PiTShirt size={"17px"} />
+                                <span>My Products</span>
+                            </div>
+                        )}
 
                         <div className='nav-elems'>
                             <IoIosHeartEmpty size={"17px"} />
@@ -144,13 +161,23 @@ const Navbar = () => {
                             </div>
                         </div>
 
-                        <a href="/account/login" className='nav-elems main-elem link'>
-                            <HiOutlineUserPlus size={"17px"} />
-                            <div className='nav-elem-desc'>
-                                <div className='nav-elem-small'>Sign In&nbsp;</div>
-                                <div>Account</div>
-                            </div>
-                        </a>
+                        {(!loggedIn) ? (
+                            <a href="/account/login" className='nav-elems main-elem link'>
+                                <HiOutlineUserPlus size={"17px"} />
+                                <div className='nav-elem-desc'>
+                                    <div className='nav-elem-small'>Sign In&nbsp;</div>
+                                    <div>Account</div>
+                                </div>
+                            </a>
+                        ) : (
+                            <a href="/account" className='nav-elems main-elem link'>
+                                <HiOutlineUser size={"17px"} />
+                                <div className='nav-elem-desc'>
+                                    <div className='nav-elem-small'>Hi, {user.name}&nbsp;</div>
+                                    <div>Account</div>
+                                </div>
+                            </a>
+                        )}
 
                     </nav>
 

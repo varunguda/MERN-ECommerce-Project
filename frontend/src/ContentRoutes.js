@@ -7,13 +7,13 @@ import {
 import { ToastContainer } from 'react-toastify';
 import Modal from './components/elements/Modals/Modal.jsx';
 import { useSelector } from 'react-redux';
-import Home from './components/Home/Home'
-import ProductPage from './components/Product/ProductPage'
-import ProductsPage from './components/Product/ProductsPage'
-import Footer from './components/layouts/Footer/Footer';
-import Navbar from './components/layouts/Navbar/Navbar';
+import Home from './components/Home/Home.jsx'
+import ProductPage from './components/Product/ProductPage.jsx'
+import ProductsPage from './components/Product/ProductsPage.jsx'
+import Footer from './components/layouts/Footer/Footer.jsx';
+import Navbar from './components/layouts/Navbar/Navbar.jsx';
 
-const Content = () => {
+const ContentRoutes = () => {
 
     const location = useLocation();
 
@@ -64,4 +64,4 @@ const Content = () => {
     )
 }
 
-export default Content
+export default ContentRoutes;

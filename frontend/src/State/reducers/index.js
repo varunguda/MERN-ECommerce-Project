@@ -20,7 +20,7 @@ const reducers = combineReducers({
     productReviews: productReviewReducer,
     urlParams: navigationReducer,
     checkUser: checkUserReducer,
-    login: loginReducer,
+    loggedIn: loginReducer,
     signup: signupReducer,
     verifySignup: verifcationReducer,
     forgotPassword: forgotPasswordReducer,
