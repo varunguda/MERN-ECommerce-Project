@@ -15,6 +15,7 @@ import {
     VERIFY_USER_REQUEST,
     VERIFY_USER_SUCCESS,
     VERIFY_USER_FAILURE,
+    VERIFY_USER_RESET,
 
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
@@ -25,13 +26,18 @@ import {
     RESET_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAILURE,
     RESET_PASSWORD_RESET,
-    VERIFY_USER_RESET,
+
+    LOAD_USER_FAILURE,
+    LOAD_USER_REQUEST,
+    LOAD_USER_SUCCESS
+    
 } from "../constants/UserConstants.js";
 
 
 
 export const checkUserReducer = ( state = { userExist: false }, action ) => {
     switch (action.type) {
+        
         case USER_CHECK_REQUEST:{
             return ({
                 checkingUser: true,
@@ -63,9 +69,11 @@ export const checkUserReducer = ( state = { userExist: false }, action ) => {
 
 
 
-export const loginReducer = ( state={ loggedIn: false, loginMessage: "" }, action ) => {
+export const loginReducer = ( state={ loggedIn: false, loginMessage: "", user: {} }, action ) => {
 
     switch (action.type) {
+        
+        case LOAD_USER_REQUEST:
         case LOGIN_USER_REQUEST:{
             return ({
                 loginLoading: true,
@@ -73,10 +81,20 @@ export const loginReducer = ( state={ loggedIn: false, loginMessage: "" }, actio
             })
         }
 
+        case LOAD_USER_SUCCESS:
         case LOGIN_USER_SUCCESS:{
             return ({
                 loginLoading: false,
                 loggedIn: action.payload.success,
+                user: action.payload.user,
+            })
+        }
+
+        case LOAD_USER_FAILURE:{
+            return ({
+                loggedIn: false, 
+                loginMessage: "", 
+                user: {}
             })
         }
 
@@ -90,7 +108,8 @@ export const loginReducer = ( state={ loggedIn: false, loginMessage: "" }, actio
         case LOGIN_USER_RESET:{
             return ({
                 loggedIn: false, 
-                loginMessage: ""
+                loginMessage: "",
+                user: {}
             })
         }
     

@@ -13,6 +13,7 @@ export const addCookie = async (user ,message, status ,req, res, next) => {
         })
         .json({
             success: true,
-            message
+            message,
+            user
         })
 }

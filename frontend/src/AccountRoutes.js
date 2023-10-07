@@ -9,10 +9,11 @@ import ForgotPassword from './components/Users/ForgotPassword';
 import ResetPassword from './components/Users/ResetPassword';
 
 
-const Account = () => {
+const AccountRoutes = () => {
     return (
         <>
             <Routes>
+                <Route path='/account' />
                 <Route path='/account/login' element={<LoginUser />} />
                 <Route path='/account/signup' element={<SignUpUser />} />
                 <Route path='/account/password/forgot' element={<ForgotPassword />} />
@@ -22,4 +23,4 @@ const Account = () => {
     )
 }
 
-export default Account
+export default AccountRoutes

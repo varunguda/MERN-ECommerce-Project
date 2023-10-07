@@ -98,9 +98,12 @@ export const createVerifiedUser = catchAsync( async(req, res, next) => {
 
 
 export const getUserDetails = catchAsync( async(req, res, next) => {
+
+    const user = await Users.findById(req.user._id).select("+is_admin +is_seller");
+
     return res.json({
         success:true,
-        user: req.user
+        user
     })
 })
 

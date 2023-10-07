@@ -22,6 +22,9 @@ import {
     RESET_PASSWORD_FAILURE,
     RESET_PASSWORD_REQUEST,
     RESET_PASSWORD_SUCCESS,
+    LOAD_USER_FAILURE,
+    LOAD_USER_REQUEST,
+    LOAD_USER_SUCCESS,
 } from "../constants/UserConstants.js";
 
 
@@ -73,6 +76,28 @@ export const loginUser = (email, pass) => async(dispatch) => {
 
         dispatch({
             type: LOGIN_USER_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+export const loadUser = () => async(dispatch) => {
+    
+    try {
+
+        dispatch({ type: LOAD_USER_REQUEST });
+
+        const { data } = await axios.get("/api/v1/me");
+
+        dispatch({
+            type: LOAD_USER_SUCCESS,
+            payload: data,
+        })
+        
+    } catch (error) {
+        dispatch({
+            type: LOAD_USER_FAILURE,
             payload: error.response.data.message,
         })
     }
