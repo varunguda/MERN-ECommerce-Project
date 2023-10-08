@@ -9,6 +9,7 @@ import {
 import { modalReducer } from "./ModalReducers";
 import { navigationReducer } from "./NavigationReducers";
 import { checkUserReducer, forgotPasswordReducer, loginReducer, resetPasswordReducer, signupReducer, verifcationReducer } from "./UserReducers";
+import { loaderReducer } from "./LoaderReducers";
 
 
 const reducers = combineReducers({
@@ -25,6 +26,7 @@ const reducers = combineReducers({
     verifySignup: verifcationReducer,
     forgotPassword: forgotPasswordReducer,
     resetPassword: resetPasswordReducer,
+    loader: loaderReducer,
 });
 
 

@@ -13,7 +13,6 @@ const AccountRoutes = () => {
     return (
         <>
             <Routes>
-                <Route path='/account' />
                 <Route path='/account/login' element={<LoginUser />} />
                 <Route path='/account/signup' element={<SignUpUser />} />
                 <Route path='/account/password/forgot' element={<ForgotPassword />} />

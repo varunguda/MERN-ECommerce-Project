@@ -1,0 +1,128 @@
+.profile-page-container {
+    position: relative;
+    padding: 60px 10%;
+    display: flex;
+    gap: 30px;
+    min-height: 100vh;
+}
+
+.profile-sidebar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: calc(460px - 20px);
+    padding: 30px 0px;
+}
+
+.profile-content {
+    position: relative;
+    width: 100%;
+}
+
+.profile-sidebar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-right: 1px solid var(--border-color);
+}
+
+.profile-sidebar .main-elem {
+    position: relative;
+}
+
+.profile-sidebar .main-elem-head {
+    font-family: var(--test-font-family);
+    color: var(--black-font-color);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.profile-sidebar .main-elem-caption {
+    font-size: 0.7rem;
+}
+
+.profile-sidebar .main-elem::after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    bottom: -20px;
+    width: calc(100% + 10px);
+    border-top: 1px solid var(--border-color);
+}
+
+.profile-sidebar .sidebar-elem-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-size: var(--regular-content-font-size);
+}
+
+.profile-sidebar .sidebar-elem-section:not(:last-of-type):after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -20px;
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+}
+
+.profile-sidebar .sidebar-elem {
+    padding: 12px 10px 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.profile-sidebar .sidebar-elem:hover {
+    text-decoration: underline;
+    color: var(--primary-hover-color);
+}
+
+.profile-sidebar .sidebar-elem.active {
+    position: relative;
+    background-color: var(--primary-highlight-color);
+}
+
+.profile-sidebar .sidebar-elem.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 5px;
+    height: calc(100% - 10px);
+    border-right: 3px solid var(--primary-color);
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.profile-sidebar .sidebar-elem-head {
+    color: var(--black-font-color);
+    font-family: var(--test-font-family);
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-left: 10px;
+}
+
+.profile-sidebar .sidebar-icon {
+    color: var(--black-font-color);
+}
+
+.profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 0px;
+}
+
+.profile-content .profile-page-head {
+    font-family: var(--test-font-family);
+    color: var(--black-font-color);
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+

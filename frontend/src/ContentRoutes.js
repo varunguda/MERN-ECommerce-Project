@@ -12,6 +12,8 @@ import ProductPage from './components/Product/ProductPage.jsx'
 import ProductsPage from './components/Product/ProductsPage.jsx'
 import Footer from './components/layouts/Footer/Footer.jsx';
 import Navbar from './components/layouts/Navbar/Navbar.jsx';
+import Profile from './components/Profile/Profile.jsx';
+import Loader3 from './components/layouts/Loader/Loader3.jsx';
 
 const ContentRoutes = () => {
 
@@ -19,17 +21,21 @@ const ContentRoutes = () => {
 
     const { open, content, heading, noOutClick } = useSelector((state) => state.modal);
 
+    const { load } = useSelector(state => state.loader);
+
     useEffect(() => {
-        if (open) {
+        if (open || load) {
             document.body.style.overflow = "hidden";
         }
         else {
             document.body.style.overflow = "auto";
         }
-    }, [open]);
+    }, [open, load]);
 
     return (
         <>
+
+            <Loader3 active={load} />
 
             <ToastContainer
                 position="bottom-center"
@@ -55,6 +61,7 @@ const ContentRoutes = () => {
                             <Route path='/' element={<Home />} />
                             <Route path="/product/:id" element={<ProductPage />} />
                             <Route path="/search" element={<ProductsPage />} />
+                            <Route path='/profile/:section?' element={<Profile />} />
                         </Routes>
                     </div>
                     <Footer />
