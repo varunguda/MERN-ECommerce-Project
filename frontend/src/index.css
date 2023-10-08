@@ -1,6 +1,7 @@
 :root {
     --primary-color: #0071dc;
     --primary-highlight-color: #0072dc0d;
+    --secondary-highlight-color: #f2f8fd;
     --primary-hover-color: #0055a5;
     --primary-active-color: #003b72;
     --primary-error-color: rgb(227, 67, 67);
