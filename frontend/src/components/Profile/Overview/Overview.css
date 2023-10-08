@@ -1,0 +1,95 @@
+.overview-container {
+    position: relative;
+}
+
+.user-details-container {
+    position: relative;
+    color: var(--light-font-color);
+    font-size: var(--regular-content-font-size);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 0.0625rem 0.125rem 0.0625rem #00000026;
+}
+
+.user-details-container div:first-child{
+    color: var(--black-font-color);
+    font-size: var(--medium-content-font-size);
+}
+
+.user-details-container img {
+    height: 120px;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+.user-details-container .inferior-btn {
+    font-size: 0.8rem;
+    color: var(--light-font-color);
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.overview-card-container {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
+}
+
+.overview-card {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--black-font-color);
+    background-color: var(--secondary-highlight-color);
+    box-shadow: 0 0.0625rem 0.125rem 0.0625rem #00000026;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.overview-card:hover {
+    background-color: #cde8f6;
+}
+
+.overview-card > * {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.overview-card-content{
+    background-color: white;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.overview-card span {
+    font-size: var(--regular-content-font-size);
+    color: var(--light-font-color);
+}
+
+.overview-card-head{
+    margin-top: 4px;
+    font-size: 1.2rem;
+    font-family: var(--test-font-family);
+    font-weight: 700;
+}
