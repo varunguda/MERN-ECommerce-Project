@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
 import "./Profile.css";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CiDeliveryTruck, CiHeart, CiViewList } from 'react-icons/ci';
 import { PiCreditCardLight, PiHandCoinsLight, PiInfoThin, PiShoppingCartLight, PiSignOutLight, PiTicketThin, PiUserListThin } from 'react-icons/pi';
 import { GoShieldLock } from 'react-icons/go';
 import { useNavigate, useParams } from 'react-router';
 import Loader from '../layouts/Loader/Loader';
 import PersonalInfo from './Personal Info/Personal_info';
-import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
 
 
 const Profile = () => {
@@ -20,7 +19,6 @@ const Profile = () => {
 
     const [activeLocation, setActiveLocation] = useState("");
 
-    const dispatch = useDispatch();
 
     useEffect(()=>{
         if(section){
