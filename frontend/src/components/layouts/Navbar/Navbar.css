@@ -194,7 +194,7 @@
         display: flex;
     }
 
-    .main-elem {
+    .parent-navbar .main-elem {
         position: absolute;
         top: 7vh;
         left: 65px;

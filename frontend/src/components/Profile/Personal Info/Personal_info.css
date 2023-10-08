@@ -1,0 +1,49 @@
+.personal-info-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 10px;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 0.0625rem 0.125rem 0.0625rem #00000026;
+}
+
+.personal-info-container .info-head{
+    font-family: var(--test-font-family);
+    font-size: var(--large-content-font-size);
+    color: var(--black-font-color);
+    font-weight: 700;
+}
+
+.personal-info-container section{
+    position: relative;
+    color: var(--black-font-color);
+}
+
+.personal-info-container section:not(:last-of-type):after{
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+}
+
+.personal-info-container section .section-head{
+    font-size: 0.76rem;
+    color: var(--light-font-color);
+    margin-bottom: 6px;
+}
+
+.personal-info-container section .section-content{
+    font-size: 1.1rem;
+    font-family: var(--test-font-family);
+}
+
+.personal-info-container section .inferior-btn{
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    font-size: var(--regular-content-font-size);
+    color: var(--secondary-font-color);
+}

@@ -1,5 +1,6 @@
 :root {
     --primary-color: #0071dc;
+    --primary-highlight-color: #0072dc0d;
     --primary-hover-color: #0055a5;
     --primary-active-color: #003b72;
     --primary-error-color: rgb(227, 67, 67);
@@ -36,7 +37,7 @@
 
 body {
     font-family: var(--primary-font-family);
-    color: var(--black-font-color);
+    color: var(--secondary-font-color);
 }
 
 

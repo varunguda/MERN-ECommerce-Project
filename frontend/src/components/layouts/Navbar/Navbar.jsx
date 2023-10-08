@@ -39,21 +39,21 @@ const Navbar = () => {
         <>
             <div className='fixed'>
                 {(!loggedIn) ? (
-                    <a href="/account/login" className='nav-elems main-elem link'>
+                    <Link to="/account/login" className='nav-elems main-elem link'>
                         <HiOutlineUserPlus size={"17px"} />
                         <div className='nav-elem-desc'>
                             <div className='nav-elem-small'>Sign In&nbsp;</div>
                             <div>Account</div>
                         </div>
-                    </a>
+                    </Link>
                 ) : (
-                    <a href="/account" className='nav-elems main-elem link'>
+                    <Link to="/profile" className='nav-elems main-elem link'>
                         <HiOutlineUser size={"17px"} />
                         <div className='nav-elem-desc'>
                             <div className='nav-elem-small'>Hi, {user.name}&nbsp;</div>
                             <div>Account</div>
                         </div>
-                    </a>
+                    </Link>
                 )}
             </div>
 
@@ -162,21 +162,21 @@ const Navbar = () => {
                         </div>
 
                         {(!loggedIn) ? (
-                            <a href="/account/login" className='nav-elems main-elem link'>
+                            <Link to="/account/login" className='nav-elems main-elem link'>
                                 <HiOutlineUserPlus size={"17px"} />
                                 <div className='nav-elem-desc'>
                                     <div className='nav-elem-small'>Sign In&nbsp;</div>
                                     <div>Account</div>
                                 </div>
-                            </a>
+                            </Link>
                         ) : (
-                            <a href="/account" className='nav-elems main-elem link'>
+                            <Link to="/profile" className='nav-elems main-elem link'>
                                 <HiOutlineUser size={"17px"} />
                                 <div className='nav-elem-desc'>
                                     <div className='nav-elem-small'>Hi, {user.name}&nbsp;</div>
                                     <div>Account</div>
                                 </div>
-                            </a>
+                            </Link>
                         )}
 
                     </nav>
