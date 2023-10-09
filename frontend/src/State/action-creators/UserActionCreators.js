@@ -15,6 +15,7 @@ import {
     VERIFY_USER_REQUEST,
     VERIFY_USER_SUCCESS,
     VERIFY_USER_FAILURE,
+
     FORGOT_PASSWORD_FAILURE,
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
@@ -22,9 +23,14 @@ import {
     RESET_PASSWORD_FAILURE,
     RESET_PASSWORD_REQUEST,
     RESET_PASSWORD_SUCCESS,
+
     LOAD_USER_FAILURE,
     LOAD_USER_REQUEST,
     LOAD_USER_SUCCESS,
+
+    SIGNOUT_USER_FAILURE,
+    SIGNOUT_USER_SUCCESS,
+    SIGNOUT_USER_REQUEST,
 } from "../constants/UserConstants.js";
 
 
@@ -204,6 +210,28 @@ export const resetPassword = ( pass, confirmPass, token ) => async(dispatch) => 
     } catch (error) {
         dispatch({
             type: RESET_PASSWORD_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+export const signOutUser = () => async(dispatch) => {
+    
+    try {
+
+        dispatch({ type: SIGNOUT_USER_REQUEST });
+
+        const { data } = await axios.get("/api/v1/logout");
+
+        dispatch({
+            type: SIGNOUT_USER_SUCCESS,
+            payload: data,
+        })
+        
+    } catch (error) {
+        dispatch({
+            type: SIGNOUT_USER_FAILURE,
             payload: error.response.data.message,
         })
     }

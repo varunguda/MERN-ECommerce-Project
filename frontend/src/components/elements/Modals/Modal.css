@@ -9,17 +9,6 @@
     z-index: 999;
 }
 
-.modal-container button {
-    font-family: inherit;
-    cursor: pointer;
-    background: #101012;
-    color: #f9f9f9;
-    border: 0;
-    border-radius: 8px;
-    padding: 20px 36px;
-    font-size: 16px;
-}
-
 .modal-container .background {
     position: fixed;
     top: 0;
@@ -106,4 +95,30 @@
 
 .modal-container.open .modal {
     animation: modal-in 1s both;
+}
+
+.modal-btn-container{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.close-modal-icon{
+    position: absolute;
+    height: 40px;
+    width: 40px;
+    padding: 12px;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+}
+
+.modal-caption{
+    color: var(--light-font-color);
+}
+
+.modal-btn-container > button{
+    width: 100px;
 }
