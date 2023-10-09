@@ -33,19 +33,31 @@ const schema = new mongoose.Schema({
         },
     },
 
+    mobile:{
+        type: Number,
+        length: 10,
+    },
+
     address: [
         {
+            first_name:{
+                type: String, 
+                required: true,
+            },
+            last_name:{
+                type: String, 
+                required: true,
+            },
             flat: {
                 type: String,
                 required: true
             },
-            area: {
+            street_address: {
                 type: String,
                 required: true
             },
             landmark: {
                 type: String,
-                required: true
             },
             city: {
                 type: String,
@@ -59,6 +71,19 @@ const schema = new mongoose.Schema({
                 type: Number,
                 required: true,
                 length: [ 5, "Please enter a valid zip code!" ],
+            },
+            mobile:{
+                type: Number,
+                required: true,
+            },
+            delivery_notes: {
+                type: String,
+                maxlength: [ 250, "Delivery notes cannot exceed 250 characters" ]
+            },
+            default_address:{
+                type: Boolean,
+                default: false,
+                required: true,
             }
         }
     ],

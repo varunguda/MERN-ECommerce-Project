@@ -405,31 +405,6 @@
     border-top: 1px dotted var(--border-color);
 }
 
-.checkboxes label {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    cursor: pointer;
-}
-
-.checkboxes input[type="checkbox"] {
-    display: none;
-}
-
-.checkboxes input[type="checkbox"]+label:before {
-    content: "";
-    display: inline-block;
-    min-width: 11px;
-    min-height: 11px;
-    border-radius: 50%;
-    outline: 1px solid var(--black-font-color);
-    outline-offset: 3px;
-}
-
-.checkboxes input[type="checkbox"]:checked+label::before {
-    background-color: var(--black-font-color);
-}
-
 
 @media screen and (max-width: 1100px) {
     .product-page-container {

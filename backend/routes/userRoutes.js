@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { isUser } from "../middleware/isUser.js";
 import {
+    addUserAddress,
     checkUser,
     createUser,
     createVerifiedUser,
     deleteUser,
     forgotPassword,
+    getAllAddresses,
     getUserDetails,
     loginUser,
     logoutUser,
@@ -38,6 +40,10 @@ router.route('/me/update').put(isUser, updateUserDetails);
 router.route('/me/delete').delete(isUser, deleteUser)
 
 router.route('/logout').get(isUser, logoutUser);
+
+router.route("/me/addresses")
+    .post(isUser, addUserAddress)
+    .get(isUser, getAllAddresses);
 
 
 // router.route("/cart").get(isUser, )

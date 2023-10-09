@@ -81,7 +81,6 @@ const ProductsCarousel = ({ products, desktopItems, tabletItems, flipItems, mobi
                             renderButtonGroupOutside={true}
                             rewind={false}
                             rewindWithAnimation={false}
-                            rtl={false}
                             shouldResetAutoplay
                             showDots={false}
                             sliderClass=""

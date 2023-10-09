@@ -75,10 +75,6 @@
     background-color: var(--primary-hover-color);
 }
 
-.link{
-    color:inherit;
-}
-
 .navbar-menu {
     display: flex;
     transition: 0.3s;

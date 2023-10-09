@@ -34,7 +34,11 @@ import {
     SIGNOUT_USER_REQUEST,
     SIGNOUT_USER_SUCCESS,
     SIGNOUT_USER_FAILURE,
-    SIGNOUT_USER_RESET
+    SIGNOUT_USER_RESET,
+    
+    USER_ADDRESS_ADD_REQUEST,
+    USER_ADDRESS_ADD_SUCCESS,
+    USER_ADDRESS_ADD_FAILURE
     
 } from "../constants/UserConstants.js";
 
@@ -97,6 +101,7 @@ export const loginReducer = ( state={ loggedIn: false, loginMessage: "", user: {
 
         case LOAD_USER_FAILURE:{
             return ({
+                loginLoading: false,
                 loggedIn: false, 
                 loginMessage: "", 
                 user: {}
@@ -311,6 +316,38 @@ export const signOutReducer = (state = { signedOut: false, signOutMessage: "" },
             return ({
                 signedOut: false, 
                 signOutMessage: ""
+            })
+        }
+
+        default:{
+            return state;
+        }
+    }
+}
+
+
+export const addAddressReducer = (state = { addedAddress: false }, action) => {
+
+    switch (action.type) {
+        case USER_ADDRESS_ADD_REQUEST:{
+            return({
+                addingAddress: true,
+                addedAddress: false,
+            })
+        }
+
+        case USER_ADDRESS_ADD_SUCCESS:{
+            return ({
+                addingAddress: false,
+                addedAddress: action.payload.success,
+                addedAddressMessage: action.payload.message,
+            })
+        }
+
+        case USER_ADDRESS_ADD_FAILURE:{
+            return ({
+                addingAddress: false,
+                addedAddress: false,
             })
         }
 
