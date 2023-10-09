@@ -113,7 +113,7 @@ export const loginUser = catchAsync( async(req, res, next) => {
 
     const { email, password } = req.body;
 
-    const user = await Users.findOne({ email }).select("+password");
+    const user = await Users.findOne({ email }).select("+password +is_admin +is_seller");
 
     if(!user){
         return await checkDeletedUsersLogin(req, res, next);
@@ -336,3 +336,38 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
     })
 
 });
+
+
+export const addUserAddress = catchAsync( async(req, res, next) => {
+
+    const { default_address } = req.body;
+
+    const user = await Users.findById(req.user._id);
+
+    if(default_address === true){
+        user.address = user.address.map((address) => {
+            if(address.default_address === true){
+                address.default_address = false;
+            }
+
+            return address;
+        });
+    }
+
+    user.address.push(req.body);
+
+    user.save({ validateBeforeSave: false });
+
+    return res.status(201).json({
+        success: true,
+        addresses: user.address,
+    })
+});
+
+
+export const getAllAddresses = catchAsync( async(req, res, next) => {
+    return res.status(201).json({
+        success: true,
+        addresses: req.user.address,
+    })
+})

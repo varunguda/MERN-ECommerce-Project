@@ -9,6 +9,7 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import Loader from '../layouts/Loader/Loader';
 import PersonalInfo from './Personal Info/Personal_info';
 import Overview from './Overview/Overview';
+import Addresses from './Addresses/Addresses';
 
 
 const Profile = () => {
@@ -20,7 +21,6 @@ const Profile = () => {
     const { section } = useParams();
 
     const [activeLocation, setActiveLocation] = useState("");
-
 
     useEffect(()=>{
         if(location.pathname){
@@ -43,12 +43,9 @@ const Profile = () => {
         if (!isNaN(loginLoading) && !loginLoading && !loggedIn) {
             navigate("/account/login");
         }
-        else if(isNaN(loginLoading)){
-            navigate("/account/login");
-        }
 
         // eslint-disable-next-line
-    }, [loggedIn]);
+    }, [loginLoading, loggedIn]);
 
 
     const sidebarElemClickHandler = (e) => {
@@ -189,6 +186,8 @@ const Profile = () => {
                     <div className="profile-content">
                         {(activeLocation === "personal") ? (
                             <PersonalInfo user={user} />
+                        ) : (activeLocation === "addresses") ? (
+                            <Addresses user={user} />
                         ) : (
                             <Overview user={user} />
                         )}

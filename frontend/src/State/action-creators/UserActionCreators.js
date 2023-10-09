@@ -31,6 +31,10 @@ import {
     SIGNOUT_USER_FAILURE,
     SIGNOUT_USER_SUCCESS,
     SIGNOUT_USER_REQUEST,
+    
+    USER_ADDRESS_ADD_REQUEST,
+    USER_ADDRESS_ADD_SUCCESS,
+    USER_ADDRESS_ADD_FAILURE,
 } from "../constants/UserConstants.js";
 
 
@@ -232,6 +236,55 @@ export const signOutUser = () => async(dispatch) => {
     } catch (error) {
         dispatch({
             type: SIGNOUT_USER_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+export const addUserAddress = (address) => async(dispatch) => {
+    try {
+        
+        dispatch({ type: USER_ADDRESS_ADD_REQUEST });
+
+        const {
+            first_name,
+            last_name,
+            flat,
+            street_address,
+            landmark,
+            city,
+            state,
+            zip,
+            mobile,
+            delivery_notes,
+            default_address,
+        } = address;
+
+        const config = { headers: { "Content-Type" : "application/json" } };
+
+        const { data } = await axios.post("/api/v1/me/addresses", {
+            first_name,
+            last_name,
+            flat,
+            street_address,
+            landmark,
+            city,
+            state,
+            zip,
+            mobile,
+            delivery_notes,
+            default_address,
+        }, config );
+
+        dispatch({
+            type: USER_ADDRESS_ADD_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: USER_ADDRESS_ADD_FAILURE,
             payload: error.response.data.message,
         })
     }
