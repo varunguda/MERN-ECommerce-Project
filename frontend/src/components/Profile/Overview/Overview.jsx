@@ -1,16 +1,102 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from "react-router-dom";
 import {BsTruck} from "react-icons/bs";
 import {FiHeart} from "react-icons/fi";
 import {LiaEdit} from "react-icons/lia";
 import {MdOutlineAddLocationAlt} from "react-icons/md";
+import {PiSignOutBold} from "react-icons/pi";
 import OverviewCard from './OverviewCard';
 
 import "./Overview.css";
 import { PiTicketLight } from 'react-icons/pi';
+import { useDispatch, useSelector } from 'react-redux';
+import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
+import { toast } from 'react-toastify';
+import { closeModal, openModal } from '../../../State/action-creators/ModalActionCreator';
+import { loadUser, signOutUser } from '../../../State/action-creators/UserActionCreators';
+import { SIGNOUT_USER_RESET } from '../../../State/constants/UserConstants';
 
 
 const Overview = ({ user }) => {
+
+    const { signOutLoading, signedOut, signOutMessage, signOutError } = useSelector(state => state.signout);
+
+    const dispatch = useDispatch();
+
+    const navigate = useNavigate();
+
+    useEffect(()=>{
+        if(signOutLoading && signOutLoading === true){
+            dispatch(loaderSpin(true));
+        }
+        else {
+            dispatch(loaderSpin(false));
+        }
+
+        // eslint-disable-next-line
+    }, [signOutLoading]);
+
+
+    useEffect(()=>{
+        toast.error(signOutError, {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [signOutError])
+
+
+    useEffect(()=>{
+        if(signOutMessage){
+            toast.success(signOutMessage, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+    }, [signOutMessage])
+
+
+    useEffect(()=>{
+        if(signedOut){
+            navigate("/");
+            dispatch({ type: SIGNOUT_USER_RESET });
+            dispatch(loadUser());
+        }
+
+        // eslint-disable-next-line
+    }, [signedOut])
+
+    const signOutClickHandler = (e) => {
+        dispatch(openModal(
+            "Are you sure you want to Sign out?",
+            (<>
+                <div className="modal-caption">You need your Email & Password to log back in again</div>
+
+                <div className="modal-btn-container">
+                    <button onClick={()=> (dispatch(closeModal()))} className='secondary-btn'>No</button>
+                    <button onClick={signOutHandler} className='main-btn warning'>Yes</button>
+                </div>
+            </>)
+        ));
+    }
+
+
+    const signOutHandler = () => {
+        dispatch(closeModal());
+        dispatch(signOutUser());
+    }
+
 
     return (
         <div className="overview-container">
@@ -61,6 +147,10 @@ const Overview = ({ user }) => {
                     caption="Change your profile details"
                     linkTo={"/profile/personal"} 
                 />
+            </div>
+
+            <div className="overview-btn-container">
+                <button onClick={signOutClickHandler} className="main-btn warning"><PiSignOutBold size={20}/>Sign Out</button>
             </div>
         </div>
     )

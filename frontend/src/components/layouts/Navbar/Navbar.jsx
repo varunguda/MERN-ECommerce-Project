@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 
 const Navbar = () => {
 
-    const { loggedIn, user } = useSelector(state => state.loggedIn);
+    const { loginLoading, loggedIn, user } = useSelector(state => state.loggedIn);
 
     const [sidebar, setSidebar] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -139,18 +139,24 @@ const Navbar = () => {
                             <span>Departments</span>
                         </div>
 
-                        {(user && user.is_admin) && (
-                            <div className='nav-elems'>
-                                <PiGraphThin size={"20px"} />
-                                <span>Dashboard</span>
-                            </div>
-                        )}
-
-                        {(user && user.is_seller) && (
-                            <div className='nav-elems'>
-                                <PiTShirt size={"17px"} />
-                                <span>My Products</span>
-                            </div>
+                        {(!isNaN(loginLoading) && !loginLoading) ? (
+                            <>
+                                {(user && user.is_admin) && (
+                                    <div className='nav-elems'>
+                                        <PiGraphThin size={"20px"} />
+                                        <span>Dashboard</span>
+                                    </div>
+                                )}
+                                
+                                {(user && user.is_seller) && (
+                                    <div className='nav-elems'>
+                                        <PiTShirt size={"17px"} />
+                                        <span>My Products</span>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            ""
                         )}
 
                         <div className='nav-elems'>

@@ -40,7 +40,10 @@ const Profile = () => {
 
 
     useEffect(() => {
-        if (loggedIn && !loggedIn) {
+        if (!isNaN(loginLoading) && !loginLoading && !loggedIn) {
+            navigate("/account/login");
+        }
+        else if(isNaN(loginLoading)){
             navigate("/account/login");
         }
 

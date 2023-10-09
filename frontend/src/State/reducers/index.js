@@ -8,7 +8,7 @@ import {
 } from "./ProductReducer";
 import { modalReducer } from "./ModalReducers";
 import { navigationReducer } from "./NavigationReducers";
-import { checkUserReducer, forgotPasswordReducer, loginReducer, resetPasswordReducer, signupReducer, verifcationReducer } from "./UserReducers";
+import { checkUserReducer, forgotPasswordReducer, loginReducer, resetPasswordReducer, signOutReducer, signupReducer, verifcationReducer } from "./UserReducers";
 import { loaderReducer } from "./LoaderReducers";
 
 
@@ -23,6 +23,7 @@ const reducers = combineReducers({
     checkUser: checkUserReducer,
     loggedIn: loginReducer,
     signup: signupReducer,
+    signout: signOutReducer,
     verifySignup: verifcationReducer,
     forgotPassword: forgotPasswordReducer,
     resetPassword: resetPasswordReducer,

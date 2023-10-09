@@ -29,7 +29,12 @@ import {
 
     LOAD_USER_FAILURE,
     LOAD_USER_REQUEST,
-    LOAD_USER_SUCCESS
+    LOAD_USER_SUCCESS,
+    
+    SIGNOUT_USER_REQUEST,
+    SIGNOUT_USER_SUCCESS,
+    SIGNOUT_USER_FAILURE,
+    SIGNOUT_USER_RESET
     
 } from "../constants/UserConstants.js";
 
@@ -269,6 +274,46 @@ export const resetPasswordReducer = ( state={ passwordChanged: false, resetPassw
             })
         }
     
+        default:{
+            return state;
+        }
+    }
+}
+
+
+
+export const signOutReducer = (state = { signedOut: false, signOutMessage: "" }, action) => {
+
+    switch (action.type) {
+        case SIGNOUT_USER_REQUEST:{
+            return({
+                signOutLoading: true,
+                signedOut: false,
+            })
+        }
+
+        case SIGNOUT_USER_SUCCESS:{
+            return ({
+                signOutLoading: false,
+                signedOut: action.payload.success,
+                signOutMessage: action.payload.message,
+            })
+        }
+
+        case SIGNOUT_USER_FAILURE:{
+            return ({
+                signOutLoading: false,
+                signOutError: action.payload,
+            })
+        }
+
+        case SIGNOUT_USER_RESET:{
+            return ({
+                signedOut: false, 
+                signOutMessage: ""
+            })
+        }
+
         default:{
             return state;
         }

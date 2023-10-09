@@ -4,6 +4,7 @@ import "./Modal.css";
 import { useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { modalActionCreators } from '../../../State/action-creators';
+import { AiOutlineClose } from "react-icons/ai"
 
 const Modal = (props) => {
 
@@ -17,7 +18,7 @@ const Modal = (props) => {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (modalRef.current && !modalRef.current.contains(event.target) && !props.noOutClick) {
-                if(modalContainerRef && modalContainerRef.current.classList.contains("open")){
+                if (modalContainerRef && modalContainerRef.current.classList.contains("open")) {
                     closeModal();
                 }
             }
@@ -36,6 +37,9 @@ const Modal = (props) => {
 
             <div className="background" />
             <div ref={modalRef} className="modal">
+
+                <AiOutlineClose onClick={() => { closeModal() }} className="close-modal-icon" color='#74767c' />
+
                 <div className="modal-content">
                     <div className='heading'>{props.heading}</div>
                     <div
@@ -43,7 +47,6 @@ const Modal = (props) => {
                     >{props.content}</div>
                 </div>
             </div>
-
         </div>
     )
 }
