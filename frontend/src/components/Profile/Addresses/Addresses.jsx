@@ -1,12 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { useDispatch, useSelector } from "react-redux";
 
 import "./Addresses.css";
-import { cityValidator, flatValidator, mobileNumValidator, stateValidator, streetValidator, zipValidator } from './AddressValidators';
+import {
+    cityValidator,
+    flatValidator,
+    mobileNumValidator,
+    nameValidator,
+    stateValidator,
+    streetValidator,
+    zipValidator
+} from './AddressValidators.js';
+import { toast } from 'react-toastify';
+import { USER_ADDRESS_ADD_RESET, USER_ADDRESS_UPDATE_RESET } from '../../../State/constants/UserConstants';
+import AddressForm from './AddressForm';
+import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
+import AddressCard from './AddressCard';
+import { bindActionCreators } from 'redux';
+import { userActionCreators } from '../../../State/action-creators';
 
-const Addresses = ({ user }) => {
+const Addresses = () => {
+
+    const { addingAddress, addedAddress, addedAddressMessage, addAddressError } = useSelector(state => state.addAddress);
+    const { updatingAddress, updatedAddress, updatedAddressMessage, updateAddressError } = useSelector(state => state.updateAddress);
+
+    const { gettingAddresses, addresses } = useSelector(state => state.addresses);
+
+    const dispatch = useDispatch();
+    const { getUserAddresses, addUserAddress, updateUserAddress } = bindActionCreators(userActionCreators, dispatch);
 
     const [validateFields, setValidateFields] = useState(false);
-    const [showAddressBtn, setShowAddressBtn] = useState(true);
+    const [showAddAddressForm, setShowAddAddressForm] = useState(false);
+    const [showEditAddressForm, setShowEditAddressForm] = useState(false);
     const [address, setAddress] = useState({
         first_name: "",
         last_name: "",
@@ -20,21 +46,157 @@ const Addresses = ({ user }) => {
         delivery_notes: "",
         default_address: false,
     });
+    const errorRef = useRef(null);
+
+
+    useEffect(() => {
+        toast.error((addAddressError || updateAddressError), {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [addAddressError, updateAddressError]);
+
+
+    useEffect(() => {
+        toast.success((addedAddressMessage || updatedAddressMessage), {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [addedAddressMessage, updatedAddressMessage]);
+
+
+    useEffect(() => {
+        getUserAddresses();
+        // eslint-disable-next-line
+    }, []);
+
+    useEffect(() => {
+        if (gettingAddresses || updatingAddress) {
+            dispatch(loaderSpin(true));
+        }
+        else {
+            dispatch(loaderSpin(false));
+        }
+
+        // eslint-disable-next-line
+    }, [gettingAddresses, updatingAddress])
+
+
+    const validateAddressFields = () => {
+        const validators = [
+            nameValidator(address.first_name, "First name"),
+            nameValidator(address.last_name, "Last name"),
+            flatValidator(address.flat),
+            streetValidator(address.street_address),
+            cityValidator(address.city),
+            stateValidator(address.state),
+            zipValidator(address.zip),
+            mobileNumValidator(address.mobile),
+        ];
+
+        return validators.every((validator) => !validator);
+    };
+
 
     const addAddressHandler = (e) => {
+
         e.preventDefault();
-
         setValidateFields(true);
+
+        if (validateAddressFields()) {
+            addUserAddress(address);
+            errorRef.current.style.display = "none";
+        }
+        else {
+            errorRef.current.style.display = "flex";
+            window.scrollTo({
+                top: errorRef.current.offsetTop
+            });
+        }
     }
 
-    const addressInputChangeHandler = (e) => {
-        setAddress((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+    const resetAddressForm = () => {
+        setAddress({
+            first_name: "",
+            last_name: "",
+            flat: "",
+            street_address: "",
+            landmark: "",
+            city: "",
+            state: "",
+            zip: "",
+            mobile: "",
+            delivery_notes: "",
+            default_address: false,
+        });
+        setValidateFields(false);
+        setShowAddAddressForm(false);
+        setShowEditAddressForm(false);
+        window.scrollTo(0, 0);
+    };
+
+
+    useEffect(() => {
+        if (addedAddress) {
+            resetAddressForm();
+            dispatch({ type: USER_ADDRESS_ADD_RESET });
+        }
+        // eslint-disable-next-line
+    }, [addedAddress]);
+
+
+    useEffect(() => {
+        if (updatedAddress) {
+            resetAddressForm();
+            dispatch({ type: USER_ADDRESS_UPDATE_RESET });
+            getUserAddresses();
+        }
+        // eslint-disable-next-line
+    }, [updatedAddress]);
+
+
+    const editClickHandler = (id) => {
+
+        window.scrollTo(0,0);
+        
+        for (let i = 0; i < addresses.length; i++) {
+            const element = addresses[i];
+            if (element._id === id) {
+                setAddress(element);
+                setShowEditAddressForm(true);
+            }
+        }
     }
 
-    const defaultAddressCheckHandler = (e) => {
-        setAddress((prev) => ({ ...prev, default_address: !prev.default_address }));
-    }
 
+    const editAddressHandler = (e) => {
+        e.preventDefault();
+        setValidateFields(true);
+
+        if (validateAddressFields()) {
+            updateUserAddress(address, address._id);
+            errorRef.current.style.display = "none";
+        }
+        else {
+            errorRef.current.style.display = "flex";
+            window.scrollTo({
+                top: errorRef.current.offsetTop
+            });
+        }
+    }
 
     return (
         <div className="profile-page-content">
@@ -43,174 +205,66 @@ const Addresses = ({ user }) => {
 
             <div className="addresses-container">
 
-                <div onClick={() => { showAddressBtn && setShowAddressBtn(false) }} className={`${showAddressBtn ? "inferior-btn" : "addresses-container-head"}`}>+ Add Address</div>
+                {!showEditAddressForm && (
+                    <div
+                        onClick={() => { !showAddAddressForm && setShowAddAddressForm(true) }}
+                        className={`${!showAddAddressForm ? "inferior-btn" : "addresses-container-head"}`}
+                    >
+                        + Add Address
+                    </div>
+                )}
 
-                {!showAddressBtn && (
-
-                    <form onSubmit={addAddressHandler} method="post">
-
-                        <div className="form-instruction" style={{ marginBottom: "8px" }}>*Required fields</div>
-
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="first_name">First name*</label>
-                            <input
-                                onChange={addressInputChangeHandler}
-                                className={`${(validateFields && address.first_name.length === 0) ? "invalid" : ""}  input1`}
-                                type="text" name="first_name"
-                                id="first_name"
-                                value={address.first_name}
-                            />
-                            {(validateFields && address.first_name.length === 0) && (
-                                <span className='input-error'>First name is required.</span>
-                            )}
+                {showAddAddressForm ? (
+                    <>
+                        <div ref={errorRef} className="error-alert" style={{ marginBottom: "10px", display: "none" }}>
+                            Please verify all fields below.
                         </div>
 
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="last_name">Last name*</label>
-                            <input
-                                onChange={addressInputChangeHandler}
-                                className={`${(validateFields && address.last_name.length === 0) ? "invalid" : ""}  input1`}
-                                type="text"
-                                name="last_name"
-                                id="last_name"
-                                value={address.last_name}
-                            />
-                            {(validateFields && address.last_name.length === 0) && (
-                                <span className='input-error'>Last name is required.</span>
-                            )}
+                        <AddressForm
+                            onSubmit={addAddressHandler}
+                            address={address}
+                            setAddress={setAddress}
+                            disableSaveBtn={addingAddress}
+                            validateFields={validateFields}
+                            cancelClickHandler={resetAddressForm}
+                        />
+                    </>
+
+                ) : (showEditAddressForm ? (
+
+                    <>
+                        <div className="addresses-container-head">
+                            + Edit Address
                         </div>
 
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="flat">Flat*</label>
-                            <input
-                                onChange={addressInputChangeHandler}
-                                className={`${(validateFields && flatValidator(address.flat)) ? "invalid" : ""}  input1`}
-                                type="text"
-                                name="flat"
-                                id="flat"
-                                value={address.flat}
-                            />
-                            {(validateFields && flatValidator(address.flat)) && (
-                                <span className='input-error'>{flatValidator(address.flat)}</span>
-                            )}
+                        <div ref={errorRef} className="error-alert" style={{ marginBottom: "10px", display: "none" }}>
+                            Please verify all fields below.
                         </div>
 
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="street_address">Street Address*</label>
-                            <input
-                                onChange={addressInputChangeHandler}
-                                className={`${(validateFields && streetValidator(address.street_address)) ? "invalid" : ""}  input1`}
-                                type="text"
-                                name="street_address"
-                                id="street_address"
-                                value={address.street_address}
-                            />
-                            {(validateFields && streetValidator(address.street_address)) && (
-                                <span className='input-error'>{streetValidator(address.street_address)}</span>
-                            )}
-                        </div>
+                        <AddressForm
+                            onSubmit={editAddressHandler}
+                            address={address}
+                            setAddress={setAddress}
+                            disableSaveBtn={updatingAddress}
+                            validateFields={validateFields}
+                            cancelClickHandler={resetAddressForm}
+                        />
+                    </>
 
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="landmark">Landmark (optional)</label>
-                            <input
-                                onChange={addressInputChangeHandler}
-                                className={`input1`}
-                                type="text"
-                                name="landmark"
-                                id="landmark"
-                                value={address.landmark}
-                            />
-                        </div>
+                ) : (
 
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="city">City*</label>
-                            <input
-                                onChange={addressInputChangeHandler}
-                                className={`${(validateFields && cityValidator(address.city)) ? "invalid" : ""}  input1`}
-                                type="text"
-                                name="city"
-                                id="city"
-                                value={address.city}
-                            />
-                            {(validateFields && cityValidator(address.city)) && (
-                                <span className='input-error'>{cityValidator(address.city)}</span>
-                            )}
-                        </div>
-
-                        <div className='single-line'>
-                            <div className='input-section'>
-                                <label className='label1' htmlFor="state">State*</label>
-                                <input 
-                                    onChange={addressInputChangeHandler} 
-                                    className={`${(validateFields && stateValidator(address.state)) ? "invalid" : ""}  input1`}
-                                    type="text" 
-                                    name="state" 
-                                    id="state" 
-                                    value={address.state} 
+                    (!gettingAddresses && addresses && addresses.length > 0) && (
+                        addresses.map((address, index) => {
+                            return (
+                                <AddressCard
+                                    key={index}
+                                    address={address}
+                                    editClickHandler={editClickHandler}
                                 />
-                                {(validateFields && stateValidator(address.state)) && (
-                                    <span className='input-error'>{stateValidator(address.state)}</span>
-                                )}
-                            </div>
-
-                            <div className='input-section'>
-                                <label className='label1' htmlFor="zip">Zip Code*</label>
-                                <input
-                                    onChange={addressInputChangeHandler}
-                                    className={`${(validateFields && zipValidator(address.zip)) ? "invalid" : ""}  input1`}
-                                    type="number"
-                                    name="zip"
-                                    id="zip"
-                                    value={address.zip}
-                                />
-                                {(validateFields && zipValidator(address.zip)) && (
-                                    <span className='input-error'>{zipValidator(address.zip)}</span>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="mobile">Mobile Number*</label>
-                            <input
-                                onChange={addressInputChangeHandler}
-                                className={`${(validateFields && mobileNumValidator(address.mobile)) ? "invalid" : ""}  input1`}
-                                type="number"
-                                name="mobile"
-                                id="mobile"
-                                value={address.mobile}
-                            />
-                            {(validateFields && mobileNumValidator(address.mobile)) && (
-                                <span className='input-error'>{mobileNumValidator(address.mobile)}</span>
-                            )}
-                            <span className="input-caption">We'll contact you in case anything comes up with your order.</span>
-                        </div>
-
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="delivery_notes">Delivery Notes</label>
-                            <textarea 
-                                onChange={addressInputChangeHandler} 
-                                className='textarea1' 
-                                type="text" 
-                                name="delivery_notes" 
-                                id="delivery_notes" 
-                                value={address.delivery_notes}
-                            />
-                            <span className="input-caption" style={{ alignSelf: "flex-end" }}>{address.delivery_notes.length}/250</span>
-                        </div>
-
-                        <div className='checkboxes'>
-                            <input onClick={defaultAddressCheckHandler} type="checkbox" name="default_address" id="default_address" checked={address.default_address} readOnly />
-                            <label htmlFor="default_address">
-                                Set as my default address
-                            </label>
-                        </div>
-
-                        <div className="btn-container">
-                            <button onClick={() => { setShowAddressBtn(true) }} className='inferior-btn' type="submit">Cancel</button>
-                            <button className='main-btn' type="submit">Save</button>
-                        </div>
-
-                    </form>)}
+                            )
+                        })
+                    )
+                ))}
 
             </div>
         </div>

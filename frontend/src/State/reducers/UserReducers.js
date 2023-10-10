@@ -38,7 +38,17 @@ import {
     
     USER_ADDRESS_ADD_REQUEST,
     USER_ADDRESS_ADD_SUCCESS,
-    USER_ADDRESS_ADD_FAILURE
+    USER_ADDRESS_ADD_FAILURE,
+    USER_ADDRESS_ADD_RESET,
+    
+    GET_USER_ADDRESSES_REQUEST,
+    GET_USER_ADDRESSES_SUCCESS,
+    GET_USER_ADDRESSES_FAILURE,
+    
+    USER_ADDRESS_UPDATE_REQUEST,
+    USER_ADDRESS_UPDATE_SUCCESS,
+    USER_ADDRESS_UPDATE_FAILURE,
+    USER_ADDRESS_UPDATE_RESET
     
 } from "../constants/UserConstants.js";
 
@@ -329,6 +339,7 @@ export const signOutReducer = (state = { signedOut: false, signOutMessage: "" },
 export const addAddressReducer = (state = { addedAddress: false }, action) => {
 
     switch (action.type) {
+
         case USER_ADDRESS_ADD_REQUEST:{
             return({
                 addingAddress: true,
@@ -348,6 +359,84 @@ export const addAddressReducer = (state = { addedAddress: false }, action) => {
             return ({
                 addingAddress: false,
                 addedAddress: false,
+                addAddressError: "Unable to add your address, please try again!"
+            })
+        }
+
+        case USER_ADDRESS_ADD_RESET:{
+            return({
+                addedAddress: false,
+            })
+        }
+
+        default:{
+            return state;
+        }
+    }
+}
+
+
+export const getAddressesReducer = (state = { addresses: [] }, action) => {
+
+    switch (action.type) {
+        
+        case GET_USER_ADDRESSES_REQUEST:{
+            return({
+                gettingAddresses: true,
+            })
+        }
+
+        case GET_USER_ADDRESSES_SUCCESS:{
+            return ({
+                gettingAddresses: false,
+                addresses: action.payload.addresses,
+            })
+        }
+
+        case GET_USER_ADDRESSES_FAILURE:{
+            return ({
+                gettingAddresses: false,
+                addresses: []
+            })
+        }
+
+        default:{
+            return state;
+        }
+    }
+}
+
+
+export const updateAddressReducer = (state = { updatedAddress: false }, action) => {
+
+    switch (action.type) {
+        
+        case USER_ADDRESS_UPDATE_REQUEST:{
+            return({
+                updatingAddress: true,
+                updatedAddress: false,
+            })
+        }
+
+        case USER_ADDRESS_UPDATE_SUCCESS:{
+            return ({
+                updatingAddress: false,
+                updatedAddress: action.payload.success,
+                updateAddressMessage: action.payload.message,
+            })
+        }
+
+        case USER_ADDRESS_UPDATE_FAILURE:{
+            return ({
+                updatingAddress: false,
+                updatedAddress: false,
+                updateAddressError: "Unable to add your address, please try again!"
+            })
+        }
+
+        case USER_ADDRESS_UPDATE_RESET:{
+            return({
+                updatedAddress: false,
             })
         }
 

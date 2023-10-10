@@ -211,7 +211,6 @@ const SignUpUser = () => {
                             <div id="registerImage">
 
                                 <label htmlFor="avatar" className="custom-file-upload">
-
                                     <span><img src={avatarPreview} alt="Avatar Preview" /></span>
 
                                     <input
@@ -221,52 +220,57 @@ const SignUpUser = () => {
                                         accept="image/*"
                                         onChange={registerDataChange}
                                     />
-
                                 </label>
 
                                 <div className='small-head'>Add a profile picture</div>
                             </div>
 
                             <div className="mail-details">
-                                <div className='small-head'>Email Address *</div>
+                                <div className='small-head'>Email Address*</div>
                                 <div>
                                     <span>{user.mail}</span>
                                     <button className='inferior-btn' onClick={changeMailClickHandler} type='button'>Change</button>
                                 </div>
                             </div>
 
-                            <label htmlFor="name">Name *</label>
-                            <input
-                                className={`${((user.name.length < 3) && (user.name.length !== 0)) ? "invalid" : ""}`}
-                                onChange={inputChangeHandler}
-                                type="text"
-                                name="name"
-                                id="name"
-                            />
+                            <div className="input-section">
+                                <label className='label1' htmlFor="name">Name*</label>
+                                <input
+                                    className={`input1 ${((user.name.length < 3) && (user.name.length !== 0)) ? "invalid" : ""}`}
+                                    onChange={inputChangeHandler}
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                />
+                            </div>
 
-                            <label htmlFor="pass">Create a new password *</label>
-                            <input
-                                ref={passRef}
-                                className={`pass-input ${(!passLengthValidator(user.pass) || !passLetterValidator(user.pass) || !passNumberOrSpecialCharValidator(user.pass)) ? "invalid" : ""}`}
-                                onChange={inputChangeHandler}
-                                type="password"
-                                name="pass"
-                                id="pass"
-                                onCopy={(e) => e.preventDefault()}
-                                onFocus={passFocusHandler}
-                            />
-                            <span style={{ top: "174px" }} className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
+                            <div className="input-section">
+                                <label className='label1' htmlFor="pass">Create a new password*</label>
+                                <input
+                                    ref={passRef}
+                                    className={`input1 pass-input ${(!passLengthValidator(user.pass) || !passLetterValidator(user.pass) || !passNumberOrSpecialCharValidator(user.pass)) ? "invalid" : ""}`}
+                                    onChange={inputChangeHandler}
+                                    type="password"
+                                    name="pass"
+                                    id="pass"
+                                    onCopy={(e) => e.preventDefault()}
+                                    onFocus={passFocusHandler}
+                                />
+                                <span className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
+                            </div>
 
 
-                            <label htmlFor="confirm-pass">Confirm password *</label>
-                            <input
-                                className={`pass-input ${((user.confirmPass.length !== 0) && user.confirmPass !== user.pass) ? "invalid" : ""}`}
-                                onChange={inputChangeHandler}
-                                type="password"
-                                name="confirmPass"
-                                id="confirmPass"
-                                onCopy={(e) => e.preventDefault()}
-                            />
+                            <div className="input-section">
+                                <label className='label1' htmlFor="confirm-pass">Confirm password*</label>
+                                <input
+                                    className={`input1 pass-input ${((user.confirmPass.length !== 0) && user.confirmPass !== user.pass) ? "invalid" : ""}`}
+                                    onChange={inputChangeHandler}
+                                    type="password"
+                                    name="confirmPass"
+                                    id="confirmPass"
+                                    onCopy={(e) => e.preventDefault()}
+                                />
+                            </div>
 
 
                             <ul ref={passTipsRef} className="password-tips">

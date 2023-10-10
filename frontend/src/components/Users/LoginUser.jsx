@@ -28,7 +28,7 @@ const LoginUser = () => {
     const passRef = useRef(null);
     const passErrMsgRef = useRef(null);
 
-    
+
     useEffect(() => {
         toast.error((userCheckError || loginError), {
             position: "bottom-center",
@@ -93,7 +93,7 @@ const LoginUser = () => {
         }
     }
 
-    
+
     const showPassClickHandler = () => {
         if (passRef && passRef.current && passRef.current.type === "text") {
             setShowPass(false);
@@ -129,19 +129,23 @@ const LoginUser = () => {
                         <div className='secondary-head'>Sign in or create your account</div>
 
                         <p>Not sure if you have an account?<br />
-                        Enter your email and we'll check for you.</p>
+                            Enter your email and we'll check for you.</p>
 
                         <form onSubmit={mailSubmitHandler} method="post">
 
-                            <label htmlFor="email">Email Address *</label>
-                            <input
-                                onChange={mailChangeHandler}
-                                value={mail}
-                                type="email"
-                                name="email"
-                                id="email"
-                                spellCheck={false}
-                            />
+                            <div className='input-section'>
+                                <label className='label1' htmlFor="email">Email Address*</label>
+                                <input
+                                    className='input1'
+                                    onChange={mailChangeHandler}
+                                    value={mail}
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    spellCheck={false}
+                                />
+                            </div>
+
 
                             <button className='main-btn' type="submit" disabled={checkingUser}>
                                 {checkingUser ? (<Loader2 />) : "Continue"}
@@ -158,24 +162,26 @@ const LoginUser = () => {
 
                     <>
                         <div className='secondary-head'>Login to your account</div>
-                        <p>You are already a ManyIN user.<br/>
-                        Please enter your password in the given field below.</p>
+                        <p>You are already a ManyIN user.<br />
+                            Please enter your password in the given field below.</p>
 
                         <form onSubmit={passSubmitHandler} method="post">
 
-                            <label htmlFor="pass">Password *</label>
-                            <input
-                                ref={passRef}
-                                onChange={passChangeHandler}
-                                className='pass-input'
-                                type="password"
-                                name="pass"
-                                value={pass}
-                                id="pass"
-                                spellCheck={false}
-                            />
-                            <span className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
+                            <div className='input-section'>
+                                <label className='label1' htmlFor="pass">Password*</label>
+                                <input
+                                    ref={passRef}
+                                    onChange={passChangeHandler}
+                                    className='input1 pass-input'
+                                    type="password"
+                                    name="pass"
+                                    value={pass}
+                                    id="pass"
+                                    spellCheck={false}
+                                />
+                                <span className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
 
+                            </div>
 
                             <p ref={passErrMsgRef} className='err-msg'>{loginMessage ? loginMessage : ""}</p>
 

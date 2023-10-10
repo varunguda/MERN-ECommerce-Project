@@ -77,15 +77,18 @@ const ForgotPassword = () => {
 
                         <form onSubmit={mailSubmitHandler} method="post">
 
-                            <label htmlFor="email">Email Address *</label>
-                            <input
-                                onChange={mailChangeHandler}
-                                value={mail}
-                                type="email"
-                                name="email"
-                                id="email"
-                                spellCheck={false}
-                            />
+                            <div className="input-section">
+                                <label className='label1' htmlFor="email">Email Address *</label>
+                                <input
+                                    className='input1'
+                                    onChange={mailChangeHandler}
+                                    value={mail}
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    spellCheck={false}
+                                />
+                            </div>
 
                             <button className='main-btn' type="submit" disabled={sendingRecoveryMail}>{sendingRecoveryMail ? (<Loader2 />) : "Send Link"}</button>
 
