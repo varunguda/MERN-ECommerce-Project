@@ -23,12 +23,12 @@ import { userActionCreators } from '../../../State/action-creators';
 const Addresses = () => {
 
     const { addingAddress, addedAddress, addedAddressMessage, addAddressError } = useSelector(state => state.addAddress);
-    const { updatingAddress, updatedAddress, updatedAddressMessage, updateAddressError } = useSelector(state => state.updateAddress);
+    const { updatingDeletingAddress, updatedDeletedAddress, updatedDeletedAddressMessage, updateDeleteAddressError } = useSelector(state => state.updateDeleteAddress);
 
     const { gettingAddresses, addresses } = useSelector(state => state.addresses);
 
     const dispatch = useDispatch();
-    const { getUserAddresses, addUserAddress, updateUserAddress } = bindActionCreators(userActionCreators, dispatch);
+    const { getUserAddresses, addUserAddress, updateUserAddress, deleteUserAddress } = bindActionCreators(userActionCreators, dispatch);
 
     const [validateFields, setValidateFields] = useState(false);
     const [showAddAddressForm, setShowAddAddressForm] = useState(false);
@@ -50,7 +50,7 @@ const Addresses = () => {
 
 
     useEffect(() => {
-        toast.error((addAddressError || updateAddressError), {
+        toast.error((addAddressError || updateDeleteAddressError), {
             position: "bottom-center",
             autoClose: 3000,
             hideProgressBar: false,
@@ -60,11 +60,11 @@ const Addresses = () => {
             progress: undefined,
             theme: "light",
         });
-    }, [addAddressError, updateAddressError]);
+    }, [addAddressError, updateDeleteAddressError]);
 
 
     useEffect(() => {
-        toast.success((addedAddressMessage || updatedAddressMessage), {
+        toast.success((addedAddressMessage || updatedDeletedAddressMessage), {
             position: "bottom-center",
             autoClose: 3000,
             hideProgressBar: false,
@@ -74,7 +74,7 @@ const Addresses = () => {
             progress: undefined,
             theme: "light",
         });
-    }, [addedAddressMessage, updatedAddressMessage]);
+    }, [addedAddressMessage, updatedDeletedAddressMessage]);
 
 
     useEffect(() => {
@@ -83,7 +83,7 @@ const Addresses = () => {
     }, []);
 
     useEffect(() => {
-        if (gettingAddresses || updatingAddress) {
+        if (gettingAddresses || updatingDeletingAddress) {
             dispatch(loaderSpin(true));
         }
         else {
@@ -91,7 +91,7 @@ const Addresses = () => {
         }
 
         // eslint-disable-next-line
-    }, [gettingAddresses, updatingAddress])
+    }, [gettingAddresses, updatingDeletingAddress])
 
 
     const validateAddressFields = () => {
@@ -153,19 +153,20 @@ const Addresses = () => {
         if (addedAddress) {
             resetAddressForm();
             dispatch({ type: USER_ADDRESS_ADD_RESET });
+            getUserAddresses();
         }
         // eslint-disable-next-line
     }, [addedAddress]);
 
 
     useEffect(() => {
-        if (updatedAddress) {
+        if (updatedDeletedAddress) {
             resetAddressForm();
             dispatch({ type: USER_ADDRESS_UPDATE_RESET });
             getUserAddresses();
         }
         // eslint-disable-next-line
-    }, [updatedAddress]);
+    }, [updatedDeletedAddress]);
 
 
     const editClickHandler = (id) => {
@@ -197,6 +198,13 @@ const Addresses = () => {
             });
         }
     }
+
+
+    const removeClickHandler = (id) => {
+        deleteUserAddress(id);
+    }
+
+
 
     return (
         <div className="profile-page-content">
@@ -245,7 +253,7 @@ const Addresses = () => {
                             onSubmit={editAddressHandler}
                             address={address}
                             setAddress={setAddress}
-                            disableSaveBtn={updatingAddress}
+                            disableSaveBtn={updatingDeletingAddress}
                             validateFields={validateFields}
                             cancelClickHandler={resetAddressForm}
                         />
@@ -260,6 +268,7 @@ const Addresses = () => {
                                     key={index}
                                     address={address}
                                     editClickHandler={editClickHandler}
+                                    removeClickHandler={removeClickHandler}
                                 />
                             )
                         })

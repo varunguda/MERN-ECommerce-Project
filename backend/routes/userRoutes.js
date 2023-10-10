@@ -6,6 +6,7 @@ import {
     createUser,
     createVerifiedUser,
     deleteUser,
+    deleteUserAddress,
     forgotPassword,
     getAllAddresses,
     getUserDetails,
@@ -42,11 +43,11 @@ router.route('/me/delete').delete(isUser, deleteUser)
 
 router.route('/logout').get(isUser, logoutUser);
 
-router.route("/me/addresses")
+router.route("/me/address/:addressId?")
+    .put(isUser, updateAddress)
+    .delete(isUser, deleteUserAddress)
     .post(isUser, addUserAddress)
     .get(isUser, getAllAddresses);
-
-router.route("/me/updateAddress/:addressId").put(isUser, updateAddress);
 
 // router.route("/cart").get(isUser, )
 

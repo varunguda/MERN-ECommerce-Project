@@ -39,9 +39,14 @@ import {
     GET_USER_ADDRESSES_REQUEST,
     GET_USER_ADDRESSES_SUCCESS,
     GET_USER_ADDRESSES_FAILURE,
+    
     USER_ADDRESS_UPDATE_REQUEST,
     USER_ADDRESS_UPDATE_SUCCESS,
     USER_ADDRESS_UPDATE_FAILURE,
+
+    USER_ADDRESS_DELETE_REQUEST,
+    USER_ADDRESS_DELETE_SUCCESS,
+    USER_ADDRESS_DELETE_FAILURE,
 
 } from "../constants/UserConstants.js";
 
@@ -98,6 +103,7 @@ export const loginUser = (email, pass) => async(dispatch) => {
         })
     }
 }
+
 
 
 export const loadUser = () => async(dispatch) => {
@@ -228,6 +234,7 @@ export const resetPassword = ( pass, confirmPass, token ) => async(dispatch) => 
 }
 
 
+
 export const signOutUser = () => async(dispatch) => {
     
     try {
@@ -248,6 +255,7 @@ export const signOutUser = () => async(dispatch) => {
         })
     }
 }
+
 
 
 export const addUserAddress = (address) => async(dispatch) => {
@@ -271,7 +279,7 @@ export const addUserAddress = (address) => async(dispatch) => {
 
         const config = { headers: { "Content-Type" : "application/json" } };
 
-        const { data } = await axios.post("/api/v1/me/addresses", {
+        const { data } = await axios.post("/api/v1/me/address", {
             first_name,
             last_name,
             flat,
@@ -299,13 +307,14 @@ export const addUserAddress = (address) => async(dispatch) => {
 }
 
 
+
 export const getUserAddresses = () => async(dispatch) => {
     
     try {
 
         dispatch({ type: GET_USER_ADDRESSES_REQUEST });
 
-        const { data } = await axios.get("/api/v1/me/addresses");
+        const { data } = await axios.get("/api/v1/me/address");
 
         dispatch({
             type: GET_USER_ADDRESSES_SUCCESS,
@@ -319,6 +328,7 @@ export const getUserAddresses = () => async(dispatch) => {
         })
     }
 }
+
 
 
 export const updateUserAddress = (address, id) => async(dispatch) => {
@@ -342,7 +352,7 @@ export const updateUserAddress = (address, id) => async(dispatch) => {
 
         const config = { headers: { "Content-Type" : "application/json" } };
 
-        const { data } = await axios.put(`/api/v1/me/updateAddress/${id}`, {
+        const { data } = await axios.put(`/api/v1/me/address/${id}`, {
             first_name,
             last_name,
             flat,
@@ -364,6 +374,29 @@ export const updateUserAddress = (address, id) => async(dispatch) => {
     } catch (error) {
         dispatch({
             type: USER_ADDRESS_UPDATE_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const deleteUserAddress = (id) => async(dispatch) => {
+    
+    try {
+
+        dispatch({ type: USER_ADDRESS_DELETE_REQUEST });
+
+        const { data } = await axios.delete(`/api/v1/me/address/${id}`);
+
+        dispatch({
+            type: USER_ADDRESS_DELETE_SUCCESS,
+            payload: data,
+        })
+        
+    } catch (error) {
+        dispatch({
+            type: USER_ADDRESS_DELETE_FAILURE,
             payload: error.response.data.message,
         })
     }
