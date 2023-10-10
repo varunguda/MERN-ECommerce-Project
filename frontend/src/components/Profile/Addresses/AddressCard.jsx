@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AddressCard = ({ address, editClickHandler }) => {
+const AddressCard = ({ address, editClickHandler, removeClickHandler }) => {
 
     return (
         <div className='address-card-container'>
@@ -33,6 +33,7 @@ const AddressCard = ({ address, editClickHandler }) => {
                 <button 
                     className="inferior-btn" 
                     style={{ fontSize: "0.9rem" }}
+                    onClick={() => removeClickHandler(address._id)}
                 >
                     Remove
                 </button>

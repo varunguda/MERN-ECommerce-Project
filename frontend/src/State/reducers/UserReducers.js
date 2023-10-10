@@ -48,7 +48,11 @@ import {
     USER_ADDRESS_UPDATE_REQUEST,
     USER_ADDRESS_UPDATE_SUCCESS,
     USER_ADDRESS_UPDATE_FAILURE,
-    USER_ADDRESS_UPDATE_RESET
+    USER_ADDRESS_UPDATE_RESET,
+    USER_ADDRESS_DELETE_REQUEST,
+    USER_ADDRESS_DELETE_SUCCESS,
+    USER_ADDRESS_DELETE_FAILURE,
+    USER_ADDRESS_DELETE_RESET
     
 } from "../constants/UserConstants.js";
 
@@ -407,36 +411,40 @@ export const getAddressesReducer = (state = { addresses: [] }, action) => {
 }
 
 
-export const updateAddressReducer = (state = { updatedAddress: false }, action) => {
+export const updateDeleteAddressReducer = (state = { updatedDeletedAddress: false }, action) => {
 
     switch (action.type) {
         
+        case USER_ADDRESS_DELETE_REQUEST:
         case USER_ADDRESS_UPDATE_REQUEST:{
             return({
-                updatingAddress: true,
-                updatedAddress: false,
+                updatingDeletingAddress: true,
+                updatedDeletedAddress: false,
             })
         }
 
+        case USER_ADDRESS_DELETE_SUCCESS:
         case USER_ADDRESS_UPDATE_SUCCESS:{
             return ({
-                updatingAddress: false,
-                updatedAddress: action.payload.success,
+                updatingDeletingAddress: false,
+                updatedDeletedAddress: action.payload.success,
                 updateAddressMessage: action.payload.message,
             })
         }
 
+        case USER_ADDRESS_DELETE_FAILURE:
         case USER_ADDRESS_UPDATE_FAILURE:{
             return ({
-                updatingAddress: false,
-                updatedAddress: false,
-                updateAddressError: "Unable to add your address, please try again!"
+                updatingDeletingAddress: false,
+                updatedDeletedAddress: false,
+                updateAddressError: action.payload.message,
             })
         }
 
+        case USER_ADDRESS_DELETE_RESET:
         case USER_ADDRESS_UPDATE_RESET:{
             return({
-                updatedAddress: false,
+                updatedDeletedAddress: false,
             })
         }
 
@@ -445,3 +453,44 @@ export const updateAddressReducer = (state = { updatedAddress: false }, action) 
         }
     }
 }
+
+
+
+// export const deleteAddressReducer = (state = { deletedAddress: false }, action) => {
+
+//     switch (action.type) {
+        
+//         case USER_ADDRESS_DELETE_REQUEST:{
+//             return({
+//                 deletingAddress: true,
+//                 deletedAddress: false,
+//             })
+//         }
+
+//         case USER_ADDRESS_DELETE_SUCCESS:{
+//             return ({
+//                 deletingAddress: false,
+//                 deletedAddress: action.payload.success,
+//                 deleteAddressMessage: action.payload.message,
+//             })
+//         }
+
+//         case USER_ADDRESS_DELETE_FAILURE:{
+//             return ({
+//                 deletingAddress: false,
+//                 deletedAddress: false,
+//                 deleteAddressError: "Unable to remove your address, please try again!"
+//             })
+//         }
+
+//         case USER_ADDRESS_DELETE_RESET:{
+//             return({
+//                 deletedAddress: false,
+//             })
+//         }
+
+//         default:{
+//             return state;
+//         }
+//     }
+// }

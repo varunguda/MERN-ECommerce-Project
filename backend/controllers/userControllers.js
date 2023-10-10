@@ -338,6 +338,7 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
 });
 
 
+
 export const addUserAddress = catchAsync( async(req, res, next) => {
 
     const {
@@ -390,12 +391,14 @@ export const addUserAddress = catchAsync( async(req, res, next) => {
 });
 
 
+
 export const getAllAddresses = catchAsync( async(req, res, next) => {
     return res.status(201).json({
         success: true,
         addresses: req.user.address,
     })
 })
+
 
 
 export const updateAddress = catchAsync( async( req, res, next ) => {
@@ -456,6 +459,28 @@ export const updateAddress = catchAsync( async( req, res, next ) => {
 
     return res.json({
         success: true,
-        message: "Address updated successfully!",
+        message: "Your address was successfully updated!"
+    });
+});
+
+
+
+export const deleteUserAddress = catchAsync( async(req, res, next) => {
+
+    const { addressId } = req.params;
+
+    const user = await Users.findById(req.user._id);
+
+    if(!user.address.some((address) => address._id.toString() === addressId )){
+        return next(new ErrorHandler("Address doesn't exist", 404));
+    }
+
+    user.address = user.address.filter((address) => address._id.toString() !== addressId );
+
+    user.save({ validateBeforeSave: false });
+
+    return res.json({
+        success: true,
+        message: "Your address was successfully removed!"
     });
 })
