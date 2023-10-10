@@ -68,36 +68,6 @@
     margin-top: 20px;
 }
 
-.secondary-page-content label{
-    color: var(--black-font-color);
-    margin-left: 5px;
-    font-size: 0.89rem;
-    font-weight: 700;
-    margin-bottom: 3px;
-}
-
-.secondary-page-content input:not([ type = "file" ]){
-    height: 54px;
-    margin-bottom: 16px;
-    border-radius: 5px;
-    padding: 0px 16px;
-    font-size: 1rem;
-    border: none;
-    outline: 1px solid var(--black-font-color);
-}
-
-.secondary-page-content input:not([ type = "file" ]).invalid{
-    outline-color: var(--primary-error-color);
-}
-
-.secondary-page-content input:not([ type = "file" ]):hover{
-    outline-width: 2px;
-}
-
-.secondary-page-content input:not([ type = "file" ]):focus{
-    outline-width: 3px;
-}
-
 .secondary-page-content #registerImage{
     align-self: center;
     margin-bottom: 20px;
@@ -121,7 +91,6 @@
     cursor: pointer;
 }
 
-
 .custom-file-upload input[type = "file"] {
     display: none;
 }
@@ -132,7 +101,7 @@
 
 .secondary-page-content form .show-pass-btn{
     position: absolute;
-    top: 38px;
+    top: 31px;
     right: 20px;
     text-decoration: 1px underline;
     cursor: pointer;

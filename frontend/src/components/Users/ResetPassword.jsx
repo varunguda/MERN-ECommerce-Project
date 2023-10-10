@@ -85,38 +85,40 @@ const ResetPassword = () => {
 
                         <div className="secondary-head">Change Password</div>
 
-                        <form
-                            onSubmit={passwordSubmitHandler}
-                            method="post"
-                        >
+                        <form onSubmit={passwordSubmitHandler} method="post">
 
-                            <label htmlFor="pass">New password *</label>
-                            <input
-                                ref={passRef}
-                                className={`pass-input ${(!passLengthValidator(pass) || !passLetterValidator(pass) || !passNumberOrSpecialCharValidator(pass)) ? "invalid" : ""}`}
-                                onChange={passChangeHandler}
-                                value={pass}
-                                type="password"
-                                name="pass"
-                                id="pass"
-                                spellCheck={false}
-                                onCopy={(e) => e.preventDefault()}
-                                onFocus={passFocusHandler}
-                            />
-                            <span style={{ top: "38px" }} className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
+                            <div className="input-section">
+                                <label className='label1' htmlFor="pass">New password *</label>
+                                <input
+                                    ref={passRef}
+                                    className={`input1 pass-input ${(!passLengthValidator(pass) || !passLetterValidator(pass) || !passNumberOrSpecialCharValidator(pass)) ? "invalid" : ""}`}
+                                    onChange={passChangeHandler}
+                                    value={pass}
+                                    type="password"
+                                    name="pass"
+                                    id="pass"
+                                    spellCheck={false}
+                                    onCopy={(e) => e.preventDefault()}
+                                    onFocus={passFocusHandler}
+                                />
 
+                                <span className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
+                            </div>
+                            
 
-                            <label htmlFor="confirmPass">Confirm New password *</label>
-                            <input
-                                className={`pass-input ${((confirmPass.length !== 0) && confirmPass !== pass) ? "invalid" : ""}`}
-                                onChange={passChangeHandler}
-                                value={confirmPass}
-                                type="password"
-                                name="confirmPass"
-                                id="confirmPass"
-                                spellCheck={false}
-                                onCopy={(e) => e.preventDefault()}
-                            />
+                            <div className="input-section">
+                                <label className='label1' htmlFor="confirmPass">Confirm New password *</label>
+                                <input
+                                    className={`input1 pass-input ${((confirmPass.length !== 0) && confirmPass !== pass) ? "invalid" : ""}`}
+                                    onChange={passChangeHandler}
+                                    value={confirmPass}
+                                    type="password"
+                                    name="confirmPass"
+                                    id="confirmPass"
+                                    spellCheck={false}
+                                    onCopy={(e) => e.preventDefault()}
+                                />
+                            </div>
 
 
                             <ul ref={passTipsRef} className="password-tips">

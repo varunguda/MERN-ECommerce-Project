@@ -12,6 +12,7 @@ import {
     loginUser,
     logoutUser,
     recoverPassword,
+    updateAddress,
     updateUserDetails
 } from "../controllers/userControllers.js";
 
@@ -45,6 +46,7 @@ router.route("/me/addresses")
     .post(isUser, addUserAddress)
     .get(isUser, getAllAddresses);
 
+router.route("/me/updateAddress/:addressId").put(isUser, updateAddress);
 
 // router.route("/cart").get(isUser, )
 

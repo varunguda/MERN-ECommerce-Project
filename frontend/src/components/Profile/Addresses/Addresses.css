@@ -45,3 +45,49 @@
   -webkit-appearance: none;
   margin: 0;
 }
+
+.address-card-container{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    font-size: var(--regular-content-font-size);
+    margin-top: 30px;
+    padding: 36px 30px;
+    border-radius: 10px;
+    box-shadow: var(--primary-box-shadow);
+}
+
+.address-card-container .section1{
+    min-width: 200px;
+}
+
+.address-card-container .section1 div:not(:last-of-type){
+    margin-bottom: 6px;
+}
+
+.address-card-container .section1 .light-text{
+    color: var(--light-font-color);
+    font-size: 0.73rem;
+}
+
+.address-card-container .section2{
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.address-card-container .section2  button:first-of-type::after{
+    content: "";
+    position: absolute;
+    right: -5px;
+    top: 25%;
+    height: 50%;
+    border-left: 1px solid var(--black-font-color);
+}

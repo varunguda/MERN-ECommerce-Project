@@ -340,7 +340,19 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
 
 export const addUserAddress = catchAsync( async(req, res, next) => {
 
-    const { default_address } = req.body;
+    const {
+        first_name,
+        last_name,
+        flat,
+        street_address,
+        landmark,
+        city,
+        state,
+        zip,
+        mobile,
+        delivery_notes,
+        default_address,
+    } = req.body;
 
     const user = await Users.findById(req.user._id);
 
@@ -354,13 +366,26 @@ export const addUserAddress = catchAsync( async(req, res, next) => {
         });
     }
 
-    user.address.push(req.body);
+    user.address.push({
+        first_name,
+        last_name,
+        flat,
+        street_address,
+        landmark,
+        city,
+        state,
+        zip,
+        mobile,
+        delivery_notes,
+        default_address,
+    });
 
     user.save({ validateBeforeSave: false });
 
     return res.status(201).json({
         success: true,
         addresses: user.address,
+        message: "Added your address successfully!",
     })
 });
 
@@ -370,4 +395,67 @@ export const getAllAddresses = catchAsync( async(req, res, next) => {
         success: true,
         addresses: req.user.address,
     })
+})
+
+
+export const updateAddress = catchAsync( async( req, res, next ) => {
+
+    const { addressId } = req.params;
+    const {
+        first_name,
+        last_name,
+        flat,
+        street_address,
+        landmark,
+        city,
+        state,
+        zip,
+        mobile,
+        delivery_notes,
+        default_address,
+    } = req.body;
+
+    const user = await Users.findById(req.user._id);
+
+    if(!user.address.some((address) => address._id.toString() === addressId )){
+        return next(new ErrorHandler("Address doesn't exist", 404));
+    }
+
+    if(default_address === true){
+        user.address = user.address.map((address) => {
+            if(address.default_address === true){
+                address.default_address = false;
+            }
+            return address;
+        });
+    }
+
+    user.address = user.address.map((address) => {
+        if(address._id.toString() === addressId){
+            return ({
+                ...address,
+                first_name,
+                last_name,
+                flat,
+                street_address,
+                landmark,
+                city,
+                state,
+                zip,
+                mobile,
+                delivery_notes,
+                default_address,
+            })
+        }
+        else{
+            return address
+        }
+    });
+
+    user.save({ validateBeforeSave: false });
+
+    return res.json({
+        success: true,
+        message: "Address updated successfully!",
+    });
 })

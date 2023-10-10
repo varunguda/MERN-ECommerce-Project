@@ -4,7 +4,10 @@
     --secondary-highlight-color: #f2f8fd;
     --primary-hover-color: #0055a5;
     --primary-active-color: #003b72;
-    --primary-error-color: rgb(227, 67, 67);
+    --primary-error-color: #de1c24;
+    --secondary-error-color: #9b1419;
+    --primary-error-background: #fce8e9;
+    --error-border-color: #e56c70;
     --secondary-color: #ffc220;
     --primary-footer: #F9F7F7;
     --primary-font-family: 'Lato', sans-serif;
@@ -25,6 +28,8 @@
     --medium-content-font-size: 15px;
     --regular-content-font-size: 14px;
     --small-content-font-size: 13px;
+
+    --primary-box-shadow: 0 0.0625rem 0.125rem 0.0625rem #00000026;
 }
 
 *,
@@ -205,6 +210,7 @@ body {
 }
 
 .inferior-btn {
+    position: relative;
     font-family: inherit;
     border: none;
     background-color: inherit;
@@ -280,6 +286,7 @@ body {
 }
 
 .input-section{
+    position: relative;
     display: flex;
     flex-direction: column;
     margin-bottom: 16px;
@@ -405,4 +412,32 @@ body {
 .textarea1.invalid:focus {
     outline: 1px solid var(--primary-error-color);
     border-color: var(--primary-error-color);
+}
+
+.error-alert{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    padding: 10px 20px;
+    color: var(--secondary-error-color);
+    background-color: var(--primary-error-background);
+    font-size: var(--regular-content-font-size);
+    border: 1px solid var(--error-border-color);
+    border-left: 5px solid var(--primary-error-color);
+    border-radius: 5px;
+}
+
+.error-alert::before{
+    content: "\0021";
+    font-size: 0.74rem;
+    display: grid;
+    place-content: center;
+    color: var(--secondary-error-color);
+    font-weight: 600;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--secondary-error-color);
 }
