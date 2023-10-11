@@ -8,7 +8,20 @@ import {
 } from "./ProductReducer";
 import { modalReducer } from "./ModalReducers";
 import { navigationReducer } from "./NavigationReducers";
-import { addAddressReducer, checkUserReducer, forgotPasswordReducer, getAddressesReducer, loginReducer, resetPasswordReducer, signOutReducer, signupReducer, updateDeleteAddressReducer, verifcationReducer } from "./UserReducers";
+import { 
+    checkUserReducer,
+    forgotPasswordReducer,
+    loginReducer,
+    resetPasswordReducer,
+    signOutReducer,
+    signupReducer,
+    verifcationReducer
+} from "./UserReducers";
+import {
+    getAddressesReducer,
+    addAddressReducer,
+    updateDeleteAddressReducer,
+} from "./ProfileReducers"
 import { loaderReducer } from "./LoaderReducers";
 
 

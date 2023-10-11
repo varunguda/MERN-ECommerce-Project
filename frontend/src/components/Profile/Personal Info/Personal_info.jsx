@@ -3,6 +3,7 @@ import React from 'react';
 import "./Personal_info.css";
 
 const PersonalInfo = ({ user }) => {
+    
     return (
         <div className="profile-page-content">
 

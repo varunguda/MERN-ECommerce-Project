@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
     cityValidator,
     flatValidator,
@@ -10,8 +9,8 @@ import {
     zipValidator
 } from './AddressValidators.js';
 
-const AddressForm = ({ onSubmit, address, setAddress, disableSaveBtn, validateFields, cancelClickHandler }) => {
 
+const AddressForm = ({ onSubmit, address, setAddress, disableSaveBtn, validateFields, cancelClickHandler }) => {
 
     const addressInputChangeHandler = (e) => {
         const maxLength = {
