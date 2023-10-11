@@ -13,12 +13,13 @@ import {
     zipValidator
 } from './AddressValidators.js';
 import { toast } from 'react-toastify';
-import { USER_ADDRESS_ADD_RESET, USER_ADDRESS_UPDATE_RESET } from '../../../State/constants/UserConstants';
+import { USER_ADDRESS_ADD_RESET, USER_ADDRESS_UPDATE_RESET } from '../../../State/constants/ProfileConstants';
 import AddressForm from './AddressForm';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import AddressCard from './AddressCard';
 import { bindActionCreators } from 'redux';
-import { userActionCreators } from '../../../State/action-creators';
+import { profileActionCreators } from '../../../State/action-creators';
+
 
 const Addresses = () => {
 
@@ -28,7 +29,7 @@ const Addresses = () => {
     const { gettingAddresses, addresses } = useSelector(state => state.addresses);
 
     const dispatch = useDispatch();
-    const { getUserAddresses, addUserAddress, updateUserAddress, deleteUserAddress } = bindActionCreators(userActionCreators, dispatch);
+    const { getUserAddresses, addUserAddress, updateUserAddress, deleteUserAddress } = bindActionCreators(profileActionCreators, dispatch);
 
     const [validateFields, setValidateFields] = useState(false);
     const [showAddAddressForm, setShowAddAddressForm] = useState(false);

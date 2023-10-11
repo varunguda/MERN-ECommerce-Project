@@ -6,8 +6,6 @@ import {LiaEdit} from "react-icons/lia";
 import {MdOutlineAddLocationAlt} from "react-icons/md";
 import {PiSignOutBold} from "react-icons/pi";
 import OverviewCard from './OverviewCard';
-
-import "./Overview.css";
 import { PiTicketLight } from 'react-icons/pi';
 import { useDispatch, useSelector } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
@@ -15,6 +13,8 @@ import { toast } from 'react-toastify';
 import { closeModal, openModal } from '../../../State/action-creators/ModalActionCreator';
 import { loadUser, signOutUser } from '../../../State/action-creators/UserActionCreators';
 import { SIGNOUT_USER_RESET } from '../../../State/constants/UserConstants';
+
+import "./Overview.css";
 
 
 const Overview = ({ user }) => {
