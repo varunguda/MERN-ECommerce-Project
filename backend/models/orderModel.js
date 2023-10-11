@@ -45,6 +45,10 @@ const schema = new Schema({
                 required: true,
                 default: "Processing",
                 enum: [ "Processing", "Shipped", "In-transit" , "Out for delivery", "Delivered", "Cancelled" ],
+            },
+            ordered_at:{
+                type: Date,
+                default: Date.now,
             }
         }
     ],

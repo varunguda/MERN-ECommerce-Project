@@ -127,6 +127,101 @@ export class ApiFeatures {
         this.products = this.products.find(query);
         return this;
     }
+
+
+
+    searchOrders() {
+        const keyword = this.queryStr.keyword ? {
+            $or: [
+                {
+                    "order_items.name": {
+                        $regex: this.queryStr.keyword,
+                        $options: "i"
+                    }
+                }
+            ]
+        } : {};
+
+        this.products = this.products.find({ ...keyword });
+        return this;
+    }
+
+
+    filterOrders() {
+        const { status, time } = this.queryStr;
+        const query = {};
+
+        if (status) {
+
+            switch (status) {
+
+                case "processing": {
+                    query["order_items.product_status"] = { $eq: "Processing" };
+                    break;
+                }
+
+                case "shipped": {
+                    query["order_items.product_status"] = { $eq: "Shipped" };
+                    break;
+                }
+
+                case "in_transit": {
+                    query["order_items.product_status"] = { $eq: "In-transit" };
+                    break;
+                }
+
+                case "Out for delivery": {
+                    query["order_items.product_status"] = { $eq: "Out for delivery" };
+                    break;
+                }
+
+                case "delivered": {
+                    query["order_items.product_status"] = { $eq: "Delivered" }
+                    break;
+                }
+
+                case "cancelled": {
+                    query["order_items.product_status"] = { $eq: "Cancelled" }
+                    break;
+                }
+            }
+        }
+
+
+        if (time) {
+
+            const now = new Date();
+            switch (time) {
+
+                case "last30days": {
+                    const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
+                    query["order_items.ordered_at"] = { $gte: thirtyDaysAgo };
+                    break;
+                }
+
+                case "last6months": {
+                    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+                    query["order_items.ordered_at"] = { $gte: sixMonthsAgo };
+                    break;
+                }
+
+                case "last1year": {
+                    const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+                    query["order_items.ordered_at"] = { $gte: oneYearAgo };
+                    break;
+                }
+
+                case "before1year": {
+                    const moreThanOneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate() - 1);
+                    query["order_items.ordered_at"] = { $lt: moreThanOneYearAgo };
+                    break;
+                }
+            }
+        }
+
+        this.products = this.products.find(query);
+        return this;
+    }
 }
 
 
@@ -134,7 +229,7 @@ export class ApiFeatures {
 export const sortBy = (products, sortVal) => {
 
     switch (sortVal) {
-        
+
         case "phtl":
             return products.sort((a, b) => b.final_price - a.final_price);
         case "plth":
