@@ -17,7 +17,11 @@ import {
     USER_ADDRESS_DELETE_REQUEST,
     USER_ADDRESS_DELETE_SUCCESS,
     USER_ADDRESS_DELETE_FAILURE,
-    USER_ADDRESS_DELETE_RESET
+    USER_ADDRESS_DELETE_RESET,
+
+    USER_ORDERS_REQUEST,
+    USER_ORDERS_SUCCESS,
+    USER_ORDERS_FAILURE
     
 } from '../constants/ProfileConstants.js'
 
@@ -128,6 +132,40 @@ export const updateDeleteAddressReducer = (state = { updatedDeletedAddress: fals
         case USER_ADDRESS_UPDATE_RESET:{
             return({
                 updatedDeletedAddress: false,
+            })
+        }
+
+        default:{
+            return state;
+        }
+    }
+}
+
+
+
+export const getMyOrdersReducer = (state = { myOrders: [] }, action) => {
+
+    switch (action.type) {
+        
+        case USER_ORDERS_REQUEST:{
+            return({
+                gettingMyOrders: true,
+            })
+        }
+
+        case USER_ORDERS_SUCCESS:{
+            return ({
+                gettingMyOrders: false,
+                myOrders: action.payload.orders,
+                myOrdersCount: action.payload.ordersCount,
+            })
+        }
+
+        case USER_ORDERS_FAILURE:{
+            return ({
+                gettingMyOrders: false,
+                myOrders: [],
+                myOrdersCount: 0,
             })
         }
 

@@ -15,6 +15,9 @@ import {
     USER_ADDRESS_DELETE_REQUEST,
     USER_ADDRESS_DELETE_SUCCESS,
     USER_ADDRESS_DELETE_FAILURE,
+    USER_ORDERS_REQUEST,
+    USER_ORDERS_SUCCESS,
+    USER_ORDERS_FAILURE,
 
 } from "../constants/ProfileConstants.js";
 
@@ -159,6 +162,35 @@ export const deleteUserAddress = (id) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: USER_ADDRESS_DELETE_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const getUserOrders = (keyword, status, time, page) => async (dispatch) => {
+
+    try {
+        dispatch({ type: USER_ORDERS_REQUEST });
+
+        const queryParams = [
+            keyword && `keyword=${keyword}`,
+            status && `status=${status}`,
+            time && `time=${time}`,
+            page && `page=${page}`
+        ].filter(Boolean).join("&");
+
+        const { data } = await axios.get(`/api/v1/me/orders${queryParams ? '?'+ queryParams : ''}`);
+
+        dispatch({
+            type: USER_ORDERS_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: USER_ORDERS_FAILURE,
             payload: error.response.data.message,
         })
     }

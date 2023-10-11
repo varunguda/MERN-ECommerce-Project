@@ -43,14 +43,14 @@ export const navigationReducer = (initialState = {
         }
 
         case "SET_FACETS": {
-            return ({...initialState, facets: action.payload });
+            return ({ ...initialState, facets: action.payload });
         }
 
         case "SET_RATINGS": {
             return ({ ...initialState, c_ratings: action.payload })
         }
 
-        case "SET_SORT":{
+        case "SET_SORT": {
             return ({ ...initialState, sort_by: action.payload })
         }
 
