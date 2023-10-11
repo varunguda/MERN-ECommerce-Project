@@ -2,7 +2,7 @@ import { orderHtml } from "../html/orderHtml.js";
 import { Orders } from "../models/orderModel.js";
 import { Product } from "../models/productModel.js";
 import { Users } from "../models/userModel.js";
-import { ApiFeatures } from "../utils/apiFeatures.js";
+import { ApiFeatures, pagination } from "../utils/apiFeatures.js";
 import catchAsync from "../utils/catchAsync.js";
 import { ErrorHandler } from "../utils/errorHandler.js";
 import { MeritMeter } from "../utils/meritMeter.js";
@@ -127,11 +127,18 @@ export const getOrderDetails = catchAsync(async (req, res, next) => {
 
 
 export const getMyOrders = catchAsync(async (req, res, next) => {
-    const orders = await Orders.find({ user: req.user._id });
+
+    const apiFeatures = new ApiFeatures(Orders.find({}), req.query).searchOrders().filterOrders();
+    const orders = await apiFeatures.products;
+
+    const ordersCount = orders.length;
+    
+    const paginatedOrders = pagination(orders, 6, req.query.page);
 
     return res.json({
         success: true,
-        orders
+        orders: paginatedOrders,
+        ordersCount,
     })
 })
 
@@ -194,13 +201,18 @@ export const deleteMyOrder = catchAsync(async (req, res, next) => {
 
 export const getAllOrders = catchAsync(async (req, res, next) => {
 
-    const ordersCount = await Orders.countDocuments()
-    const apiFeatures = new ApiFeatures(Orders.find({}), req.query).pagination(10);
-    const orders = await apiFeatures.Product;
+    const { page } = req.query;
+
+    const apiFeatures = new ApiFeatures(Orders.find({}), req.query).searchOrders().filterOrders();
+    const orders = await apiFeatures.products;
+
+    const ordersCount = orders.length;
+    
+    const paginatedOrders = pagination(orders, 6, page);
 
     return res.json({
         success: true,
-        orders,
+        orders: paginatedOrders,
         orders_count: ordersCount,
     })
 })
