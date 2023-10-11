@@ -10,6 +10,7 @@ import Loader from '../layouts/Loader/Loader';
 import PersonalInfo from './Personal Info/Personal_info';
 import Overview from './Overview/Overview';
 import Addresses from './Addresses/Addresses';
+import Orders from './Orders/Orders';
 
 
 const Profile = () => {
@@ -22,11 +23,11 @@ const Profile = () => {
 
     const [activeLocation, setActiveLocation] = useState("");
 
-    useEffect(()=>{
-        if(location.pathname){
-            window.scrollTo(0,0)
+    useEffect(() => {
+        if (location.pathname) {
+            window.scrollTo(0, 0)
         }
-    }, [ location.pathname ])
+    }, [location.pathname])
 
 
     useEffect(() => {
@@ -187,7 +188,9 @@ const Profile = () => {
                         {(activeLocation === "personal") ? (
                             <PersonalInfo user={user} />
                         ) : (activeLocation === "addresses") ? (
-                            <Addresses user={user} />
+                            <Addresses />
+                        ) : (activeLocation === "orders&returns") ? (
+                            <Orders />
                         ) : (
                             <Overview user={user} />
                         )}
