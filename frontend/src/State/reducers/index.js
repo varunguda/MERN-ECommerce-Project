@@ -7,7 +7,7 @@ import {
     productReviewReducer
 } from "./ProductReducer";
 import { modalReducer } from "./ModalReducers";
-import { navigationReducer } from "./NavigationReducers";
+import { navigationReducer, orderParamsReducer } from "./NavigationReducers";
 import { 
     checkUserReducer,
     forgotPasswordReducer,
@@ -21,6 +21,7 @@ import {
     getAddressesReducer,
     addAddressReducer,
     updateDeleteAddressReducer,
+    getMyOrdersReducer,
 } from "./ProfileReducers"
 import { loaderReducer } from "./LoaderReducers";
 
@@ -43,7 +44,8 @@ const reducers = combineReducers({
     loader: loaderReducer,
     addresses: getAddressesReducer,
     addAddress: addAddressReducer,
-    updateDeleteAddress: updateDeleteAddressReducer
+    updateDeleteAddress: updateDeleteAddressReducer,
+    myOrders: getMyOrdersReducer,
 });
 
 

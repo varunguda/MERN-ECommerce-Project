@@ -24,11 +24,11 @@ const router = Router();
 // All
 router.route("/order/placeneworder").post(isUser, placeNewOrder);
 
-router.route("/myorders").get(isUser, getMyOrders);
+router.route("/me/orders").get(isUser, getMyOrders);
 
-router.route("/myorders/:id").get(isUser, getOrderDetails);
+router.route("/me/orders/:id").get(isUser, getOrderDetails);
 
-router.route("/myorders/:id").delete(isUser, deleteMyOrder )
+router.route("/me/orders/:id").delete(isUser, deleteMyOrder )
 
 
 
