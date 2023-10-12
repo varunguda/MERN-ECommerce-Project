@@ -45,6 +45,7 @@ const SearchBar = () => {
             <button type="submit" className="search-toggle" >
                 <TfiSearch color='black' size={"22px"} />
             </button>
+            
         </form>
     )
 }

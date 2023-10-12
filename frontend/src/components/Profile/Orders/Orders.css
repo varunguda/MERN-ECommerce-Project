@@ -3,3 +3,32 @@
     font-size: 1rem;
     font-weight: 400;
 }
+
+.orders-container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.orders-container .orders-search-filters{
+    position: relative;
+    align-self: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.orders-container .order-filter-btn{
+    width: fit-content;
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-radius: 20px;
+    background-color: inherit;
+    color: inherit;
+    cursor: pointer;
+}

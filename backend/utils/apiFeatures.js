@@ -165,12 +165,12 @@ export class ApiFeatures {
                     break;
                 }
 
-                case "in_transit": {
+                case "inTransit": {
                     query["order_items.product_status"] = { $eq: "In-transit" };
                     break;
                 }
 
-                case "Out for delivery": {
+                case "outForDelivery": {
                     query["order_items.product_status"] = { $eq: "Out for delivery" };
                     break;
                 }

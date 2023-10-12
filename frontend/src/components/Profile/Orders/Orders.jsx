@@ -1,12 +1,14 @@
 import React, { useEffect, useReducer, useRef, useState } from 'react';
 import "./Orders.css";
 import { bindActionCreators } from 'redux';
-import { profileActionCreators } from '../../../State/action-creators';
+import { modalActionCreators, profileActionCreators } from '../../../State/action-creators';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { SET_ORDER_KEYWORD, SET_ORDER_PAGE, SET_ORDER_STATUS, SET_ORDER_TIME } from '../../../State/constants/NavigationConstants';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { TfiSearch } from 'react-icons/tfi';
+import { PiSlidersHorizontalLight } from 'react-icons/pi';
+import FilterContent from './FilterContent';
 
 
 const orderParamsReducer = (state, action) => {
@@ -47,14 +49,17 @@ const Orders = () => {
 
     const [state, dispatch] = useReducer(orderParamsReducer, initialState);
 
+        // eslint-disable-next-line
     const { gettingMyOrders, myOrders, myOrdersCount } = useSelector(state => state.myOrders);
 
     const ordersDispatch = useDispatch();
 
     const { getUserOrders } = bindActionCreators(profileActionCreators, ordersDispatch);
+    const { openModal } = bindActionCreators(modalActionCreators, ordersDispatch);
 
     const [searchText, setSearchText] = useState("");
     const [stateUpdated, setStateUpdated] = useState(false); // Flag to track state updates
+    const [navigateUrl, setNavigateUrl] = useState(false);
     const inputRef = useRef(null);
 
     const navigate = useNavigate();
@@ -98,13 +103,17 @@ const Orders = () => {
             setStateUpdated(true);
         }
 
+        // eslint-disable-next-line
     }, [location.search]);
 
 
     useEffect(() => {
         if (stateUpdated) {
             getUserOrders(state.keyword, state.status, state.time, state.page);
+            setStateUpdated(false);
         }
+
+        // eslint-disable-next-line
     }, [state, stateUpdated]);
 
 
@@ -128,12 +137,13 @@ const Orders = () => {
             state.page && `page=${encodeURIComponent(state.page)}`,
         ].filter(Boolean).join("&");
 
-        if (stateUpdated) {
+        if (navigateUrl) {
             navigate(`${queryParams && ('?' + queryParams)}`);
-            setStateUpdated(false); // Reset the flag after calling getUserOrders
+            setNavigateUrl(false);
         }
 
-    }, [state]);
+        // eslint-disable-next-line
+    }, [navigateUrl]);
 
 
     const searchOrdersHandler = (e) => {
@@ -142,10 +152,23 @@ const Orders = () => {
         if (searchText.trim()) {
             if (state.keyword !== searchText) {
                 dispatch({ type: SET_ORDER_KEYWORD, payload: searchText });
+                setNavigateUrl(true);
             }
             inputRef.current.blur();
         }
+        else if((searchText.trim() !== state.keyword)){
+            dispatch({ type: SET_ORDER_KEYWORD, payload: "" });
+            setNavigateUrl(true);
+        }
+        else{
+            setSearchText("");
+            inputRef.current.blur();
+        }
+    }
 
+
+    const filterClickHandler = (e) => {
+        openModal("Filter Orders", <FilterContent selectedStatus={state.status} selectedTime={state.time} />);
     }
 
 
@@ -159,21 +182,32 @@ const Orders = () => {
 
             <div className="orders-container">
 
-                <form onSubmit={searchOrdersHandler} >
+                <div className="orders-search-filters">
+                    
+                    <form onSubmit={searchOrdersHandler} className='secondary-search-container' >
 
-                    <input
-                        className='secondary-search'
-                        type="text"
-                        spellCheck="false"
-                        placeholder="Search in orders"
-                        onChange={(e) => {
-                            setSearchText(e.target.value)
-                        }}
-                        value={searchText}
-                        ref={inputRef}
-                    />
+                        <input
+                            className='secondary-search'
+                            type="text"
+                            spellCheck="false"
+                            placeholder="Search in orders"
+                            onChange={(e) => {
+                                setSearchText(e.target.value)
+                            }}
+                            value={searchText}
+                            ref={inputRef}
+                        />
 
-                </form>
+                        <button className='search-icon' type="submit">
+                            <TfiSearch size={13} />
+                        </button>
+                    </form>
+
+                    <button onClick={filterClickHandler} type='button' className="order-filter-btn">
+                        <PiSlidersHorizontalLight />
+                        Filters
+                    </button>
+                </div>
 
             </div>
 
