@@ -1,17 +1,21 @@
-
-.profile-page-head .profile-page-caption{
+.profile-page-head .profile-page-caption {
     font-size: 1rem;
     font-weight: 400;
+    text-transform: capitalize;
 }
 
-.orders-container{
+.orders-container {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 40px;
 }
 
-.orders-container .orders-search-filters{
+.orders-content>div:not(:last-child) {
+    margin-bottom: 40px;
+}
+
+.orders-container .orders-search-filters {
     position: relative;
     align-self: flex-end;
     display: flex;
@@ -19,7 +23,7 @@
     gap: 20px;
 }
 
-.orders-container .order-filter-btn{
+.orders-container .order-filter-btn {
     width: fit-content;
     border: 1px solid var(--border-color);
     padding: 8px 12px;
@@ -31,4 +35,155 @@
     background-color: inherit;
     color: inherit;
     cursor: pointer;
+}
+
+.order-item .order-icon {
+    position: relative;
+    height: 40px;
+    width: 40px;
+    display: grid;
+    place-content: center;
+    background-color: var(--primary-active-color);
+    border-radius: 50%;
+}
+
+.order-item .status-icon {
+    position: absolute;
+    bottom: 0;
+    right: -1px;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-icon.green {
+    background-color: rgb(12, 164, 12);
+}
+
+.status-icon.orange {
+    background-color: rgb(245, 141, 4);
+}
+
+.status-icon.red {
+    background-color: var(--primary-error-color);
+}
+
+.order-item .icon {
+    color: white;
+}
+
+
+.order-cards {
+    position: relative;
+    width: 100%;
+    padding: 40px 30px;
+    box-shadow: var(--primary-box-shadow);
+    border-radius: 20px;
+}
+
+
+.order-item .order-status-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.order-status {
+    font-weight: 600;
+}
+
+.order-date {
+    color: var(--light-font-color);
+    font-size: 0.7rem;
+}
+
+.order-product {
+    position: relative;
+    height: 100px;
+    display: flex;
+    gap: 10px;
+    padding: 0px 10px;
+    margin-bottom: 30px;
+}
+
+.order-product .order-image-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100px;
+    overflow: hidden;
+}
+
+.order-image-container img {
+    height: 100%;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+.order-product .order-price-inline {
+    margin-top: 10px;
+
+    .brand {
+        color: var(--black-font-color);
+        font-weight: 600;
+        margin-bottom: 3px;
+    }
+
+    .name{
+        font-size: var(--regular-content-font-size);
+        margin-bottom: 3px;
+    }
+
+    .quantity{
+        font-size: 0.8rem;
+        color: var(--light-font-color);
+    }
+}
+
+.order-section .order-section-heading{
+    color: var(--black-font-color);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.order-section .price-inline{
+    padding: 0px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-section .price-inline > p:first-child{
+    font-size: var(--regular-content-font-size);
+    color: var(--light-font-color);
+}
+
+.order-section .price-inline > p:nth-child(2){
+    font-size: var(--regular-content-font-size);
+}
+
+.order-section .total-price{
+    padding: 0px 10px;
+    position: relative;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-section .total-price > p:first-child{
+    font-size: var(--regular-content-font-size);
+    font-weight: 600;
+}
+
+.order-section .total-price > p:nth-child(2){
+    font-size: var(--regular-content-font-size);
+    font-weight: 600;
 }

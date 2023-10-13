@@ -11,6 +11,7 @@ import PersonalInfo from './Personal Info/Personal_info';
 import Overview from './Overview/Overview';
 import Addresses from './Addresses/Addresses';
 import Orders from './Orders/Orders';
+import Metadata from '../Metadata';
 
 
 const Profile = () => {
@@ -65,8 +66,11 @@ const Profile = () => {
 
     return (
         <div className='profile-page-container'>
+
             {loginLoading ? <Loader /> : (
                 <>
+                    <Metadata title={`${user.name}'s profile - ManyIN`} />
+
                     <div className="profile-sidebar">
 
                         <div className="main-elem">

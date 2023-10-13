@@ -13,7 +13,7 @@ import { body, validationResult } from "express-validator";
 
 export const placeNewOrder = catchAsync(async (req, res, next) => {
 
-    const { order_items, shipping_info } = req.body;
+    const { order_items, address_id } = req.body;
 
     for (const order of order_items) {
 
@@ -44,6 +44,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
 
         order.seller = product.seller_id;
         order.name = product.name;
+        order.brand = product.brand;
         order.price = product.price;
         // order.image = product.images[0].image_url;
         order.discount_price = product.discount_percent || 0;
@@ -53,7 +54,18 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         meritMeter.addMerit();
     }
 
-    const order = await Orders.create({ user: req.user._id, order_items, paid_at: new Date(Date.now()), shipping_info });
+
+    const user = await Users.findById(req.user._id);
+    const address = user.address.map((address) => {
+        if(address._id.toString() === address_id){
+            return address;
+        }
+    })
+    if(!address){
+        return next(new ErrorHandler("Please add an address", 404));
+    }
+
+    const order = await Orders.create({ user: req.user._id, order_items, paid_at: new Date(Date.now()), address: address[0]._id });
 
     let totalItemsPrice = 0;
     let taxPrice = 0;
@@ -61,7 +73,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
     let totalPrice = 0;
 
     order.order_items.forEach((order) => {
-        return totalItemsPrice += (order.price * order.quantity) - (order.discount_price * order.quantity);
+        return totalItemsPrice += (order.final_price * order.quantity);
     })
 
     taxPrice = totalItemsPrice * 18 / 100;
@@ -76,7 +88,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
 
     await order.save({ validateBeforeSave: false });
 
-    const trackOrderURL = `${req.protocol}://${req.get("host")}/`
+    const trackOrderURL = `${req.protocol}://${req.get("host")}/`;
 
     const html = orderHtml({
         head: "Order Confirmation",
@@ -131,9 +143,15 @@ export const getMyOrders = catchAsync(async (req, res, next) => {
     const apiFeatures = new ApiFeatures(Orders.find({}), req.query).searchOrders().filterOrders();
     const orders = await apiFeatures.products;
 
+    const user = await Users.findById(req.user._id);
+
+    let updatedOrders = orders.map((order) => {
+        return order
+    })
+
     const ordersCount = orders.length;
     
-    const paginatedOrders = pagination(orders, 6, req.query.page);
+    updatedOrders = pagination(orders, 6, req.query.page);
 
     return res.json({
         success: true,
@@ -458,7 +476,7 @@ export const updateMyProductOrderStatus = catchAsync(async (req, res, next) => {
         return item;
     });
 
-    order.save({ validateBeforeSave: false });
+    await order.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,
