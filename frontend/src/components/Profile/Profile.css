@@ -118,6 +118,10 @@
     padding: 20px 0px;
 }
 
+.profile-page-content{
+    position: relative;
+}
+
 .profile-content .profile-page-head {
     font-family: var(--test-font-family);
     color: var(--black-font-color);

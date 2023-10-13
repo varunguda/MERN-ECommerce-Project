@@ -15,7 +15,15 @@ const schema = new Schema({
                 type: String,
                 required: true
             },
+            brand: {
+                type: String,
+                required: true,
+            },
             price: {
+                type: Number,
+                required: true,
+            },
+            final_price: {
                 type: Number,
                 required: true,
             },
@@ -53,31 +61,9 @@ const schema = new Schema({
         }
     ],
 
-    shipping_info:{
-        flat: {
-            type: String,
-            required: true
-        },
-        area: {
-            type: String,
-            required: true
-        },
-        landmark: {
-            type: String
-        },
-        city: {
-            type: String,
-            required: true
-        },
-        state: {
-            type: String,
-            required: true
-        },
-        zip: {
-            type: Number,
-            required: true,
-            maxLength: [ 5, "Please enter a valid zip code!" ]
-        }
+    address: {
+        type: Schema.Types.ObjectId,
+        required: true,
     },
 
     coupon_discount: {
