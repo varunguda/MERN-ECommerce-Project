@@ -29,8 +29,17 @@
     --regular-content-font-size: 14px;
     --small-content-font-size: 13px;
 
+    --xs-font-size: 0.7rem;
+    --s-font-size: 0.8rem;
+    --m-font-size: 0.9rem;
+    --l-font-size: 1rem;
+    --xl-font-size: 1.25rem;
+    --xxl-font-size: 1.5rem;
+    --xxxl-font-size: 1.9rem;
+
     --primary-box-shadow: 0 0.0625rem 0.125rem 0.0625rem #00000026;
 }
+
 
 *,
 *::after,
@@ -44,6 +53,7 @@
 body {
     font-family: var(--primary-font-family);
     color: var(--secondary-font-color);
+    font-size: var(--m-font-size);
 }
 
 

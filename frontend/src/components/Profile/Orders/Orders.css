@@ -1,5 +1,5 @@
 .profile-page-head .profile-page-caption {
-    font-size: 1rem;
+    font-size: var(--l-font-size);
     font-weight: 400;
     text-transform: capitalize;
 }
@@ -99,7 +99,7 @@
 
 .order-date {
     color: var(--light-font-color);
-    font-size: 0.7rem;
+    font-size: var(--xs-font-size);
 }
 
 .order-product {
@@ -137,12 +137,11 @@
     }
 
     .name{
-        font-size: var(--regular-content-font-size);
         margin-bottom: 3px;
     }
 
     .quantity{
-        font-size: 0.8rem;
+        font-size: var(--s-font-size);
         color: var(--light-font-color);
     }
 }
@@ -161,29 +160,56 @@
 }
 
 .order-section .price-inline > p:first-child{
-    font-size: var(--regular-content-font-size);
     color: var(--light-font-color);
 }
 
-.order-section .price-inline > p:nth-child(2){
-    font-size: var(--regular-content-font-size);
-}
 
 .order-section .total-price{
-    padding: 0px 10px;
     position: relative;
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.order-section .total-price > p:first-child{
-    font-size: var(--regular-content-font-size);
+    padding: 0px 10px;
     font-weight: 600;
 }
 
-.order-section .total-price > p:nth-child(2){
-    font-size: var(--regular-content-font-size);
+
+.order-section .shipping-details{
+    padding: 0 10px;
+    color: var(--light-font-color);
+    line-height: 20px;
+
+    .name{
+        color: var(--secondary-font-color);
+        font-weight: 600;
+    }
+}
+
+
+
+.order-not-found-container{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 24px;
+}
+
+
+.order-not-found-container img{
+    height: 300px;
+}
+
+.order-not-found-container .main{
+    font-size: var(--l-font-size);
     font-weight: 600;
+}
+
+.order-not-found-container .caption{
+    color: var(--light-font-color);
 }

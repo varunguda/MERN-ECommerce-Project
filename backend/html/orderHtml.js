@@ -3,7 +3,7 @@
 export const orderHtml = (obj) => {
 
     let orderItemsHTML = '';
-    let shippingAddress = '';
+    let deliveryAddress = '';
 
     if(obj.order !== ''){
         obj.order.order_items.forEach((item) => {
@@ -15,7 +15,7 @@ export const orderHtml = (obj) => {
         `;
         });
 
-        shippingAddress = `${obj.order.shipping_info.flat}, ${obj.order.shipping_info.area}, ${obj.order.shipping_info.landmark ? obj.order.shipping_info.landmark + ', ' : ''}${obj.order.shipping_info.city}, ${obj.order.shipping_info.state}, INDIA`;
+        deliveryAddress = `${obj.address.flat}, ${obj.address.street_address}, ${obj.address.landmark ? obj.address.landmark + ', ' : ''}${obj.address.city}, ${obj.address.state}, India`;
     }
 
 
@@ -118,12 +118,12 @@ export const orderHtml = (obj) => {
                 ${obj.order !== '' ? 
                     `<div class="order-details">
                     <p><strong>Order ID:</strong> ${obj.order._id}</p>
-                     <p><strong>Shipping Address:</strong> ${shippingAddress}</p>
+                     <p><strong>Shipping Address:</strong> ${deliveryAddress}</p>
                     <div class="order-items">
                         <p><strong>ORDER ITEMS:</strong></p>
                         ${orderItemsHTML}
                     </div>
-                    <p><strong>Total Amount:</strong> ₹${obj.order.total_price}</p>
+                    <p><strong>Total Amount:</strong>₹ ${obj.order.total_price}</p>
                     </div>`
                     :``}
 

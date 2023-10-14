@@ -36,13 +36,13 @@
 .profile-sidebar .main-elem-head {
     font-family: var(--test-font-family);
     color: var(--black-font-color);
-    font-size: 1.5rem;
+    font-size: var(--xxl-font-size);
     font-weight: 700;
     text-transform: capitalize;
 }
 
 .profile-sidebar .main-elem-caption {
-    font-size: 0.7rem;
+    font-size: var(--xs-font-size);
 }
 
 .profile-sidebar .main-elem::after {
@@ -58,7 +58,6 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    font-size: var(--regular-content-font-size);
 }
 
 .profile-sidebar .sidebar-elem-section:not(:last-of-type):after {
@@ -125,7 +124,7 @@
 .profile-content .profile-page-head {
     font-family: var(--test-font-family);
     color: var(--black-font-color);
-    font-size: 1.9rem;
+    font-size: var(--xxxl-font-size);
     font-weight: 700;
     margin-bottom: 20px;
 }
