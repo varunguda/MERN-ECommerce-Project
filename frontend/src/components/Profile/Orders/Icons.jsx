@@ -1,6 +1,6 @@
 import React from 'react';
 import { BsBox2Heart, BsBoxSeam, BsCheck } from "react-icons/bs";
-import { LuClock4 } from "react-icons/lu";
+import { LuClock4, LuPackageX } from "react-icons/lu";
 import { TbTruckDelivery } from "react-icons/tb";
 import { PiArchiveBoxLight, PiWarehouseLight } from 'react-icons/pi';
 import { RxCross2 } from 'react-icons/rx';
@@ -23,7 +23,11 @@ const Icons = ({ status }) => {
                             (status === "Out for delivery") ? (
                                 <BsBox2Heart size={19} className="icon" />
                             ) : (
-                                <BsBoxSeam size={19} className="icon" />
+                                (status === "Cancelled") ? (
+                                    <LuPackageX size={23} strokeWidth={1} className="icon" style={{transform: "scaleX(-1)" }} />
+                                ) : (
+                                    <BsBoxSeam size={19} className="icon" />
+                                )
                             )
                         )
                     )

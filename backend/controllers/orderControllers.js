@@ -84,7 +84,6 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         user_name: req.user.name,
         head_caption: "Your order has been successfully placed. Below are the details of your order:",
         order,
-        address,
         order_caption: "Thank you for choosing ManyIN! We will process your order as soon as possible.",
         button_url: trackOrderURL,
         button_text: "Track Your Order",
@@ -160,15 +159,15 @@ export const deleteMyOrder = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("You are not allowed to perform this action!", 403));
     }
 
+    if(order.order_items.every(item => item.product_status === "Cancelled")){
+        return next(new ErrorHandler(`This Order has already been cancelled!`, 400));
+    }
+
+    if(order.order_items.every(item => item.product_status !== "Processing")){
+        return next(new ErrorHandler(`You cannot cancel this order, you can cancel the order only when all the products in your order are processing!`, 403));
+    }
+
     for (const item of order.order_items) {
-        if (item.product_status === "Cancelled") {
-            return next(new ErrorHandler(`This Order is already Cancelled!`, 400));
-        }
-
-        if (item.product_status !== "Processing") {
-            return next(new ErrorHandler(`You cannot cancel your order, the product has already been ${order.order_status}!`, 403))
-        }
-
         item.product_status = "Cancelled";
     }
 

@@ -18,6 +18,9 @@ import {
     USER_ORDERS_REQUEST,
     USER_ORDERS_SUCCESS,
     USER_ORDERS_FAILURE,
+    CANCEL_USER_ORDER_FAILURE,
+    CANCEL_USER_ORDER_SUCCESS,
+    CANCEL_USER_ORDER_REQUEST,
 
 } from "../constants/ProfileConstants.js";
 
@@ -181,7 +184,7 @@ export const getUserOrders = (keyword, status, time, page) => async (dispatch) =
             page && `page=${page}`
         ].filter(Boolean).join("&");
 
-        const { data } = await axios.get(`/api/v1/me/orders${queryParams ? '?'+ queryParams : ''}`);
+        const { data } = await axios.get(`/api/v1/me/orders${queryParams ? '?' + queryParams : ''}`);
 
         dispatch({
             type: USER_ORDERS_SUCCESS,
@@ -191,6 +194,27 @@ export const getUserOrders = (keyword, status, time, page) => async (dispatch) =
     } catch (error) {
         dispatch({
             type: USER_ORDERS_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const cancelUserOrder = (id) => async(dispatch) => {
+    try {
+        dispatch({ type: CANCEL_USER_ORDER_REQUEST });
+
+        const { data } = await axios.delete(`/api/v1/me/orders/${id}`);
+
+        dispatch({
+            type: CANCEL_USER_ORDER_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: CANCEL_USER_ORDER_FAILURE,
             payload: error.response.data.message,
         })
     }
