@@ -126,6 +126,7 @@ export const loginReducer = ( state={ loggedIn: false, loginMessage: "", user: {
 }
 
 
+
 export const signupReducer = ( state={ sentSignupCode: false, signupMessage: "" }, action ) => {
 
     switch (action.type) {

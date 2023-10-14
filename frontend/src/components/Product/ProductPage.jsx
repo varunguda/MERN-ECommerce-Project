@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actionCreators, modalActionCreators } from "../../State/action-creators";
+import { addToCart } from '../../State/action-creators/CartActionCreators';
 import { useParams } from 'react-router';
 import Metadata from '../Metadata';
 import Loader from '../layouts/Loader/Loader';
@@ -9,6 +10,7 @@ import { RxZoomIn } from "react-icons/rx";
 import { CiHeart, CiShop } from "react-icons/ci";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from "react-icons/bi";
+import { FiMinus, FiPlus } from "react-icons/fi";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 import "./ProductPage.css";
@@ -61,7 +63,7 @@ const options = [
 ];
 
 
-const ProductPage = (props) => {
+const ProductPage = () => {
 
     const { loading, products, error } = useSelector((state) => state.detailedProducts);
 
@@ -80,6 +82,8 @@ const ProductPage = (props) => {
     const [zoom, setZoom] = useState(1);
     const reviewRef = useRef(null);
     const [reviewPage, setReviewPage] = useState(null);
+    const [quantity, setQuantity] = useState(0);
+
 
     const dispatch = useDispatch();
     const { getProductDetails, getAllProductsOfSeller, getBundleProducts, getProductReviews } = bindActionCreators(actionCreators, dispatch);
@@ -145,13 +149,26 @@ const ProductPage = (props) => {
         // eslint-disable-next-line
     }, [products]);
 
-
+    
     useEffect(() => {
+        localStorage.getItem("cartItems") && (
+            JSON.parse(localStorage.getItem("cartItems")).forEach((i) => {
+                if (i.product === mainProduct._id) {
+                    setQuantity(i.quantity);
+                }
+            })
+        )
+
         if (mainProduct.bundles && mainProduct.bundles.length > 0) {
             getBundleProducts(mainProduct._id);
         }
         // eslint-disable-next-line
-    }, [mainProduct])
+    }, [mainProduct]);
+
+    useEffect(() => {
+        console.log(quantity);
+    }, [quantity])
+
 
 
     const getImageIndex = (images, image) => {
@@ -246,7 +263,29 @@ const ProductPage = (props) => {
             getProductReviews(products[0]._id, reviewPage);
         }
         // eslint-disable-next-line
-    }, [reviewPage])
+    }, [reviewPage]);
+
+
+    const handleAddClick = (e) => {
+        if (quantity >= mainProduct.stock) return;
+        const qty = quantity + 1;
+        setQuantity(qty);
+        dispatch(addToCart(mainProduct._id, qty));
+    }
+
+    const handlePlusClick = (e) => {
+        if (quantity >= mainProduct.stock) return;
+        const qty = quantity + 1;
+        setQuantity(qty);
+        dispatch(addToCart(mainProduct._id, qty));
+    }
+
+    const handleMinusClick = (e) => {
+        if (quantity <= 0) return;
+        const qty = quantity - 1;
+        setQuantity(qty);
+        dispatch(addToCart(mainProduct._id, qty));
+    }
 
 
     return (
@@ -346,15 +385,34 @@ const ProductPage = (props) => {
                                                 <div className="price-p">₹{`${mainProduct.price}`}</div>
                                             </div>
 
-                                            {
-                                                mainProduct.discount_percent && (
-                                                    <div className="save-price">
-                                                        <span className='highlight-text'>You save</span>₹{`${Math.round(mainProduct.price - mainProduct.final_price)}`}
-                                                    </div>
-                                                )
-                                            }
 
-                                            <button className='primary-button'>Add to cart</button>
+                                            {mainProduct.discount_percent && (
+                                                <div className="save-price">
+                                                    <span className='highlight-text'>You save</span>
+                                                    ₹{`${Math.round(mainProduct.price - mainProduct.final_price)}`}
+                                                </div>
+                                            )}
+
+
+                                            <div className="btn-container">
+                                                {!quantity ?
+                                                    ((mainProduct.stock > 0) ? (
+                                                        <button onClick={handleAddClick} className='main-btn'>
+                                                            Add to cart
+                                                        </button>
+                                                    ) : (
+                                                        <button className='main-btn warning' disabled>
+                                                            Out of Stock
+                                                        </button>
+                                                    ))
+                                                    :
+                                                    (<div className="add-quantity">
+                                                        <FiMinus className="minus" onClick={handleMinusClick} />
+                                                        <span>{quantity}</span>
+                                                        <FiPlus className="plus" onClick={handlePlusClick} />
+                                                    </div>)
+                                                }
+                                            </div>
                                         </div>
 
                                         {

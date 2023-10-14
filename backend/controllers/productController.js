@@ -282,6 +282,22 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
 
 
 
+export const getSingleProductDetails = catchAsync( async(req, res, next) => {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+    if(!product){
+        return next(new ErrorHandler("Product doesn't exist", 404));
+    }
+
+    return res.json({
+        success: true,
+        product,
+    })
+});
+
+
+
 export const createProduct = catchAsync(async (req, res, next) => {
 
     const { products, variations, category, brand } = req.body;
