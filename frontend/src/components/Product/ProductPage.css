@@ -3,6 +3,7 @@
     width: 100%;
     padding-left: 4%;
     padding-right: 4%;
+    top: 40px;
 }
 
 .page-section1 {
@@ -200,6 +201,12 @@
     border-radius: 20px;
     display: flex;
     flex-direction: column;
+}
+
+.product-detail-section .btn-container{
+    display: flex;
+    align-items: center;
+    height: 70px;
 }
 
 .section-part {

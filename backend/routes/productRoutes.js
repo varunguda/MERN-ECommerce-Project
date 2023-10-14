@@ -17,6 +17,7 @@ import {
     getMyProducts,
     getProductDetails,
     getProductsOfSeller,
+    getSingleProductDetails,
     toggleDislikeOfAReview,
     toggleLikeOfAReview,
     updateAnyProduct,
@@ -42,6 +43,8 @@ router.route('/products/reviews/:id').get(isLoggedIn, getAllProductReviews);
 router.route('/products/reviews/:id').delete(isUser, deleteReview);
 
 router.route('/products/:id').get(getProductDetails);
+
+router.route('/product/:id').get(getSingleProductDetails);
 
 router.route("/products/seller/:id").get(getProductsOfSeller);
 

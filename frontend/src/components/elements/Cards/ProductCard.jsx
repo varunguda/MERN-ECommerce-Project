@@ -4,6 +4,7 @@ import Stars from "./Stars.jsx";
 import { CiHeart } from "react-icons/ci";
 
 import "./ProductCard.css";
+import { FiMinus, FiPlus } from 'react-icons/fi';
 
 const ProductCard = ({ product, height, width, noreviews = false }) => {
 
@@ -57,15 +58,14 @@ const ProductCard = ({ product, height, width, noreviews = false }) => {
                         }
                     </div>
 
-                    {
-                        !quantity ?
-                            (<button onClick={handleAddClick}><span>+</span> Add</button>)
-                            :
-                            (<div className="add-quantity">
-                                <div className="minus" onClick={handleMinusClick}>-</div>
-                                <span>{quantity}</span>
-                                <div className="plus" onClick={handlePlusClick}>+</div>
-                            </div>)
+                    {!quantity ?
+                        (<button onClick={handleAddClick}><span>+</span> Add</button>)
+                        :
+                        (<div className="add-quantity">
+                            <FiMinus className="minus" onClick={handleMinusClick} />
+                            <span>{quantity}</span>
+                            <FiPlus className="plus" onClick={handlePlusClick} />
+                        </div>)
                     }
 
                 </div>

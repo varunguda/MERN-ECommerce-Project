@@ -125,20 +125,23 @@
 }
 
 
-.product-description .add-quantity{
-    color: black;
+.add-quantity{
+    width: 180px;
+    min-width: 100px;
+    color: var(--black-font-color);
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
-.product-description .add-quantity .plus, .minus{
+.add-quantity .plus, .minus{
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 200;
     height:30px;
     width: 30px;
+    padding: 4px;
     font-size: 40px;
     border-radius: 50%;
     cursor: pointer;
@@ -146,7 +149,7 @@
 }
 
 .add-quantity .plus:active, .minus:active{
-    background-color: rgb(73, 73, 73);
+    background-color: var(--black-font-color);
     color: white;
 }
 
