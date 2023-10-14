@@ -61,9 +61,47 @@ const schema = new Schema({
         }
     ],
 
-    address: {
-        type: Schema.Types.ObjectId,
-        required: true,
+    delivery_address: {
+        first_name:{
+            type: String, 
+            required: true,
+        },
+        last_name:{
+            type: String, 
+            required: true,
+        },
+        flat: {
+            type: String,
+            required: true
+        },
+        street_address: {
+            type: String,
+            required: true
+        },
+        landmark: {
+            type: String,
+        },
+        city: {
+            type: String,
+            required: true
+        },
+        state: {
+            type: String,
+            required: true
+        },
+        zip: {
+            type: Number,
+            required: true,
+            length: [ 5, "Please enter a valid zip code!" ],
+        },
+        mobile:{
+            type: Number,
+            required: true,
+        },
+        delivery_notes: {
+            type: String,
+            maxlength: [ 250, "Delivery notes cannot exceed 250 characters" ]
+        }
     },
 
     coupon_discount: {

@@ -13,7 +13,7 @@ import { body, validationResult } from "express-validator";
 
 export const placeNewOrder = catchAsync(async (req, res, next) => {
 
-    const { order_items, address_id } = req.body;
+    const { order_items, address } = req.body;
 
     for (const order of order_items) {
 
@@ -54,18 +54,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         meritMeter.addMerit();
     }
 
-
-    const user = await Users.findById(req.user._id);
-    const address = user.address.map((address) => {
-        if(address._id.toString() === address_id){
-            return address;
-        }
-    })
-    if(!address){
-        return next(new ErrorHandler("Please add an address", 404));
-    }
-
-    const order = await Orders.create({ user: req.user._id, order_items, paid_at: new Date(Date.now()), address: address[0]._id });
+    const order = await Orders.create({ user: req.user._id, order_items, paid_at: new Date(Date.now()), delivery_address: address });
 
     let totalItemsPrice = 0;
     let taxPrice = 0;
@@ -95,6 +84,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         user_name: req.user.name,
         head_caption: "Your order has been successfully placed. Below are the details of your order:",
         order,
+        address,
         order_caption: "Thank you for choosing ManyIN! We will process your order as soon as possible.",
         button_url: trackOrderURL,
         button_text: "Track Your Order",
@@ -105,7 +95,8 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         email: req.user.email,
         subject: "Order Placed Successfully!",
         html
-    })
+    });
+
 
     return res.status(201).json({
         success: true,
@@ -140,22 +131,16 @@ export const getOrderDetails = catchAsync(async (req, res, next) => {
 
 export const getMyOrders = catchAsync(async (req, res, next) => {
 
-    const apiFeatures = new ApiFeatures(Orders.find({}), req.query).searchOrders().filterOrders();
+    const apiFeatures = new ApiFeatures(Orders.find({ user: req.user._id }), req.query).searchOrders().filterOrders();
     const orders = await apiFeatures.products;
-
-    const user = await Users.findById(req.user._id);
-
-    let updatedOrders = orders.map((order) => {
-        return order
-    })
 
     const ordersCount = orders.length;
     
-    updatedOrders = pagination(orders, 6, req.query.page);
+    let updatedOrders = pagination(orders, 6, req.query.page);
 
     return res.json({
         success: true,
-        orders: paginatedOrders,
+        orders: updatedOrders,
         ordersCount,
     })
 })
@@ -444,6 +429,7 @@ export const cancelAllOrderOfMyProduct = [
                 subject: "Order Cancelled:(",
                 html
             })
+
         }
 
         const meritMeter = new MeritMeter(orders.length, req.user._id)
