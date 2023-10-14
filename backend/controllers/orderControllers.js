@@ -29,7 +29,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
             return next(new ErrorHandler(`Sorry for the inconvinience, but we only have ${product.stock} items of product: ${product.name}`, 400))
         }
 
-        if(product.seller_id.toString() === req.user._id.toString()){
+        if (product.seller_id.toString() === req.user._id.toString()) {
             return next(new ErrorHandler("You cannot order your own product!", 400))
         }
 
@@ -130,17 +130,19 @@ export const getOrderDetails = catchAsync(async (req, res, next) => {
 
 export const getMyOrders = catchAsync(async (req, res, next) => {
 
+    const totalOrdersCount = await Orders.find({ user: req.user._id }).countDocuments();
     const apiFeatures = new ApiFeatures(Orders.find({ user: req.user._id }), req.query).searchOrders().filterOrders();
     const orders = await apiFeatures.products;
 
     const ordersCount = orders.length;
-    
+
     let updatedOrders = pagination(orders, 6, req.query.page);
 
     return res.json({
         success: true,
         orders: updatedOrders,
         ordersCount,
+        totalOrdersCount,
     })
 })
 
@@ -159,11 +161,11 @@ export const deleteMyOrder = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("You are not allowed to perform this action!", 403));
     }
 
-    if(order.order_items.every(item => item.product_status === "Cancelled")){
+    if (order.order_items.every(item => item.product_status === "Cancelled")) {
         return next(new ErrorHandler(`This Order has already been cancelled!`, 400));
     }
 
-    if(order.order_items.every(item => item.product_status !== "Processing")){
+    if (order.order_items.every(item => item.product_status !== "Processing")) {
         return next(new ErrorHandler(`You cannot cancel this order, you can cancel the order only when all the products in your order are processing!`, 403));
     }
 
@@ -209,7 +211,7 @@ export const getAllOrders = catchAsync(async (req, res, next) => {
     const orders = await apiFeatures.products;
 
     const ordersCount = orders.length;
-    
+
     const paginatedOrders = pagination(orders, 6, page);
 
     return res.json({
@@ -326,16 +328,16 @@ export const cancelOrderOfMyProduct = [
 
         for (const item of order.order_items) {
             if (item.product_status !== "Cancelled") {
-                totalItemPrice += item.price * item.quantity;
+                totalItemPrice += item.final_price * item.quantity;
                 noOrders = false;
             }
         }
 
         let taxPrice = totalItemPrice * 18 / 100;
 
-        order.tax_price = taxPrice;
-        order.items_price = totalItemPrice;
-        order.total_price = totalItemPrice + taxPrice + order.shipping_cost;
+        order.tax_price = Math.round(taxPrice);
+        order.items_price = Math.round(totalItemPrice);
+        order.total_price = Math.round(totalItemPrice) + Math.round(taxPrice) + order.shipping_cost;
 
         await order.save({ validateBeforeSave: false });
 
