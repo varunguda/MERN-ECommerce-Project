@@ -29,6 +29,7 @@
     --regular-content-font-size: 14px;
     --small-content-font-size: 13px;
 
+    --xxs-font-size: 0.63rem;
     --xs-font-size: 0.7rem;
     --s-font-size: 0.8rem;
     --m-font-size: 0.9rem;
@@ -145,20 +146,29 @@ body {
 .custom-tooltip::before {
     content: attr(data-tooltip);
     position: absolute;
-    bottom: -30px;
+    top: 30px;
     left: 50%;
+    max-height: 100px;
     transform: translateX(-50%);
     padding: 4px 8px;
     background-color: rgb(59, 59, 59);
     color: #fff;
     border-radius: 4px;
-    white-space: nowrap;
-    font-size: 10px;
+    font-size: var(--xs-font-size);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     transition: opacity 0.3s ease, visibility 0.3s ease;
-    z-index: 99;
+    overflow: hidden;
+    z-index: 9;
+}
+.custom-tooltip.light::before{
+    background-color: white;
+    color: var(--secondary-font-color);
+    border: 1px solid var(--border-color);
+}
+.custom-tooltip.large::before{
+    width: 200px;
 }
 
 .custom-tooltip:hover::before {
@@ -233,8 +243,14 @@ body {
 .inferior-btn:hover {
     color: var(--primary-color) !important;
 }
+.inferior-btn.warning:hover{
+    color: var(--primary-error-color) !important;
+}
 
 .inferior-btn:active {
+    text-decoration: none !important;
+}
+.inferior-btn.warning:active {
     text-decoration: none !important;
 }
 

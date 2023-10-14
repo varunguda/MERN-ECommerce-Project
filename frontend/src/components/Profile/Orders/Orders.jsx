@@ -8,11 +8,14 @@ import { SET_ORDER_KEYWORD, SET_ORDER_PAGE, SET_ORDER_STATUS, SET_ORDER_TIME } f
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { TfiSearch } from 'react-icons/tfi';
 import { PiSlidersHorizontalLight } from 'react-icons/pi';
+import { BiInfoCircle } from 'react-icons/bi';
 import FilterContent from './FilterContent';
 import Metadata from '../../Metadata';
 import Paginate from '../../elements/Pagination/Paginate';
 import Icons from './Icons';
 import { formatDate } from './OrderUtils';
+import { toast } from 'react-toastify';
+import { CANCEL_USER_ORDER_RESET } from '../../../State/constants/ProfileConstants';
 
 
 const orderParamsReducer = (state, action) => {
@@ -55,10 +58,11 @@ const Orders = () => {
 
     // eslint-disable-next-line
     const { gettingMyOrders, myOrders, myOrdersCount } = useSelector(state => state.myOrders);
+    const { cancellingMyOrder, cancelledOrder, cancelledOrderMessage, cancelledOrderError } = useSelector(state => state.cancelMyOrder);
 
     const ordersDispatch = useDispatch();
 
-    const { getUserOrders } = bindActionCreators(profileActionCreators, ordersDispatch);
+    const { getUserOrders, cancelUserOrder } = bindActionCreators(profileActionCreators, ordersDispatch);
     const { openModal, closeModal } = bindActionCreators(modalActionCreators, ordersDispatch);
 
     const [searchText, setSearchText] = useState("");
@@ -123,14 +127,14 @@ const Orders = () => {
 
 
     useEffect(() => {
-        if (gettingMyOrders) {
+        if (gettingMyOrders || cancellingMyOrder) {
             ordersDispatch(loaderSpin(true));
         } else {
             ordersDispatch(loaderSpin(false));
         }
 
         // eslint-disable-next-line
-    }, [gettingMyOrders]);
+    }, [gettingMyOrders, cancellingMyOrder]);
 
 
     useEffect(() => {
@@ -138,7 +142,43 @@ const Orders = () => {
             dispatch({ type: SET_ORDER_PAGE, payload: 0 });
             setNavigateUrl(true);
         }
-    }, [myOrdersCount])
+    }, [myOrdersCount]);
+
+
+    useEffect(() => {
+        toast.error(cancelledOrderError, {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [cancelledOrderError]);
+
+
+    useEffect(() => {
+        toast.success(cancelledOrderMessage, {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [cancelledOrderMessage]);
+
+
+    useEffect(() => {
+        if(cancelledOrder){
+            dispatch({ type: CANCEL_USER_ORDER_RESET });
+            setStateUpdated(true);
+        }
+    }, [cancelledOrder])
 
 
     useEffect(() => {
@@ -196,6 +236,27 @@ const Orders = () => {
     const setPage = (page) => {
         dispatch({ type: SET_ORDER_PAGE, payload: page });
         setNavigateUrl(true);
+    }
+
+
+    const cancelOrderHandler = (id) => {
+        cancelUserOrder(id);
+        closeModal();
+    }
+
+
+    const cancelOrderClickHandler = (id) => {
+        openModal(
+            "Are you sure you want to Cancel your order?",
+            (<>
+                <div className="modal-caption">Once cancelled, you dont get this ordered delivered to you, the money gets refunded within the next 3-7 business days if paid. You can still look up your cancelled orders in here.</div>
+
+                <div className="modal-btn-container">
+                    <button onClick={()=> closeModal()} className='secondary-btn'>No</button>
+                    <button onClick={() => cancelOrderHandler(id)} className='main-btn warning'>Yes</button>
+                </div>
+            </>)
+        );
     }
 
 
@@ -298,7 +359,9 @@ const Orders = () => {
                                                                     {item.quantity + " x " + (item.name.length > 60 ? item.name.slice(0, 60) + "..." : item.name)}
                                                                 </p>
 
-                                                                <p>
+                                                                <p
+                                                                    style={{ textDecoration: (item.product_status === "Cancelled") ? "1px red line-through" : "none" }}
+                                                                >
                                                                     ₹ {item.final_price * item.quantity}
                                                                 </p>
                                                             </div>
@@ -308,17 +371,29 @@ const Orders = () => {
 
                                                     <div className="price-inline">
                                                         <p>Total tax price</p>
-                                                        <p>₹ {order.tax_price}</p>
+                                                        <p
+                                                            style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px red line-through" : "none" }}
+                                                        >
+                                                            ₹ {order.tax_price}
+                                                        </p>
                                                     </div>
 
                                                     <div className="price-inline">
                                                         <p>Shipping cost</p>
-                                                        <p>₹ {order.shipping_cost}</p>
+                                                        <p
+                                                            style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px red line-through" : "none" }}
+                                                        >
+                                                            ₹ {order.shipping_cost}
+                                                        </p>
                                                     </div>
 
                                                     <div className="total-price">
                                                         <p>Total order price</p>
-                                                        <p>₹ {order.total_price}</p>
+                                                        <p 
+                                                            style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px red line-through" : "none" }}
+                                                        >
+                                                            ₹ {order.total_price}
+                                                        </p>
                                                     </div>
                                                 </div>
 
@@ -336,6 +411,26 @@ const Orders = () => {
                                                     </div>
 
                                                 </div>
+
+                                                {(order.order_items.every((item) => item.product_status === "Processing")) && (
+                                                    <div className="cancel-order-section">
+                                                        <button 
+                                                            className='inferior-btn warning' 
+                                                            type="button"
+                                                            onClick={() => cancelOrderClickHandler(order._id)}
+                                                        >
+                                                            Cancel Order?
+                                                        </button>
+
+                                                        <div 
+                                                            className="custom-tooltip light large" 
+                                                            data-tooltip="You can cancel your order only when the items in your order are under processing. Once shipped, you cannot cancel your order."
+                                                        >
+                                                            <BiInfoCircle className='icon' size={17} />
+                                                        </div>
+                                                    </div>
+                                                )}
+
                                             </div>
                                         )
                                     })}
@@ -354,7 +449,6 @@ const Orders = () => {
                                     </div>
                                 </>
                             )}
-
 
                         </div>
 

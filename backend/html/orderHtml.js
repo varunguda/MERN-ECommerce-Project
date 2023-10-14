@@ -15,7 +15,7 @@ export const orderHtml = (obj) => {
         `;
         });
 
-        deliveryAddress = `${obj.address.flat}, ${obj.address.street_address}, ${obj.address.landmark ? obj.address.landmark + ', ' : ''}${obj.address.city}, ${obj.address.state}, India`;
+        deliveryAddress = `${obj.order.delivery_address.flat}, ${obj.order.delivery_address.street_address}, ${obj.order.delivery_address.landmark ? obj.order.delivery_address.landmark + ', ' : ''}${obj.order.delivery_address.city}, ${obj.order.delivery_address.state}, India`;
     }
 
 

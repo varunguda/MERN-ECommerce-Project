@@ -213,3 +213,15 @@
 .order-not-found-container .caption{
     color: var(--light-font-color);
 }
+
+.cancel-order-section{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .icon{
+        margin-top: 3px;
+        color: #aaabac;
+    }
+}

@@ -21,7 +21,11 @@ import {
 
     USER_ORDERS_REQUEST,
     USER_ORDERS_SUCCESS,
-    USER_ORDERS_FAILURE
+    USER_ORDERS_FAILURE,
+    CANCEL_USER_ORDER_REQUEST,
+    CANCEL_USER_ORDER_SUCCESS,
+    CANCEL_USER_ORDER_FAILURE,
+    CANCEL_USER_ORDER_RESET
     
 } from '../constants/ProfileConstants.js'
 
@@ -167,6 +171,44 @@ export const getMyOrdersReducer = (state = { myOrders: [] }, action) => {
                 myOrders: [],
                 myOrdersCount: 0,
             })
+        }
+
+        default:{
+            return state;
+        }
+    }
+}
+
+
+
+export const cancelMyOrderReducer = (state = {}, action) => {
+
+    switch (action.type) {
+        
+        case CANCEL_USER_ORDER_REQUEST:{
+            return({
+                cancellingMyOrder: true,
+            })
+        }
+
+        case CANCEL_USER_ORDER_SUCCESS:{
+            return ({
+                cancellingMyOrder: false,
+                cancelledOrder: action.payload.success,
+                cancelledOrderMessage: action.payload.message,
+            })
+        }
+
+        case CANCEL_USER_ORDER_FAILURE:{
+            return ({
+                cancellingMyOrder: false,
+                cancelledOrder: false,
+                cancelledOrderMessage: action.payload.message,
+            })
+        }
+
+        case CANCEL_USER_ORDER_RESET:{
+            return ({});
         }
 
         default:{
