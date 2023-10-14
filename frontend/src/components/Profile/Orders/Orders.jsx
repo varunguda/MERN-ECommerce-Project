@@ -16,6 +16,7 @@ import Icons from './Icons';
 import { formatDate } from './OrderUtils';
 import { toast } from 'react-toastify';
 import { CANCEL_USER_ORDER_RESET } from '../../../State/constants/ProfileConstants';
+import { Link } from "react-router-dom";
 
 
 const orderParamsReducer = (state, action) => {
@@ -57,7 +58,7 @@ const Orders = () => {
     const [state, dispatch] = useReducer(orderParamsReducer, initialState);
 
     // eslint-disable-next-line
-    const { gettingMyOrders, myOrders, myOrdersCount } = useSelector(state => state.myOrders);
+    const { gettingMyOrders, myOrders, myOrdersCount, totalOrdersCount } = useSelector(state => state.myOrders);
     const { cancellingMyOrder, cancelledOrder, cancelledOrderMessage, cancelledOrderError } = useSelector(state => state.cancelMyOrder);
 
     const ordersDispatch = useDispatch();
@@ -174,7 +175,7 @@ const Orders = () => {
 
 
     useEffect(() => {
-        if(cancelledOrder){
+        if (cancelledOrder) {
             dispatch({ type: CANCEL_USER_ORDER_RESET });
             setStateUpdated(true);
         }
@@ -252,7 +253,7 @@ const Orders = () => {
                 <div className="modal-caption">Once cancelled, you dont get this ordered delivered to you, the money gets refunded within the next 3-7 business days if paid. You can still look up your cancelled orders in here.</div>
 
                 <div className="modal-btn-container">
-                    <button onClick={()=> closeModal()} className='secondary-btn'>No</button>
+                    <button onClick={() => closeModal()} className='secondary-btn'>No</button>
                     <button onClick={() => cancelOrderHandler(id)} className='main-btn warning'>Yes</button>
                 </div>
             </>)
@@ -326,7 +327,7 @@ const Orders = () => {
                                                                 </div>
                                                             </div>
 
-                                                            <div className="order-product">
+                                                            <Link to={`/product/${item.product}`} className="order-product link" target='_blank'>
                                                                 <div className="order-image-container">
                                                                     <img src={item.product_img ? item.product_img : "https://images.unsplash.com/photo-1605236453806-6ff36851218e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1964&q=80"} alt="order-img" />
                                                                 </div>
@@ -342,7 +343,7 @@ const Orders = () => {
                                                                         quantity: {item.quantity}
                                                                     </p>
                                                                 </div>
-                                                            </div>
+                                                            </Link>
                                                         </div>
                                                     )
                                                 })}
@@ -389,7 +390,7 @@ const Orders = () => {
 
                                                     <div className="total-price">
                                                         <p>Total order price</p>
-                                                        <p 
+                                                        <p
                                                             style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px red line-through" : "none" }}
                                                         >
                                                             ₹ {order.total_price}
@@ -412,18 +413,18 @@ const Orders = () => {
 
                                                 </div>
 
-                                                {(order.order_items.every((item) => item.product_status === "Processing")) && (
+                                                {((order.order_items.every(item => (item.product_status === "Processing") || (item.product_status === "Cancelled"))) && (!order.order_items.every(item => (item.product_status === "Cancelled")))) && (
                                                     <div className="cancel-order-section">
-                                                        <button 
-                                                            className='inferior-btn warning' 
+                                                        <button
+                                                            className='inferior-btn warning'
                                                             type="button"
                                                             onClick={() => cancelOrderClickHandler(order._id)}
                                                         >
                                                             Cancel Order?
                                                         </button>
 
-                                                        <div 
-                                                            className="custom-tooltip light large" 
+                                                        <div
+                                                            className="custom-tooltip light large"
                                                             data-tooltip="You can cancel your order only when the items in your order are under processing. Once shipped, you cannot cancel your order."
                                                         >
                                                             <BiInfoCircle className='icon' size={17} />
@@ -440,12 +441,26 @@ const Orders = () => {
                                     <div className="order-not-found-container">
                                         <img src="/images/order_not_found.svg" alt="order-not-found" />
 
-                                        <p className="main">
-                                            You haven't placed any order yet!
-                                        </p>
-                                        <p className="caption">
-                                            Order section is empty. After placing order, You can track them from here!
-                                        </p>
+                                        {totalOrdersCount === 0 ? (
+                                            <>
+                                                <p className="main">
+                                                    You haven't placed any order yet!
+                                                </p>
+                                                <p className="caption">
+                                                    Order section is empty. After placing order, You can track them from here!
+                                                </p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="main">
+                                                    Sorry! orders not found
+                                                </p>
+                                                <p className="caption">
+                                                    Try using different filter or go to back to orders
+                                                </p>
+                                            </>
+                                        )}
+
                                     </div>
                                 </>
                             )}

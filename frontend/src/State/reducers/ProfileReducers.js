@@ -162,6 +162,7 @@ export const getMyOrdersReducer = (state = { myOrders: [] }, action) => {
                 gettingMyOrders: false,
                 myOrders: action.payload.orders,
                 myOrdersCount: action.payload.ordersCount,
+                totalOrdersCount: action.payload.totalOrdersCount,
             })
         }
 
@@ -170,6 +171,7 @@ export const getMyOrdersReducer = (state = { myOrders: [] }, action) => {
                 gettingMyOrders: false,
                 myOrders: [],
                 myOrdersCount: 0,
+                totalOrdersCount: 0,
             })
         }
 
