@@ -2,7 +2,7 @@ import axios from "axios";
 import { ADD_TO_CART } from "../constants/CartConstants";
 
 
-export const addToCart = ( id, quantity ) => async(dispatch, getState) => {
+export const addToCart = (id, quantity) => async (dispatch, getState) => {
 
     try {
 
@@ -21,7 +21,7 @@ export const addToCart = ( id, quantity ) => async(dispatch, getState) => {
         });
 
         localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
-        
+
     } catch (error) {
         console.error(error);
     }

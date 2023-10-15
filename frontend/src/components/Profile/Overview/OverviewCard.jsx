@@ -1,13 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const OverviewCard = ({ icon, head, caption, linkTo }) => {
+const OverviewCard = ({ head, caption, linkTo, img }) => {
     return (
         <>
             {(linkTo) ? (
                 <Link to={linkTo} className='link overview-card'>
                     <div className='overview-card-content'>
-                        {icon ? icon : ""}
+                        <img src={img} alt={head} />
                         <div className='overview-card-head'>{head}</div>
                         <span>{caption}</span>
                     </div>
@@ -15,7 +15,7 @@ const OverviewCard = ({ icon, head, caption, linkTo }) => {
             ) : (
                 <div className='overview-card'>
                     <div className='overview-card-content'>
-                        {icon ? icon : ""}
+                        <img src={img} alt={head} />
                         <div className='overview-card-head'>{head}</div>
                         <span>{caption}</span>
                     </div>

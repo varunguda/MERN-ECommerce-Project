@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 const Navbar = () => {
 
     const { loginLoading, loggedIn, user } = useSelector(state => state.loggedIn);
+    const { cartItems } = useSelector(state => state.cart);
 
     const [sidebar, setSidebar] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -104,14 +105,13 @@ const Navbar = () => {
         <>
             <nav className='parent-navbar'>
 
-                {
-                    isSmallScreen ?
-                        (
-                            <div className={`sidebar ${sidebar ? "active" : ""}`} >
-                                {sidebar ? renderSidebarContent() : ""}
-                            </div>
+                {isSmallScreen ?
+                    (
+                        <div className={`sidebar ${sidebar ? "active" : ""}`} >
+                            {sidebar ? renderSidebarContent() : ""}
+                        </div>
 
-                        ) : ""
+                    ) : ""
                 }
 
                 <nav className="navbar">
@@ -147,7 +147,7 @@ const Navbar = () => {
                                         <span>Dashboard</span>
                                     </div>
                                 )}
-                                
+
                                 {(user && user.is_seller) && (
                                     <div className='nav-elems'>
                                         <PiTShirt size={"17px"} />
@@ -187,10 +187,12 @@ const Navbar = () => {
 
                     </nav>
 
-                    <div className='nav-elems cart-icon'>
+                    <Link to="/cart" className='nav-elems cart-icon link'>
                         <FiShoppingCart size={"25px"} />
-                        <span className='cart-items'>0</span>
-                    </div>
+                        <span className='cart-items'>
+                            {cartItems.reduce((count, item) => { return count += item.quantity}, 0)}
+                        </span>
+                    </Link>
 
                 </nav>
 

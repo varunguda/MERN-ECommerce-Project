@@ -661,9 +661,9 @@ const ProductsPage = () => {
                                                     })
                                                     }
 
-                                                    <div className='secondary-btn' onClick={toggleExpandCategories}>
+                                                    <button type='button' className='inferior-btn' onClick={toggleExpandCategories}>
                                                         {(!expandCategories && allCategories && Object.keys(allCategories).length > 5) ? "Show more" : "Show less"}
-                                                    </div>
+                                                    </button>
                                                 </>
                                             }
                                         />
@@ -702,11 +702,11 @@ const ProductsPage = () => {
                                                         }))
                                                     }
 
-                                                    <div className='secondary-btn' onClick={toggleExpandBrands}>
+                                                    <button type='button' className='inferior-btn' onClick={toggleExpandBrands}>
                                                         {(productsBrands && productsBrands.length > 5) && (
                                                             (!expandBrands) ? "Show more" : "Show less"
                                                         )}
-                                                    </div>
+                                                    </button>
 
                                                 </>
                                             }

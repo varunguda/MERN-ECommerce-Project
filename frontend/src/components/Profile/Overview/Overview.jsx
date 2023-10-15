@@ -1,12 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import {BsTruck} from "react-icons/bs";
-import {FiHeart} from "react-icons/fi";
-import {LiaEdit} from "react-icons/lia";
-import {MdOutlineAddLocationAlt} from "react-icons/md";
 import {PiSignOutBold} from "react-icons/pi";
 import OverviewCard from './OverviewCard';
-import { PiTicketLight } from 'react-icons/pi';
 import { useDispatch, useSelector } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { toast } from 'react-toastify';
@@ -120,30 +115,30 @@ const Overview = ({ user }) => {
             <div className="overview-card-container">
                 <OverviewCard 
                     head="Orders" 
-                    icon={<BsTruck size={50} />} 
+                    img="./images/orders.svg"
                     caption="Check your order status" 
                 />
                 <OverviewCard 
                     head="Addresses" 
-                    icon={<MdOutlineAddLocationAlt size={50} />} 
+                    img="./images/delivery_address.svg"
                     caption="Save addresses for a hassle-free checkout" 
                     linkTo={"/profile/addresses"}
                 />
                 <OverviewCard 
                     head="Wishlist" 
-                    icon={<FiHeart strokeWidth={1.5} size={50} />} 
+                    img="./images/wishlist.svg"
                     caption="All your curated products" 
                     linkTo={"/profile/lists"}
                 />
                 <OverviewCard 
                     head="Coupons" 
-                    icon={<PiTicketLight size={50} />} 
+                    img="./images/coupons.svg"
                     caption="Manage coupons for additional discounts" 
                     linkTo={"/profile/coupons"}
                 />
                 <OverviewCard 
                     head="Profile Details" 
-                    icon={<LiaEdit size={50} />} 
+                    img="./images/profile.svg"
                     caption="Change your profile details"
                     linkTo={"/profile/personal"} 
                 />

@@ -14,6 +14,7 @@ import Footer from './components/layouts/Footer/Footer.jsx';
 import Navbar from './components/layouts/Navbar/Navbar.jsx';
 import Profile from './components/Profile/Profile.jsx';
 import Loader3 from './components/layouts/Loader/Loader3.jsx';
+import Cart from './components/Cart/Cart.jsx';
 
 const ContentRoutes = () => {
 
@@ -62,6 +63,7 @@ const ContentRoutes = () => {
                             <Route path="/product/:id" element={<ProductPage />} />
                             <Route path="/search" element={<ProductsPage />} />
                             <Route path='/profile/:section?' element={<Profile />} />
+                            <Route path='/cart' element={<Cart />} />
                         </Routes>
                     </div>
                     <Footer />

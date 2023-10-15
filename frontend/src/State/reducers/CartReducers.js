@@ -16,6 +16,13 @@ export const addToCartReducer = ( state = { cartItems: [] }, action ) => {
                 });
             }
 
+            if(item.quantity === 0){
+                return ({
+                    ...state,
+                    cartItems: state.cartItems.filter(i => i.product !== isItemExist.product),
+                })
+            }
+
             return ({
                 ...state,
                 cartItems: state.cartItems.map(i => i.product === isItemExist.product ? item : i),
