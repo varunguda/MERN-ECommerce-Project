@@ -96,6 +96,7 @@ const ProductPage = () => {
         // eslint-disable-next-line
     }, []);
 
+
     useEffect(() => {
         if (products && products.length > 0) {
             const newMain = products.filter((product) => product._id === id.id);
@@ -149,26 +150,28 @@ const ProductPage = () => {
         // eslint-disable-next-line
     }, [products]);
 
-    
+
     useEffect(() => {
+
+        let found = false;
         localStorage.getItem("cartItems") && (
             JSON.parse(localStorage.getItem("cartItems")).forEach((i) => {
                 if (i.product === mainProduct._id) {
                     setQuantity(i.quantity);
+                    found = true;
                 }
             })
-        )
+        );
+
+        if (!found) {
+            setQuantity(0);
+        }
 
         if (mainProduct.bundles && mainProduct.bundles.length > 0) {
             getBundleProducts(mainProduct._id);
         }
         // eslint-disable-next-line
     }, [mainProduct]);
-
-    useEffect(() => {
-        console.log(quantity);
-    }, [quantity])
-
 
 
     const getImageIndex = (images, image) => {
@@ -306,18 +309,17 @@ const ProductPage = () => {
 
                                         <div className="image-carousel">
 
-                                            {
-                                                images.map((url, index) => (
-                                                    <div key={index} className={images[activeImageIndex] === url ? "image-wrapper active" : "image-wrapper"}>
-                                                        <img
-                                                            onClick={handleImageClick}
-                                                            onMouseEnter={handleHoverOn}
-                                                            onMouseLeave={handleHoverOff}
-                                                            src={url}
-                                                            alt="carousel-img"
-                                                        />
-                                                    </div>
-                                                ))
+                                            {images.map((url, index) => (
+                                                <div key={index} className={images[activeImageIndex] === url ? "image-wrapper active" : "image-wrapper"}>
+                                                    <img
+                                                        onClick={handleImageClick}
+                                                        onMouseEnter={handleHoverOn}
+                                                        onMouseLeave={handleHoverOff}
+                                                        src={url}
+                                                        alt="carousel-img"
+                                                    />
+                                                </div>
+                                            ))
                                             }
 
                                         </div>

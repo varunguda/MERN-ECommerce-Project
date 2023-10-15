@@ -15,7 +15,7 @@
     box-shadow: 0 0.0625rem 0.125rem 0.0625rem #00000026;
 }
 
-.user-details-container div:first-child{
+.user-details-container div:first-child {
     color: var(--black-font-color);
     font-size: var(--medium-content-font-size);
 }
@@ -52,25 +52,25 @@
     justify-content: center;
     align-items: center;
     color: var(--black-font-color);
-    background-color: var(--secondary-highlight-color);
+    /* background-color: var(--secondary-highlight-color); */
     box-shadow: 0 0.0625rem 0.125rem 0.0625rem #00000026;
     border-radius: 10px;
     cursor: pointer;
     transition: 0.2s;
 }
 
-.overview-card:hover {
+/* .overview-card:hover {
     background-color: #cde8f6;
-}
+} */
 
-.overview-card > * {
+.overview-card>* {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.overview-card-content{
+.overview-card-content {
     background-color: white;
     width: 100%;
     padding: 20px;
@@ -82,19 +82,27 @@
     gap: 2px;
 }
 
+.overview-card-content img {
+    height: 100px;
+    width: 100px;
+    background-color: var(--secondary-highlight-color);
+    border-radius: 50%;
+    margin-bottom: 5px;
+}
+
 .overview-card span {
     font-size: var(--regular-content-font-size);
     color: var(--light-font-color);
 }
 
-.overview-card-head{
+.overview-card-head {
     margin-top: 4px;
     font-size: 1.2rem;
     font-family: var(--test-font-family);
     font-weight: 700;
 }
 
-.overview-btn-container{
+.overview-btn-container {
     margin-top: 90px;
     width: 200px;
 }
