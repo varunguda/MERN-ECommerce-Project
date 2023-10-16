@@ -5,7 +5,7 @@
 }
 
 .navbar {
-    font-weight: 700;
+    font-weight: 600;
     position: fixed;
     top: 0;
     left: 0;
@@ -23,7 +23,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    font-size: 14px;
+    font-size: var(--m-font-size);
     letter-spacing: 0.02rem;
     gap: 5px;
     padding: 7px 15px;

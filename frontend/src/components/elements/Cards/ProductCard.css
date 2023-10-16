@@ -1,6 +1,5 @@
 .product-card-container {
     position: relative;
-    font-family: var(--secondary-font-family);
     line-height: 22px;
     min-width: 140px;
     border-radius: 3px;

@@ -1,0 +1,5 @@
+.cart-container {
+    position: relative;
+    padding: 60px 10%;
+    min-height: 100vh;
+}

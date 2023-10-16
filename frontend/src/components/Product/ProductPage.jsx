@@ -375,7 +375,7 @@ const ProductPage = () => {
                                             </div>
 
                                             <div onClick={handleScrollToReviews} className="star-rating">
-                                                <Stars value={products[0].rating ? products[0].rating : 0} />
+                                                <Stars value={products[0].rating ? products[0].rating : 0} size={12} />
                                                 <div className="rating">{products[0].rating ? `(${products[0].rating})` : "(0)"}</div>
                                                 <div className="reviews-count">
                                                     {products[0].total_reviews ? `${products[0].total_reviews} reviews` : "No reviews"}
@@ -432,7 +432,7 @@ const ProductPage = () => {
                                             <div className="merit"><span>90</span> - Seller Merit</div>
                                         </div>
 
-                                        <button className='secondary-button'><CiHeart size={20} />Add to list</button>
+                                        <button className='inferior-btn'><CiHeart size={20} />Add to list</button>
                                     </div>
 
                                     {options &&
@@ -451,7 +451,14 @@ const ProductPage = () => {
                                                         options.map((option, index) => {
                                                             return (
                                                                 <div key={index} className="checkboxes">
-                                                                    <input type="checkbox" name="plan" value={option.description} checked={selectedPlan === option.description} onChange={handleChange} id={option.description} />
+                                                                    <input 
+                                                                        type="checkbox" 
+                                                                        name="plan" 
+                                                                        value={option.description}
+                                                                        checked={selectedPlan === option.description}
+                                                                        onChange={handleChange}
+                                                                        id={option.description}
+                                                                    />
                                                                     <label htmlFor={option.description}>{option.description}</label>
                                                                 </div>
                                                             )
@@ -538,7 +545,11 @@ const ProductPage = () => {
                                                     <div className="total-rating">{products[0].rating}<span> out of </span>5</div>
                                                     <Stars value={products[0].rating} size="13px" /><span>{`(${products[0].total_reviews} reviews)`}</span>
                                                     <br />
-                                                    <button onClick={() => { openModal("an", "ans") }} className='primary-button'>
+                                                    <button
+                                                        onClick={() => { openModal("an", "ans") }}
+                                                        className='main-btn'
+                                                        style={{ margin: "16px 0px" }}
+                                                    >
                                                         Write a review
                                                     </button>
                                                 </div>
