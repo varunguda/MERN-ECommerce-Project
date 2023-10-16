@@ -1,3 +1,32 @@
+@font-face {
+    font-family: 'Brandon Text';
+    src: url('../public/fonts/brandon/BrandonText-Light.ttf') format(truetype);
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Brandon Text';
+    src: url('../public/fonts/brandon/BrandonText-Regular.ttf') format(truetype);
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Brandon Text';
+    src: url('../public/fonts/brandon/BrandonText-Medium.ttf') format(truetype);
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Brandon Text';
+    src: url('../public/fonts/brandon/BrandonText-Bold.ttf') format(truetype);
+    font-weight: 700;
+    font-style: normal;
+}
+
+
 :root {
     --primary-color: #0071dc;
     --primary-highlight-color: #0072dc0d;
@@ -10,9 +39,8 @@
     --error-border-color: #e56c70;
     --secondary-color: #ffc220;
     --primary-footer: #F9F7F7;
-    --primary-font-family: 'Lato', sans-serif;
-    --secondary-font-family: 'Martel Sans', sans-serif;
-    --test-font-family: 'Josefin Sans', sans-serif;
+    --primary-font-family: 'Brandon Text', sans-serif;
+    --secondary-font-family: 'Lato', sans-serif;
     --primary-font-color: #1B1B1B;
     --secondary-font-color: #46474a;
     --light-font-color: #74767c;
@@ -24,8 +52,6 @@
     --highlight-background-color: #f8f8f8;
     --grey-background-color: #f1f1f2;
 
-    --t: #d1e0f4;
-
     --large-content-font-size: 20px;
     --medium-content-font-size: 15px;
     --regular-content-font-size: 14px;
@@ -36,9 +62,10 @@
     --s-font-size: 0.8rem;
     --m-font-size: 0.9rem;
     --l-font-size: 1rem;
-    --xl-font-size: 1.25rem;
+    --xl-font-size: 1.3rem;
     --xxl-font-size: 1.5rem;
-    --xxxl-font-size: 1.9rem;
+    --xxxl-font-size: 1.7rem;
+    --xxxxl-font-size: 1.9rem;
 
     --primary-box-shadow: 0 0.0625rem 0.125rem 0.0625rem #00000026;
 }
@@ -57,6 +84,7 @@ body {
     font-family: var(--primary-font-family);
     color: var(--secondary-font-color);
     font-size: var(--m-font-size);
+    font-weight: 400;
 }
 
 
@@ -233,6 +261,9 @@ body {
 
 .inferior-btn {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: inherit;
     border: none;
     background-color: inherit;

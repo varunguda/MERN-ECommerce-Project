@@ -361,7 +361,7 @@ const Orders = () => {
                                                                 </p>
 
                                                                 <p
-                                                                    style={{ textDecoration: (item.product_status === "Cancelled") ? "1px red line-through" : "none" }}
+                                                                    style={{ textDecoration: (item.product_status === "Cancelled") ? "1px line-through" : "none" }}
                                                                 >
                                                                     ₹ {item.final_price * item.quantity}
                                                                 </p>
@@ -373,7 +373,7 @@ const Orders = () => {
                                                     <div className="price-inline">
                                                         <p>Total tax price</p>
                                                         <p
-                                                            style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px red line-through" : "none" }}
+                                                            style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px line-through" : "none" }}
                                                         >
                                                             ₹ {order.tax_price}
                                                         </p>
@@ -382,7 +382,7 @@ const Orders = () => {
                                                     <div className="price-inline">
                                                         <p>Shipping cost</p>
                                                         <p
-                                                            style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px red line-through" : "none" }}
+                                                            style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px line-through" : "none" }}
                                                         >
                                                             ₹ {order.shipping_cost}
                                                         </p>
@@ -391,7 +391,7 @@ const Orders = () => {
                                                     <div className="total-price">
                                                         <p>Total order price</p>
                                                         <p
-                                                            style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px red line-through" : "none" }}
+                                                            style={{ textDecoration: (order.order_items.every(item => item.product_status === "Cancelled")) ? "1px line-through" : "none" }}
                                                         >
                                                             ₹ {order.total_price}
                                                         </p>
