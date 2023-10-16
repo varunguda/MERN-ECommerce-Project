@@ -96,7 +96,7 @@ const Overview = ({ user }) => {
 
     return (
         <div className="overview-container">
-            <div className="profile-page-head">Welcome to your Account</div>
+            <div className="page-head">Welcome to your Account</div>
 
             <div className="user-details-container">
                 <img 

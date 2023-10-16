@@ -1,9 +1,17 @@
-.profile-page-container {
+.page-container {
     position: relative;
     padding: 60px 10%;
     display: flex;
     gap: 30px;
     min-height: 100vh;
+}
+
+.page-head {
+    font-family: var(--test-font-family);
+    color: var(--black-font-color);
+    font-size: var(--xxxl-font-size);
+    font-weight: 700;
+    margin-bottom: 20px;
 }
 
 .profile-sidebar {
@@ -120,13 +128,5 @@
 
 .profile-page-content{
     position: relative;
-}
-
-.profile-content .profile-page-head {
-    font-family: var(--test-font-family);
-    color: var(--black-font-color);
-    font-size: var(--xxxl-font-size);
-    font-weight: 700;
-    margin-bottom: 20px;
 }
 

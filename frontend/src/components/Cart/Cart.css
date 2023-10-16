@@ -1,5 +1,19 @@
-.cart-container {
+.cart-section{
     position: relative;
-    padding: 60px 10%;
-    min-height: 100vh;
+}
+
+.cart-section1{
+    width: 65%;
+}
+
+.cart-quantity{
+    font-weight: 400;
+    font-size: var(--xl-font-size);
+}
+
+.cart-items-container{
+    width: 100%;
+    padding: 20px 10px;
+    border-radius: 10px;
+    box-shadow: var(--primary-box-shadow);
 }

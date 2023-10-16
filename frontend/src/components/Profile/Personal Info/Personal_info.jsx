@@ -7,7 +7,7 @@ const PersonalInfo = ({ user }) => {
     return (
         <div className="profile-page-content">
 
-            <div className="profile-page-head">Personal info</div>
+            <div className="page-head">Personal info</div>
 
             <div className="personal-info-container">
                 <div className="info-head">

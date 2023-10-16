@@ -5,11 +5,14 @@ import cloudinary from "cloudinary";
 
 export const verifyMail = catchAsync(async (req, res, next) => {
 
-    const myCloud = await cloudinary.v2.uploader.upload( req.body.avatar, {
-        folder: "avatars",
-        width: 150,
-        crop: "scale",
-    } )
+    let myCloud = {};
+    if(req.body.avatar){
+        myCloud = await cloudinary.v2.uploader.upload( req.body.avatar, {
+            folder: "avatars",
+            width: 150,
+            crop: "scale",
+        })
+    }
 
     const { name, email, password } = req.body;
 
@@ -37,7 +40,17 @@ export const verifyMail = catchAsync(async (req, res, next) => {
         delete req.session.registrationDetails;
     }
 
-    req.session.registrationDetails = { name, email, password, avatar:{ public_id: myCloud.public_id, url: myCloud.secure_url }, code, codeExpireTime }
+    req.session.registrationDetails = { 
+        name,
+        email,
+        password,
+        avatar: Object.keys(myCloud).length ? {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url
+        } : {},
+        code,
+        codeExpireTime
+    }
 
     const html = `<html>
 
@@ -127,6 +140,7 @@ export const verifyMail = catchAsync(async (req, res, next) => {
         subject: "Confirmation code for creating your MANYin account!",
         html
     });
+
 
     return res.json({
         success: true,

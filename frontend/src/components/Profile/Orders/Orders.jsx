@@ -268,7 +268,7 @@ const Orders = () => {
 
             {!gettingMyOrders && (
                 <>
-                    <div className="profile-page-head">
+                    <div className="page-head">
                         {allStatus[state.status ? state.status : "all"]} orders
                         <div className="profile-page-caption">from {allTimes[state.time ? state.time : "any"]}</div>
                     </div>

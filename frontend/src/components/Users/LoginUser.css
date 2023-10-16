@@ -8,9 +8,6 @@
 }
 
 .secondary-page-content{
-    font-family: var(--test-font-family);
-    font-size: 1rem;
-    letter-spacing: -0.025rem;
     color: var(--light-font-color);
     margin-top: 40px;
     padding: 0px 10%;
@@ -45,7 +42,7 @@
 
 .secondary-page-content .secondary-head{
     color: var(--black-font-color);
-    font-size: 1.25rem;
+    font-size: var(--xxl-font-size);
     font-weight: 700;
     margin-bottom: 20px;
 }
@@ -140,10 +137,13 @@
 }
 
 .small-head{
-    font-size: 0.89rem;
-    font-weight: 700;
-    margin-bottom: 5px;
+    font-weight: 600;
     color: var(--black-font-color);
+}
+
+.mail-details > div{
+    display: flex;
+    align-items: center;
 }
 
 .secondary-page-content .password-tips{

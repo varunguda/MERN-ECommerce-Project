@@ -28,7 +28,7 @@ const SignUpUser = () => {
         name: "",
         pass: "",
         confirmPass: "",
-        avatar: "/images/profileplaceholder.png"
+        avatar: ""
     });
     const [verifyPage, setVerifyPage] = useState(false);
     const [showPass, setShowPass] = useState(false);
@@ -184,7 +184,7 @@ const SignUpUser = () => {
                 reader.readAsDataURL(file);
             } else {
                 setAvatarPreview("/images/profileplaceholder.png");
-                setUser({ ...user, avatar: null });
+                setUser({ ...user, avatar: "" });
             }
         }
     };

@@ -7,7 +7,6 @@
 }
 
 .accordion {
-    color: var(--secondary-font-color);
     padding: 15px 5px;
     display: flex;
     align-items: center;
@@ -23,6 +22,7 @@
 
 .accordion__title {
     color: var(--black-font-color);
+    font-weight: 600;
     font-size: 15px;
     text-transform: capitalize;
 }
@@ -42,8 +42,5 @@
 }
 
 .accordion__text {
-    color: var(--secondary-font-color);
-    line-height: 20px;
-    font-size: 14px;
     padding: 20px 5px;
 }
