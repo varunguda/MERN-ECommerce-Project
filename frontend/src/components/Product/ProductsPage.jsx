@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ReactSlider from "react-slider";
-import Accordian from "../Product/Accordion.jsx";
+import Accordian from "../elements/Accordians/Accordion";
 import ProductCard from "../elements/Cards/ProductCard.jsx";
 import Paginate from "../elements/Pagination/Paginate.jsx";
 import { useLocation, useNavigate } from 'react-router';

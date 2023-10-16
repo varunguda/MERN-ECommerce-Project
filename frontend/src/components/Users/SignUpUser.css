@@ -11,8 +11,8 @@
 }
 
 .verify-code-container .verify-head{
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: var(--xxl-font-size);
+    font-weight: 600;
 }
 
 .verify-code-container form {

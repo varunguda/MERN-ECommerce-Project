@@ -21,7 +21,7 @@ const Accordion = (props) => {
     }
 
     return (
-        <div className="accordion__section">
+        <div className="accordion__section" style={props.noBorder && { borderTop: "none" }}>
             <div
                 className={`accordion ${active ? "active" : ""}`}
             >

@@ -48,12 +48,15 @@
 
 .nav-elems .cart-items {
     position: absolute;
-    right: 5px;
-    top: 5px;
-    font-size: 12px;
+    top: 0px;
+    right: 3px;
+    height: 19px;
+    width: 19px;
+    display: grid;
+    place-content: center;
+    font-size: var(--s-font-size);
     background-color: var(--secondary-color);
     color: var(--primary-font-color);
-    padding: 0px 5px;
     border-radius: 50%;
     border: 2px solid rgb(157, 60, 0);
 }

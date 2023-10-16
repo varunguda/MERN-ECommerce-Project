@@ -65,7 +65,7 @@ const Profile = () => {
 
 
     return (
-        <div className='profile-page-container'>
+        <div className='page-container'>
 
             {loginLoading ? <Loader /> : (
                 <>

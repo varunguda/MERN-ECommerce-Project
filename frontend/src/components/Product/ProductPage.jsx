@@ -18,7 +18,7 @@ import Stars from '../elements/Cards/Stars';
 import { toast } from 'react-toastify';
 import ProductVariations from './ProductVariations';
 import ProductsCarousel from '../layouts/Carousel/ProductsCarousel';
-import Accordion from './Accordion.jsx';
+import Accordion from '../elements/Accordians/Accordion';
 import ProductCard from '../elements/Cards/ProductCard';
 import Paginate from '../elements/Pagination/Paginate';
 

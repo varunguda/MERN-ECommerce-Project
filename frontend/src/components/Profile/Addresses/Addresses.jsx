@@ -210,7 +210,7 @@ const Addresses = () => {
     return (
         <div className="profile-page-content">
 
-            <div className="profile-page-head">Delivery Addresses</div>
+            <div className="page-head">Delivery Addresses</div>
 
             <div className="addresses-container">
 
