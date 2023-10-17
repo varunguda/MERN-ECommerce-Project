@@ -629,7 +629,11 @@ const ProductPage = () => {
                                                     <div className="total-rating">No reviews yet!</div>
                                                     <Stars value={0} size="13px" /><span>&nbsp;&nbsp; Be the first to review this product!</span>
                                                     <br />
-                                                    <button onClick={() => { openModal("an", "ans") }} className='primary-button'>
+                                                    <button
+                                                        onClick={() => { openModal("an", "ans") }}
+                                                        className='secondary-btn'
+                                                        style={{ margin: "16px 2px" }}
+                                                    >
                                                         Write a review
                                                     </button>
                                                 </div>
