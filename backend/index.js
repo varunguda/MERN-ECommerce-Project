@@ -1,6 +1,6 @@
 import { config } from "dotenv"
 import app from './app.js';
-import connectToDB from "./data/database.js";
+import connectToDB from "./db/database.js";
 import {v2 as cloudinary} from 'cloudinary';
           
 

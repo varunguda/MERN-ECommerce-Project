@@ -93,6 +93,11 @@ body {
     color: white;
 }
 
+.price::before{
+    content: '₹';
+    font-weight: 500;
+}
+
 
 .logo-new {
     position: relative;

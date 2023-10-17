@@ -1,19 +1,198 @@
-.cart-section{
+.cart-section {
     position: relative;
 }
 
-.cart-section1{
+.cart-section1 {
     width: 65%;
 }
 
-.cart-quantity{
+.cart-quantity {
     font-weight: 400;
     font-size: var(--xl-font-size);
 }
 
-.cart-items-container{
+.cart-items-container {
     width: 100%;
     padding: 20px 10px;
     border-radius: 10px;
     box-shadow: var(--primary-box-shadow);
+}
+
+.cart-item {
+    position: relative;
+}
+
+.cart-item:not(:last-child) {
+    margin-bottom: 80px;
+}
+
+.cart-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+    bottom: -40px;
+}
+
+.cart-items-container .cart-item>div:first-child {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 120px;
+    width: 100%;
+    gap: 10px;
+}
+
+.cart-item .cart-item-details {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 300px;
+
+    .icon{
+        position: absolute;
+        height: 26px;
+        width: 26px;
+        display: grid;
+        place-content: center;
+        border-radius: 50%;
+        right: 15px;
+    }
+}
+
+.cart-item .cart-item-details .image-container {
+    position: relative;
+    height: 100%;
+    width: 140px;
+    display: flex;
+    align-items: center;
+}
+
+.cart-item .cart-item-details img {
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+.cart-item .cart-item-details span {
+    font-weight: 600;
+}
+
+.cart-item .cart-item-price {
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+
+    .final-price {
+        color: var(--highlight-font-color);
+        font-size: var(--l-font-size);
+        font-weight: 600;
+    }
+
+    .total-price {
+        text-decoration: line-through;
+    }
+
+    .highlight-text {
+        padding: 4px;
+        color: var(--highlight-font-color);
+        font-size: var(--xs-font-size);
+        font-weight: 700;
+        border-radius: 4px;
+        background-color: var(--highlight-background-color);
+        margin-right: 4px;
+    }
+
+    .highlight-price {
+        color: var(--highlight-font-color);
+    }
+}
+
+
+.cart-item .cart-btn-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap-reverse;
+    gap: 10px;
+}
+
+
+.cart-section2{
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    gap: 30px;
+    margin-top: 57px;
+    padding: 30px 10px;
+    width: calc(35% - 30px);
+    box-shadow: var(--primary-box-shadow);
+    border-radius: 10px;
+}
+
+.cart-section2 .main-btn::after{
+    content: "";
+    position: absolute;
+    width: calc(100% + 20px);
+    left: -10px;
+    border-top: 1px solid var(--border-color);
+    bottom: -15px;
+}
+
+.cart-price-section{
+    position: relative;
+    font-size: var(--l-font-size);
+}
+
+.cart-price-section .price-container{
+    position: relative;
+    padding: 0px 5px;
+}
+
+.cart-price-section .price-container:not(:last-child){
+    margin-bottom: 30px;
+}
+
+.cart-price-section .price-container:not(:last-child):after{
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+    bottom: -15px;
+}
+
+.cart-price-section .price-container div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cart-price-section{
+    .dark{
+        color: var(--black-font-color);
+    }
+    .bold{
+        font-weight: 600;
+    }
+    .dashed{
+        text-decoration: line-through;
+    }
+    .hl-text{
+        color: var(--highlight-font-color);
+    }
+    .hl-background{
+        padding: 4px;
+        border-radius: 5px;
+        background-color: var(--highlight-background-color);
+        font-weight: 600;
+    }
 }
