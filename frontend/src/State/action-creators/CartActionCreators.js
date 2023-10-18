@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ADD_TO_CART, SAVE_SHIPPING_INFO } from "../constants/CartConstants";
+import { ADD_TO_CART, ORDER_VALUE_FAILURE, ORDER_VALUE_REQUEST, ORDER_VALUE_SUCCESS, SAVE_SHIPPING_INFO } from "../constants/CartConstants";
 
 
 export const addToCart = (id, quantity) => async (dispatch, getState) => {
@@ -37,4 +37,43 @@ export const saveShippingInfo = (data) => async (dispatch) => {
     });
 
     localStorage.setItem("shippingInfo", JSON.stringify(data));
+}
+
+
+
+export const getOrderValue = () => async(dispatch, getState) => {
+    try {
+
+        let orderItems = [];
+
+        const state = getState();
+
+        if(state.cart.cartItems.length === 0){
+            return;
+        }
+
+        state.cart.cartItems.forEach((item) => {
+            let obj = {};
+            obj.quantity = item.quantity;
+            obj.product = item.product;
+
+            orderItems.push(obj);
+        });
+        
+        dispatch({ type: ORDER_VALUE_REQUEST });
+
+        const config = { headers: { "Content-Type": "application/json" } };
+        const { data } = await axios.post("api/v1/order/getOrderValue", { order_items: orderItems }, config );
+
+        dispatch({
+            type: ORDER_VALUE_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_VALUE_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
 }

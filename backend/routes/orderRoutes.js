@@ -12,6 +12,7 @@ import {
     getMyOrders,
     getMyProductsOrders,
     getOrderDetails,
+    getOrderPriceDetails,
     placeNewOrder,
     updateAnyOrderStatus,
     updateMyProductOrderStatus
@@ -23,6 +24,8 @@ const router = Router();
 
 // All
 router.route("/order/placeneworder").post(isUser, placeNewOrder);
+
+router.route("/order/getOrderValue").post(isUser, getOrderPriceDetails);
 
 router.route("/me/orders").get(isUser, getMyOrders);
 

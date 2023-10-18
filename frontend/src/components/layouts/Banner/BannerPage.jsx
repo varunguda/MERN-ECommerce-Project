@@ -2,14 +2,12 @@ import React from 'react';
 
 import "./BannerPage.css";
 
-const BannerPage = ({ imageURL, caption, letterContent, onClick, type }) => {
+const BannerPage = ({ imageURL, caption, letterContent, onClick, type, imageSize }) => {
     return (
         <div className='banner-page-container'>
             <div>
                 {imageURL ? (
-
-                    <img src={imageURL} alt="banner-page-img" />
-
+                    <img style={{ height: `${imageSize}px` }} src={imageURL} alt="banner-page-img" />
                 ) : (
                     (type === "mail") ? (
                         <div onClick={onClick} className="letter-image">

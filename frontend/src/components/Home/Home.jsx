@@ -32,7 +32,7 @@ const Home = () => {
             progress: undefined,
             theme: "light",
         });
-    }, [error])
+    }, [error]);
 
 
     useEffect(()=> {

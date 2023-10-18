@@ -96,34 +96,6 @@
     text-decoration: line-through;
 }
 
-.product-description button{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    outline: none;
-    border: none;
-    background-color: white;
-    height: 35px;
-    width: 75px;
-    border-radius: 20px;
-    color: black;
-    border: 2px solid rgb(73, 73, 73);
-    font-size: var(--medium-content-font-size);
-    cursor: pointer;
-    transition: 0.1s;
-}
-
-.product-description button span{
-    font-size: 24px;
-}
-
-.product-description button:hover{
-    background-color: rgb(73, 73, 73);
-    color: white;
-}
-
-
 .add-quantity{
     width: 180px;
     min-width: 100px;
