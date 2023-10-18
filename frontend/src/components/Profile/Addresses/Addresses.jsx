@@ -42,6 +42,7 @@ const Addresses = () => {
         landmark: "",
         city: "",
         state: "",
+        state_code: "",
         zip: "",
         mobile: "",
         delivery_notes: "",
@@ -101,7 +102,7 @@ const Addresses = () => {
             nameValidator(address.last_name, "Last name"),
             flatValidator(address.flat),
             streetValidator(address.street_address),
-            cityValidator(address.city),
+            cityValidator(address.city, address.state_code),
             stateValidator(address.state),
             zipValidator(address.zip),
             mobileNumValidator(address.mobile),
@@ -138,6 +139,7 @@ const Addresses = () => {
             landmark: "",
             city: "",
             state: "",
+            state_code: "",
             zip: "",
             mobile: "",
             delivery_notes: "",
@@ -200,11 +202,9 @@ const Addresses = () => {
         }
     }
 
-
     const removeClickHandler = (id) => {
         deleteUserAddress(id);
     }
-
 
 
     return (

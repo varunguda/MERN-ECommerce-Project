@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import {
     Route,
     Routes,
-    useLocation
+    useLocation,
 } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import Modal from './components/elements/Modals/Modal.jsx';
@@ -15,6 +15,7 @@ import Navbar from './components/layouts/Navbar/Navbar.jsx';
 import Profile from './components/Profile/Profile.jsx';
 import Loader3 from './components/layouts/Loader/Loader3.jsx';
 import Cart from './components/Cart/Cart.jsx';
+import Shipping from './components/Cart/Shipping.jsx';
 
 const ContentRoutes = () => {
 
@@ -64,6 +65,7 @@ const ContentRoutes = () => {
                             <Route path="/search" element={<ProductsPage />} />
                             <Route path='/profile/:section?' element={<Profile />} />
                             <Route path='/cart' element={<Cart />} />
+                            <Route path='/shipping' element={<Shipping />} />
                         </Routes>
                     </div>
                     <Footer />

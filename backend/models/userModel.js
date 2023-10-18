@@ -67,6 +67,10 @@ const schema = new mongoose.Schema({
                 type: String,
                 required: true
             },
+            state_code: {
+                type: String,
+                required: true,
+            },
             zip: {
                 type: Number,
                 required: true,

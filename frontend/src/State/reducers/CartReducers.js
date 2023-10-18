@@ -1,4 +1,4 @@
-import { ADD_TO_CART } from "../constants/CartConstants";
+import { ADD_TO_CART, SAVE_SHIPPING_INFO } from "../constants/CartConstants";
 
 
 export const addToCartReducer = ( state = { cartItems: [] }, action ) => {
@@ -28,9 +28,17 @@ export const addToCartReducer = ( state = { cartItems: [] }, action ) => {
                 cartItems: state.cartItems.map(i => i.product === isItemExist.product ? item : i),
             });
         }
+
+
+        case SAVE_SHIPPING_INFO:{
+            return ({
+                ...state,
+                shippingInfo: action.payload,
+            })
+        }
     
         default:{
             return state;
         }
     }
-}
+};
