@@ -1,3 +1,6 @@
+import { State, City } from "country-state-city";
+
+
 export const nameValidator = (val, str) => {
     if(val.length === 0){
         return `${str} is required`;
@@ -45,33 +48,35 @@ export const streetValidator = (val) => {
 }
 
 
-export const cityValidator = (val) => {
-    if(val.length === 0){
+export const cityValidator = (city, stateCode) => {
+    if(city.length === 0){
         return "City name is required";
     }
 
-    if(val.trim() === ""){
+    if(city.trim() === ""){
         return "Enter a valid City name";
     }
 
-    if(val.length < 3){
-        return "City name must contain atleast 3 characters";
+    if(!City.getCitiesOfState("IN", stateCode).some((c) => c.name === city)){
+        return "Please select a valid city name";
     }
 
     return false;
 }
+
 
 export const stateValidator = (val) => {
     if(val.length === 0){
         return "State name is required";
     }
 
-    if((val.length < 3) || (val.trim() === "") ){
-        return "Enter a valid State name";
+    if(!State.getStatesOfCountry("IN").some((state) => state.name === val)){
+        return "Please select a valid state name";
     }
 
     return false;
 }
+
 
 export const zipValidator = (val) => {
     if(val.toString().length === 0){

@@ -71,6 +71,7 @@ export const addAddressReducer = (state = { addedAddress: false }, action) => {
 }
 
 
+
 export const getAddressesReducer = (state = { addresses: [] }, action) => {
 
     switch (action.type) {
@@ -100,6 +101,7 @@ export const getAddressesReducer = (state = { addresses: [] }, action) => {
         }
     }
 }
+
 
 
 export const updateDeleteAddressReducer = (state = { updatedDeletedAddress: false }, action) => {

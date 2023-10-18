@@ -5,7 +5,7 @@ import "./Cart.css";
 import Accordion from '../elements/Accordians/Accordion';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { addToCart } from '../../State/action-creators/CartActionCreators';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GrNext } from 'react-icons/gr';
 import Metadata from '../Metadata';
 
@@ -14,6 +14,7 @@ const Cart = () => {
     const { cartItems } = useSelector(state => state.cart);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [prodQuantities, setProdQuantities] = useState({});
 
@@ -53,6 +54,11 @@ const Cart = () => {
     const totalItemsFinalPrice = cartItems.reduce((c, i) => c + i.final_price, 0);
     const shippingCost = totalItemsFinalPrice > 500 ? 0 : 100;
     const estimatedTotalPrice = totalItemsFinalPrice + shippingCost;
+
+
+    const checkoutClickHandler = () => {
+        navigate("/account/login?redirect=shipping");
+    }
 
 
     return (
@@ -137,7 +143,7 @@ const Cart = () => {
 
             <div className="cart-section cart-section2">
 
-                <button className="main-btn">Countinue to checkout</button>
+                <button onClick={checkoutClickHandler} type='button' className="main-btn">Countinue to checkout</button>
 
                 <section className="cart-price-section">
 

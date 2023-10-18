@@ -3,12 +3,13 @@ import Metadata from '../Metadata';
 import { bindActionCreators } from 'redux';
 import { userActionCreators } from '../../State/action-creators';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { toast } from "react-toastify";
-
-import "./LoginUser.css";
 import { LOGIN_USER_RESET } from '../../State/constants/UserConstants';
 import Loader2 from '../layouts/Loader/Loader2';
+
+import "./LoginUser.css";
+
 
 const LoginUser = () => {
 
@@ -19,6 +20,7 @@ const LoginUser = () => {
     const dispatch = useDispatch();
     const { checkUsersAccount, loginUser } = bindActionCreators(userActionCreators, dispatch);
 
+    const location = useLocation();
     const navigate = useNavigate();
 
     const [mail, setMail] = useState(sessionStorage.getItem("mail") ? sessionStorage.getItem("mail") : "");
@@ -32,7 +34,7 @@ const LoginUser = () => {
     useEffect(() => {
         toast.error((userCheckError || loginError), {
             position: "bottom-center",
-            autoClose: 5000,
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -52,9 +54,11 @@ const LoginUser = () => {
     }, [checkingUser, userExist, fetched]);
 
 
+    const redirect = location.search.includes("redirect") ? '/' + location.search.split("=")[1] : "/";
+
     useEffect(() => {
         if (loggedIn) {
-            navigate("/");
+            navigate(redirect);
 
             if (sessionStorage.getItem("mail")) {
                 sessionStorage.removeItem("mail");

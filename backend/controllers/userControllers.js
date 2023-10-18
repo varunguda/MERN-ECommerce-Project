@@ -4,7 +4,7 @@ import { addCookie } from "../utils/addCookie.js";
 import catchAsync from "../utils/catchAsync.js"
 import { checkDeletedUsersLogin } from "../utils/checkDeleted.js";
 import { ErrorHandler } from "../utils/errorHandler.js";
-import {compareHashPassword, hashPassword } from '../utils/hashFunctions.js';
+import { compareHashPassword, hashPassword } from '../utils/hashFunctions.js';
 import crypto from 'crypto';
 import { sendEmail } from "../utils/sendMail.js";
 import { verifyMail } from "../utils/verifyMail.js";
@@ -12,19 +12,19 @@ import { verifyMail } from "../utils/verifyMail.js";
 
 // USER FUNCTIONS
 
-export const checkUser = catchAsync( async (req, res, next) => {
+export const checkUser = catchAsync(async (req, res, next) => {
 
     const { email } = req.body;
 
     let exists = false;
     const user = await Users.findOne({ email });
-    if(user){
+    if (user) {
         exists = true;
     }
 
-    if(!exists){
+    if (!exists) {
         const deletedUser = await DeletedUsers.findOne({ email });
-        if(deletedUser){
+        if (deletedUser) {
             exists = true;
         }
     }
@@ -38,50 +38,50 @@ export const checkUser = catchAsync( async (req, res, next) => {
 
 
 
-export const createUser = catchAsync( async (req, res, next) => {
+export const createUser = catchAsync(async (req, res, next) => {
 
     const { email } = req.body;
 
     const user = await Users.findOne({ email });
-    if(user){
+    if (user) {
         return next(new ErrorHandler("This Mail is already registered!", 400))
     }
 
     const deletedUser = await DeletedUsers.findOne({ email }).select("+password");
-    if(deletedUser){
+    if (deletedUser) {
         return next(new ErrorHandler("This Mail is already registered!", 400));
     }
 
     verifyMail(req, res, next);
-    
+
 });
 
 
 
-export const createVerifiedUser = catchAsync( async(req, res, next) => {
+export const createVerifiedUser = catchAsync(async (req, res, next) => {
 
     const { userCode } = req.body;
 
-    if(!userCode){
-        return next( new ErrorHandler("Invalid Input!", 400));
+    if (!userCode) {
+        return next(new ErrorHandler("Invalid Input!", 400));
     }
 
-    if(!req.session.registrationDetails){
+    if (!req.session.registrationDetails) {
         return next(new ErrorHandler("Resource not found! Please try again!", 404))
     }
 
     const { name, email, password, avatar, code, codeExpireTime } = req.session.registrationDetails;
-    
+
     // const emailPayload = jwt.verify(token, process.env.JWT_SECRET);
     // if(emailPayload.email !== email){
     //     return next(new ErrorHandler("Resource not found! Please try again.", 400))
     // }
 
-    if(codeExpireTime < Date.now()){
+    if (codeExpireTime < Date.now()) {
         return next(new ErrorHandler("Confirmation Code expired!", 400))
     }
 
-    if(userCode !== code){
+    if (userCode !== code) {
         return next(new ErrorHandler("Invalid code! Please try again.", 400))
     }
 
@@ -97,30 +97,30 @@ export const createVerifiedUser = catchAsync( async(req, res, next) => {
 
 
 
-export const getUserDetails = catchAsync( async(req, res, next) => {
+export const getUserDetails = catchAsync(async (req, res, next) => {
 
     const user = await Users.findById(req.user._id).select("+is_admin +is_seller");
 
     return res.json({
-        success:true,
+        success: true,
         user
     })
 })
 
 
 
-export const loginUser = catchAsync( async(req, res, next) => {
+export const loginUser = catchAsync(async (req, res, next) => {
 
     const { email, password } = req.body;
 
     const user = await Users.findOne({ email }).select("+password +is_admin +is_seller");
 
-    if(!user){
+    if (!user) {
         return await checkDeletedUsersLogin(req, res, next);
     }
 
     const isSame = await compareHashPassword(password, user.password);
-    if(!isSame){
+    if (!isSame) {
         return next(new ErrorHandler("Invalid Email or Password!", 400));
     }
 
@@ -129,10 +129,10 @@ export const loginUser = catchAsync( async(req, res, next) => {
 
 
 
-export const updateUserDetails = catchAsync( async(req, res, next) => {
+export const updateUserDetails = catchAsync(async (req, res, next) => {
     const { name, email, address, avatar } = req.body;
 
-    const user = await Users.findByIdAndUpdate(req.user._id, { name, email, address, avatar }, 
+    const user = await Users.findByIdAndUpdate(req.user._id, { name, email, address, avatar },
         {
             new: true,
             runValidators: true,
@@ -148,7 +148,7 @@ export const updateUserDetails = catchAsync( async(req, res, next) => {
 
 
 
-export const logoutUser = catchAsync( async(req, res, next) => {
+export const logoutUser = catchAsync(async (req, res, next) => {
     return res.cookie("token", "", {
         httpOnly: true,
         maxAge: 0,
@@ -160,14 +160,14 @@ export const logoutUser = catchAsync( async(req, res, next) => {
 
 
 
-export const deleteUser = catchAsync( async(req, res, next) => {
-    
+export const deleteUser = catchAsync(async (req, res, next) => {
+
     const user = await Users.findById(req.user._id).select("+password")
     const { name, email, password, address, created_at, user_image_url } = user;
-    
-    await DeletedUsers.create({ name, email, password, address, created_at, user_image_url, expires_at: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)});
 
-    user.deleteOne()
+    await DeletedUsers.create({ name, email, password, address, created_at, user_image_url, expires_at: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) });
+
+    await user.deleteOne()
 
     return res.json({
         success: true,
@@ -178,12 +178,12 @@ export const deleteUser = catchAsync( async(req, res, next) => {
 
 
 
-export const forgotPassword = catchAsync( async(req, res, next) => {
+export const forgotPassword = catchAsync(async (req, res, next) => {
 
     const { email } = req.body;
 
     const user = await Users.findOne({ email });
-    if(!user){
+    if (!user) {
         return next(new ErrorHandler("Account doesn't exist", 400));
     }
 
@@ -293,7 +293,7 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
             success: true,
             message: `A password recovery mail has been sent to ${email}`
         })
-        
+
     } catch (error) {
         user.reset_password_token = undefined;
         user.reset_password_expire = undefined;
@@ -305,7 +305,7 @@ export const forgotPassword = catchAsync( async(req, res, next) => {
 
 
 
-export const recoverPassword = catchAsync( async(req, res, next) => {
+export const recoverPassword = catchAsync(async (req, res, next) => {
 
     const { resetToken } = req.params;
     const { password, confirmPassword } = req.body;
@@ -314,11 +314,11 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
 
     const user = await Users.findOne({ reset_password_token: resetPasswordToken, reset_password_expire: { $gt: Date.now() } }).select("+password+resetPasswordExpire+resetPasswordToken");
 
-    if(!user){
+    if (!user) {
         return next(new ErrorHandler("Reset password link is invalid or has been expired!", 400))
     }
 
-    if(password !== confirmPassword){
+    if (password !== confirmPassword) {
         return next(new ErrorHandler("Password doesn't match the confirm password!", 400))
     }
 
@@ -331,7 +331,7 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
     // addCookie(user, `${user.name}'s password has been changed!`, 200, req, res, next);
 
     return res.json({
-        success:true,
+        success: true,
         message: `Your password has been successfully changed! Please login to continue.`
     })
 
@@ -339,7 +339,7 @@ export const recoverPassword = catchAsync( async(req, res, next) => {
 
 
 
-export const addUserAddress = catchAsync( async(req, res, next) => {
+export const addUserAddress = catchAsync(async (req, res, next) => {
 
     const {
         first_name,
@@ -349,6 +349,7 @@ export const addUserAddress = catchAsync( async(req, res, next) => {
         landmark,
         city,
         state,
+        state_code,
         zip,
         mobile,
         delivery_notes,
@@ -357,9 +358,9 @@ export const addUserAddress = catchAsync( async(req, res, next) => {
 
     const user = await Users.findById(req.user._id);
 
-    if(default_address === true){
+    if (default_address === true) {
         user.address = user.address.map((address) => {
-            if(address.default_address === true){
+            if (address.default_address === true) {
                 address.default_address = false;
             }
 
@@ -375,13 +376,14 @@ export const addUserAddress = catchAsync( async(req, res, next) => {
         landmark,
         city,
         state,
+        state_code,
         zip,
         mobile,
         delivery_notes,
         default_address,
     });
 
-    user.save({ validateBeforeSave: false });
+    await user.save({ validateBeforeSave: false });
 
     return res.status(201).json({
         success: true,
@@ -392,7 +394,7 @@ export const addUserAddress = catchAsync( async(req, res, next) => {
 
 
 
-export const getAllAddresses = catchAsync( async(req, res, next) => {
+export const getAllAddresses = catchAsync(async (req, res, next) => {
     return res.status(201).json({
         success: true,
         addresses: req.user.address,
@@ -401,7 +403,7 @@ export const getAllAddresses = catchAsync( async(req, res, next) => {
 
 
 
-export const updateAddress = catchAsync( async( req, res, next ) => {
+export const updateAddress = catchAsync(async (req, res, next) => {
 
     const { addressId } = req.params;
     const {
@@ -412,6 +414,7 @@ export const updateAddress = catchAsync( async( req, res, next ) => {
         landmark,
         city,
         state,
+        state_code,
         zip,
         mobile,
         delivery_notes,
@@ -420,13 +423,13 @@ export const updateAddress = catchAsync( async( req, res, next ) => {
 
     const user = await Users.findById(req.user._id);
 
-    if(!user.address.some((address) => address._id.toString() === addressId )){
+    if (!user.address.some((address) => address._id.toString() === addressId)) {
         return next(new ErrorHandler("Address doesn't exist", 404));
     }
 
-    if(default_address === true){
+    if (default_address === true) {
         user.address = user.address.map((address) => {
-            if(address.default_address === true){
+            if (address.default_address === true) {
                 address.default_address = false;
             }
             return address;
@@ -434,7 +437,7 @@ export const updateAddress = catchAsync( async( req, res, next ) => {
     }
 
     user.address = user.address.map((address) => {
-        if(address._id.toString() === addressId){
+        if (address._id.toString() === addressId) {
             return ({
                 ...address,
                 first_name,
@@ -444,18 +447,19 @@ export const updateAddress = catchAsync( async( req, res, next ) => {
                 landmark,
                 city,
                 state,
+                state_code,
                 zip,
                 mobile,
                 delivery_notes,
                 default_address,
             })
         }
-        else{
+        else {
             return address
         }
     });
 
-    user.save({ validateBeforeSave: false });
+    await user.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,
@@ -465,19 +469,19 @@ export const updateAddress = catchAsync( async( req, res, next ) => {
 
 
 
-export const deleteUserAddress = catchAsync( async(req, res, next) => {
+export const deleteUserAddress = catchAsync(async (req, res, next) => {
 
     const { addressId } = req.params;
 
     const user = await Users.findById(req.user._id);
 
-    if(!user.address.some((address) => address._id.toString() === addressId )){
+    if (!user.address.some((address) => address._id.toString() === addressId)) {
         return next(new ErrorHandler("Address doesn't exist", 404));
     }
 
-    user.address = user.address.filter((address) => address._id.toString() !== addressId );
+    user.address = user.address.filter((address) => address._id.toString() !== addressId);
 
-    user.save({ validateBeforeSave: false });
+    await user.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,
