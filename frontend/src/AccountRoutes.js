@@ -7,6 +7,7 @@ import LoginUser from './components/Users/LoginUser';
 import SignUpUser from './components/Users/SignUpUser';
 import ForgotPassword from './components/Users/ForgotPassword';
 import ResetPassword from './components/Users/ResetPassword';
+import Shipping from './components/Cart/Shipping';
 
 
 const AccountRoutes = () => {
@@ -17,6 +18,7 @@ const AccountRoutes = () => {
                 <Route path='/account/signup' element={<SignUpUser />} />
                 <Route path='/account/password/forgot' element={<ForgotPassword />} />
                 <Route path='/account/password/reset/:token' element={<ResetPassword />} />
+                <Route path='/shipping' element={<Shipping />} />
             </Routes>
         </>
     )

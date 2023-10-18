@@ -1,9 +1,10 @@
-.cart-section {
+.page-container .section {
     position: relative;
 }
 
-.cart-section1 {
+.page-container .section1 {
     width: 65%;
+    min-width: 300px;
 }
 
 .cart-quantity {
@@ -53,7 +54,7 @@
     gap: 10px;
     min-width: 300px;
 
-    .icon{
+    .icon {
         position: absolute;
         height: 26px;
         width: 26px;
@@ -125,19 +126,19 @@
 }
 
 
-.cart-section2{
+.page-container .section2 {
+    width: calc(35% - 30px);
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     height: fit-content;
     gap: 30px;
-    margin-top: 57px;
     padding: 30px 10px;
-    width: calc(35% - 30px);
     box-shadow: var(--primary-box-shadow);
     border-radius: 10px;
 }
 
-.cart-section2 .main-btn::after{
+.page-container .section2 .main-btn::after {
     content: "";
     position: absolute;
     width: calc(100% + 20px);
@@ -146,21 +147,21 @@
     bottom: -15px;
 }
 
-.cart-price-section{
+.cart-price-section {
     position: relative;
     font-size: var(--l-font-size);
 }
 
-.cart-price-section .price-container{
+.cart-price-section .price-container {
     position: relative;
     padding: 0px 5px;
 }
 
-.cart-price-section .price-container:not(:last-child){
+.cart-price-section .price-container:not(:last-child) {
     margin-bottom: 30px;
 }
 
-.cart-price-section .price-container:not(:last-child):after{
+.cart-price-section .price-container:not(:last-child):after {
     content: "";
     position: absolute;
     left: 0;
@@ -169,30 +170,51 @@
     bottom: -15px;
 }
 
-.cart-price-section .price-container div{
+.cart-price-section .price-container div {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
 
-.cart-price-section{
-    .dark{
+.cart-price-section {
+    .dark {
         color: var(--black-font-color);
     }
-    .bold{
+
+    .bold {
         font-weight: 600;
     }
-    .dashed{
+
+    .dashed {
         text-decoration: line-through;
     }
-    .hl-text{
+
+    .hl-text {
         color: var(--highlight-font-color);
     }
-    .hl-background{
+
+    .hl-background {
         padding: 4px;
         border-radius: 5px;
         background-color: var(--highlight-background-color);
         font-weight: 600;
+    }
+}
+
+
+
+@media screen and (max-width: 900px) {
+    .cart-container{
+        padding: 40px 20px;
+        flex-direction: column;
+    }
+
+    .page-container .section{
+        width: 100%;
+    }
+
+    .page-container .section2{
+        margin-top: 0;
     }
 }

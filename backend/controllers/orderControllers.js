@@ -107,6 +107,47 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
 
 
 
+export const getOrderPriceDetails = catchAsync( async(req, res, next) => {
+
+    const { order_items } = req.body;
+
+    let totalSavings = 0;
+    let totalItemsPrice = 0;
+    let totalItemsFinalPrice = 0;
+    let taxPrice = 0;
+    let shippingCost = 0;
+    let finalOrderPrice = 0;
+
+    for (const item of order_items) {
+
+        const product = await Product.findById(item.product);
+        if (!product) {
+            return next(new ErrorHandler("Product not found!", 404));
+        }
+
+        totalItemsPrice += (product.price * item.quantity);
+        totalItemsFinalPrice += (product.final_price * item.quantity);
+        totalSavings += (product.price - product.final_price) * item.quantity;
+    }
+
+    taxPrice = totalItemsFinalPrice * 18 / 100;
+    finalOrderPrice = totalItemsFinalPrice + taxPrice;
+    shippingCost = (finalOrderPrice > 500) ? 0 : 100;
+    finalOrderPrice += shippingCost;
+
+    return res.json({
+        success: true,
+        taxPrice: Math.round(taxPrice),
+        shippingCost,
+        totalItemsFinalPrice: Math.round(totalItemsFinalPrice),
+        totalItemsPrice: Math.round(totalItemsPrice),
+        totalSavings: Math.round(totalSavings),
+        finalOrderPrice: Math.round(finalOrderPrice),
+    })
+})
+
+
+
 export const getOrderDetails = catchAsync(async (req, res, next) => {
 
     const { id } = req.params;

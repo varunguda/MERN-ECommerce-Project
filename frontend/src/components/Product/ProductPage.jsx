@@ -66,11 +66,10 @@ const options = [
 const ProductPage = () => {
 
     const { loading, products, error } = useSelector((state) => state.detailedProducts);
-
-    // eslint-disable-next-line
     const { sellersProducts } = useSelector((state) => state.sellerProducts);
     const { reviewsLoading, reviews } = useSelector((state) => state.productReviews);
     const { bundles } = useSelector((state) => state.bundleProducts);
+    const { cartItems } = useSelector((state) => state.cart);
 
     const [mainProduct, setMainProduct] = useState({});
 
@@ -154,14 +153,12 @@ const ProductPage = () => {
     useEffect(() => {
 
         let found = false;
-        localStorage.getItem("cartItems") && (
-            JSON.parse(localStorage.getItem("cartItems")).forEach((i) => {
-                if (i.product === mainProduct._id) {
-                    setQuantity(i.quantity);
-                    found = true;
-                }
-            })
-        );
+        cartItems.forEach(item => {
+            if(item.product === mainProduct._id){
+                setQuantity(item.quantity);
+                found = true;
+            }
+        });
 
         if (!found) {
             setQuantity(0);

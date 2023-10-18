@@ -15,7 +15,6 @@ import Navbar from './components/layouts/Navbar/Navbar.jsx';
 import Profile from './components/Profile/Profile.jsx';
 import Loader3 from './components/layouts/Loader/Loader3.jsx';
 import Cart from './components/Cart/Cart.jsx';
-import Shipping from './components/Cart/Shipping.jsx';
 
 const ContentRoutes = () => {
 
@@ -55,7 +54,7 @@ const ContentRoutes = () => {
             <Modal open={open} content={content} heading={heading} noOutClick={noOutClick} />
 
 
-            {!location.pathname.includes("/account") && (
+            {["/account", "/shipping"].every((route) => !location.pathname.includes(route)) && (
                 <>
                     <Navbar />
                     <div className='content-container'>
@@ -65,7 +64,6 @@ const ContentRoutes = () => {
                             <Route path="/search" element={<ProductsPage />} />
                             <Route path='/profile/:section?' element={<Profile />} />
                             <Route path='/cart' element={<Cart />} />
-                            <Route path='/shipping' element={<Shipping />} />
                         </Routes>
                     </div>
                     <Footer />

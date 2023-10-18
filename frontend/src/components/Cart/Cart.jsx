@@ -8,6 +8,7 @@ import { addToCart } from '../../State/action-creators/CartActionCreators';
 import { Link, useNavigate } from 'react-router-dom';
 import { GrNext } from 'react-icons/gr';
 import Metadata from '../Metadata';
+import BannerPage from '../layouts/Banner/BannerPage';
 
 const Cart = () => {
 
@@ -17,6 +18,10 @@ const Cart = () => {
     const navigate = useNavigate();
 
     const [prodQuantities, setProdQuantities] = useState({});
+
+    useEffect(() => {
+        window.scrollTo(0,0);
+    }, [])
 
     useEffect(() => {
         if (cartItems.length > 0) {
@@ -62,147 +67,161 @@ const Cart = () => {
 
 
     return (
-        <div className='page-container'>
+        <>
+            {(cartItems.length !== 0) ? (
 
-            <Metadata title="Cart - ManyIN" />
+                <div className='page-container cart-container'>
 
-            <div className="cart-section cart-section1">
+                    <Metadata title="Cart - ManyIN" />
 
-                <div className="page-head">
-                    Cart
-                    <span className="cart-quantity"> ({cartItems.length} {cartItems.length === 1 ? "item" : "items"})</span>
-                </div>
+                    <section className="section section1">
 
-                <div className="cart-items-container">
+                        <div className="page-head">
+                            Cart
+                            <span className="cart-quantity"> ({cartItems.length} {cartItems.length === 1 ? "item" : "items"})</span>
+                        </div>
 
-                    <Accordion
-                        title={`${cartItems.length} ${cartItems.length === 1 ? "item" : "items"}`}
-                        style={{ fontSize: "1.2rem", fontWeight: "700" }}
-                        noBorder={true}
-                        content={
-                            cartItems.map((item, index) => {
-                                return (
-                                    <div key={index} className='cart-item'>
+                        <div className="cart-items-container">
 
-                                        <div>
-                                            <div className="cart-item-details link" >
-                                                <Link
-                                                    to={`/product/${item.product}`}
-                                                    target='_blank'
-                                                    className="image-container link"
-                                                >
-                                                    <img src={item.image} alt={item.name} />
-                                                </Link>
-                                                <span>{item.name}</span>
+                            <Accordion
+                                title={`${cartItems.length} ${cartItems.length === 1 ? "item" : "items"}`}
+                                style={{ fontSize: "1.2rem", fontWeight: "700" }}
+                                noBorder={true}
+                                content={
+                                    cartItems.map((item, index) => {
+                                        return (
+                                            <div key={index} className='cart-item'>
 
-                                                <Link
-                                                    to={`/product/${item.product}`}
-                                                    target='_blank'
-                                                    className="icon link"
-                                                >
-                                                    <GrNext />
-                                                </Link>
+                                                <div>
+                                                    <div className="cart-item-details link" >
+                                                        <Link
+                                                            to={`/product/${item.product}`}
+                                                            target='_blank'
+                                                            className="image-container link"
+                                                        >
+                                                            <img src={item.image} alt={item.name} />
+                                                        </Link>
+                                                        <span>{item.name}</span>
+
+                                                        <Link
+                                                            to={`/product/${item.product}`}
+                                                            target='_blank'
+                                                            className="icon link"
+                                                        >
+                                                            <GrNext />
+                                                        </Link>
+
+                                                    </div>
+
+                                                    <div className="cart-item-price">
+                                                        <span className='final-price price'>{item.final_price}</span>
+                                                        {(item.final_price !== item.price) && (
+                                                            <>
+                                                                <span className='total-price price'>{item.price}</span>
+                                                                <div>
+                                                                    <span className='highlight-text'>You save</span>
+                                                                    <span className='highlight-price price'>{Math.round(item.price - item.final_price)}</span>
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="cart-btn-container">
+                                                    <button onClick={() => removeItem(item.product)} type="button" className='inferior-btn'>Remove</button>
+                                                    <button type="button" className='inferior-btn'>Save for later</button>
+
+                                                    <div className="add-quantity">
+                                                        <FiMinus className="minus" onClick={() => handleMinusClick(item.product, index)} />
+                                                        <span>{prodQuantities[item.product]}</span>
+                                                        <FiPlus className="plus" onClick={() => handlePlusClick(item.product, index)} />
+                                                    </div>
+                                                </div>
 
                                             </div>
+                                        )
+                                    })
+                                }
+                            />
+                        </div>
 
-                                            <div className="cart-item-price">
-                                                <span className='final-price price'>{item.final_price}</span>
-                                                {(item.final_price !== item.price) && (
-                                                    <>
-                                                        <span className='total-price price'>{item.price}</span>
-                                                        <div>
-                                                            <span className='highlight-text'>You save</span>
-                                                            <span className='highlight-price price'>{Math.round(item.price - item.final_price)}</span>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </div>
+                    </section>
 
-                                        <div className="cart-btn-container">
-                                            <button onClick={() => removeItem(item.product)} type="button" className='inferior-btn'>Remove</button>
-                                            <button type="button" className='inferior-btn'>Save for later</button>
 
-                                            <div className="add-quantity">
-                                                <FiMinus className="minus" onClick={() => handleMinusClick(item.product, index)} />
-                                                <span>{prodQuantities[item.product]}</span>
-                                                <FiPlus className="plus" onClick={() => handlePlusClick(item.product, index)} />
-                                            </div>
-                                        </div>
 
+                    <section className="section section2" style={{ marginTop: "57px" }}>
+
+                        <button onClick={checkoutClickHandler} type='button' className="main-btn">Countinue to checkout</button>
+
+                        <section className="cart-price-section">
+
+                            <div className='price-container'>
+
+                                <div>
+                                    <span className='bold dark'>Subtotal ({`${cartItems.length} ${cartItems.length === 1 ? "item" : "items"}`})</span>
+                                    <span className="dashed price">{
+                                        cartItems.reduce((c, i) => c + i.price, 0)
+                                    }</span>
+                                </div>
+
+                                {(totalSavings) && (
+                                    <div>
+                                        <span className='bold'>Savings</span>
+                                        <span className="hl-text hl-background">- <span className='price'>
+                                            {totalSavings}
+                                        </span></span>
                                     </div>
-                                )
-                            })
-                        }
-                    />
-                </div>
+                                )}
 
-            </div>
-
-
-
-            <div className="cart-section cart-section2">
-
-                <button onClick={checkoutClickHandler} type='button' className="main-btn">Countinue to checkout</button>
-
-                <section className="cart-price-section">
-
-                    <div className='price-container'>
-
-                        <div>
-                            <span className='bold dark'>Subtotal ({`${cartItems.length} ${cartItems.length === 1 ? "item" : "items"}`})</span>
-                            <span className="dashed price">{
-                                cartItems.reduce((c, i) => c + i.price, 0)
-                            }</span>
-                        </div>
-
-                        {(totalSavings) && (
-                            <div>
-                                <span className='bold'>Savings</span>
-                                <span className="hl-text hl-background">- <span className='price'>
-                                    {totalSavings}
-                                </span></span>
+                                <div>
+                                    <span></span>
+                                    <span className='price hl-text bold'>
+                                        {totalItemsFinalPrice}
+                                    </span>
+                                </div>
                             </div>
-                        )}
 
-                        <div>
-                            <span></span>
-                            <span className='price hl-text bold'>
-                                {totalItemsFinalPrice}
-                            </span>
-                        </div>
-                    </div>
+                            <div className='price-container'>
 
-                    <div className='price-container'>
+                                <div>
+                                    <span>Shipping</span>
+                                    <span className={`hl-text ${shippingCost && "price"}`}>
+                                        {shippingCost ? shippingCost : "Free"}
+                                    </span>
+                                </div>
 
-                        <div>
-                            <span>Shipping</span>
-                            <span className={`hl-text ${shippingCost && "price"}`}>
-                                {shippingCost ? shippingCost : "Free"}
-                            </span>
-                        </div>
+                                <div className='dark'>
+                                    <span className='bold'>Taxes</span>
+                                    <span>Calculated at checkout</span>
+                                </div>
 
-                        <div className='dark'>
-                            <span className='bold'>Taxes</span>
-                            <span>Calculated at checkout</span>
-                        </div>
+                            </div>
 
-                    </div>
+                            <div className="price-container">
+                                <div className='dark'>
+                                    <span className='bold'>Estimated total</span>
+                                    <span className='price bold hl-text'>
+                                        {estimatedTotalPrice}
+                                    </span>
+                                </div>
+                            </div>
+                        </section>
 
-                    <div className="price-container">
-                        <div className='dark'>
-                            <span className='bold'>Estimated total</span>
-                            <span className='price bold hl-text'>
-                                {estimatedTotalPrice}
-                            </span>
-                        </div>
-                    </div>
-
-                </section>
-
-            </div>
-
-        </div>
+                    </section>
+                </div>
+            ) : (
+                <BannerPage
+                    imageURL="./images/empty-cart.png"
+                    caption={
+                        <>
+                        <span style={{fontWeight: "700", fontSize: "1.2rem"}}>Time to start shopping!</span>
+                        <span style={{fontWeight: "600"}}>Your cart is empty</span>
+                        <button onClick={() => navigate("/")} className='secondary-btn' type="button">Continue shopping</button>
+                        </>
+                    }
+                />
+            )}
+        </>
     )
 }
 

@@ -1,33 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import Stars from "./Stars.jsx";
 import { CiHeart } from "react-icons/ci";
+import { FiMinus, FiPlus } from 'react-icons/fi';
+import { addToCart } from '../../../State/action-creators/CartActionCreators.js';
+import { useDispatch, useSelector } from 'react-redux';
 
 import "./ProductCard.css";
-import { FiMinus, FiPlus } from 'react-icons/fi';
+
 
 const ProductCard = ({ product, height, width, noreviews = false }) => {
 
     const [quantity, setQuantity] = useState(0);
+    const { cartItems } = useSelector(state => state.cart);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        cartItems.forEach(item => {
+            if(item.product === product._id){
+                setQuantity(item.quantity);
+            }
+        });
+        // eslint-disable-next-line
+    }, [product])
+    
 
     const handleWishlistClick = (e) => {
         e.preventDefault();
     }
 
     const handleAddClick = (e) => {
-        e.preventDefault()
-        setQuantity(prev => prev + 1);
+        e.preventDefault();
+        if (quantity >= product.stock) return;
+        const qty = quantity + 1;
+        setQuantity(qty);
+        dispatch(addToCart(product._id, qty));
     }
 
     const handlePlusClick = (e) => {
         e.preventDefault();
-        setQuantity(prev => prev + 1)
+        if (quantity >= product.stock) return;
+        const qty = quantity + 1;
+        setQuantity(qty);
+        dispatch(addToCart(product._id, qty));
     }
 
     const handleMinusClick = (e) => {
         e.preventDefault();
-        setQuantity(prev => prev - 1)
+        if (quantity <= 0) return;
+        const qty = quantity - 1;
+        setQuantity(qty);
+        dispatch(addToCart(product._id, qty));
     }
+
 
     return (
         <div className='product-card-container' style={{ height, width }}>
@@ -49,7 +75,7 @@ const ProductCard = ({ product, height, width, noreviews = false }) => {
 
                     <div className='review-container'>
                         {
-                            !noreviews && (
+                            (noreviews !== true) && (
                                 <>
                                     <Stars value={product.rating || 0} size={window.innerWidth > 600 ? "12px" : "10px"} />
                                     <span>{product.total_reviews || 0}</span>
@@ -59,7 +85,13 @@ const ProductCard = ({ product, height, width, noreviews = false }) => {
                     </div>
 
                     {!quantity ?
-                        (<button onClick={handleAddClick}><span>+</span> Add</button>)
+                        (<button 
+                            onClick={handleAddClick}
+                            className='secondary-btn'
+                            style={{ padding: "0px 15px", height: "35px" }}
+                        >
+                            + Add
+                        </button>)
                         :
                         (<div className="add-quantity">
                             <FiMinus className="minus" onClick={handleMinusClick} />
