@@ -5,14 +5,16 @@ import {BsChevronUp} from "react-icons/bs";
 import "./Accordion.css";
 
 const Accordion = (props) => {
-    const [active, setActive] = useState(true);
+    const [active, setActive] = useState(props.close ? false : true);
     const content = useRef(null);
     const [height, setHeight] = useState(`0px`);
 
     useEffect(()=> {
-        if(content && content.current){
+        if(content && content.current && active){
             setHeight(`${content.current.scrollHeight}px`);
         }
+
+        // eslint-disable-next-line
     }, [props.content, content])
 
     const toggleAccordion = () => {

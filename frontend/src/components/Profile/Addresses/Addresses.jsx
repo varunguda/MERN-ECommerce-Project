@@ -84,6 +84,7 @@ const Addresses = () => {
         // eslint-disable-next-line
     }, []);
 
+    
     useEffect(() => {
         if (gettingAddresses || updatingDeletingAddress) {
             dispatch(loaderSpin(true));

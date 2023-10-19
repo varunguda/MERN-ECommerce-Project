@@ -1,8 +1,8 @@
-.page-container .section {
+.page-container > .section {
     position: relative;
 }
 
-.page-container .section1 {
+.page-container > .section1 {
     width: 65%;
     min-width: 300px;
 }
@@ -35,7 +35,7 @@
     bottom: -40px;
 }
 
-.cart-items-container .cart-item>div:first-child {
+.cart-item>div:first-child {
     position: relative;
     display: flex;
     align-items: center;
@@ -126,7 +126,7 @@
 }
 
 
-.page-container .section2 {
+.page-container > .section2 {
     width: calc(35% - 30px);
     min-width: 300px;
     display: flex;
@@ -138,7 +138,7 @@
     border-radius: 10px;
 }
 
-.page-container .section2 .main-btn::after {
+.page-container > .section2 .main-btn::after {
     content: "";
     position: absolute;
     width: calc(100% + 20px);
@@ -210,11 +210,11 @@
         flex-direction: column;
     }
 
-    .page-container .section{
+    .page-container > .section{
         width: 100%;
     }
 
-    .page-container .section2{
+    .page-container > .section2{
         margin-top: 0;
     }
 }

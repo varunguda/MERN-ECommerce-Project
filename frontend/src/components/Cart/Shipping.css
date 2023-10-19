@@ -27,3 +27,97 @@
     cursor: pointer;
 }
 
+.shipping-page-container .step{
+    margin-bottom: 30px;
+    padding: 30px 20px;
+    box-shadow: var(--primary-box-shadow);
+    border-radius: 10px;
+}
+
+
+.shipping-page-container .step .head{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--xl-font-size);
+    color: var(--black-font-color);
+    font-weight: 700;
+}
+
+.shipping-page-container .step.inactive{
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.shipping-page-container .step .step-content{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 0px 10px;
+    margin-top: 40px;
+
+    .shipping-address-container{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+.shipping-page-container .shipping-address-container > button{
+    position: absolute;
+    align-self: flex-end;
+}
+
+.shipping-page-container .step .step-content > div{
+    position: relative;
+}
+
+.shipping-page-container .step .step-content > div:not(:last-child)::after{
+    content:  "";
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+}
+
+.shipping-page-container .section2{
+    min-height: 290px;
+}
+
+.shipping-address-container p:first-child{
+    color: var(--black-font-color);
+    font-weight: 600;
+    font-size: var(--l-font-size);
+}
+
+.shipping-address-container p:nth-child(2){
+    color: var(--light-font-color);
+    font-size: var(--s-font-size);
+}
+
+.shipping-address-container .shipping-addresses-checkboxes{
+    margin: 40px 5px 0px 5px;
+
+    .checkboxes{
+        margin-bottom: 30px;
+    }
+}
+
+.shipping-address-container{
+    .name{
+        color: var(--black-font-color);
+        font-weight: 600;
+        font-size: var(--l-font-size);
+    }
+
+    .default-check{
+        color: var(--light-font-color);
+        font-size: var(--xs-font-size);
+    }
+}
+
+.saved-shipping-address{
+    margin: 20px 5px 20px 5px;
+}
