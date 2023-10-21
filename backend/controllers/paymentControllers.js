@@ -1,15 +1,15 @@
-import Stripe from 'stripe';
-import { v4 as uuidv4 } from 'uuid';
-import catchAsync from '../utils/catchAsync';
-import { Product } from '../models/productModel';
-import { ErrorHandler } from '../utils/errorHandler';
+import Stripe from "stripe";
+import { v4 as uuidv4 } from "uuid";
+import catchAsync from "../utils/catchAsync.js";
+import { Product } from "../models/productModel.js";
+import { ErrorHandler } from "../utils/errorHandler.js";
 
 
-export const stripePayment = catchAsync(async (req, res, next) => {
+export const stripePayment = catchAsync( async(req, res, next) => {
 
-    const { order_items, token } = req.body;
+    const { order_items } = req.body;
     const idempotencyKey = uuidv4();
-    const stripe = new Stripe('sk_test_51O3eZ4SCnAazxpoTtcGoq57znhnkT0vnUUCtMICJoWDqzKkCIEB0QLPpABWyUJB0sweNrZKtSEIRvdeMZLCK7ft300JsoYOYZd');
+    const stripe = new Stripe(process.env.STRIPE_KEY);
 
     let totalSavings = 0;
     let totalItemsPrice = 0;
@@ -26,6 +26,10 @@ export const stripePayment = catchAsync(async (req, res, next) => {
             return next(new ErrorHandler("Product not found!", 404));
         }
 
+        if(product.seller_id.toString() === req.user._id.toString()){
+            return next( new ErrorHandler("You are not allowed to purchase your own product.", 400));
+        }
+
         productNames.push(product.name);
         totalItemsPrice += (product.price * item.quantity);
         totalItemsFinalPrice += (product.final_price * item.quantity);
@@ -37,26 +41,16 @@ export const stripePayment = catchAsync(async (req, res, next) => {
     shippingCost = (finalOrderPrice > 500) ? 0 : 100;
     finalOrderPrice += shippingCost;
 
-    const customer = await stripe.customers.create({
-        email: token.email,
-        source: token.id,
-    })
-
-    if(!customer){
-        return next(new ErrorHandler("Payment cannot be processed", 400));
-    }
-
-    const result = await stripe.charges.create({ 
-        amount: finalOrderPrice,
+    const myPayment = await stripe.paymentIntents.create({
+        amount: Math.round(finalOrderPrice)* 100,
         currency: "inr",
-        customer: customer.id,
-        receipt_email: token.email,
-        description: `Purchase of ${productNames.join(",")}`,
-        
+        metadata: {
+            company: "ManyIN",
+        },
     }, { idempotencyKey });
 
     return res.status(200).json({
-        result
+        success: true, 
+        client_secret: myPayment.client_secret,  
     })
-
-});
+})

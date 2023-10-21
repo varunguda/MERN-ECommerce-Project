@@ -3,7 +3,7 @@ import productRoute from './routes/productRoutes.js';
 import userRoute from './routes/userRoutes.js';
 import adminRoute from './routes/adminRoutes.js';
 import orderRoute from "./routes/orderRoutes.js"; 
-import paymentRoute from "./routes/paymentRoutes.js"; 
+import paymentRoute from "./routes/paymentRoutes.js";
 import { ErrorHandler } from './utils/errorHandler.js';
 import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';

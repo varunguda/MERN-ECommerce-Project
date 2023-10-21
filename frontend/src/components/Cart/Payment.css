@@ -1,0 +1,40 @@
+.payment-container{
+    position: relative;
+    margin-top: 30px;
+    padding: 0px 10px;
+}
+
+.payment-container .heading{
+    font-size: var(--l-font-size);
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.payment-container form{
+    padding: 0px 6px;
+}
+
+.payment-container form > div{
+    position: relative;
+
+    .icon{
+        position: absolute;
+        top: 33px;
+        margin-left: 12px;
+    }
+}
+
+
+.payment-container .payment-card-input{
+    font-family: inherit;
+    width: 100%;
+    border-radius: 5px;
+    padding: 20px 16px;
+    font-size: 1rem;
+    border: 1px solid var(--light-font-color);
+    margin-bottom: 16px;
+}
+
+.payment-container .extra{
+    padding: 20px 16px 20px 48px;
+}
