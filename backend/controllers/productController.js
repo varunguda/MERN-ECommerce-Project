@@ -8,7 +8,6 @@ import { Review } from '../models/reviewModel.js';
 import { Orders } from '../models/orderModel.js';
 
 
-
 const allProperties = ["name", "description", "price", "images", "stock", "discount_price", "final_price", "options", "bundles", "color", "ram", "rom", "processor", "resolution", "storage", "size", "sizes", "quantity", "variations", "brand", "category", "review_id"]
 
 const commonProperties = ["name", "description", "price", "images", "stock", "discount_price", "options", "bundles"]

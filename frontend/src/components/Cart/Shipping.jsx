@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import { cityValidator, flatValidator, mobileNumValidator, nameValidator, stateValidator, streetValidator, zipValidator } from '../Profile/Addresses/AddressValidators';
 import { profileActionCreators } from '../../State/action-creators';
 import { bindActionCreators } from 'redux';
+import Payment from './Payment';
 
 
 const Shipping = () => {
@@ -45,7 +46,7 @@ const Shipping = () => {
     const [showAddAddressForm, setShowAddAddressForm] = useState(false);
     const [validateFields, setValidateFields] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState("");
-    const [saveShipping, setSaveShipping] = useState(false);
+    const [savedShipping, setSavedShipping] = useState(false);
     const errorRef = useRef(null);
     const [address, setAddress] = useState({
         first_name: "",
@@ -250,9 +251,9 @@ const Shipping = () => {
         }
     }
 
-    const saveShippingDetailsHandler = () => {
+    const savedShippingDetailsHandler = () => {
         if (selectedAddress.length !== 0) {
-            setSaveShipping(true);
+            setSavedShipping(true);
         }
     }
 
@@ -287,7 +288,7 @@ const Shipping = () => {
                                 </div>
 
 
-                                {(saveShipping === true) && !gettingAddresses && (
+                                {(savedShipping === true) && !gettingAddresses && (
                                     addresses.map((address) => {
                                         return (address._id === selectedAddress) && (
                                             <>
@@ -304,17 +305,17 @@ const Shipping = () => {
                                                     )}
                                                 </div>
 
-                                                <button onClick={() => { setSaveShipping(false) }} className='inferior-btn edit-btn'>Edit</button>
+                                                <button onClick={() => { setSavedShipping(false) }} className='inferior-btn edit-btn'>Edit</button>
                                             </>
                                         )
                                     })
                                 )}
 
 
-                                {!showAddAddressForm && !saveShipping && (<button onClick={() => setShowAddAddressForm(prev => !prev)} className='inferior-btn'>+ Add a new address</button>)}
+                                {!showAddAddressForm && !savedShipping && (<button onClick={() => setShowAddAddressForm(prev => !prev)} className='inferior-btn'>+ Add a new address</button>)}
 
 
-                                {(!showAddAddressForm && !gettingAddresses && !saveShipping) && (
+                                {(!showAddAddressForm && !gettingAddresses && !savedShipping) && (
                                     <div className="shipping-addresses-checkboxes">
                                         {addresses.map((address, index) => {
                                             return (<div key={index} className="checkboxes">
@@ -364,9 +365,9 @@ const Shipping = () => {
                             </div>
 
 
-                            {!showAddAddressForm && !saveShipping && (<div className="modal-btn-container" style={{ marginTop: "0px" }}>
+                            {!showAddAddressForm && !savedShipping && (<div className="modal-btn-container" style={{ marginTop: "0px" }}>
                                 <button type="button" className='inferior-btn'>Cancel</button>
-                                <button type="button" onClick={saveShippingDetailsHandler} className='secondary-btn'>Save</button>
+                                <button type="button" onClick={savedShippingDetailsHandler} className='secondary-btn'>Save</button>
                             </div>)}
 
 
@@ -426,13 +427,19 @@ const Shipping = () => {
 
                     </div>
 
-                    <div className="step step2 inactive">
+                    <div className={`step step2 ${!savedShipping && "inactive"}`}>
                         <div className="head">
                             <IoWalletOutline size={30} />
                             2. Payment method
                         </div>
+
+                        {savedShipping && (
+                            <Payment />
+                        )}
+
                     </div>
                 </section>
+
 
                 <section className='section section2'>
 
