@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import "./Shipping.css";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoCheckmarkOutline, IoWalletOutline } from "react-icons/io5";
@@ -289,9 +289,10 @@ const Shipping = () => {
 
 
                                 {(savedShipping === true) && !gettingAddresses && (
-                                    addresses.map((address) => {
+                                    addresses.map((address, index) => {
                                         return (address._id === selectedAddress) && (
-                                            <>
+                                            <Fragment key={index}>
+
                                                 <div className="saved-shipping-address">
                                                     <div className="name">{address.first_name + " " + address.last_name}</div>
 
@@ -306,7 +307,7 @@ const Shipping = () => {
                                                 </div>
 
                                                 <button onClick={() => { setSavedShipping(false) }} className='inferior-btn edit-btn'>Edit</button>
-                                            </>
+                                            </Fragment>
                                         )
                                     })
                                 )}
@@ -433,8 +434,8 @@ const Shipping = () => {
                             2. Payment method
                         </div>
 
-                        {savedShipping && (
-                            <Payment />
+                        {(savedShipping) && (
+                            <Payment cartItems={cartItems} price={finalOrderPrice} address={addresses.filter((address) => address._id === selectedAddress)} />
                         )}
 
                     </div>

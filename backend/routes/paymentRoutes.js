@@ -1,9 +1,11 @@
 import { Router } from "express";
+import { isUser } from "../middleware/isUser.js";
 import { stripePayment } from "../controllers/paymentControllers.js";
-import { isUser } from "../middleware/isUser";
 
 const router = Router();
 
-router.route("/payment").post(isUser, stripePayment);
 
-export default router;
+router.route("/order/payment").post( isUser, stripePayment);
+
+
+export default router
