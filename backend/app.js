@@ -2,7 +2,8 @@ import express from 'express';
 import productRoute from './routes/productRoutes.js';
 import userRoute from './routes/userRoutes.js';
 import adminRoute from './routes/adminRoutes.js';
-import orderRoute from "./routes/orderRoutes.js";
+import orderRoute from "./routes/orderRoutes.js"; 
+import paymentRoute from "./routes/paymentRoutes.js"; 
 import { ErrorHandler } from './utils/errorHandler.js';
 import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';
@@ -36,6 +37,7 @@ app.use('/api/v1', adminRoute)
 app.use('/api/v1', userRoute)
 app.use('/api/v1', productRoute)
 app.use("/api/v1", orderRoute)
+app.use("/api/v1", paymentRoute)
 
 
 // Error Handling
