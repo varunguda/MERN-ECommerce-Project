@@ -104,6 +104,11 @@ const schema = new Schema({
         }
     },
 
+    payment_id:{
+        type: String,
+        required: true,
+    },
+
     coupon_discount: {
         type: Number,
         default: 0,

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ADD_TO_CART, ORDER_VALUE_FAILURE, ORDER_VALUE_REQUEST, ORDER_VALUE_SUCCESS, SAVE_SHIPPING_INFO } from "../constants/CartConstants";
+import { ADD_TO_CART, ORDER_VALUE_FAILURE, ORDER_VALUE_REQUEST, ORDER_VALUE_SUCCESS  } from "../constants/CartConstants";
 
 
 export const addToCart = (id, quantity) => async (dispatch, getState) => {
@@ -26,17 +26,6 @@ export const addToCart = (id, quantity) => async (dispatch, getState) => {
     } catch (error) {
         console.error(error);
     }
-}
-
-
-
-export const saveShippingInfo = (data) => async (dispatch) => {
-    dispatch({
-        type: SAVE_SHIPPING_INFO,
-        payload: data,
-    });
-
-    localStorage.setItem("shippingInfo", JSON.stringify(data));
 }
 
 

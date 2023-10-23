@@ -5,15 +5,17 @@ import {
     CardCvcElement,
     CardExpiryElement,
     useStripe,
-    useElements
+    useElements,
 } from "@stripe/react-stripe-js";
 import axios from 'axios';
-import { CiCreditCard1 } from "react-icons/ci";
+import { GoCreditCard } from "react-icons/go";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
 import { toast } from 'react-toastify';
 // import creditCardType from 'credit-card-type';
+import GooglePayButton from '@google-pay/button-react';
+import { RESET_CART_ITEMS } from '../../State/constants/CartConstants';
 
 
 const Payment = ({ cartItems, price, address }) => {
@@ -29,13 +31,13 @@ const Payment = ({ cartItems, price, address }) => {
 
 
     // const handleCardNumberChange = (e) => {
-        // const cardNumber = e.target.value;
-        // const cardResult = creditCardType(cardNumber);
-        // if (cardResult.length > 0) {
-        //     setCardType(cardResult[0].type);
-        // } else {
-        //     setCardType('');
-        // }
+    // const cardNumber = e.target.value;
+    // const cardResult = creditCardType(cardNumber);
+    // if (cardResult.length > 0) {
+    //     setCardType(cardResult[0].type);
+    // } else {
+    //     setCardType('');
+    // }
     // };
 
 
@@ -71,8 +73,27 @@ const Payment = ({ cartItems, price, address }) => {
         });
     }
 
+    const placeNewOrder = async( order_items, address, payment_id ) => {
 
-    const paymentSubmitHandler = async(e) => {
+        try {
+            const config = { headers: { "Content-Type": "application/json" } };
+            
+            const { data } = await axios.post("/api/v1/order/placeneworder", { order_items, address, stripe_payment_id: payment_id }, config);
+
+            dispatch(loaderSpin(false));
+
+            return data.success;
+
+        } catch (error) {
+            payBtnRef.current.disabled = false;
+            toastErrPopUp(error.response.data.message);
+            dispatch(loaderSpin(false));
+        }
+
+    }
+
+
+    const paymentSubmitHandler = async (e) => {
 
         e.preventDefault();
 
@@ -82,7 +103,7 @@ const Payment = ({ cartItems, price, address }) => {
 
             dispatch(loaderSpin(true));
 
-            const config = { headers: { "Content-Type" : "application/json" } };
+            const config = { headers: { "Content-Type": "application/json" } };
 
             const order_items = [];
             cartItems.forEach(item => {
@@ -96,9 +117,10 @@ const Payment = ({ cartItems, price, address }) => {
 
             const clientSecret = data.client_secret;
 
-            if(!stripe || !elements) return;
+            if (!stripe || !elements) return;
 
             const result = await stripe.confirmCardPayment(clientSecret, {
+                receipt_email: user.email,
                 payment_method: {
                     card: elements.getElement(CardNumberElement),
                     billing_details: {
@@ -115,21 +137,24 @@ const Payment = ({ cartItems, price, address }) => {
                 }
             });
 
-            dispatch(loaderSpin(false));
 
-            if(result.error){
+            if (result.error) {
                 payBtnRef.current.disabled = false;
                 toastErrPopUp(toast.error);
-            }else{
-                if(result.paymentIntent.status === "succeeded"){
-                    toastSuccessPopUp("Payment successful!")
-                    navigate("/success");
+            } else {
+                if (result.paymentIntent.status === "succeeded") {
+                    let placedOrder = await placeNewOrder( order_items, address, result.paymentIntent.id );
+                    if(placedOrder){
+                        toastSuccessPopUp("Order placed successfully!");
+                        dispatch({ type: RESET_CART_ITEMS });
+                        navigate("/order/placed");
+                    }
                 }
-                else{
+                else {
                     toastErrPopUp("An issue ocuurred while processing your request!")
                 }
             }
-            
+
         } catch (error) {
             payBtnRef.current.disabled = false;
             toastErrPopUp(error.response.data.message);
@@ -140,25 +165,79 @@ const Payment = ({ cartItems, price, address }) => {
     return (
         <div className='payment-container'>
 
-            <div className="heading">Pay with card</div>
+            <section className="payment-method">
+                <div className="heading">Pay with card</div>
 
-            <form className='payment-form' onSubmit={paymentSubmitHandler}>
-                <div>
-                    <CiCreditCard1 className='icon' size={30} />
-                    <label htmlFor='card-number' className="label1">Card number*</label>
-                    <CardNumberElement className='payment-card-input extra' id='card-number' />
-                </div>
+                <form className='payment-form' onSubmit={paymentSubmitHandler}>
+                    <div>
+                        <GoCreditCard className='icon' size={24} />
+                        <label htmlFor='card-number' className="label1">Card number*</label>
+                        <CardNumberElement className='payment-card-input extra' id='card-number' />
+                    </div>
 
-                <label htmlFor='expiry-date' className="label1">Expiry date*</label>
-                <CardExpiryElement className='payment-card-input' id='expiry-date' />
+                    <label htmlFor='expiry-date' className="label1">Expiry date*</label>
+                    <CardExpiryElement className='payment-card-input' id='expiry-date' />
 
-                <label htmlFor='card-cvc' className="label1">CVC*</label>
-                <CardCvcElement className='payment-card-input' id='card-cvc' />
+                    <label htmlFor='card-cvc' className="label1">CVC*</label>
+                    <CardCvcElement className='payment-card-input' id='card-cvc' />
 
-                <div className="modal-btn-container">
-                    <button ref={payBtnRef} type="submit" className='main-btn'>Continue</button>
-                </div>
-            </form>
+                    <div className="modal-btn-container">
+                        <button ref={payBtnRef} type="submit" className='main-btn'>Pay &nbsp;-&nbsp; <span className='price'>{price}</span></button>
+                    </div>
+                </form>
+            </section>
+
+            <section className="payment-method">
+                <div className="heading">Pay with G-Pay</div>
+
+                <GooglePayButton
+                    environment="TEST"
+                    buttonColor='white'
+                    buttonType='pay'
+                    paymentRequest={{
+                        apiVersion: 2,
+                        apiVersionMinor: 0,
+                        allowedPaymentMethods: [
+                            {
+                                type: 'CARD',
+                                parameters: {
+                                    allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                                    allowedCardNetworks: ['MASTERCARD', 'VISA'],
+                                },
+                                tokenizationSpecification: {
+                                    type: 'PAYMENT_GATEWAY',
+                                    parameters: {
+                                        gateway: 'example',
+                                        gatewayMerchantId: 'exampleGatewayMerchantId',
+                                    },
+                                },
+                            }
+                        ],
+                        merchantInfo: {
+                            merchantId: '12345678901234567890',
+                            merchantName: 'Demo Merchant',
+                        },
+                        transactionInfo: {
+                            totalPriceStatus: 'FINAL',
+                            totalPriceLabel: 'Total',
+                            totalPrice: price.toString(),
+                            currencyCode: 'INR',
+                            countryCode: 'IN',
+                        },
+                        shippingAddressRequired: true,
+                        callbackIntents: ['PAYMENT_AUTHORIZATION']
+                    }}
+                    onLoadPaymentData={paymentRequest => {
+                        console.log('load payment data', paymentRequest);
+                    }}
+                    onPaymentAuthorized={paymentData => {
+                        console.log('Payment Authorization Success', paymentData);
+                        return { transactionState: "SUCCESS" }
+                    }}
+                    onCancel={() => toastErrPopUp("Payment Cancelled!")}
+                />
+            </section>
+
         </div>
     )
 }

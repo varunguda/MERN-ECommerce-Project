@@ -8,6 +8,7 @@ import { ErrorHandler } from "../utils/errorHandler.js";
 import { MeritMeter } from "../utils/meritMeter.js";
 import { sendEmail } from "../utils/sendMail.js";
 import { body, validationResult } from "express-validator";
+import {validateStripePayment} from "../utils/validateStripePayment.js";
 
 
 
@@ -54,7 +55,28 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         meritMeter.addMerit();
     }
 
-    const order = await Orders.create({ user: req.user._id, order_items, paid_at: new Date(Date.now()), delivery_address: address });
+
+    let paidId = false;
+
+    if(req.body.stripe_payment_id){
+        paidId = await validateStripePayment(req.user._id, req.body.stripe_payment_id);
+    }
+    else{
+        return next(new ErrorHandler("Seems like you haven't paid for your order. Please pay the amount before placing an order.", 403));
+    }
+
+    if(!paidId){
+        return next(new ErrorHandler("Invalid payment details, please contact ManyIN customer service incase amount has been debited from your account.", 403));
+    }
+
+    const order = await Orders.create({ 
+        user: req.user._id,
+        order_items,
+        paid_at: new Date(Date.now()),
+        delivery_address: address,
+        payment_id: paidId,
+    });
+
 
     let totalItemsPrice = 0;
     let taxPrice = 0;
@@ -172,7 +194,7 @@ export const getOrderDetails = catchAsync(async (req, res, next) => {
 export const getMyOrders = catchAsync(async (req, res, next) => {
 
     const totalOrdersCount = await Orders.find({ user: req.user._id }).countDocuments();
-    const apiFeatures = new ApiFeatures(Orders.find({ user: req.user._id }), req.query).searchOrders().filterOrders();
+    const apiFeatures = new ApiFeatures(Orders.find({ user: req.user._id }), req.query).searchOrders().filterOrders().sortOrders();
     const orders = await apiFeatures.products;
 
     const ordersCount = orders.length;

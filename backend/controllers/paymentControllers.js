@@ -41,13 +41,16 @@ export const stripePayment = catchAsync( async(req, res, next) => {
     shippingCost = (finalOrderPrice > 500) ? 0 : 100;
     finalOrderPrice += shippingCost;
 
+
     const myPayment = await stripe.paymentIntents.create({
         amount: Math.round(finalOrderPrice)* 100,
         currency: "inr",
         metadata: {
             company: "ManyIN",
-        },
+            user: req.user._id.toString(),
+        }
     }, { idempotencyKey });
+
 
     return res.status(200).json({
         success: true, 
