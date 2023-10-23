@@ -35,8 +35,8 @@
 
 .product-carousel .title{
     color: var(--black-font-color);
-    font-weight: 600;
-    font-size: 20px;
+    font-weight: 700;
+    font-size: var(--xl-font-size);
     text-align: left;
 }
 

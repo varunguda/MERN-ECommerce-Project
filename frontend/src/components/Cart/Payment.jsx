@@ -10,19 +10,16 @@ import {
 import axios from 'axios';
 import { GoCreditCard } from "react-icons/go";
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
 import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
 import { toast } from 'react-toastify';
-// import creditCardType from 'credit-card-type';
 import GooglePayButton from '@google-pay/button-react';
-import { RESET_CART_ITEMS } from '../../State/constants/CartConstants';
+// import creditCardType from 'credit-card-type';
 
 
-const Payment = ({ cartItems, price, address }) => {
+const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
 
     const { user } = useSelector(state => state.loggedIn);
 
-    const navigate = useNavigate();
     const dispatch = useDispatch();
     const stripe = useStripe();
     const elements = useElements();
@@ -43,7 +40,7 @@ const Payment = ({ cartItems, price, address }) => {
 
     // useEffect(() => {
     //     console.log(cardType);
-    // }, [cardType])
+    // }, [cardType]);
 
 
     const toastErrPopUp = (msg) => {
@@ -73,11 +70,11 @@ const Payment = ({ cartItems, price, address }) => {
         });
     }
 
-    const placeNewOrder = async( order_items, address, payment_id ) => {
+    const placeNewOrder = async (order_items, address, payment_id) => {
 
         try {
             const config = { headers: { "Content-Type": "application/json" } };
-            
+
             const { data } = await axios.post("/api/v1/order/placeneworder", { order_items, address, stripe_payment_id: payment_id }, config);
 
             dispatch(loaderSpin(false));
@@ -143,11 +140,14 @@ const Payment = ({ cartItems, price, address }) => {
                 toastErrPopUp(toast.error);
             } else {
                 if (result.paymentIntent.status === "succeeded") {
-                    let placedOrder = await placeNewOrder( order_items, address, result.paymentIntent.id );
-                    if(placedOrder){
+                    let placedOrder = await placeNewOrder(order_items, address, result.paymentIntent.id);
+                    if (placedOrder) {
                         toastSuccessPopUp("Order placed successfully!");
-                        dispatch({ type: RESET_CART_ITEMS });
-                        navigate("/order/placed");
+                        window.scrollTo(0,0);
+                        setOrderPlaced(true);
+                    }
+                    else {
+                        toastErrPopUp("Unable to process your request, please contact ManyIN customer service!")
                     }
                 }
                 else {
@@ -237,7 +237,6 @@ const Payment = ({ cartItems, price, address }) => {
                     onCancel={() => toastErrPopUp("Payment Cancelled!")}
                 />
             </section>
-
         </div>
     )
 }
