@@ -18,9 +18,10 @@
     position: relative;
 
     .icon{
+        color: var(--light-font-color);
         position: absolute;
-        top: 33px;
-        margin-left: 12px;
+        top: 37px;
+        margin-left: 15px;
     }
 }
 
@@ -37,4 +38,22 @@
 
 .payment-container .extra{
     padding: 20px 16px 20px 48px;
+}
+
+
+.payment-container .payment-method{
+    position: relative;
+}
+
+.payment-container .payment-method:not(:last-child){
+    margin-bottom: 40px;
+}
+
+.payment-container .payment-method:not(:last-child)::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -20px;
+    width: 100%;
+    border-top: 1px solid var(--border-color);
 }

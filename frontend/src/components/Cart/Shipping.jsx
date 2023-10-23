@@ -435,7 +435,7 @@ const Shipping = () => {
                         </div>
 
                         {(savedShipping) && (
-                            <Payment cartItems={cartItems} price={finalOrderPrice} address={addresses.filter((address) => address._id === selectedAddress)} />
+                            <Payment cartItems={cartItems} price={finalOrderPrice} address={(addresses.filter((address) => address._id === selectedAddress))[0]} />
                         )}
 
                     </div>

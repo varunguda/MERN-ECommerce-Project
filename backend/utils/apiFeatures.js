@@ -222,6 +222,11 @@ export class ApiFeatures {
         this.products = this.products.find(query);
         return this;
     }
+
+    sortOrders() {
+        this.products = this.products.sort('-created_at');
+        return this;
+    }
 }
 
 

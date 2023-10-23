@@ -1,4 +1,4 @@
-import { ADD_TO_CART, ORDER_VALUE_FAILURE, ORDER_VALUE_REQUEST, ORDER_VALUE_SUCCESS, SAVE_SHIPPING_INFO } from "../constants/CartConstants";
+import { ADD_TO_CART, ORDER_VALUE_FAILURE, ORDER_VALUE_REQUEST, ORDER_VALUE_SUCCESS, RESET_CART_ITEMS } from "../constants/CartConstants";
 
 
 export const addToCartReducer = (state = { cartItems: [] }, action) => {
@@ -30,12 +30,16 @@ export const addToCartReducer = (state = { cartItems: [] }, action) => {
         }
 
 
-        case SAVE_SHIPPING_INFO: {
+        case RESET_CART_ITEMS: {
+
+            localStorage.setItem("cartItems", []);
+
             return ({
                 ...state,
-                shippingInfo: action.payload,
+                cartItems: [],
             })
         }
+
 
         default: {
             return state;
