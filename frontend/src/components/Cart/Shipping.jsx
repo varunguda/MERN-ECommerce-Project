@@ -20,6 +20,8 @@ import { cityValidator, flatValidator, mobileNumValidator, nameValidator, stateV
 import { profileActionCreators } from '../../State/action-creators';
 import { bindActionCreators } from 'redux';
 import Payment from './Payment';
+import BannerPage from '../layouts/Banner/BannerPage';
+import { RESET_CART_ITEMS } from '../../State/constants/CartConstants';
 
 
 const Shipping = () => {
@@ -42,6 +44,7 @@ const Shipping = () => {
 
     const { getUserAddresses, addUserAddress } = bindActionCreators(profileActionCreators, dispatch);
 
+    const [orderPlaced, setOrderPlaced] = useState(false);
     const [prodQuantities, setProdQuantities] = useState({});
     const [showAddAddressForm, setShowAddAddressForm] = useState(false);
     const [validateFields, setValidateFields] = useState(false);
@@ -100,7 +103,16 @@ const Shipping = () => {
 
 
     useEffect(() => {
-        if (gettingAddresses) {
+        if (cartItems.length === 0) {
+            navigate("/cart");
+        }
+        dispatch(getOrderValue());
+        // eslint-disable-next-line
+    }, [cartItems]);
+
+
+    useEffect(() => {
+        if (gettingAddresses && cartItems.length > 0) {
             dispatch(loaderSpin(true));
         }
         else {
@@ -108,12 +120,6 @@ const Shipping = () => {
         }
         // eslint-disable-next-line
     }, [gettingAddresses]);
-
-
-    useEffect(() => {
-        dispatch(getOrderValue());
-        // eslint-disable-next-line
-    }, [cartItems]);
 
 
     useEffect(() => {
@@ -264,245 +270,269 @@ const Shipping = () => {
 
             <Metadata title={"Shipping - ManyIN"} />
 
-            <nav>
-                <IoIosArrowBack onClick={goBackClickHandler} className='nav-icon' />
-                Checkout
-            </nav>
+            {!orderPlaced ? (
+                <>
+                    <nav>
+                        <IoIosArrowBack onClick={goBackClickHandler} className='nav-icon' />
+                        Checkout
+                    </nav>
 
-            <div className='page-container' style={{ marginTop: "40px" }}>
+                    <div className='page-container' style={{ marginTop: "40px" }}>
 
-                <section className='section section1'>
+                        <section className='section section1'>
 
-                    <div className="step step1">
-                        <div className="head">
-                            <LiaShippingFastSolid size={30} />
-                            1. Shipping
-                        </div>
-
-                        <div className="step-content">
-
-                            <div className="shipping-address-container">
-                                <div>
-                                    <p>Shipping address</p>
-                                    <p>Where should we deliver your order?</p>
+                            <div className="step step1">
+                                <div className="head">
+                                    <LiaShippingFastSolid size={30} />
+                                    1. Shipping
                                 </div>
 
+                                <div className="step-content">
 
-                                {(savedShipping === true) && !gettingAddresses && (
-                                    addresses.map((address, index) => {
-                                        return (address._id === selectedAddress) && (
-                                            <Fragment key={index}>
-
-                                                <div className="saved-shipping-address">
-                                                    <div className="name">{address.first_name + " " + address.last_name}</div>
-
-                                                    <div className="address">{`${address.flat}, ${address.street_address}, ${address.city}, ${address.state}, ${address.zip}`}</div>
-
-                                                    {address.default_address && (
-                                                        <div className="default-check">
-                                                            <IoCheckmarkOutline color='green' />
-                                                            Default address
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <button onClick={() => { setSavedShipping(false) }} className='inferior-btn edit-btn'>Edit</button>
-                                            </Fragment>
-                                        )
-                                    })
-                                )}
-
-
-                                {!showAddAddressForm && !savedShipping && (<button onClick={() => setShowAddAddressForm(prev => !prev)} className='inferior-btn'>+ Add a new address</button>)}
-
-
-                                {(!showAddAddressForm && !gettingAddresses && !savedShipping) && (
-                                    <div className="shipping-addresses-checkboxes">
-                                        {addresses.map((address, index) => {
-                                            return (<div key={index} className="checkboxes">
-                                                <input
-                                                    type="checkbox"
-                                                    name={address._id}
-                                                    checked={selectedAddress === address._id}
-                                                    onChange={handleSelectedAddressChange}
-                                                    id={address._id}
-                                                />
-                                                <label htmlFor={address._id}>
-                                                    <div className='address-label'>
-                                                        <div className="name">{address.first_name + " " + address.last_name}</div>
-
-                                                        <div className="address">{`${address.flat}, ${address.street_address}, ${address.city}, ${address.state}, ${address.zip}`}</div>
-
-                                                        {address.default_address && (
-                                                            <div className="default-check">
-                                                                <IoCheckmarkOutline color='green' />
-                                                                Default address
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </label>
-                                            </div>)
-                                        })}
-                                    </div>
-                                )}
-
-
-                                {showAddAddressForm && (
-                                    <>
-                                        <div ref={errorRef} className="error-alert" style={{ marginBottom: "10px", display: "none" }}>
-                                            Please verify all fields below.
+                                    <div className="shipping-address-container">
+                                        <div>
+                                            <p>Shipping address</p>
+                                            <p>Where should we deliver your order?</p>
                                         </div>
 
-                                        <AddressForm
-                                            onSubmit={addAddressHandler}
-                                            address={address}
-                                            setAddress={setAddress}
-                                            disableSaveBtn={addingAddress}
-                                            validateFields={validateFields}
-                                            cancelClickHandler={resetAddressForm}
-                                        />
-                                    </>
-                                )}
-                            </div>
 
+                                        {(savedShipping === true) && !gettingAddresses && (
+                                            addresses.map((address, index) => {
+                                                return (address._id === selectedAddress) && (
+                                                    <Fragment key={index}>
 
-                            {!showAddAddressForm && !savedShipping && (<div className="modal-btn-container" style={{ marginTop: "0px" }}>
-                                <button type="button" className='inferior-btn'>Cancel</button>
-                                <button type="button" onClick={savedShippingDetailsHandler} className='secondary-btn'>Save</button>
-                            </div>)}
+                                                        <div className="saved-shipping-address">
+                                                            <div className="name">{address.first_name + " " + address.last_name}</div>
 
+                                                            <div className="address">{`${address.flat}, ${address.street_address}, ${address.city}, ${address.state}, ${address.zip}`}</div>
 
-                            <Accordion
-                                title={"Items details"}
-                                style={{ fontSize: "1.1rem", fontWeight: "600" }}
-                                noBorder={true}
-                                close={true}
-                                content={
-                                    cartItems.map((item, index) => {
-                                        return (
-                                            <div key={index} className='cart-item'>
-
-                                                <div>
-                                                    <div className="cart-item-details link" >
-                                                        <Link
-                                                            to={`/product/${item.product}`}
-                                                            target='_blank'
-                                                            className="image-container link"
-                                                        >
-                                                            <img src={item.image} alt={item.name} />
-                                                        </Link>
-                                                        <span>{item.name}</span>
-                                                    </div>
-
-                                                    <div className="cart-item-price">
-                                                        <span className='final-price price'>{item.final_price}</span>
-                                                        {(item.final_price !== item.price) && (
-                                                            <>
-                                                                <span className='total-price price'>{item.price}</span>
-                                                                <div>
-                                                                    <span className='highlight-text'>You save</span>
-                                                                    <span className='highlight-price price'>{Math.round(item.price - item.final_price)}</span>
+                                                            {address.default_address && (
+                                                                <div className="default-check">
+                                                                    <IoCheckmarkOutline color='green' />
+                                                                    Default address
                                                                 </div>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                </div>
+                                                            )}
+                                                        </div>
 
-                                                <div className="cart-btn-container">
-                                                    <button onClick={() => removeItem(item.product)} type="button" className='inferior-btn'>Remove</button>
-                                                    <button type="button" className='inferior-btn'>Save for later</button>
+                                                        <button onClick={() => { setSavedShipping(false) }} className='inferior-btn edit-btn'>Edit</button>
+                                                    </Fragment>
+                                                )
+                                            })
+                                        )}
 
-                                                    <div className="add-quantity">
-                                                        <FiMinus className="minus" onClick={() => handleMinusClick(item.product, index)} />
-                                                        <span>{prodQuantities[item.product]}</span>
-                                                        <FiPlus className="plus" onClick={() => handlePlusClick(item.product, index)} />
-                                                    </div>
-                                                </div>
 
+                                        {!showAddAddressForm && !savedShipping && (<button onClick={() => setShowAddAddressForm(prev => !prev)} className='inferior-btn'>+ Add a new address</button>)}
+
+
+                                        {(!showAddAddressForm && !gettingAddresses && !savedShipping) && (
+                                            <div className="shipping-addresses-checkboxes">
+                                                {addresses.map((address, index) => {
+                                                    return (<div key={index} className="checkboxes">
+                                                        <input
+                                                            type="checkbox"
+                                                            name={address._id}
+                                                            checked={selectedAddress === address._id}
+                                                            onChange={handleSelectedAddressChange}
+                                                            id={address._id}
+                                                        />
+                                                        <label htmlFor={address._id}>
+                                                            <div className='address-label'>
+                                                                <div className="name">{address.first_name + " " + address.last_name}</div>
+
+                                                                <div className="address">{`${address.flat}, ${address.street_address}, ${address.city}, ${address.state}, ${address.zip}`}</div>
+
+                                                                {address.default_address && (
+                                                                    <div className="default-check">
+                                                                        <IoCheckmarkOutline color='green' />
+                                                                        Default address
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </label>
+                                                    </div>)
+                                                })}
                                             </div>
-                                        )
-                                    })
-                                }
-                            />
-                        </div>
-
-                    </div>
-
-                    <div className={`step step2 ${!savedShipping && "inactive"}`}>
-                        <div className="head">
-                            <IoWalletOutline size={30} />
-                            2. Payment method
-                        </div>
-
-                        {(savedShipping) && (
-                            <Payment cartItems={cartItems} price={finalOrderPrice} address={(addresses.filter((address) => address._id === selectedAddress))[0]} />
-                        )}
-
-                    </div>
-                </section>
+                                        )}
 
 
-                <section className='section section2'>
+                                        {showAddAddressForm && (
+                                            <>
+                                                <div ref={errorRef} className="error-alert" style={{ marginBottom: "10px", display: "none" }}>
+                                                    Please verify all fields below.
+                                                </div>
 
-                    {gettingOrderVal ? <Loader /> : (
-                        <section className="cart-price-section">
+                                                <AddressForm
+                                                    onSubmit={addAddressHandler}
+                                                    address={address}
+                                                    setAddress={setAddress}
+                                                    disableSaveBtn={addingAddress}
+                                                    validateFields={validateFields}
+                                                    cancelClickHandler={resetAddressForm}
+                                                />
+                                            </>
+                                        )}
+                                    </div>
 
-                            <div className='price-container'>
 
-                                <div>
-                                    <span className='bold dark'>Subtotal ({`${cartItems.length} ${cartItems.length === 1 ? "item" : "items"}`})</span>
-                                    <span className="dashed price">
-                                        {totalItemsPrice}
-                                    </span>
+                                    {!showAddAddressForm && !savedShipping && (<div className="modal-btn-container" style={{ marginTop: "0px" }}>
+                                        <button type="button" className='inferior-btn'>Cancel</button>
+                                        <button type="button" onClick={savedShippingDetailsHandler} className='secondary-btn'>Save</button>
+                                    </div>)}
+
+
+                                    <Accordion
+                                        title={"Items details"}
+                                        style={{ fontSize: "1.1rem", fontWeight: "600" }}
+                                        noBorder={true}
+                                        close={true}
+                                        content={
+                                            cartItems.map((item, index) => {
+                                                return (
+                                                    <div key={index} className='cart-item'>
+
+                                                        <div>
+                                                            <div className="cart-item-details link" >
+                                                                <Link
+                                                                    to={`/product/${item.product}`}
+                                                                    target='_blank'
+                                                                    className="image-container link"
+                                                                >
+                                                                    <img src={item.image} alt={item.name} />
+                                                                </Link>
+                                                                <span>{item.name}</span>
+                                                            </div>
+
+                                                            <div className="cart-item-price">
+                                                                <span className='final-price price'>{item.final_price}</span>
+                                                                {(item.final_price !== item.price) && (
+                                                                    <>
+                                                                        <span className='total-price price'>{item.price}</span>
+                                                                        <div>
+                                                                            <span className='highlight-text'>You save</span>
+                                                                            <span className='highlight-price price'>{Math.round(item.price - item.final_price)}</span>
+                                                                        </div>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="cart-btn-container">
+                                                            <button onClick={() => removeItem(item.product)} type="button" className='inferior-btn'>Remove</button>
+                                                            <button type="button" className='inferior-btn'>Save for later</button>
+
+                                                            <div className="add-quantity">
+                                                                <FiMinus className="minus" onClick={() => handleMinusClick(item.product, index)} />
+                                                                <span>{prodQuantities[item.product]}</span>
+                                                                <FiPlus className="plus" onClick={() => handlePlusClick(item.product, index)} />
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    />
                                 </div>
 
-                                {(totalSavings) && (
-                                    <div>
-                                        <span className='bold'>Savings</span>
-                                        <span className="hl-text hl-background">- <span className='price'>
-                                            {totalSavings}
-                                        </span></span>
-                                    </div>
+                            </div>
+
+                            <div className={`step step2 ${!savedShipping && "inactive"}`}>
+                                <div className="head">
+                                    <IoWalletOutline size={30} />
+                                    2. Payment method
+                                </div>
+
+                                {(savedShipping) && (
+                                    <Payment cartItems={cartItems} price={finalOrderPrice} address={(addresses.filter((address) => address._id === selectedAddress))[0]} setOrderPlaced={setOrderPlaced} />
                                 )}
 
-                                <div>
-                                    <span></span>
-                                    <span className='price hl-text bold'>
-                                        {totalItemsFinalPrice}
-                                    </span>
-                                </div>
                             </div>
+                        </section>
 
-                            <div className='price-container'>
 
-                                <div>
-                                    <span>Shipping</span>
-                                    <span className={`hl-text ${shippingCost && "price"}`}>
-                                        {shippingCost ? shippingCost : "Free"}
-                                    </span>
-                                </div>
+                        <section className='section section2'>
 
-                                <div className='dark'>
-                                    <span className='bold'>Taxes</span>
-                                    <span className='price'>{taxPrice}</span>
-                                </div>
+                            {gettingOrderVal ? <Loader /> : (
+                                <section className="cart-price-section">
 
-                            </div>
+                                    <div className='price-container'>
 
-                            <div className="price-container">
-                                <div className='dark'>
-                                    <span className='bold'>Estimated total</span>
-                                    <span className='price bold hl-text'>
-                                        {finalOrderPrice}
-                                    </span>
-                                </div>
-                            </div>
+                                        <div>
+                                            <span className='bold dark'>Subtotal ({`${cartItems.length} ${cartItems.length === 1 ? "item" : "items"}`})</span>
+                                            <span className="dashed price">
+                                                {totalItemsPrice}
+                                            </span>
+                                        </div>
+
+                                        {(totalSavings) && (
+                                            <div>
+                                                <span className='bold'>Savings</span>
+                                                <span className="hl-text hl-background">- <span className='price'>
+                                                    {totalSavings}
+                                                </span></span>
+                                            </div>
+                                        )}
+
+                                        <div>
+                                            <span></span>
+                                            <span className='price hl-text bold'>
+                                                {totalItemsFinalPrice}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className='price-container'>
+
+                                        <div>
+                                            <span>Shipping</span>
+                                            <span className={`hl-text ${shippingCost && "price"}`}>
+                                                {shippingCost ? shippingCost : "Free"}
+                                            </span>
+                                        </div>
+
+                                        <div className='dark'>
+                                            <span className='bold'>Taxes</span>
+                                            <span className='price'>{taxPrice}</span>
+                                        </div>
+
+                                    </div>
+
+                                    <div className="price-container">
+                                        <div className='dark'>
+                                            <span className='bold'>Estimated total</span>
+                                            <span className='price bold hl-text'>
+                                                {finalOrderPrice}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </section>
+                            )}
 
                         </section>
-                    )}
+                    </div>
+                </>
 
-                </section>
-            </div>
+            ) : (
+                <BannerPage
+                    type={"done"}
+                    caption={
+                        <>
+                            <p>You order has been successfully placed.</p>
+                            <button
+                                onClick={() => {
+                                    navigate("/profile/orders&returns");
+                                    dispatch({ type: RESET_CART_ITEMS });
+                                }}
+                                type="button"
+                                className='inferior-btn'
+                            >
+                                Track your order here
+                            </button>
+                        </>
+                    }
+                />
+            )}
         </div>
 
     )
