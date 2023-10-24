@@ -11,6 +11,8 @@ import { RESET_REVIEW, SET_REVIEW_COMMENT, SET_REVIEW_RATING, SET_REVIEW_TITLE }
 import { ModalContext } from '../../Context/ModalContext';
 import { reviewCommentValidator, reviewRatingValidator, reviewTitleValidator } from './utils';
 import Loader from '../layouts/Loader/Loader';
+import DropdownButton from '../elements/Buttons/DropdownButton';
+import { toast } from 'react-toastify';
 
 
 const initialState = {
@@ -45,16 +47,18 @@ const reviewReducer = (state, action) => {
     }
 }
 
+const reviewCardOptions = ["Delete", "Edit"];
+
 
 const ProductReview = ({ products, mainProduct }) => {
 
     const [state, reviewDispatch] = useReducer(reviewReducer, initialState);
 
     const { loggedIn, user } = useSelector(state => state.loggedIn);
-    const { reviewsLoading, productReview } = useSelector((state) => state.productReviews);
+    const { reviewsLoading, productReview, productReviewsError } = useSelector((state) => state.productReviews);
 
     const dispatch = useDispatch();
-    const { getProductReviews, addProductReview } = bindActionCreators(actionCreators, dispatch);
+    const { getProductReviews, addProductReview, deleteProductReview, toggleReviewLike, toggleReviewDislike } = bindActionCreators(actionCreators, dispatch);
 
     const { openModal, closeModal, setModalContent } = useContext(ModalContext);
 
@@ -62,6 +66,20 @@ const ProductReview = ({ products, mainProduct }) => {
     const [reviewExist, setReviewExist] = useState(false);
     const [validateFields, setValidateFields] = useState(false);
     const [noReviews, setNoReviews] = useState(false);
+
+
+    useEffect(() => {
+        toast.error(productReviewsError, {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [productReviewsError])
 
 
     useEffect(() => {
@@ -73,7 +91,7 @@ const ProductReview = ({ products, mainProduct }) => {
                     getProductReviews(products[0]._id);
                     isFetched = true;
                 }
-                else{
+                else {
                     setNoReviews(true);
                 }
             }
@@ -150,6 +168,7 @@ const ProductReview = ({ products, mainProduct }) => {
 
 
     const reviewContainer = (state) => (
+
         <form onSubmit={addReviewHandler}>
 
             <div className="review-stars-container input-section">
@@ -192,13 +211,51 @@ const ProductReview = ({ products, mainProduct }) => {
     )
 
     const handleWriteReview = () => {
-        openModal("Write your review", reviewContainer(state), true);
+        openModal(reviewExist ? "Edit your review" : "Write your review", reviewContainer(state), true);
     }
 
     useEffect(() => {
         setModalContent(reviewContainer(state));
         // eslint-disable-next-line
-    }, [state, validateFields])
+    }, [state, validateFields]);
+
+
+    const reviewOptionsClickHandler = (val) => {
+        switch (val) {
+            case "Delete": {
+                openModal(
+                    "Are you sure you want to delete your review?",
+                    <>
+                        <div className="modal-btn-container">
+                            <div onClick={closeModal} className="secondary-btn">No</div>
+                            <div onClick={() => {
+                                deleteProductReview(mainProduct._id);
+                                closeModal();
+                            }} className="main-btn">Yes</div>
+                        </div>
+                    </>
+                )
+                break
+            }
+
+            case "Edit": {
+                handleWriteReview();
+                break
+            }
+
+            default: {
+                return
+            }
+        }
+    }
+
+    const likeReviewClickHandler = (review_id) => {
+        toggleReviewLike(products[0].review_id, review_id);
+    }
+
+    const dislikeReviewClickHandler = (review_id) => {
+        toggleReviewDislike(products[0].review_id, review_id);
+    }
 
 
     return (
@@ -235,7 +292,18 @@ const ProductReview = ({ products, mainProduct }) => {
                                         <Masonry gutter='20px'>
                                             {productReview.reviews.map((review, index) => {
                                                 return (
+                                                    
                                                     <div key={index} className="review-card">
+                                                        {(user && (review.user_id === user._id)) && (
+                                                            <div className="review-card-more-btn">
+                                                                <DropdownButton
+                                                                    icon={true}
+                                                                    contentArr={reviewCardOptions}
+                                                                    clickedElem={(val) => reviewOptionsClickHandler(val)}
+                                                                />
+                                                            </div>
+                                                        )}
+
                                                         <Stars value={review.rating} size="11px" />
                                                         {review.is_verified_purchase && (
                                                             <span className='verified-review'>&nbsp; Verified Purchaser</span>
@@ -249,7 +317,7 @@ const ProductReview = ({ products, mainProduct }) => {
 
                                                             <div className="reviewer-name">{review.name}</div>
                                                             <div className="likes-dislikes">
-                                                                <div>
+                                                                <div onClick={() => likeReviewClickHandler(review._id)}>
                                                                     {(review.liked) ? (
                                                                         <>
                                                                             <BiSolidLike /><span>{review.likes || 0}</span>
@@ -260,7 +328,7 @@ const ProductReview = ({ products, mainProduct }) => {
                                                                         </>
                                                                     )}
                                                                 </div>
-                                                                <div>
+                                                                <div onClick={() => dislikeReviewClickHandler(review._id)}>
                                                                     {(review.disliked) ? (
                                                                         <>
                                                                             <BiSolidDislike /><span>{review.dislikes || 0}</span>

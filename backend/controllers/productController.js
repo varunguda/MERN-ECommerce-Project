@@ -574,6 +574,7 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
 
 
 export const getAllProductReviews = catchAsync(async (req, res, next) => {
+
     const { id } = req.params;
     const { page } = req.query;
 
@@ -597,12 +598,13 @@ export const getAllProductReviews = catchAsync(async (req, res, next) => {
     }
     const currentPage = page || 1;
     let productReviews = reviews.reviews.slice(10 * (currentPage - 1), (10 * (currentPage - 1)) + 10);
-
-    let liked = false;
-    let disliked = false;
+    
 
     if (req.user && productReviews.length > 0) {
         productReviews = productReviews.map((rev) => {
+            let liked = false;
+            let disliked = false;
+
             if (rev.liked_users && rev.liked_users.some((user) => user.user_id.toString() === req.user._id.toString())) {
                 liked = true;
             }
@@ -615,13 +617,11 @@ export const getAllProductReviews = catchAsync(async (req, res, next) => {
     } else if (productReviews.length > 0) {
 
         productReviews = productReviews.map((rev) => {
-            return { ...rev._doc, liked, disliked }
+            return { ...rev._doc, liked: false, disliked: false }
         })
-
     }
 
     const newReviews = { ...reviews._doc, reviews: productReviews, page: Number(currentPage) };
-
 
     return res.json({
         success: true,
@@ -667,16 +667,15 @@ export const deleteReview = catchAsync(async (req, res, next) => {
 
     if (productReviews.reviews.length === 0) {
         product.review_id = undefined;
-        product.save({ validateBeforeSave: false })
     }
 
-    productReviews.save({ validateBeforeSave: false });
+    await productReviews.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,
-        message: "Successfully deleted your review!"
+        message: "Successfully deleted your review!",
+        review: productReviews
     })
-
 })
 
 
@@ -833,7 +832,8 @@ export const getAllBundleProducts = catchAsync(async (req, res, next) => {
 
 
 export const toggleLikeOfAReview = catchAsync(async (req, res, next) => {
-    const { reviews, review } = req.query;
+
+    const { reviews, review } = req.body;
 
     const prodReview = await Review.findById(reviews);
     if (!prodReview) {
@@ -844,33 +844,36 @@ export const toggleLikeOfAReview = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("This product has not been reviewed yet!", 400));
     }
 
-    if (prodReview.reviews.some((rev) => (rev._id.toString() !== review.toString()))) {
+    if (!prodReview.reviews.some((rev) => (rev._id.toString() === review.toString()))) {
         return next(new ErrorHandler("Review not found!", 404));
     }
 
+
     let liked = false;
     prodReview.reviews = prodReview.reviews.map((rev) => {
+
         if (rev._id.toString() === review.toString()) {
 
-            if (rev.liked_users.some((user) => user.user_id.toString() !== req.user._id)) {
-                rev.liked_users = rev.liked_users.filter((user) => { user.user_id.toString() === req.user._id.toString() });
+            if (rev.liked_users.some((user) => user.user_id.toString() === req.user._id.toString())) {
+                rev.liked_users = rev.liked_users.filter((user) => user.user_id.toString() !== req.user._id.toString() );
                 rev.likes = rev.liked_users.length;
                 liked = true;
+                return rev;
             }
             else {
-                rev.disliked_users = rev.disliked_users.filter((user) => {
-                    console.log(user.user_id.toString() === req.user._id.toString());
-                    user.user_id.toString() === req.user._id.toString()
-                });
+
+                rev.disliked_users = rev.disliked_users.filter((user) => user.user_id.toString() !== req.user._id.toString());
 
                 rev.liked_users.push({ user_id: req.user._id });
                 rev.likes = rev.liked_users.length;
                 rev.dislikes = rev.disliked_users.length;
+                return rev;
             }
 
         }
         return rev;
     })
+
 
     await prodReview.save({ validateBeforeSave: false });
 
@@ -891,7 +894,8 @@ export const toggleLikeOfAReview = catchAsync(async (req, res, next) => {
 
 
 export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
-    const { reviews, review } = req.query;
+
+    const { reviews, review } = req.body;
 
     const prodReview = await Review.findById(reviews);
     if (!prodReview) {
@@ -902,7 +906,7 @@ export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("This product has not been reviewed yet!", 400));
     }
 
-    if (prodReview.reviews.some((rev) => (rev._id.toString() !== review.toString()))) {
+    if (!prodReview.reviews.some((rev) => (rev._id.toString() === review.toString()))) {
         return next(new ErrorHandler("Review not found!", 404));
     }
 
@@ -910,17 +914,19 @@ export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
     prodReview.reviews = prodReview.reviews.map((rev) => {
         if (rev._id.toString() === review.toString()) {
 
-            if (rev.disliked_users.some((user) => user.user_id.toString() !== req.user._id)) {
-                rev.disliked_users = rev.disliked_users.filter((user) => { user.user_id.toString() === req.user._id.toString() });
+            if (rev.disliked_users.some((user) => user.user_id.toString() === req.user._id.toString())) {
+                rev.disliked_users = rev.disliked_users.filter((user) => { user.user_id.toString() !== req.user._id.toString() });
                 rev.dislikes = rev.disliked_users.length;
                 disliked = true;
+                return rev;
             }
             else {
-                rev.liked_users = rev.liked_users.filter((user) => { user.user_id.toString() === req.user._id.toString() });
+                rev.liked_users = rev.liked_users.filter((user) => user.user_id.toString() !== req.user._id.toString());
 
                 rev.disliked_users.push({ user_id: req.user._id });
                 rev.dislikes = rev.disliked_users.length;
                 rev.likes = rev.liked_users.length;
+                return rev;
             }
         }
         return rev;
@@ -931,7 +937,7 @@ export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
     if (!disliked) {
         return res.json({
             success: true,
-            message: "Successfully !",
+            message: "Successfully disliked review!",
         })
     }
     else {

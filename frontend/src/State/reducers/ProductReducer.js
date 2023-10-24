@@ -19,10 +19,14 @@ import {
     PRODUCT_REVIEWS_FAILURE,
     PRODUCT_REVIEWS_SUCCESS,
     PRODUCT_REVIEWS_REQUEST,
+
     ADD_PRODUCT_REVIEW_REQUEST,
     ADD_PRODUCT_REVIEW_SUCCESS,
     ADD_PRODUCT_REVIEW_FAILURE,
-    ADD_PRODUCT_REVIEW_RESET
+
+    DELETE_PRODUCT_REVIEW_REQUEST,
+    DELETE_PRODUCT_REVIEW_SUCCESS,
+    DELETE_PRODUCT_REVIEW_FAILURE
 
 } from "../constants/ProductConstants.js";
 
@@ -166,8 +170,10 @@ export const bundleProductsReducer = ( state = {}, action ) => {
 export const productReviewReducer = ( state = { productReview: {} }, action ) => {
 
     switch (action.type) {
+        
         case ADD_PRODUCT_REVIEW_REQUEST:
-        case PRODUCT_REVIEWS_REQUEST:{
+        case PRODUCT_REVIEWS_REQUEST:
+        case DELETE_PRODUCT_REVIEW_REQUEST:{
             return ({
                 reviewsLoading: true,
                 productReview: {}
@@ -175,7 +181,8 @@ export const productReviewReducer = ( state = { productReview: {} }, action ) =>
         }
 
         case ADD_PRODUCT_REVIEW_SUCCESS:
-        case PRODUCT_REVIEWS_SUCCESS: {
+        case PRODUCT_REVIEWS_SUCCESS: 
+        case DELETE_PRODUCT_REVIEW_SUCCESS: {
             return ({
                 reviewsLoading: false,
                 productReview: action.payload.review,
@@ -183,17 +190,12 @@ export const productReviewReducer = ( state = { productReview: {} }, action ) =>
         }
 
         case ADD_PRODUCT_REVIEW_FAILURE:
-        case PRODUCT_REVIEWS_FAILURE:{
+        case PRODUCT_REVIEWS_FAILURE:
+        case DELETE_PRODUCT_REVIEW_FAILURE: {
             return ({
                 reviewsLoading: false,
                 productReview: {},
-                productReviewsError: action.payload.message,
-            })
-        }
-
-        case ADD_PRODUCT_REVIEW_RESET: {
-            return ({
-                productReview: {}
+                productReviewError: action.payload.message,
             })
         }
     
