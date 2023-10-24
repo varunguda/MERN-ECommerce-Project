@@ -17,14 +17,12 @@
 
 .page-column1 {
     position: relative;
-    flex: 0.68;
-    overflow: hidden;
+    width: 68%;
 }
 
 .page-column2 {
     position: relative;
-    flex: 0.32;
-    overflow: hidden;
+    width: 32%;
 }
 
 .product-images {
@@ -397,11 +395,11 @@
     }
 
     .page-column1 {
-        flex: 1;
+        width: 100%;
     }
 
     .page-column2 {
-        flex: 1;
+        width: 100%;
     }
 
     .caption {
@@ -787,11 +785,18 @@
 
 
 .review-card {
+    position: relative;
     width: 100%;
     background-color: white;
     padding: 20px;
     box-shadow: var(--primary-box-shadow);
     border-radius: 10px;
+}
+
+.review-card .review-card-more-btn{
+    position: absolute;
+    right: 10px;
+    top: 10px;
 }
 
 .verified-review {

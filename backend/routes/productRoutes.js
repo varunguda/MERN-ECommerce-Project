@@ -34,9 +34,9 @@ router.route('/products').get(getAllProducts);
 
 router.route('/products/addreview/:id').post(isUser, craeateProductReview);
 
-router.route('/products/reviews/like').get(isUser, toggleLikeOfAReview);
+router.route('/products/reviews/like').post(isUser, toggleLikeOfAReview);
 
-router.route('/products/reviews/dislike').get(isUser, toggleDislikeOfAReview);
+router.route('/products/reviews/dislike').post(isUser, toggleDislikeOfAReview);
 
 router.route('/products/reviews/:id').get(isLoggedIn, getAllProductReviews);
 

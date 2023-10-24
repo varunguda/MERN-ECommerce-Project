@@ -19,9 +19,18 @@ import {
     PRODUCT_REVIEWS_REQUEST,
     PRODUCT_REVIEWS_FAILURE,
     PRODUCT_REVIEWS_SUCCESS,
+
     ADD_PRODUCT_REVIEW_REQUEST,
     ADD_PRODUCT_REVIEW_SUCCESS,
     ADD_PRODUCT_REVIEW_FAILURE,
+    
+    DELETE_PRODUCT_REVIEW_REQUEST,
+    DELETE_PRODUCT_REVIEW_SUCCESS,
+    DELETE_PRODUCT_REVIEW_FAILURE,
+    LIKE_REVIEW_SUCCESS,
+    LIKE_REVIEW_FAILURE,
+    DISLIKE_REVIEW_SUCCESS,
+    DISLIKE_REVIEW_FAILURE,
 
     // DISLIKE_REVIEW_FAILURE,
     // DISLIKE_REVIEW_SUCCESS,
@@ -179,8 +188,6 @@ export const addProductReview = (review, id) => async (dispatch) => {
             rating,
         }, config);
 
-        console.log(data);
-
         dispatch({
             type: ADD_PRODUCT_REVIEW_SUCCESS,
             payload: data
@@ -196,13 +203,66 @@ export const addProductReview = (review, id) => async (dispatch) => {
 
 
 
-// export const likeReview = ( reviews_id, review_id ) => (dispatch) => {
-//     try {
+export const deleteProductReview = (id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: DELETE_PRODUCT_REVIEW_REQUEST });
+
+        const { data } = await axios.delete(`/api/v1/products/reviews/${id}`);
+
+        dispatch({
+            type: DELETE_PRODUCT_REVIEW_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: DELETE_PRODUCT_REVIEW_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const toggleReviewLike = ( reviews_id, review_id ) => async(dispatch) => {
+
+    try {
+
+        const config = { headers: { "Content-Type": "application/json" } };
+
+        const { data } = await axios.post("/api/v1/products/reviews/like", { reviews: reviews_id, review: review_id }, config);
+
+        dispatch({
+            type: LIKE_REVIEW_SUCCESS,
+            payload: data
+        })
         
-//     } catch (error) {
-//         dispatch({
-//             type: LIKE_REVIEW_FAILURE,
-//             payload: 
-//         })
-//     }
-// }
+    } catch (error) {
+        dispatch({
+            type: LIKE_REVIEW_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+export const toggleReviewDislike = ( reviews_id, review_id ) => async(dispatch) => {
+
+    try {
+        const config = { headers: { "Content-Type": "application/json" } };
+
+        const { data } = await axios.post("/api/v1/products/reviews/dislike", { reviews: reviews_id, review: review_id }, config);
+
+        dispatch({
+            type: DISLIKE_REVIEW_SUCCESS,
+            payload: data
+        })
+        
+    } catch (error) {
+        dispatch({
+            type: DISLIKE_REVIEW_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
