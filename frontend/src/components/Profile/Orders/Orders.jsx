@@ -1,7 +1,7 @@
-import React, { useEffect, useReducer, useRef, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useRef, useState } from 'react';
 import "./Orders.css";
 import { bindActionCreators } from 'redux';
-import { modalActionCreators, profileActionCreators } from '../../../State/action-creators';
+import { profileActionCreators } from '../../../State/action-creators';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { SET_ORDER_KEYWORD, SET_ORDER_PAGE, SET_ORDER_STATUS, SET_ORDER_TIME } from '../../../State/constants/NavigationConstants';
@@ -17,6 +17,7 @@ import { formatDate } from './OrderUtils';
 import { toast } from 'react-toastify';
 import { CANCEL_USER_ORDER_RESET } from '../../../State/constants/ProfileConstants';
 import { Link } from "react-router-dom";
+import { ModalContext } from '../../../Context/ModalContext';
 
 
 const orderParamsReducer = (state, action) => {
@@ -61,10 +62,11 @@ const Orders = () => {
     const { gettingMyOrders, myOrders, myOrdersCount, totalOrdersCount } = useSelector(state => state.myOrders);
     const { cancellingMyOrder, cancelledOrder, cancelledOrderMessage, cancelledOrderError } = useSelector(state => state.cancelMyOrder);
 
+    const { openModal, closeModal } = useContext(ModalContext);
+
     const ordersDispatch = useDispatch();
 
     const { getUserOrders, cancelUserOrder } = bindActionCreators(profileActionCreators, ordersDispatch);
-    const { openModal, closeModal } = bindActionCreators(modalActionCreators, ordersDispatch);
 
     const [searchText, setSearchText] = useState("");
     const [stateUpdated, setStateUpdated] = useState(false); // Flag to track state updates
@@ -230,7 +232,10 @@ const Orders = () => {
     }
 
     const filterClickHandler = () => {
-        openModal("Filter Orders", <FilterContent state={state} setStatus={(val) => setStatus(val)} setTime={(val) => setTime(val)} setNavigateUrl={setNavigateUrl} closeModal={closeModal} />);
+        openModal(
+            "Filter Orders",
+            <FilterContent state={state} setStatus={(val) => setStatus(val)} setTime={(val) => setTime(val)} setNavigateUrl={setNavigateUrl} />
+        );
     }
 
 

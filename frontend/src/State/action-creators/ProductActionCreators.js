@@ -19,6 +19,9 @@ import {
     PRODUCT_REVIEWS_REQUEST,
     PRODUCT_REVIEWS_FAILURE,
     PRODUCT_REVIEWS_SUCCESS,
+    ADD_PRODUCT_REVIEW_REQUEST,
+    ADD_PRODUCT_REVIEW_SUCCESS,
+    ADD_PRODUCT_REVIEW_FAILURE,
 
     // DISLIKE_REVIEW_FAILURE,
     // DISLIKE_REVIEW_SUCCESS,
@@ -154,6 +157,43 @@ export const getProductReviews = (id, page) => async(dispatch) => {
         })
     }
 }
+
+
+
+export const addProductReview = (review, id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: ADD_PRODUCT_REVIEW_REQUEST });
+
+        const {
+            title,
+            comment,
+            rating,
+        } = review;
+
+        const config = { headers: { "Content-Type": "application/json" } };
+
+        const { data } = await axios.post(`/api/v1/products/addreview/${id}`, {
+            title,
+            comment,
+            rating,
+        }, config);
+
+        console.log(data);
+
+        dispatch({
+            type: ADD_PRODUCT_REVIEW_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ADD_PRODUCT_REVIEW_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
 
 
 // export const likeReview = ( reviews_id, review_id ) => (dispatch) => {

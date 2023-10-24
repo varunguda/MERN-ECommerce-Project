@@ -74,3 +74,51 @@ export const removeDoublePipe = (str) => {
 
     return str;
 }
+
+
+
+export const reviewTitleValidator = (val) => {
+    if(val.length === 0){
+        return `Title is required`;
+    }
+
+    if(val.trim() === ""){
+        return `Enter a valid title`;
+    }
+
+    if(val.length > 100){
+        return `Title must not contain more than 100 characters`
+    }
+
+    return false;
+}
+
+
+export const reviewCommentValidator = (val) => {
+    if(val.length === 0){
+        return `Comment is required`;
+    }
+
+    if(val.trim() === ""){
+        return `Enter a valid comment`;
+    }
+
+    if(val.length > 400){
+        return `Comment must not contain more than 400 characters`
+    }
+
+    return false;
+}
+
+
+export const reviewRatingValidator = (val) => {
+    if(typeof val !== "number"){
+        return `Please select a valid rating`;
+    }
+
+    if((val <= 0) || (val > 5)){
+        return "Please rate your product";
+    }
+
+    return false;
+}

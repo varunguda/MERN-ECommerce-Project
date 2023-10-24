@@ -5,10 +5,13 @@ import './index.css';
 
 import { Provider } from "react-redux";
 import store from './State/store';
+import { ModalProvider } from './Context/ModalContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={store}>
-    <App />
-  </Provider>
+    <ModalProvider>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </ModalProvider>
 );

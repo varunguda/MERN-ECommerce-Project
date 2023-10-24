@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import "./Shipping.css";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoCheckmarkOutline, IoWalletOutline } from "react-icons/io5";
@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { addToCart, getOrderValue } from '../../State/action-creators/CartActionCreators';
 import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
-import { closeModal, openModal } from '../../State/action-creators/ModalActionCreator';
 import Accordion from '../elements/Accordians/Accordion';
 import { Link } from 'react-router-dom';
 import { FiMinus, FiPlus } from 'react-icons/fi';
@@ -22,6 +21,7 @@ import { bindActionCreators } from 'redux';
 import Payment from './Payment';
 import BannerPage from '../layouts/Banner/BannerPage';
 import { RESET_CART_ITEMS } from '../../State/constants/CartConstants';
+import { ModalContext } from '../../Context/ModalContext';
 
 
 const Shipping = () => {
@@ -38,6 +38,8 @@ const Shipping = () => {
     } = useSelector(state => state.orderValue);
     const { addingAddress, addedAddress, addedAddressMessage, addAddressError } = useSelector(state => state.addAddress);
     const { gettingAddresses, addresses } = useSelector(state => state.addresses);
+
+    const { openModal, closeModal } = useContext(ModalContext);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -180,21 +182,21 @@ const Shipping = () => {
 
     const leaveCheckoutClickHandler = () => {
         navigate("/cart");
-        dispatch(closeModal());
+        closeModal();
     }
 
 
     const goBackClickHandler = () => {
 
-        dispatch(openModal("You're almost there!",
+        openModal("You're almost there!",
             <>
                 <div className="modal-caption">You'll have to start over if you leave.</div>
                 <div className="modal-btn-container">
                     <button className='secondary-btn' onClick={leaveCheckoutClickHandler} type='button'>Leave anyway</button>
-                    <button className='main-btn' onClick={() => dispatch(closeModal())} type='button'>Keep checking out</button>
+                    <button className='main-btn' onClick={() => closeModal()} type='button'>Keep checking out</button>
                 </div>
             </>,
-            true)
+            true
         )
     }
 

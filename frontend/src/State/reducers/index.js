@@ -6,7 +6,6 @@ import {
     bundleProductsReducer,
     productReviewReducer
 } from "./ProductReducer";
-import { modalReducer } from "./ModalReducers";
 import { navigationReducer } from "./NavigationReducers";
 import { 
     checkUserReducer,
@@ -32,7 +31,6 @@ const reducers = combineReducers({
     products: productReducer,
     detailedProducts: productDetailsReducer,
     sellerProducts: sellerProductsReducer,
-    modal: modalReducer,
     bundleProducts: bundleProductsReducer,
     productReviews: productReviewReducer,
     urlParams: navigationReducer,
