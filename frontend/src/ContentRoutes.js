@@ -5,7 +5,6 @@ import {
     useLocation,
 } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
-import Modal from './components/elements/Modals/Modal.jsx';
 import { useSelector } from 'react-redux';
 import Home from './components/Home/Home.jsx'
 import ProductPage from './components/Product/ProductPage.jsx'
@@ -15,23 +14,22 @@ import Navbar from './components/layouts/Navbar/Navbar.jsx';
 import Profile from './components/Profile/Profile.jsx';
 import Loader3 from './components/layouts/Loader/Loader3.jsx';
 import Cart from './components/Cart/Cart.jsx';
+import Modal from './components/elements/Modals/Modal.jsx';
 
 const ContentRoutes = () => {
 
     const location = useLocation();
 
-    const { open, content, heading, noOutClick } = useSelector((state) => state.modal);
-
     const { load } = useSelector(state => state.loader);
 
     useEffect(() => {
-        if (open || load) {
+        if (load) {
             document.body.style.overflow = "hidden";
         }
         else {
             document.body.style.overflow = "auto";
         }
-    }, [open, load]);
+    }, [load]);
 
     return (
         <>
@@ -51,8 +49,7 @@ const ContentRoutes = () => {
                 theme="light"
             />
 
-            <Modal open={open} content={content} heading={heading} noOutClick={noOutClick} />
-
+            <Modal />
 
             {["/account", "/shipping"].every((route) => !location.pathname.includes(route)) && (
                 <>

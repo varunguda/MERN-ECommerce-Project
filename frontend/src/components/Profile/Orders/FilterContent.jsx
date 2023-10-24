@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import "./FilterContent.css";
+import { ModalContext } from '../../../Context/ModalContext';
 
 const allStatus = {
     "all": "All",
@@ -19,7 +20,9 @@ const allTimes = {
     "before1year": "Before an year",
 }
 
-const FilterContent = ({ state, setStatus, setTime, setNavigateUrl, closeModal }) => {
+const FilterContent = ({ state, setStatus, setTime, setNavigateUrl }) => {
+
+    const { closeModal } = useContext(ModalContext);
 
     const [ selectedStatus, setSelectedStatus ] = useState(state.status ? state.status : "all");
     const [ selectedTime, setSelectedTime ] = useState(state.time ? state.time : "any");

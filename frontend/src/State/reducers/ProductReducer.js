@@ -18,9 +18,15 @@ import {
 
     PRODUCT_REVIEWS_FAILURE,
     PRODUCT_REVIEWS_SUCCESS,
-    PRODUCT_REVIEWS_REQUEST
+    PRODUCT_REVIEWS_REQUEST,
+    ADD_PRODUCT_REVIEW_REQUEST,
+    ADD_PRODUCT_REVIEW_SUCCESS,
+    ADD_PRODUCT_REVIEW_FAILURE,
+    ADD_PRODUCT_REVIEW_RESET
 
 } from "../constants/ProductConstants.js";
+
+
 
 export const productReducer = ( state = { products: [] }, action ) => {
     
@@ -93,6 +99,7 @@ export const productDetailsReducer = ( state = { products: [] }, action ) => {
 }
 
 
+
 export const sellerProductsReducer = ( state = [], action ) => {
     switch (action.type) {
         case SELLER_PRODUCT_REQUEST:{
@@ -121,6 +128,7 @@ export const sellerProductsReducer = ( state = [], action ) => {
         }
     }
 }
+
 
 
 export const bundleProductsReducer = ( state = {}, action ) => {
@@ -155,27 +163,37 @@ export const bundleProductsReducer = ( state = {}, action ) => {
 
 
 
-export const productReviewReducer = ( state = {}, action ) => {
+export const productReviewReducer = ( state = { productReview: {} }, action ) => {
 
     switch (action.type) {
+        case ADD_PRODUCT_REVIEW_REQUEST:
         case PRODUCT_REVIEWS_REQUEST:{
             return ({
                 reviewsLoading: true,
-                reviews: []
+                productReview: {}
             })
         }
 
+        case ADD_PRODUCT_REVIEW_SUCCESS:
         case PRODUCT_REVIEWS_SUCCESS: {
             return ({
                 reviewsLoading: false,
-                reviews: action.payload.reviews,
+                productReview: action.payload.review,
             })
         }
 
+        case ADD_PRODUCT_REVIEW_FAILURE:
         case PRODUCT_REVIEWS_FAILURE:{
             return ({
                 reviewsLoading: false,
-                reviews: action.payload,
+                productReview: {},
+                productReviewsError: action.payload.message,
+            })
+        }
+
+        case ADD_PRODUCT_REVIEW_RESET: {
+            return ({
+                productReview: {}
             })
         }
     

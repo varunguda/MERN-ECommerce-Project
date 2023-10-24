@@ -1,20 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import {PiSignOutBold} from "react-icons/pi";
 import OverviewCard from './OverviewCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { toast } from 'react-toastify';
-import { closeModal, openModal } from '../../../State/action-creators/ModalActionCreator';
 import { loadUser, signOutUser } from '../../../State/action-creators/UserActionCreators';
 import { SIGNOUT_USER_RESET } from '../../../State/constants/UserConstants';
 
 import "./Overview.css";
+import { ModalContext } from '../../../Context/ModalContext';
 
 
 const Overview = ({ user }) => {
 
     const { signOutLoading, signedOut, signOutMessage, signOutError } = useSelector(state => state.signout);
+
+    const { openModal, closeModal } = useContext(ModalContext);
 
     const dispatch = useDispatch();
 
@@ -74,22 +76,22 @@ const Overview = ({ user }) => {
     
 
     const signOutClickHandler = (e) => {
-        dispatch(openModal(
+        openModal(
             "Are you sure you want to Sign out?",
             (<>
                 <div className="modal-caption">You need your Email & Password to log back in again</div>
 
                 <div className="modal-btn-container">
-                    <button onClick={()=> (dispatch(closeModal()))} className='secondary-btn'>No</button>
+                    <button onClick={()=> (closeModal())} className='secondary-btn'>No</button>
                     <button onClick={signOutHandler} className='main-btn warning'>Yes</button>
                 </div>
             </>)
-        ));
+        );
     }
 
 
     const signOutHandler = () => {
-        dispatch(closeModal());
+        closeModal();
         dispatch(signOutUser());
     }
 

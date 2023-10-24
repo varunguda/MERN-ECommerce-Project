@@ -6,6 +6,12 @@
     gap: 2px;
 }
 
-.star-icon{
+.star-container .star-icon{
     color: black;
+
+}
+
+.star-container .star-icon.light{
+    color: var(--secondary-color);
+    cursor: pointer;
 }

@@ -1,23 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import "./Modal.css";
-import { useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { modalActionCreators } from '../../../State/action-creators';
 import { AiOutlineClose } from "react-icons/ai"
+import { ModalContext } from '../../../Context/ModalContext';
 
 
-const Modal = (props) => {
+const Modal = () => {
+
+    const { modalHeading, modalContent, isModalOpen, closeModal, noOutClick } = useContext(ModalContext);
 
     const modalRef = useRef(null);
-    const modalContainerRef = useRef(null)
-
-    const dispatch = useDispatch();
-
-    const { closeModal } = bindActionCreators(modalActionCreators, dispatch)
+    const modalContainerRef = useRef(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target) && !props.noOutClick) {
+            if (modalRef.current && !modalRef.current.contains(event.target) && isModalOpen && !noOutClick) {
                 if (modalContainerRef && modalContainerRef.current.classList.contains("open")) {
                     closeModal();
                 }
@@ -29,28 +25,27 @@ const Modal = (props) => {
         return () => {
             window.removeEventListener('mousedown', handleClickOutside);
         };
+
         // eslint-disable-next-line
-    }, [props.noOutClick]);
+    }, [isModalOpen, noOutClick]);
+
+
+    if (!isModalOpen) {
+        return null;
+    }
 
     return (
-        <div ref={modalContainerRef} className={`modal-container ${props.open ? "open" : ""}`}>
-
+        <div ref={modalContainerRef} className={`modal-container ${isModalOpen ? "open" : ""}`}>
             <div className="background" />
-            
             <div ref={modalRef} className="modal">
-                
-                    <AiOutlineClose onClick={() => { closeModal() }} className="close-modal-icon" color='#74767c' />
-
-                    <div className="modal-heading-content">
-                        <div className='heading'>{props.heading}</div>
-                        <div
-                            className="modal-content"
-                        >{props.content}</div>
-                    </div>
-
+                <AiOutlineClose onClick={() => closeModal()} className="close-modal-icon" color='#74767c' />
+                <div className="modal-heading-content">
+                    <div className='heading'>{modalHeading}</div>
+                    <div className="modal-content">{modalContent}</div>
+                </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Modal
+export default Modal;

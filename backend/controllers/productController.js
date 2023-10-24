@@ -625,7 +625,7 @@ export const getAllProductReviews = catchAsync(async (req, res, next) => {
 
     return res.json({
         success: true,
-        reviews: newReviews,
+        review: newReviews,
     })
 });
 

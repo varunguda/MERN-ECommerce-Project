@@ -842,3 +842,10 @@
 .likes-dislikes span {
     font-size: var(--s-font-size);
 }
+
+.review-stars-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

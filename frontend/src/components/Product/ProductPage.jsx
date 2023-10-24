@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actionCreators, modalActionCreators } from "../../State/action-creators";
+import { actionCreators } from "../../State/action-creators";
 import { addToCart } from '../../State/action-creators/CartActionCreators';
 import { useParams } from 'react-router';
 import Metadata from '../Metadata';
@@ -9,9 +9,7 @@ import Loader from '../layouts/Loader/Loader';
 import { RxZoomIn } from "react-icons/rx";
 import { CiHeart, CiShop } from "react-icons/ci";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
-import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from "react-icons/bi";
 import { FiMinus, FiPlus } from "react-icons/fi";
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 import "./ProductPage.css";
 import Stars from '../elements/Cards/Stars';
@@ -20,7 +18,7 @@ import ProductVariations from './ProductVariations';
 import ProductsCarousel from '../layouts/Carousel/ProductsCarousel';
 import Accordion from '../elements/Accordians/Accordion';
 import ProductCard from '../elements/Cards/ProductCard';
-import Paginate from '../elements/Pagination/Paginate';
+import ProductReview from './ProductReview';
 
 
 const images = [
@@ -67,7 +65,7 @@ const ProductPage = () => {
 
     const { loading, products, error } = useSelector((state) => state.detailedProducts);
     const { sellersProducts } = useSelector((state) => state.sellerProducts);
-    const { reviewsLoading, reviews } = useSelector((state) => state.productReviews);
+    const { productReview } = useSelector((state) => state.productReviews);
     const { bundles } = useSelector((state) => state.bundleProducts);
     const { cartItems } = useSelector((state) => state.cart);
 
@@ -80,13 +78,11 @@ const ProductPage = () => {
     const [selectedPlan, setSelectedPlan] = useState('No Plan');
     const [zoom, setZoom] = useState(1);
     const reviewRef = useRef(null);
-    const [reviewPage, setReviewPage] = useState(null);
     const [quantity, setQuantity] = useState(0);
 
 
     const dispatch = useDispatch();
     const { getProductDetails, getAllProductsOfSeller, getBundleProducts, getProductReviews } = bindActionCreators(actionCreators, dispatch);
-    const { openModal } = bindActionCreators(modalActionCreators, dispatch);
 
     const id = useParams();
 
@@ -129,32 +125,9 @@ const ProductPage = () => {
 
     useEffect(() => {
 
-        let isFetched = false;
-        const fetchReviews = () => {
-            if ((window.scrollY > 800) && !isFetched && !reviews) {
-                if (products && products.length > 0 && products[0].review_id) {
-                    getProductReviews(products[0]._id);
-                    setReviewPage(1);
-                    isFetched = true;
-                }
-            }
-        }
-
-        window.addEventListener("scroll", fetchReviews);
-
-        return () => {
-            window.removeEventListener("scroll", fetchReviews);
-        }
-
-        // eslint-disable-next-line
-    }, [products]);
-
-
-    useEffect(() => {
-
         let found = false;
         cartItems.forEach(item => {
-            if(item.product === mainProduct._id){
+            if (item.product === mainProduct._id) {
                 setQuantity(item.quantity);
                 found = true;
             }
@@ -213,7 +186,6 @@ const ProductPage = () => {
         }
     }
 
-
     const handleMouseEnter = () => {
         setZoom(2);
     };
@@ -241,8 +213,8 @@ const ProductPage = () => {
 
 
     const handleScrollToReviews = () => {
-        if (!reviews) {
-            getProductReviews(products[0]._id, reviewPage);
+        if (Object.keys(productReview).length === 0) {
+            getProductReviews(products[0]._id);
         }
 
         let scrolled = false;
@@ -253,18 +225,6 @@ const ProductPage = () => {
             }
         }, 100)
     };
-
-    const handleReviewPageClick = (page) => {
-        setReviewPage(page);
-    }
-
-    useEffect(() => {
-        if (reviewPage) {
-            getProductReviews(products[0]._id, reviewPage);
-        }
-        // eslint-disable-next-line
-    }, [reviewPage]);
-
 
     const handleAddClick = (e) => {
         if (quantity >= mainProduct.stock) return;
@@ -448,9 +408,9 @@ const ProductPage = () => {
                                                         options.map((option, index) => {
                                                             return (
                                                                 <div key={index} className="checkboxes">
-                                                                    <input 
-                                                                        type="checkbox" 
-                                                                        name="plan" 
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        name="plan"
                                                                         value={option.description}
                                                                         checked={selectedPlan === option.description}
                                                                         onChange={handleChange}
@@ -467,9 +427,7 @@ const ProductPage = () => {
                                                         <label htmlFor="no-plan">I don't need protection at this time</label>
                                                     </div>
                                                 </div>
-
                                             </div>
-
                                         </div>
                                     }
 
@@ -531,110 +489,9 @@ const ProductPage = () => {
                                         <ProductsCarousel products={sellersProducts} desktopItems={4} tabletItems={3} flipItems={2} mobileItems={1} heading="More products from the seller" />
                                     )}
 
-
-                                    {(products && products.length > 0 && products[0].rating) ? (
-                                        <div ref={reviewRef} className="customer-reviews-container">
-                                            <div className="heading">Customer reviews & ratings</div>
-
-                                            <div className="rating-container">
-
-                                                <div className="rating-section">
-                                                    <div className="total-rating">{products[0].rating}<span> out of </span>5</div>
-                                                    <Stars value={products[0].rating} size="13px" /><span>{`(${products[0].total_reviews} reviews)`}</span>
-                                                    <br />
-                                                    <button
-                                                        onClick={() => { openModal("an", "ans") }}
-                                                        className='main-btn'
-                                                        style={{ margin: "16px 0px" }}
-                                                    >
-                                                        Write a review
-                                                    </button>
-                                                </div>
-
-
-
-                                                <div className="reviews-section">
-                                                    {(reviewsLoading) ? (<span className="loader"></span>) : (reviews && reviews.reviews && reviews.reviews.length > 0) && (
-
-                                                        <ResponsiveMasonry
-                                                            columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 2 }}
-                                                        >
-                                                            <Masonry gutter='20px'>
-                                                                {reviews.reviews.map((review, index) => {
-                                                                    return (
-                                                                        <div key={index} className="review-card">
-                                                                            <Stars value={review.rating} size="11px" />
-                                                                            {review.is_verified_purchase && (
-                                                                                <span className='verified-review'>&nbsp; Verified Purchaser</span>
-                                                                            )}
-                                                                            <div className='review-product'>{(review.product_name) ? review.product_name.slice(0, 30) : mainProduct.name.slice(0, 30)}</div>
-
-                                                                            <div className="review-content">
-
-                                                                                <div className="review-title">{review.title}</div>
-                                                                                <div className="review-comment">{review.comment}</div>
-
-                                                                                <div className="reviewer-name">{review.name}</div>
-                                                                                <div className="likes-dislikes">
-                                                                                    <div>
-                                                                                        {(review.liked) ? (
-                                                                                            <>
-                                                                                                <BiSolidLike /><span>{review.likes || 0}</span>
-                                                                                            </>
-                                                                                        ) : (
-                                                                                            <>
-                                                                                                <BiLike /><span>{review.likes || 0}</span>
-                                                                                            </>
-                                                                                        )}
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        {(review.disliked) ? (
-                                                                                            <>
-                                                                                                <BiSolidDislike /><span>{review.dislikes || 0}</span>
-                                                                                            </>
-                                                                                        ) : (
-                                                                                            <>
-                                                                                                <BiDislike /><span>{review.dislikes || 0}</span>
-                                                                                            </>
-                                                                                        )}
-                                                                                    </div>
-                                                                                </div>
-
-                                                                            </div>
-                                                                        </div>
-                                                                    )
-                                                                })}
-
-                                                            </Masonry>
-                                                        </ResponsiveMasonry>
-                                                    )}
-                                                </div>
-
-                                                <Paginate total={products[0].total_reviews} pageSize={10} onChange={handleReviewPageClick} current={reviewPage} />
-
-                                            </div>
-                                        </div>
-
-                                    ) : (
-
-                                        <div ref={reviewRef} className="customer-reviews-container">
-                                            <div className="heading">Customer reviews & ratings</div>
-
-                                            <div className="rating-container">
-
-                                                <div className="rating-section">
-                                                    <div className="total-rating">No reviews yet!</div>
-                                                    <Stars value={0} size="13px" /><span>&nbsp;&nbsp; Be the first to review this product!</span>
-                                                    <br />
-                                                    <button
-                                                        onClick={() => { openModal("an", "ans") }}
-                                                        className='secondary-btn'
-                                                        style={{ margin: "16px 2px" }}
-                                                    >
-                                                        Write a review
-                                                    </button>
-                                                </div>
-                                            </div>
+                                    {(products && products.length > 0) && (
+                                        <div ref={reviewRef}>
+                                            <ProductReview products={products} mainProduct={mainProduct} />
                                         </div>
                                     )}
 
