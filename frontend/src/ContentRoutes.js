@@ -15,6 +15,7 @@ import Profile from './components/Profile/Profile.jsx';
 import Loader3 from './components/layouts/Loader/Loader3.jsx';
 import Cart from './components/Cart/Cart.jsx';
 import Modal from './components/elements/Modals/Modal.jsx';
+import Admin from './components/Admin/Admin.jsx';
 
 const ContentRoutes = () => {
 
@@ -61,6 +62,7 @@ const ContentRoutes = () => {
                             <Route path="/search" element={<ProductsPage />} />
                             <Route path='/profile/:section?' element={<Profile />} />
                             <Route path='/cart' element={<Cart />} />
+                            <Route path='/admin/:section?/:subcategory?' element={<Admin />} />
                         </Routes>
                     </div>
                     <Footer />

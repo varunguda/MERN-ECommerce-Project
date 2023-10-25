@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import "./Profile.css";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CiDeliveryTruck, CiHeart, CiViewList } from 'react-icons/ci';
-import { PiCreditCardLight, PiHandCoinsLight, PiInfoThin, PiShoppingCartLight, PiSignOutLight, PiTicketThin, PiUserListThin } from 'react-icons/pi';
+import { PiHandCoinsLight, PiInfoThin, PiShoppingCartLight, PiSignOutLight, PiTicketThin, PiUserListThin } from 'react-icons/pi';
 import { GoShieldLock } from 'react-icons/go';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Loader from '../layouts/Loader/Loader';
@@ -12,11 +12,23 @@ import Overview from './Overview/Overview';
 import Addresses from './Addresses/Addresses';
 import Orders from './Orders/Orders';
 import Metadata from '../Metadata';
+import Terms from './Legal/Terms';
+import Privacy from './Legal/Privacy';
+import { ModalContext } from '../../Context/ModalContext';
+import { loadUser, signOutUser } from '../../State/action-creators/UserActionCreators';
+import { SIGNOUT_USER_RESET } from '../../State/constants/UserConstants';
+import { toast } from 'react-toastify';
+import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
 
 
 const Profile = () => {
 
     const { loginLoading, loggedIn, user } = useSelector(state => state.loggedIn);
+    const { signOutLoading, signedOut, signOutMessage, signOutError } = useSelector(state => state.signout);
+
+    const { openModal, closeModal } = useContext(ModalContext);
+
+    const dispatch = useDispatch();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -28,7 +40,7 @@ const Profile = () => {
         if (location.pathname) {
             window.scrollTo(0, 0)
         }
-    }, [location.pathname])
+    }, [location.pathname]);
 
 
     useEffect(() => {
@@ -38,7 +50,48 @@ const Profile = () => {
         else {
             setActiveLocation("");
         }
-    }, [section])
+    }, [section]);
+
+    useEffect(()=>{
+        if(signOutLoading && signOutLoading === true){
+            dispatch(loaderSpin(true));
+        }
+        else {
+            dispatch(loaderSpin(false));
+        }
+
+        // eslint-disable-next-line
+    }, [signOutLoading]);
+
+    useEffect(() => {
+        toast.error(signOutError, {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [signOutError])
+
+
+
+    useEffect(() => {
+        if (signOutMessage) {
+            toast.success(signOutMessage, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+    }, [signOutMessage])
 
 
     useEffect(() => {
@@ -61,6 +114,35 @@ const Profile = () => {
         else {
             navigate(`/profile`);
         }
+    }
+
+
+    useEffect(() => {
+        if (signedOut) {
+            navigate("/");
+            dispatch({ type: SIGNOUT_USER_RESET });
+            dispatch(loadUser());
+        }
+
+        // eslint-disable-next-line
+    }, [signedOut])
+
+
+    const signOutClickHandler = (e) => {
+        openModal(
+            "Are you sure you want to Sign out?",
+            (<>
+                <div className="modal-caption">You need your Email & Password to log back in again</div>
+
+                <div className="modal-btn-container">
+                    <button onClick={closeModal} className='secondary-btn'>No</button>
+                    <button onClick={() => {
+                        closeModal();
+                        dispatch(signOutUser());
+                    }} className='main-btn warning'>Yes</button>
+                </div>
+            </>)
+        );
     }
 
 
@@ -153,28 +235,24 @@ const Profile = () => {
                                 Addresses
                             </div>
 
-                            <div
-                                onClick={sidebarElemClickHandler}
-                                className={`sidebar-elem ${(activeLocation === "payments") ? "active" : ""}`}
-                                link-identifier="payments"
-                            >
-                                <PiCreditCardLight className='sidebar-icon' size={17} />
-                                Payments
-                            </div>
                         </div>
 
                         <div className="sidebar-elem-section">
                             <div className="sidebar-elem-head">Legal</div>
 
                             <div
+                                onClick={sidebarElemClickHandler}
                                 className={`sidebar-elem ${(activeLocation === "terms") ? "active" : ""}`}
+                                link-identifier="terms"
                             >
                                 <PiInfoThin className='sidebar-icon' size={17} />
                                 Terms of use
                             </div>
 
                             <div
-                                className={`sidebar-elem ${(activeLocation === "privacy-policy") ? "active" : ""}`}
+                                onClick={sidebarElemClickHandler}
+                                className={`sidebar-elem ${(activeLocation === "privacy") ? "active" : ""}`}
+                                link-identifier="privacy"
                             >
                                 <GoShieldLock className='sidebar-icon' size={15} />
                                 Privacy Policy
@@ -182,7 +260,7 @@ const Profile = () => {
                         </div>
 
                         <div className="sidebar-elem-section">
-                            <div className="sidebar-elem"><PiSignOutLight className='sidebar-icon' size={17} />Sign out</div>
+                            <div onClick={signOutClickHandler} className="sidebar-elem"><PiSignOutLight className='sidebar-icon' size={17} />Sign out</div>
                         </div>
 
                     </div>
@@ -195,6 +273,10 @@ const Profile = () => {
                             <Addresses />
                         ) : (activeLocation === "orders&returns") ? (
                             <Orders />
+                        ) : (activeLocation === "terms") ? (
+                            <Terms />
+                        ) : (activeLocation === "privacy") ? (
+                            <Privacy />
                         ) : (
                             <Overview user={user} />
                         )}
