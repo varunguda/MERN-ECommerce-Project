@@ -66,10 +66,10 @@ const Navbar = () => {
                         <span>Departments</span>
                     </div>
 
-                    <div className='nav-elems'>
+                    <Link to="/admin" className='nav-elems link'>
                         <PiGraphThin size={"20px"} />
-                        <span>Dashboard</span>
-                    </div>
+                        <span>Portal</span>
+                    </Link>
 
                     <div className='nav-elems'>
                         <PiTShirt size={"17px"} />
@@ -142,10 +142,10 @@ const Navbar = () => {
                         {(!isNaN(loginLoading) && !loginLoading) ? (
                             <>
                                 {(user && user.is_admin) && (
-                                    <div className='nav-elems'>
+                                    <Link to="/admin" className='nav-elems link'>
                                         <PiGraphThin size={"20px"} />
-                                        <span>Dashboard</span>
-                                    </div>
+                                        <span>Portal</span>
+                                    </Link>
                                 )}
 
                                 {(user && user.is_seller) && (
