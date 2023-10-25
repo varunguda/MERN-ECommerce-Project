@@ -300,7 +300,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 2px;
-    border: 1px solid var(--black-font-color);
+    border: 1px solid var(--border-color);
     border-radius: 30px;
     height: 42px;
     padding: 0px 30px;
@@ -318,7 +318,8 @@ body {
 }
 
 .secondary-btn:hover {
-    outline: 1px solid var(--black-font-color);
+    background-color: var(--border-color);
+
 }
 
 .secondary-btn.warning:hover {
@@ -326,8 +327,7 @@ body {
 }
 
 .secondary-btn:active {
-    background-color: var(--black-font-color);
-    color: white;
+    background-color: rgb(242, 242, 242);
 }
 
 .secondary-btn.warning:active {
