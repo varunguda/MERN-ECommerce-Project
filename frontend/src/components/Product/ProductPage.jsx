@@ -261,7 +261,7 @@ const ProductPage = () => {
                             <section className="page-section1">
 
                                 <section className="page-column1">
-
+                                
                                     <div className="product-images">
 
                                         <div className="image-carousel">
@@ -278,7 +278,6 @@ const ProductPage = () => {
                                                 </div>
                                             ))
                                             }
-
                                         </div>
 
                                         <div onClick={handlePrevImageClick} className={`image-btn prev-image ${!images[currentImageIndex - 1] ? "disabled" : ""} `} disabled={true} >
