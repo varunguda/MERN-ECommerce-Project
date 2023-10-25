@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import "./ProductPage.css";
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import Stars from '../elements/Cards/Stars';
-import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import Paginate from '../elements/Pagination/Paginate';
 import { bindActionCreators } from 'redux';
@@ -13,6 +12,7 @@ import { reviewCommentValidator, reviewRatingValidator, reviewTitleValidator } f
 import Loader from '../layouts/Loader/Loader';
 import DropdownButton from '../elements/Buttons/DropdownButton';
 import { toast } from 'react-toastify';
+import LikesDislikes from './LikesDislikes';
 
 
 const initialState = {
@@ -58,7 +58,7 @@ const ProductReview = ({ products, mainProduct }) => {
     const { reviewsLoading, productReview, productReviewsError } = useSelector((state) => state.productReviews);
 
     const dispatch = useDispatch();
-    const { getProductReviews, addProductReview, deleteProductReview, toggleReviewLike, toggleReviewDislike } = bindActionCreators(actionCreators, dispatch);
+    const { getProductReviews, addProductReview, deleteProductReview } = bindActionCreators(actionCreators, dispatch);
 
     const { openModal, closeModal, setModalContent } = useContext(ModalContext);
 
@@ -249,15 +249,6 @@ const ProductReview = ({ products, mainProduct }) => {
         }
     }
 
-    const likeReviewClickHandler = (review_id) => {
-        toggleReviewLike(products[0].review_id, review_id);
-    }
-
-    const dislikeReviewClickHandler = (review_id) => {
-        toggleReviewDislike(products[0].review_id, review_id);
-    }
-
-
     return (
         <div className="customer-reviews-container">
 
@@ -316,30 +307,8 @@ const ProductReview = ({ products, mainProduct }) => {
                                                             <div className="review-comment">{review.comment}</div>
 
                                                             <div className="reviewer-name">{review.name}</div>
-                                                            <div className="likes-dislikes">
-                                                                <div onClick={() => likeReviewClickHandler(review._id)}>
-                                                                    {(review.liked) ? (
-                                                                        <>
-                                                                            <BiSolidLike /><span>{review.likes || 0}</span>
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <BiLike /><span>{review.likes || 0}</span>
-                                                                        </>
-                                                                    )}
-                                                                </div>
-                                                                <div onClick={() => dislikeReviewClickHandler(review._id)}>
-                                                                    {(review.disliked) ? (
-                                                                        <>
-                                                                            <BiSolidDislike /><span>{review.dislikes || 0}</span>
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <BiDislike /><span>{review.dislikes || 0}</span>
-                                                                        </>
-                                                                    )}
-                                                                </div>
-                                                            </div>
+                                                            
+                                                            <LikesDislikes products={products} review={review} />
 
                                                         </div>
                                                     </div>
