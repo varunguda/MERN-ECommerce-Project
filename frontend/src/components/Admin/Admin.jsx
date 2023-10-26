@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CiBoxes } from 'react-icons/ci';
 import { SlGraph } from 'react-icons/sl';
-import { VscPreview } from 'react-icons/vsc';
-import { PiUsersThreeLight } from 'react-icons/pi';
+import { PiChatTextLight, PiUsersThreeLight } from 'react-icons/pi';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Loader from '../layouts/Loader/Loader';
 import Metadata from '../Metadata';
 import { IoIosLaptop } from 'react-icons/io';
 import { BsPlusLg } from 'react-icons/bs';
+import { checkAdmin } from '../../State/action-creators/AdminActionCreators';
+import Dashboard from './Dashboard/Dashboard';
 
 
 const Admin = () => {
 
-    const { loginLoading, loggedIn, user } = useSelector(state => state.loggedIn);
+    const { checkingAdmin, isAdmin, admin } = useSelector(state => state.admin);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -21,6 +22,12 @@ const Admin = () => {
     const [activeLocation, setActiveLocation] = useState("");
 
     const { section, subcategory } = useParams();
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(checkAdmin());
+    }, [dispatch]);
 
     useEffect(() => {
         if (location.pathname) {
@@ -31,7 +38,7 @@ const Admin = () => {
 
     useEffect(() => {
         if (section) {
-            setActiveLocation(section+(subcategory ? "/" + subcategory : ""));
+            setActiveLocation(section + (subcategory ? "/" + subcategory : ""));
         }
         else {
             setActiveLocation("");
@@ -40,17 +47,12 @@ const Admin = () => {
 
 
     useEffect(() => {
-        console.log(activeLocation);
-    }, [activeLocation])
-
-
-    useEffect(() => {
-        if (!isNaN(loginLoading) && !loginLoading && !loggedIn) {
-            navigate("/account/login");
+        if ((checkingAdmin === false) && !isAdmin) {
+            navigate("/");
         }
 
         // eslint-disable-next-line
-    }, [loginLoading, loggedIn]);
+    }, [checkingAdmin]);
 
 
     const sidebarElemClickHandler = (e) => {
@@ -66,17 +68,18 @@ const Admin = () => {
         }
     }
 
+
     return (
         <div className='page-container'>
 
-            {loginLoading ? <Loader /> : (
+            {(checkingAdmin !== false) ? <Loader /> : (
                 <>
-                    <Metadata title={`${user.name}'s profile - ManyIN`} />
+                    <Metadata title={`${admin && admin.name}'s profile - ManyIN`} />
 
                     <div className="profile-sidebar">
 
                         <div className="main-elem">
-                            <div className="main-elem-head">Hi, {user && user.name}</div>
+                            <div className="main-elem-head">Hi, {admin && admin.name}</div>
                             <div className="main-elem-caption">Welcome to Admin's Portal</div>
                         </div>
 
@@ -142,8 +145,23 @@ const Admin = () => {
                                 className={`sidebar-elem ${(activeLocation === "reviews") ? "active" : ""}`}
                                 link-identifier="reviews"
                             >
-                                <VscPreview strokeWidth={0} className='sidebar-icon' size={17} />
+                                <PiChatTextLight strokeWidth={0} className='sidebar-icon' size={17} />
                                 Reviews
+                            </div>
+
+                        </div>
+
+
+                        <div className="sidebar-elem-section">
+                            <div className="sidebar-elem-head">Sellers</div>
+
+                            <div
+                                onClick={sidebarElemClickHandler}
+                                className={`sidebar-elem ${(activeLocation === "sellers") ? "active" : ""}`}
+                                link-identifier="sellers"
+                            >
+                                <PiUsersThreeLight className='sidebar-icon' size={17} />
+                                ManyIN Sellers
                             </div>
 
                         </div>
@@ -152,7 +170,11 @@ const Admin = () => {
 
 
                     <div className="profile-content">
-                        M
+                        {(activeLocation === "") ? (
+                            <Dashboard />
+                        ) : (
+                            <Dashboard />
+                        )}
                     </div>
                 </>
             )}

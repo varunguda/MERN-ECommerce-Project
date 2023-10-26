@@ -25,6 +25,7 @@ import {
 } from "./ProfileReducers"
 import { loaderReducer } from "./LoaderReducers";
 import { addToCartReducer, orderValueReducer } from "./CartReducers";
+import { adminReducer } from "./AdminReducers";
 
 
 const reducers = combineReducers({
@@ -49,6 +50,7 @@ const reducers = combineReducers({
     cancelMyOrder: cancelMyOrderReducer,
     cart: addToCartReducer,
     orderValue: orderValueReducer,
+    admin: adminReducer,
 });
 
 

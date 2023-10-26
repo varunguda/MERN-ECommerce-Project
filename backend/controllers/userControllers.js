@@ -103,7 +103,13 @@ export const getUserDetails = catchAsync(async (req, res, next) => {
 
     return res.json({
         success: true,
-        user
+        user: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            is_seller: user.is_seller,
+            is_admin: user.is_admin,
+        }
     })
 })
 

@@ -17,14 +17,12 @@ import Privacy from './Legal/Privacy';
 import { ModalContext } from '../../Context/ModalContext';
 import { loadUser, signOutUser } from '../../State/action-creators/UserActionCreators';
 import { SIGNOUT_USER_RESET } from '../../State/constants/UserConstants';
-import { toast } from 'react-toastify';
-import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
 
 
 const Profile = () => {
 
     const { loginLoading, loggedIn, user } = useSelector(state => state.loggedIn);
-    const { signOutLoading, signedOut, signOutMessage, signOutError } = useSelector(state => state.signout);
+    const { signedOut } = useSelector(state => state.signout);
 
     const { openModal, closeModal } = useContext(ModalContext);
 
@@ -51,47 +49,6 @@ const Profile = () => {
             setActiveLocation("");
         }
     }, [section]);
-
-    useEffect(()=>{
-        if(signOutLoading && signOutLoading === true){
-            dispatch(loaderSpin(true));
-        }
-        else {
-            dispatch(loaderSpin(false));
-        }
-
-        // eslint-disable-next-line
-    }, [signOutLoading]);
-
-    useEffect(() => {
-        toast.error(signOutError, {
-            position: "bottom-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
-    }, [signOutError])
-
-
-
-    useEffect(() => {
-        if (signOutMessage) {
-            toast.success(signOutMessage, {
-                position: "bottom-center",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
-    }, [signOutMessage])
 
 
     useEffect(() => {

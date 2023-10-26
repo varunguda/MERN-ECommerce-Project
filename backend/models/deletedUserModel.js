@@ -59,12 +59,22 @@ const schema = new mongoose.Schema({
 
     created_at: {
         type: Date,
-        default: Date.now
+        default: () => {
+            let now = new Date();
+            now.setHours(now.getHours() + 5);
+            now.setMinutes(now.getMinutes() + 30);
+            return now;
+        },
     },
 
     expires_at: {
         type: Date,
-        default: Date.now,
+        default: () => {
+            let now = new Date();
+            now.setHours(now.getHours() + 5);
+            now.setMinutes(now.getMinutes() + 30);
+            return now;
+        },
         expires: 10 * 24 * 60 * 60  // 10 days
     }
 })
