@@ -17,8 +17,9 @@ import Cart from './components/Cart/Cart.jsx';
 import Modal from './components/elements/Modals/Modal.jsx';
 import Admin from './components/Admin/Admin.jsx';
 
-const ContentRoutes = () => {
 
+const ContentRoutes = () => {
+    
     const location = useLocation();
 
     const { load } = useSelector(state => state.loader);
@@ -34,7 +35,6 @@ const ContentRoutes = () => {
 
     return (
         <>
-
             <Loader3 active={load} />
 
             <ToastContainer

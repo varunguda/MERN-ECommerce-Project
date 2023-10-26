@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export const addCookie = async (user ,message, status ,req, res, next) => {
+export const addCookie = async (user, message, status, req, res, next) => {
     const token = jwt.sign({
         _id: user.id
     }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -9,11 +9,17 @@ export const addCookie = async (user ,message, status ,req, res, next) => {
         .status(status)
         .cookie("token", token, {
             httpOnly: true,
-            maxAge: 24*60*60*1000
+            maxAge: 24 * 60 * 60 * 1000
         })
         .json({
             success: true,
             message,
-            user
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                is_seller: user.is_seller,
+                is_admin: user.is_admin,
+            }
         })
 }

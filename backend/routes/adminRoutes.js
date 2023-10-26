@@ -12,6 +12,20 @@ import {
 const router = Router();
 
 // ADMIN ROUTES
+
+router.route("/admin").get(isAdmin, (req, res, next) => {
+    return res.json({
+        success: true,
+        admin: {
+            _id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            is_seller: req.user.is_seller,
+            is_admin: req.user.is_admin,
+        }
+    })
+});
+
 router.route("/admin/users/all").get( isAdmin, getAllSellersAndBuyers);
 
 router.route("/admin/user/:id")

@@ -56,7 +56,12 @@ const schema = new Schema({
             },
             ordered_at:{
                 type: Date,
-                default: Date.now,
+                default: () => {
+            let now = new Date();
+            now.setHours(now.getHours() + 5);
+            now.setMinutes(now.getMinutes() + 30);
+            return now;
+        }
             }
         }
     ],
@@ -149,8 +154,13 @@ const schema = new Schema({
 
     created_at:{
         type: Date,
-        default: Date.now,
-    }
+        default: () => {
+            let now = new Date();
+            now.setHours(now.getHours() + 5);
+            now.setMinutes(now.getMinutes() + 30);
+            return now;
+        }
+    },
 
 });
 
