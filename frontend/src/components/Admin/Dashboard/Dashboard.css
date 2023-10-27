@@ -1,17 +1,17 @@
-
-.dashboard-container{
+.dashboard-container {
     position: relative;
     padding: 0px 6px;
 }
 
-.dashboard-container .head-templates{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.dashboard-container .head-templates {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
     gap: 20px;
 }
 
-.dashboard-container .head-templates > div{
+.dashboard-container .head-templates>div {
     position: relative;
     display: flex;
     align-items: center;
@@ -19,13 +19,13 @@
     height: 110px;
     width: 100%;
     min-width: 100px;
-    padding: 2%;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: var(--primary-box-shadow);
     font-size: var(--l-font-size);
     font-weight: 600;
 
-    .icon{
+    .icon {
         display: grid;
         place-items: center;
         height: 50px;
@@ -34,22 +34,48 @@
         border: 1px solid var(--border-color);
     }
 
-    .red{
+    .red {
         color: var(--primary-error-color);
     }
-    .green{
+
+    .green {
         color: var(--highlight-font-color);
     }
 
-    > div:first-child{
+    >div:first-child {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
     }
 }
 
-.dashboard-container .head-templates div > span{
+.dashboard-container .head-templates div>span {
     font-size: var(--m-font-size);
     color: var(--light-font-color);
     font-weight: 400;
+}
+
+.dashboard-container .graphs-charts-container {
+    margin-top: 60px;
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-column-gap: 30px;
+        grid-row-gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    .graph {
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        margin-bottom: 30px;
+    }
+
+    .chart {
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+    }
 }

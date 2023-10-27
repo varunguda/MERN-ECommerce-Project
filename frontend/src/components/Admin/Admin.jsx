@@ -10,6 +10,8 @@ import { IoIosLaptop } from 'react-icons/io';
 import { BsPlusLg } from 'react-icons/bs';
 import { checkAdmin } from '../../State/action-creators/AdminActionCreators';
 import Dashboard from './Dashboard/Dashboard';
+import AllProducts from './Product/AllProducts';
+import CreateProduct from './Product/CreateProduct';
 
 
 const Admin = () => {
@@ -74,7 +76,7 @@ const Admin = () => {
 
             {(checkingAdmin !== false) ? <Loader /> : (
                 <>
-                    <Metadata title={`${admin && admin.name}'s profile - ManyIN`} />
+                    <Metadata title={`Admin Portal - ManyIN`} />
 
                     <div className="profile-sidebar">
 
@@ -172,6 +174,10 @@ const Admin = () => {
                     <div className="profile-content">
                         {(activeLocation === "") ? (
                             <Dashboard />
+                        ) : (activeLocation === "products/all") ? (
+                            <AllProducts />
+                        ) : (activeLocation === "products/create") ? (
+                            <CreateProduct />
                         ) : (
                             <Dashboard />
                         )}

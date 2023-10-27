@@ -10,10 +10,10 @@ const productCategories = [
     "Watches",
     "Telivision",
     "Refrigerator",
-    "Computer Accessories",
-    "Mobile Accessories",
+    "Washing Machines",
+    "Accessories",
     "Beauty & Health",
-    "Headphones & Earphones"
+    "Audio devices"
 ];
 
 const productVariations = [
@@ -175,12 +175,15 @@ const ProductSchema = new Schema({
         type: String
     },
 
+    // Category -- Washing Machines
+    capacity: {
+        type: String
+    },
+
     variations:[
         {
-            name:{
-                type: String,
-                enum: productVariations,
-            }
+            type: String,
+            enum: productVariations,
         }
     ],
 

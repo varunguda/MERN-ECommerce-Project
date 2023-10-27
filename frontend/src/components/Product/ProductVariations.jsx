@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllVariations } from "./utils";
+import { areKeysEqualExceptForKey, getAllVariations } from "./utils";
 import { useNavigate } from "react-router-dom";
 
 
@@ -17,38 +17,26 @@ const ProductVariations = ({ products, mainProduct, images }) => {
 
 
     const checkAvailability = (variationType, variationValue) => {
-        let isExist = false;
-
-        for (const product of products) {
-            for (const variation of Object.keys(allVariations.variations)) {
-                if (variation === variationType) {
-                    continue;
+        for (let i = 0; i < products.length; i++) {
+            if(products[i][variationType] === variationValue){
+                if (areKeysEqualExceptForKey(products[i], mainProduct, Object.keys(allVariations.variations), variationType)) {
+                    return true;
                 }
-                if ((mainProduct[variation] === product[variation]) && (product[variationType] === variationValue)) {
-                    isExist = true;
-                    break;
-                }
-            }
-            if (isExist) {
-                break;
             }
         }
 
-        return isExist;
+        return false;
     }
 
 
     const variationChange = (e) => {
-        let found = false;
-        for (const product of products) {
-            for (const variation of Object.keys(allVariations.variations)) {
-                if (variation === e.target.name) {
-                    continue;
-                }
 
-                if ((product[e.target.name] === e.target.value) && (product[variation] === mainProduct[variation])) {
+        let found = false;
+        for (let i = 0; i < products.length; i++) {
+            if ((products[i][e.target.name].toString() === e.target.value)) {
+                if (areKeysEqualExceptForKey(products[i], mainProduct, Object.keys(allVariations.variations), e.target.name)) {
                     found = true
-                    navigate(`/product/${product._id}`);
+                    navigate(`/product/${products[i]._id}`);
                     break
                 }
             }
@@ -56,9 +44,8 @@ const ProductVariations = ({ products, mainProduct, images }) => {
 
         if (!found) {
             for (const product of products) {
-                if (product[e.target.name] === e.target.value) {
-                    navigate(`/product/${product._id}`,  { state: { key: product._id } });
-                    break
+                if (product[e.target.name].toString() === e.target.value) {
+                    navigate(`/product/${product._id}`);
                 }
             }
         }
@@ -86,19 +73,30 @@ const ProductVariations = ({ products, mainProduct, images }) => {
                                 <div className="variation-type">{variation}:</div>
 
                                 <div className="variation-product-items">
-
                                     {
-
                                         (variation === "color") ? (
                                             allVariations.variations[variation].map((type, index) => {
                                                 return (
                                                     <div key={index}>
 
-                                                        <input onClick={variationChange} type="checkbox" name={variation} id={type} checked={(mainProduct[variation] === type)} value={type} readOnly />
+                                                        <input
+                                                            onClick={variationChange}
+                                                            type="checkbox"
+                                                            name={variation}
+                                                            id={type}
+                                                            checked={(mainProduct[variation] === type)}
+                                                            value={type}
+                                                            readOnly
+                                                        />
 
                                                         <label htmlFor={type}>
-                                                            <div className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}>
-                                                                <span className={(mainProduct[variation] !== type) ? "custom-tooltip" : ""} data-tooltip={`${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? `Click to select ${type}` : `See available options in ${type}`}`}>
+                                                            <div
+                                                                className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}
+                                                            >
+                                                                <span
+                                                                    className={(mainProduct[variation] !== type) ? "custom-tooltip" : ""}
+                                                                    data-tooltip={`${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? `Click to select ${type}` : `See available options in ${type}`}`}
+                                                                >
 
                                                                     <div className="product-item">
                                                                         <div className="variation-product-image">
@@ -119,24 +117,34 @@ const ProductVariations = ({ products, mainProduct, images }) => {
                                             allVariations.variations[variation].map((type, index) => {
                                                 return (
                                                     <div key={index}>
-
-                                                        <input onClick={variationChange} type="checkbox" name={variation} id={type} checked={(mainProduct[variation] === type)} value={type} readOnly />
+                                                        <input
+                                                            onClick={variationChange}
+                                                            type="checkbox"
+                                                            name={variation}
+                                                            id={type}
+                                                            checked={(mainProduct[variation] === type)}
+                                                            value={type}
+                                                            readOnly
+                                                        />
 
                                                         <label htmlFor={type}>
-                                                            <div className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}>
-                                                                <span className={(mainProduct[variation] !== type) ? "custom-tooltip" : ""} data-tooltip={`${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? `Click to select ${type}` : `See available options in ${type}`}`}>
+                                                            <div
+                                                                className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}
+                                                            >
+                                                                <span
+                                                                    className={(mainProduct[variation] !== type) ? "custom-tooltip" : ""}
+                                                                    data-tooltip={`${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? `Click to select ${type}` : `See available options in ${type}`}`}
+                                                                >
                                                                     <div className="product-variation variation-button">
                                                                         {type}
                                                                     </div>
                                                                 </span>
                                                             </div>
                                                         </label>
-
                                                     </div>
                                                 )
                                             })
                                         )
-
                                     }
                                 </div>
                             </div>
