@@ -20,7 +20,7 @@ const Privacy = () => {
         </div>
         </>
         );
-        openModal("Are you sure you want to continue to this link?", modalContent, true);
+        openModal("Are you sure you want to proceed to this link?", modalContent, true);
     }
 
     return (

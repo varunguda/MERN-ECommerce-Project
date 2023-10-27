@@ -1,7 +1,7 @@
 export class ApiFeatures {
 
-    constructor(products, queryStr) {
-        this.products = products,
+    constructor(items, queryStr) {
+        this.items = items,
             this.queryStr = queryStr
     }
 
@@ -23,7 +23,7 @@ export class ApiFeatures {
             ]
         } : {};
 
-        this.products = this.products.find({ ...keyword });
+        this.items = this.items.find({ ...keyword });
         return this;
     }
 
@@ -124,7 +124,7 @@ export class ApiFeatures {
             delete query["$or"];
         }
 
-        this.products = this.products.find(query);
+        this.items = this.items.find(query);
         return this;
     }
 
@@ -142,7 +142,7 @@ export class ApiFeatures {
             ]
         } : {};
 
-        this.products = this.products.find({ ...keyword });
+        this.items = this.items.find({ ...keyword });
         return this;
     }
 
@@ -219,12 +219,12 @@ export class ApiFeatures {
             }
         }
 
-        this.products = this.products.find(query);
+        this.items = this.items.find(query);
         return this;
     }
 
-    sortOrders() {
-        this.products = this.products.sort('-created_at');
+    sortByCreate() {
+        this.items = this.items.sort('-created_at');
         return this;
     }
 }

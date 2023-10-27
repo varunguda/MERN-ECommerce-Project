@@ -194,8 +194,8 @@ export const getOrderDetails = catchAsync(async (req, res, next) => {
 export const getMyOrders = catchAsync(async (req, res, next) => {
 
     const totalOrdersCount = await Orders.find({ user: req.user._id }).countDocuments();
-    const apiFeatures = new ApiFeatures(Orders.find({ user: req.user._id }), req.query).searchOrders().filterOrders().sortOrders();
-    const orders = await apiFeatures.products;
+    const apiFeatures = new ApiFeatures(Orders.find({ user: req.user._id }), req.query).searchOrders().filterOrders().sortByCreate();
+    const orders = await apiFeatures.items;
 
     const ordersCount = orders.length;
 
@@ -271,7 +271,7 @@ export const getAllOrders = catchAsync(async (req, res, next) => {
     const { page } = req.query;
 
     const apiFeatures = new ApiFeatures(Orders.find({}), req.query).searchOrders().filterOrders();
-    const orders = await apiFeatures.products;
+    const orders = await apiFeatures.items;
 
     const ordersCount = orders.length;
 

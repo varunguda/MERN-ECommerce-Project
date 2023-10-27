@@ -220,7 +220,7 @@ const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
                         transactionInfo: {
                             totalPriceStatus: 'FINAL',
                             totalPriceLabel: 'Total',
-                            totalPrice: price.toString(),
+                            totalPrice: price && price.toString(),
                             currencyCode: 'INR',
                             countryCode: 'IN',
                         },

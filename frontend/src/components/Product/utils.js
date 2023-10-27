@@ -1,18 +1,14 @@
 export const getAllVariations = (products) => {
 
-    let allVariations = products[0].variations.map((variation) => {
-        return variation.name;
-    });
-
     const variations = {};
 
-    allVariations.forEach((variationName) => {
+    products[0].variations.forEach((variationName) => {
         variations[variationName] = products.reduce((uniqueValues, product) => {
             const value = product[variationName];
             if (!uniqueValues.includes(value)) {
                 uniqueValues.push(value);
             }
-            return uniqueValues;
+            return uniqueValues.sort((a, b) => a - b);
         }, []);
     });
 
@@ -31,6 +27,11 @@ export const getAllVariations = (products) => {
     return result;
 };
 
+
+export const areKeysEqualExceptForKey = (obj1, obj2, keys, excludedKey) => {
+    const checkKeys = keys.filter((key) => key !== excludedKey);
+    return checkKeys.every((key) => obj1[key] === obj2[key]);
+}
 
 
 export const ramFormatter = (num) => {
@@ -78,15 +79,15 @@ export const removeDoublePipe = (str) => {
 
 
 export const reviewTitleValidator = (val) => {
-    if(val.length === 0){
+    if (val.length === 0) {
         return `Title is required`;
     }
 
-    if(val.trim() === ""){
+    if (val.trim() === "") {
         return `Enter a valid title`;
     }
 
-    if(val.length > 100){
+    if (val.length > 100) {
         return `Title must not contain more than 100 characters`
     }
 
@@ -95,15 +96,15 @@ export const reviewTitleValidator = (val) => {
 
 
 export const reviewCommentValidator = (val) => {
-    if(val.length === 0){
+    if (val.length === 0) {
         return `Comment is required`;
     }
 
-    if(val.trim() === ""){
+    if (val.trim() === "") {
         return `Enter a valid comment`;
     }
 
-    if(val.length > 400){
+    if (val.length > 400) {
         return `Comment must not contain more than 400 characters`
     }
 
@@ -112,11 +113,11 @@ export const reviewCommentValidator = (val) => {
 
 
 export const reviewRatingValidator = (val) => {
-    if(typeof val !== "number"){
+    if (typeof val !== "number") {
         return `Please select a valid rating`;
     }
 
-    if((val <= 0) || (val > 5)){
+    if ((val <= 0) || (val > 5)) {
         return "Please rate your product";
     }
 

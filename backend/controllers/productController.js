@@ -8,7 +8,7 @@ import { Review } from '../models/reviewModel.js';
 import { Orders } from '../models/orderModel.js';
 
 
-const allProperties = ["name", "description", "price", "images", "stock", "discount_price", "final_price", "options", "bundles", "color", "ram", "rom", "processor", "resolution", "storage", "size", "sizes", "quantity", "variations", "brand", "category", "review_id"]
+const allProperties = ["name", "description", "price", "images", "stock", "discount_price", "final_price", "options", "bundles", "color", "ram", "rom", "processor", "resolution", "storage", "size", "sizes", "quantity", "capacity", "variations", "brand", "category", "review_id"]
 
 const commonProperties = ["name", "description", "price", "images", "stock", "discount_price", "options", "bundles"]
 
@@ -46,16 +46,16 @@ const categoryConfig = {
         properties: [...commonProperties, "color", "storage"],
     },
 
-    "Computer Accessories": {
+    "Washing Machines": {
         properties: [...commonProperties, "color", "size"],
     },
 
-    "Mobile Accessories": {
-        properties: [...commonProperties, "color", "size"]
+    "Accessories": {
+        properties: [...commonProperties, "color", "size"],
     },
 
-    "Headphones & Earphones": {
-        properties: [...commonProperties, "color", "size"],
+    "Audio devices": {
+        properties: [...commonProperties, "color"],
     },
 
     "Beauty & Health": {
@@ -67,9 +67,9 @@ const categoryConfig = {
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
 
-    let apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter();
+    let apiFeatures = new ApiFeatures(Product.find(), req.query).search().filter().sortByCreate();
 
-    const allProducts = await apiFeatures.products;
+    const allProducts = await apiFeatures.items;
     const productCount = allProducts.length;
     let exist = false;
 
@@ -82,7 +82,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     for (let i = 0; i < Object.keys(categoryConfig).length; i++) {
         categories[Object.keys(categoryConfig)[i]] = 0;
     }
-
 
     // variations or facets
     let colorOptions = {};
@@ -165,7 +164,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         1: 0,
     }
 
-    const products = pagination(allProducts, 20, req.query.page);
+    const products = pagination(allProducts, 10, req.query.page);
 
     let updatedProducts = [];
 
@@ -380,8 +379,8 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
 
 
 export const getMyProducts = catchAsync(async (req, res, next) => {
-    const apiFeatures = new ApiFeatures(Product.find({ seller_id: req.user._id }), req.query).search();
-    const allProducts = await apiFeatures.products;
+    const apiFeatures = new ApiFeatures(Product.find({ seller_id: req.user._id }), req.query).search().sortByCreate();
+    const allProducts = await apiFeatures.items;
     const product_count = allProducts.length;
 
     const products = pagination(allProducts, 10, req.query.page);
