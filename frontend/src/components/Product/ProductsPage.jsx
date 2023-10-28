@@ -823,8 +823,8 @@ const ProductsPage = () => {
                                                 }
                                             </div>
 
-                                            {productCount > 20 && (
-                                                <Paginate total={productCount} pageSize={20} current={page} onChange={pageChangeHandler} />
+                                            {productCount > 10 && (
+                                                <Paginate total={productCount} pageSize={10} current={page ? Number(page) : 1} onChange={pageChangeHandler} />
                                             )}
                                         </>
                                     ) : (
