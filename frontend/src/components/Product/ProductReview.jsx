@@ -308,7 +308,7 @@ const ProductReview = ({ products, mainProduct }) => {
 
                                                             <div className="reviewer-name">{review.name}</div>
                                                             
-                                                            <LikesDislikes products={products} review={review} />
+                                                            <LikesDislikes reviewsId={productReview._id} review={review} />
 
                                                         </div>
                                                     </div>
