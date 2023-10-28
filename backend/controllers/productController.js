@@ -86,18 +86,18 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     // variations or facets
     let colorOptions = {};
     let ramOptions = {
-        16 : 0,
-        12 : 0,
-        8 : 0,
-        6 : 0,
-        4 : 0,
-        3 : 0,
+        16: 0,
+        12: 0,
+        8: 0,
+        6: 0,
+        4: 0,
+        3: 0,
     };
     let storageOptions = {};
     let processorOptions = [];
     let quantityOptions = [];
-    
-    
+
+
     if (keyword) {
         const existProducts = await Product.find({ $or: [{ name: { $regex: keyword, $options: "i" } }, { brand: { $regex: keyword, $options: "i" } }] });
         if (existProducts && existProducts.length > 0) {
@@ -113,37 +113,37 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
             if (!brands.includes(prod.brand)) {
                 brands.push(prod.brand)
             }
-            if(prod.color){
-                if(colorOptions[prod.color] === undefined){
+            if (prod.color) {
+                if (colorOptions[prod.color] === undefined) {
                     colorOptions[prod.color] = 1;
                 }
-                else if(colorOptions[prod.color] >= 0){
+                else if (colorOptions[prod.color] >= 0) {
                     colorOptions[prod.color] += 1;
                 }
             }
-            if(prod.ram){
-                if( ramOptions[prod.ram] !== undefined && ramOptions[prod.ram] >= 0){
+            if (prod.ram) {
+                if (ramOptions[prod.ram] !== undefined && ramOptions[prod.ram] >= 0) {
                     ramOptions[prod.ram] += 1;
                 }
-                else if(prod.ram > 16){
+                else if (prod.ram > 16) {
                     ramOptions[16] += 1;
                 }
-                else if(prod.ram < 3){
+                else if (prod.ram < 3) {
                     ramOptions[3] += 1;
                 }
             }
-            if(prod.storage){
-                if(storageOptions[prod.storage] === undefined){
+            if (prod.storage) {
+                if (storageOptions[prod.storage] === undefined) {
                     storageOptions[prod.storage] = 1;
                 }
-                else if(storageOptions[prod.storage] >= 0){
+                else if (storageOptions[prod.storage] >= 0) {
                     storageOptions[prod.storage] += 1;
                 }
             }
-            if(prod.processer && !processorOptions.includes(prod.processer)){
+            if (prod.processer && !processorOptions.includes(prod.processer)) {
                 processorOptions.push(prod.processer);
             }
-            if(prod.quantity && !quantityOptions.includes(prod.quantity)){
+            if (prod.quantity && !quantityOptions.includes(prod.quantity)) {
                 quantityOptions.push(prod.quantity);
             }
             categories[prod.category] += 1;
@@ -171,12 +171,17 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     for (let i = 0; i < products.length; i++) {
         if (products[i].review_id) {
             const review_data = await Review.findById(products[i].review_id);
-            updatedProducts.push({ rating: review_data.rating, total_reviews: review_data.total_reviews, ...products[i]._doc });
-            if(review_data.rating === 5){
-                customer_ratings[4] += 1;
+            if (!review_data) {
+                updatedProducts.push({ rating: 0, total_reviews: 0, ...products[i]._doc });
             }
             else{
-                customer_ratings[Math.floor(review_data.rating)] += 1;
+                updatedProducts.push({ rating: review_data.rating, total_reviews: review_data.total_reviews, ...products[i]._doc });
+                if (review_data.rating === 5) {
+                    customer_ratings[4] += 1;
+                }
+                else {
+                    customer_ratings[Math.floor(review_data.rating)] += 1;
+                }
             }
         }
         else {
@@ -201,10 +206,10 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     }));
 
     const queryRatings = req.query.c_ratings;
-    if(queryRatings && queryRatings.split(",").length > 0){
-        const reviewsArr =  queryRatings.split(",");
+    if (queryRatings && queryRatings.split(",").length > 0) {
+        const reviewsArr = queryRatings.split(",");
         updatedProducts = updatedProducts.filter((prod) => {
-            if(prod.rating){
+            if (prod.rating) {
                 return ((prod.rating === 5) ? reviewsArr.includes('4') : reviewsArr.includes(Math.floor(prod.rating).toString()));
             }
         })
@@ -213,25 +218,25 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
 
     let filters = {};
 
-    if(Object.keys(colorOptions).reduce((count, color) =>{ return count + colorOptions[color] },0)){
-        filters = {...filters, color: colorOptions}
+    if (Object.keys(colorOptions).reduce((count, color) => { return count + colorOptions[color] }, 0)) {
+        filters = { ...filters, color: colorOptions }
     }
-    if(Object.keys(ramOptions).reduce((count, ram) =>{ return count + ramOptions[ram] },0)){
-        filters = {...filters, ram: ramOptions}
+    if (Object.keys(ramOptions).reduce((count, ram) => { return count + ramOptions[ram] }, 0)) {
+        filters = { ...filters, ram: ramOptions }
     }
-    if(Object.keys(storageOptions).reduce((count, storage) =>{ return count + storageOptions[storage] },0)){
-        filters = {...filters, storage: storageOptions}
+    if (Object.keys(storageOptions).reduce((count, storage) => { return count + storageOptions[storage] }, 0)) {
+        filters = { ...filters, storage: storageOptions }
     }
-    if(quantityOptions.length){
+    if (quantityOptions.length) {
         filters.push("quantities");
     }
-    if(processorOptions.length){
+    if (processorOptions.length) {
         filters.push("processor type");
     }
 
 
     const { sort_by } = req.query;
-    if(sort_by){
+    if (sort_by) {
         updatedProducts = sortBy(updatedProducts, sort_by);
     }
 
@@ -269,7 +274,9 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
 
     if (allProducts[0].review_id) {
         const review_data = await Review.findById(allProducts[0].review_id);
-        allProducts[0] = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...allProducts[0]._doc }
+        if(review_data){
+            allProducts[0] = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...allProducts[0]._doc }
+        }
     }
 
     return res.json({
@@ -280,11 +287,11 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
 
 
 
-export const getSingleProductDetails = catchAsync( async(req, res, next) => {
+export const getSingleProductDetails = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
     const product = await Product.findById(id);
-    if(!product){
+    if (!product) {
         return next(new ErrorHandler("Product doesn't exist", 404));
     }
 
@@ -458,13 +465,13 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
     if (!product.review_id) {
         const productReviews = await Review.create({});
         product.review_id = productReviews._id;
-        product.save({ validateBeforeSave: false })
+        await product.save({ validateBeforeSave: false })
 
         if (product.product_id) {
             const products = await Product.find({ product_id: product.product_id });
-            products.forEach(product => {
+            products.forEach(async (product) => {
                 product.review_id = productReviews._id;
-                product.save({ validateBeforeSave: false })
+                await product.save({ validateBeforeSave: false })
             });
         }
 
@@ -490,7 +497,7 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
         productReviews.total_reviews = productReviews.reviews.length;
         productReviews.rating = Math.round(rating);
 
-        productReviews.save({ validateBeforeSave: false });
+        await productReviews.save({ validateBeforeSave: false });
 
         return res.status(201).json({
             success: true,
@@ -502,7 +509,7 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
     const productReview = await Review.findById(product.review_id);
     if (!productReview) {
         product.review_id = undefined;
-        product.save({ validateBeforeSave: false })
+        await product.save({ validateBeforeSave: false });
         return next(new ErrorHandler("Something went wrong, please try again!", 400));
     }
 
@@ -523,7 +530,7 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
             return review;
         });
 
-        productReview.save({ validateBeforeSave: false });
+        await productReview.save({ validateBeforeSave: false });
 
         return res.status(201).json({
             success: true,
@@ -597,7 +604,7 @@ export const getAllProductReviews = catchAsync(async (req, res, next) => {
     }
     const currentPage = page || 1;
     let productReviews = reviews.reviews.slice(10 * (currentPage - 1), (10 * (currentPage - 1)) + 10);
-    
+
 
     if (req.user && productReviews.length > 0) {
         productReviews = productReviews.map((rev) => {
@@ -854,7 +861,7 @@ export const toggleLikeOfAReview = catchAsync(async (req, res, next) => {
         if (rev._id.toString() === review.toString()) {
 
             if (rev.liked_users.some((user) => user.user_id.toString() === req.user._id.toString())) {
-                rev.liked_users = rev.liked_users.filter((user) => user.user_id.toString() !== req.user._id.toString() );
+                rev.liked_users = rev.liked_users.filter((user) => user.user_id.toString() !== req.user._id.toString());
                 rev.likes = rev.liked_users.length;
                 liked = true;
                 return rev;

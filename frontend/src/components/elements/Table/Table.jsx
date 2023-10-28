@@ -94,7 +94,7 @@ const Table = ({ products, getPage, page, productCount }) => {
                         pagination: {
                             paginationModel: {
                                 pageSize: 10,
-                                page: page-1,
+                                page: page - 1,
                             },
                         },
                         columns: {

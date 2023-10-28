@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 
-const LikesDislikes = ({ products, review }) => {
+const LikesDislikes = ({ reviewsId, review }) => {
 
     const [liked, setLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(0);
@@ -15,7 +15,6 @@ const LikesDislikes = ({ products, review }) => {
     const [saveDislike, setSaveDislike] = useState(false);
     const likeInterval = useRef();
     const dislikeInterval = useRef();
-
 
     const dispatch = useDispatch();
 
@@ -52,7 +51,8 @@ const LikesDislikes = ({ products, review }) => {
         clearTimeout(likeInterval.current);
         likeInterval.current = setTimeout(() => {
             if (tempLiked !== saveLike) {
-                toggleReviewLike(products[0].review_id, review._id);
+                console.log(reviewsId);
+                toggleReviewLike(reviewsId, review._id);
                 setSaveLike(tempLiked);
             }
         }, 1000);
@@ -80,7 +80,7 @@ const LikesDislikes = ({ products, review }) => {
         clearTimeout(dislikeInterval.current);
         dislikeInterval.current = setTimeout(() => {
             if (tempDisliked !== saveDislike) {
-                toggleReviewDislike(products[0].review_id, review._id);
+                toggleReviewDislike(reviewsId, review._id);
                 setSaveDislike(tempDisliked);
             }
         }, 1000);
