@@ -86,9 +86,9 @@ const ProductReview = ({ products, mainProduct }) => {
         let isFetched = false;
         const fetchReviews = () => {
             if ((window.scrollY > 800) && !isFetched && Object.keys(productReview).length === 0) {
-                if (products && products.length > 0 && products[0].review_id) {
+                if (mainProduct.review_id) {
                     setNoReviews(false);
-                    getProductReviews(products[0]._id);
+                    getProductReviews(mainProduct._id);
                     isFetched = true;
                 }
                 else {
@@ -104,16 +104,16 @@ const ProductReview = ({ products, mainProduct }) => {
         }
 
         // eslint-disable-next-line
-    }, [products]);
+    }, [mainProduct]);
 
 
     useEffect(() => {
         if (productReview && Object.keys(productReview).length && productReview.reviews && (productReview.reviews.length > 0) && loggedIn) {
-            const exist = productReview.reviews.filter((rev) => rev.user_id.toString() === user._id.toString());
-            if (exist.length > 0) {
-                reviewDispatch({ type: SET_REVIEW_TITLE, payload: exist[0].title })
-                reviewDispatch({ type: SET_REVIEW_COMMENT, payload: exist[0].comment })
-                reviewDispatch({ type: SET_REVIEW_RATING, payload: exist[0].rating })
+            const exist = productReview.reviews.find((rev) => rev.user_id.toString() === user._id.toString());
+            if (exist) {
+                reviewDispatch({ type: SET_REVIEW_TITLE, payload: exist.title })
+                reviewDispatch({ type: SET_REVIEW_COMMENT, payload: exist.comment })
+                reviewDispatch({ type: SET_REVIEW_RATING, payload: exist.rating })
                 setReviewExist(true);
             };
         }
@@ -123,7 +123,7 @@ const ProductReview = ({ products, mainProduct }) => {
 
     useEffect(() => {
         if (reviewPage) {
-            getProductReviews(products[0]._id, reviewPage);
+            getProductReviews(mainProduct._id, reviewPage);
         }
         // eslint-disable-next-line
     }, [reviewPage]);
@@ -139,7 +139,7 @@ const ProductReview = ({ products, mainProduct }) => {
                 return reviewDispatch({ type: SET_REVIEW_TITLE, payload: e.target.value.slice(0, 100) })
             }
             case "comment": {
-                return reviewDispatch({ type: SET_REVIEW_COMMENT, payload: e.target.value.slice(0, 400) })
+                return reviewDispatch({ type: SET_REVIEW_COMMENT, payload: e.target.value.slice(0, 800) })
             }
             default: {
                 return
@@ -196,8 +196,8 @@ const ProductReview = ({ products, mainProduct }) => {
 
             <div className="input-section">
                 <label htmlFor="comment" className="label1">Comment*</label>
-                <textarea onChange={reviewChangeHandler} maxLength={400} className='textarea1' name="comment" id="comment" defaultValue={state.comment} />
-                <span className="input-caption" style={{ alignSelf: "flex-end" }}>{state.comment.length}/400</span>
+                <textarea onChange={reviewChangeHandler} maxLength={800} className='textarea1' name="comment" id="comment" defaultValue={state.comment} />
+                <span className="input-caption" style={{ alignSelf: "flex-end" }}>{state.comment.length}/800</span>
                 {(validateFields && reviewCommentValidator(state.comment)) && (
                     <span className='input-error'>{reviewCommentValidator(state.comment)}</span>
                 )}
