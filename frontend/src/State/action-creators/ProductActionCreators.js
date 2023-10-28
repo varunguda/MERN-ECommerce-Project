@@ -23,7 +23,7 @@ import {
     ADD_PRODUCT_REVIEW_REQUEST,
     ADD_PRODUCT_REVIEW_SUCCESS,
     ADD_PRODUCT_REVIEW_FAILURE,
-    
+
     DELETE_PRODUCT_REVIEW_REQUEST,
     DELETE_PRODUCT_REVIEW_SUCCESS,
     DELETE_PRODUCT_REVIEW_FAILURE,
@@ -42,7 +42,7 @@ import {
 
 
 
-export const getProducts = () => async(dispatch, getState) => {
+export const getProducts = () => async (dispatch, getState) => {
 
     try {
         dispatch({ type: ALL_PRODUCT_REQUEST });
@@ -62,10 +62,10 @@ export const getProducts = () => async(dispatch, getState) => {
             state.urlParams.sort_by && `sort_by=${state.urlParams.sort_by}`
         ].filter(Boolean).join('&');
 
-        let link = `/api/v1/products${queryParams ? '?'+queryParams : ''}`;
+        let link = `/api/v1/products${queryParams ? '?' + queryParams : ''}`;
 
         const { data } = await axios.get(link);
-        
+
         dispatch({
             type: ALL_PRODUCT_SUCCESS,
             payload: data,
@@ -81,8 +81,8 @@ export const getProducts = () => async(dispatch, getState) => {
 
 
 
-export const getProductDetails = ({ id }) => async(dispatch) => {
-    
+export const getProductDetails = (id) => async (dispatch) => {
+
     try {
         dispatch({ type: PRODUCT_DETAILS_REQUEST });
 
@@ -103,12 +103,12 @@ export const getProductDetails = ({ id }) => async(dispatch) => {
 
 
 
-export const getAllProductsOfSeller = (id) => async(dispatch) => {
+export const getAllProductsOfSeller = (id) => async (dispatch) => {
     try {
-        
-        dispatch({ type : SELLER_PRODUCT_REQUEST });
 
-        const { data } = await axios.get(`/api/v1/products/seller/${id}`); 
+        dispatch({ type: SELLER_PRODUCT_REQUEST });
+
+        const { data } = await axios.get(`/api/v1/products/seller/${id}`);
 
         dispatch({
             type: SELLER_PRODUCT_SUCCESS,
@@ -121,11 +121,11 @@ export const getAllProductsOfSeller = (id) => async(dispatch) => {
             payload: error.response.data.message
         })
     }
-} 
+}
 
 
 
-export const getBundleProducts = (id) => async(dispatch) => {
+export const getBundleProducts = (id) => async (dispatch) => {
     try {
 
         dispatch({ type: BUNDLE_PRODUCTS_REQUEST });
@@ -147,18 +147,18 @@ export const getBundleProducts = (id) => async(dispatch) => {
 
 
 
-export const getProductReviews = (id, page) => async(dispatch) => {
+export const getProductReviews = (id, page) => async (dispatch) => {
     try {
 
         dispatch({ type: PRODUCT_REVIEWS_REQUEST });
 
-        const { data } = await axios.get(`/api/v1/products/reviews/${id}?page=${page?page:1}`);
+        const { data } = await axios.get(`/api/v1/products/reviews/${id}?page=${page ? page : 1}`);
 
         dispatch({
             type: PRODUCT_REVIEWS_SUCCESS,
             payload: data,
         })
-        
+
     } catch (error) {
         dispatch({
             type: PRODUCT_REVIEWS_FAILURE,
@@ -225,7 +225,7 @@ export const deleteProductReview = (id) => async (dispatch) => {
 
 
 
-export const toggleReviewLike = ( reviews_id, review_id ) => async(dispatch) => {
+export const toggleReviewLike = (reviews_id, review_id) => async (dispatch) => {
 
     try {
 
@@ -237,7 +237,7 @@ export const toggleReviewLike = ( reviews_id, review_id ) => async(dispatch) => 
             type: LIKE_REVIEW_SUCCESS,
             payload: data
         })
-        
+
     } catch (error) {
         dispatch({
             type: LIKE_REVIEW_FAILURE,
@@ -247,7 +247,7 @@ export const toggleReviewLike = ( reviews_id, review_id ) => async(dispatch) => 
 }
 
 
-export const toggleReviewDislike = ( reviews_id, review_id ) => async(dispatch) => {
+export const toggleReviewDislike = (reviews_id, review_id) => async (dispatch) => {
 
     try {
         const config = { headers: { "Content-Type": "application/json" } };
@@ -258,7 +258,7 @@ export const toggleReviewDislike = ( reviews_id, review_id ) => async(dispatch) 
             type: DISLIKE_REVIEW_SUCCESS,
             payload: data
         })
-        
+
     } catch (error) {
         dispatch({
             type: DISLIKE_REVIEW_FAILURE,

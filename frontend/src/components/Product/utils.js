@@ -1,8 +1,8 @@
-export const getAllVariations = (products) => {
+export const getAllVariations = (products, mainProduct) => {
 
     const variations = {};
 
-    products[0].variations.forEach((variationName) => {
+    mainProduct.variations.forEach((variationName) => {
         variations[variationName] = products.reduce((uniqueValues, product) => {
             const value = product[variationName];
             if (!uniqueValues.includes(value)) {
@@ -12,19 +12,7 @@ export const getAllVariations = (products) => {
         }, []);
     });
 
-    // let allVariantProducts = products.map((product) => {
-    //     let variants = allVariations.map((variation) => {
-    //         return { [variation]: product[variation] };
-    //     });
-    //     return { product: product._id, ...variants };
-    // });
-
-    const result = {
-        variations,
-        // products: allVariantProducts
-    };
-
-    return result;
+    return variations;
 };
 
 

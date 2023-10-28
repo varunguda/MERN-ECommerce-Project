@@ -257,31 +257,41 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
 
 
 export const getProductDetails = catchAsync(async (req, res, next) => {
+
     const { id } = req.params;
 
-    let allProducts = [];
     const product = await Product.findById(id);
     if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
 
-    if (product.product_id) {
+    let variationProducts = [];
+
+    if (product.product_id && product.variations.length > 0) {
         const similarProducts = await Product.find({ product_id: product.product_id });
-        allProducts = allProducts.concat(similarProducts);
-    } else {
-        allProducts.push(product);
+
+        similarProducts.forEach((prod) => {
+            let obj = {};
+            obj._id = prod._id;
+            for(const variation of product.variations){
+                obj[variation] = prod[variation];
+            } 
+            variationProducts.push(obj);
+        })
     }
 
-    if (allProducts[0].review_id) {
-        const review_data = await Review.findById(allProducts[0].review_id);
+    let updatedProduct;
+    if (product.review_id) {
+        const review_data = await Review.findById(product.review_id);
         if(review_data){
-            allProducts[0] = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...allProducts[0]._doc }
+            updatedProduct = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...product._doc }
         }
     }
-
+    
     return res.json({
         success: true,
-        products: allProducts,
+        product: updatedProduct,
+        variation_products: variationProducts,
     })
 });
 
