@@ -3,23 +3,25 @@ import { areKeysEqualExceptForKey, getAllVariations } from "./utils";
 import { useNavigate } from "react-router-dom";
 
 
-const ProductVariations = ({ products, mainProduct, images }) => {
+const ProductVariations = ({ variationProducts, mainProduct, images }) => {
 
     const [allVariations, setAllVariations] = useState({});
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (products && products.length > 0) {
-            setAllVariations(getAllVariations(products));
+        if (variationProducts && variationProducts.length > 0) {
+            setAllVariations(() => getAllVariations(variationProducts, mainProduct));
         }
-    }, [products]);
+
+        // eslint-disable-next-line
+    }, [variationProducts]);
 
 
     const checkAvailability = (variationType, variationValue) => {
-        for (let i = 0; i < products.length; i++) {
-            if(products[i][variationType] === variationValue){
-                if (areKeysEqualExceptForKey(products[i], mainProduct, Object.keys(allVariations.variations), variationType)) {
+        for (let i = 0; i < variationProducts.length; i++) {
+            if(variationProducts[i][variationType] === variationValue){
+                if (areKeysEqualExceptForKey(variationProducts[i], mainProduct, Object.keys(allVariations), variationType)) {
                     return true;
                 }
             }
@@ -32,18 +34,18 @@ const ProductVariations = ({ products, mainProduct, images }) => {
     const variationChange = (e) => {
 
         let found = false;
-        for (let i = 0; i < products.length; i++) {
-            if ((products[i][e.target.name].toString() === e.target.value)) {
-                if (areKeysEqualExceptForKey(products[i], mainProduct, Object.keys(allVariations.variations), e.target.name)) {
+        for (let i = 0; i < variationProducts.length; i++) {
+            if ((variationProducts[i][e.target.name].toString() === e.target.value)) {
+                if (areKeysEqualExceptForKey(variationProducts[i], mainProduct, Object.keys(allVariations), e.target.name)) {
                     found = true
-                    navigate(`/product/${products[i]._id}`);
+                    navigate(`/product/${variationProducts[i]._id}`);
                     break
                 }
             }
         }
 
         if (!found) {
-            for (const product of products) {
+            for (const product of variationProducts) {
                 if (product[e.target.name].toString() === e.target.value) {
                     navigate(`/product/${product._id}`);
                 }
@@ -53,7 +55,7 @@ const ProductVariations = ({ products, mainProduct, images }) => {
 
 
     const getImage = (variation, variationValue) => {
-        for (const product of products) {
+        for (const product of variationProducts) {
             if (product[variation] === variationValue) {
                 return images[0];
             }
@@ -67,7 +69,7 @@ const ProductVariations = ({ products, mainProduct, images }) => {
 
                 <div className="product-variations">
 
-                    {Object.keys(allVariations.variations).map((variation, index) => {
+                    {Object.keys(allVariations).map((variation, index) => {
                         return (
                             <div key={index} className='variation-container'>
                                 <div className="variation-type">{variation}:</div>
@@ -75,7 +77,7 @@ const ProductVariations = ({ products, mainProduct, images }) => {
                                 <div className="variation-product-items">
                                     {
                                         (variation === "color") ? (
-                                            allVariations.variations[variation].map((type, index) => {
+                                            allVariations[variation].map((type, index) => {
                                                 return (
                                                     <div key={index}>
 
@@ -114,7 +116,7 @@ const ProductVariations = ({ products, mainProduct, images }) => {
                                             })
                                         ) : (
 
-                                            allVariations.variations[variation].map((type, index) => {
+                                            allVariations[variation].map((type, index) => {
                                                 return (
                                                     <div key={index}>
                                                         <input
