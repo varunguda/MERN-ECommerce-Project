@@ -42,15 +42,15 @@ const ProductSchema = new Schema({
     name: {
         type: String,
         required: [true, "Please enter product Name"],
-        minLength: [5, "Product name must contain atleast 5 characters!"],
-        maxLength: [80, "Product name is too large!"],
+        minLength: [10, "Product name must contain atleast 10 characters!"],
+        maxLength: [250, "Product name is too large!"],
     },
 
     description: {
         type: String,
         required: [true, "Please enter product Description"],
-        minLength: [5, "Product description must contain atleast 5 characters!"],
-        maxLength: [200, "Product description is too large!"]
+        minLength: [10, "Product description must contain atleast 5 characters!"],
+        maxLength: [1000, "Product description is too large!"]
     },
 
     category: {
@@ -63,14 +63,16 @@ const ProductSchema = new Schema({
     brand: {
         type: String,
         required: true,
-        maxLength: [80, "Product brand name is too large!"],
+        minLength: [2, "Product brand name is too small!"],
+        maxLength: [50, "Product brand name is too large!"],
         immutable: true,
     },
 
     stock: {
         type: Number,
         required: true,
-        maxLength: [99999, "Product stock is too large!"]
+        min: [10, "Product stock is too small!"],
+        max: [100000, "Product stock is too large!"]
     },
 
     images: [
@@ -89,11 +91,15 @@ const ProductSchema = new Schema({
     price: {
         type: Number,
         required: true,
+        min: [10, "Price must be atleast 10/-"],
+        max: [999999, "Product price must be less than 10,00,000/-"]
     },
 
     discount_percent: {
         type: Number,
-        default: 0
+        default: 0,
+        min: 0,
+        max: 90,
     },
 
     final_price: {
@@ -123,62 +129,50 @@ const ProductSchema = new Schema({
 
     color: {
         type: String,
+        minLength: [2, "Color name is too small!"],
+        maxLength: [40, "Color name is too large!"],
     },
 
     // Category -- Mobiles
     ram: {
         type: Number,
+        min: [1, "Ram value must be in range 1 and 10,000"],
+        max: [10000, "Ram value must be in range 1 and 10,000"],
     },
-
-    // Category -- Clothing, Shoes
-    sizes: [
-        {
-            size:{
-                type: String,
-                required: true
-            },
-            price:{
-                type: Number,
-                required: true
-            },
-            discount_percent:{
-                type: Number,
-                required: true
-            },
-            stock:{
-                type: Number,
-                required: true
-            }
-        }
-    ],
 
     size:{
         type: String,
+        minLength: [2, "Size value is too small!"],
+        maxLength: [10, "Size value is too large!"],
     },
 
     // Category -- Laptops & Computers
     storage: {
         type: Number,
-    },
+        min: [1, "Ram value must be in range 1 and 10,000"],
+        maxLength: [10000, "Storage value must be in range 1 and 10,000"]
+    },    
 
     processer: {
         type: String,
+        minLength: [5, "Processor name is too small!"],
+        maxLength: [100, "Processor name is too large!"]
     },
+
 
     // Category -- Beauty
     quantity: {
         type: Number,
+        min: [1, "Quantity must be in range 1 and 10,000"],
+        max: [10000, "Quantity must be in range 0 and 10,000"]
     },
+
 
     // Category -- TV
     resolution: {
         type: String
     },
 
-    // Category -- Washing Machines
-    capacity: {
-        type: String
-    },
 
     variations:[
         {

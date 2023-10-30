@@ -19,7 +19,7 @@ const Dashboard = () => {
                 data: [212033, 324234, 64721, 24633, 43532, 10635],
                 fill: false,
                 backgroundColor: '#32CD32',
-                borderColor: '#32CD322f',
+                borderColor: '#32CD326f',
             },
         ],
     };
@@ -59,7 +59,7 @@ const Dashboard = () => {
                 data: [12, 19, 3, 5, 2, 3],
                 fill: false,
                 backgroundColor: '#0071dc',
-                borderColor: '#0071dc2f',
+                borderColor: '#0071dc6f',
             },
         ],
     };
@@ -99,14 +99,14 @@ const Dashboard = () => {
                 data: [123, 239, 432, 97, 34, 21],
                 fill: false,
                 backgroundColor: '#0071dc',
-                borderColor: '#0071dc2f',
+                borderColor: '#0071dc6f',
             },
             {
                 label: 'SELLERS REGISTERED',
                 data: [13, 29, 32, 7, 24, 31],
                 fill: false,
                 backgroundColor: '#ffc220',
-                borderColor: '#ffc2202f',
+                borderColor: '#ffc2206f',
             },
         ],
     };

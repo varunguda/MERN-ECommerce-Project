@@ -267,6 +267,7 @@ body {
 
 .inferior-btn {
     position: relative;
+    width: fit-content;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -419,6 +420,10 @@ body {
     border-color: var(--primary-error-color);
 }
 
+.input1:disabled{
+    background-color: rgb(239, 239, 239);
+}
+
 .checkboxes label {
     display: flex;
     align-items: center;
@@ -443,6 +448,27 @@ body {
 .checkboxes input[type="checkbox"]:checked+label::before {
     outline: 1px solid var(--primary-hover-color);
     background-color: var(--primary-hover-color);
+}
+
+.checkboxes input:disabled ~ label {
+    color: var(--light-font-color);
+}
+
+.checkboxes input[type="checkbox"]:checked:disabled ~ label {
+    cursor: default;
+}
+
+.checkboxes input[type="checkbox"]:checked:disabled ~ label::before {
+    outline-color: var(--light-font-color);
+    background-color: var(--light-font-color);
+}
+
+.checkboxes input[type="checkbox"]:disabled ~ label::before {
+    outline-color: var(--light-font-color);
+}
+
+.checkboxes input[type="checkbox"]:disabled ~ label {
+    cursor: default;
 }
 
 

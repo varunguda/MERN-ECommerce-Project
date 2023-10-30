@@ -1,0 +1,28 @@
+
+.create-product-container .products-container{
+    margin-top: 40px;
+    padding: 0px 10px;
+}
+
+.create-product-container .variations-container{
+    padding: 0px 5px;
+}
+
+.create-product-container .variations-container > div{
+    margin-bottom: 7px;
+}
+
+.create-product-container .variations-container label{
+    text-transform: capitalize;
+}
+
+.create-product-container .container-head{
+    font-weight: 600;
+    color: var(--black-font-color);
+}
+
+.create-product-container .title{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
