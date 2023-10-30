@@ -1,44 +1,57 @@
 import React, { useState, useRef, useEffect } from "react";
+import "./Accordion.css";
 import {BsChevronDown} from "react-icons/bs";
 import {BsChevronUp} from "react-icons/bs";
 
-import "./Accordion.css";
 
-const Accordion = (props) => {
-    const [active, setActive] = useState(props.close ? false : true);
-    const content = useRef(null);
+const Accordion = ({ title, content, resize, style, noBorder, activeProp, setActiveProp }) => {
+
+    const [activeState, setActiveState] = useState(true);
     const [height, setHeight] = useState(`0px`);
+    const contentRef = useRef(null);
 
-    useEffect(()=> {
-        if(content && content.current && active){
-            setHeight(`${content.current.scrollHeight}px`);
+    const active = activeProp !== undefined ? activeProp : activeState;
+    const setActive = setActiveProp !== undefined ? setActiveProp : setActiveState;
+
+    useEffect(() => {
+        if((content && contentRef.current && active) || resize === true){
+            setHeight(`${contentRef.current.scrollHeight}px`);
         }
+    }, [content, active, resize]);
 
-        // eslint-disable-next-line
-    }, [props.content, content])
+
+    useEffect(() => {
+        if(active){
+            setHeight(`${contentRef.current.scrollHeight}px`);
+        }else{
+            setHeight(`0px`);
+        }
+    }, [active]);
+
 
     const toggleAccordion = () => {
         setActive(!active);
-        setHeight(active ? `0px` : `${content.current.scrollHeight}px`);
-    }
+        setHeight(active ? `0px` : `${contentRef.current.scrollHeight}px`);
+    };
+
 
     return (
-        <div className="accordion__section" style={props.noBorder && { borderTop: "none" }}>
+        <div className="accordion__section" style={noBorder && { borderTop: "none" }}>
             <div
                 className={`accordion ${active ? "active" : ""}`}
             >
-                <p className="accordion__title" style={{...props.style}}>{props.title}</p>
+                <div className="accordion__title" style={{...style}}>{title}</div>
                 <span className="accordion-toggle-icon" onClick={toggleAccordion} style={{ marginLeft: "20px" }}>{active ? <BsChevronUp /> : <BsChevronDown />}</span>
             </div>
             <div
-                ref={content}
+                ref={contentRef}
                 style={{ maxHeight: `${height}` }}
                 className="accordion__content"
             >
                 <div
                     className="accordion__text"
                 >
-                    {props.content}
+                    {content}
                 </div>
             </div>
         </div>

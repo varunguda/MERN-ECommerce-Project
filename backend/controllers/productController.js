@@ -8,9 +8,9 @@ import { Review } from '../models/reviewModel.js';
 import { Orders } from '../models/orderModel.js';
 
 
-const allProperties = ["name", "description", "price", "images", "stock", "discount_price", "final_price", "options", "bundles", "color", "ram", "rom", "processor", "resolution", "storage", "size", "sizes", "quantity", "capacity", "variations", "brand", "category", "review_id"]
+const allProperties = ["name", "description", "price", "images", "stock", "discount_percent", "final_price", "options", "bundles", "color", "ram", "processor", "resolution", "storage", "size", "quantity", "variations", "brand", "category", "review_id"]
 
-const commonProperties = ["name", "description", "price", "images", "stock", "discount_price", "options", "bundles"]
+const commonProperties = ["name", "description", "price", "images", "stock", "discount_percent", "options", "bundles"]
 
 const categoryConfig = {
 
@@ -27,11 +27,11 @@ const categoryConfig = {
     },
 
     "Clothing": {
-        properties: [...commonProperties, "sizes", "color"]
+        properties: [...commonProperties, "size", "color"]
     },
 
     "Shoes": {
-        properties: [...commonProperties, "colors", "sizes"]
+        properties: [...commonProperties, "color", "size"]
     },
 
     "Watches": {
@@ -43,7 +43,7 @@ const categoryConfig = {
     },
 
     "Refrigerator": {
-        properties: [...commonProperties, "color", "storage"],
+        properties: [...commonProperties, "color", "size"],
     },
 
     "Washing Machines": {
@@ -59,7 +59,7 @@ const categoryConfig = {
     },
 
     "Beauty & Health": {
-        properties: [...commonProperties, "color", "quantity"],
+        properties: [...commonProperties, "quantity"],
     }
 }
 
@@ -97,7 +97,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     let processorOptions = [];
     let quantityOptions = [];
 
-
     if (keyword) {
         const existProducts = await Product.find({ $or: [{ name: { $regex: keyword, $options: "i" } }, { brand: { $regex: keyword, $options: "i" } }] });
         if (existProducts && existProducts.length > 0) {
@@ -111,7 +110,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
                 minPrice = prod.final_price;
             }
             if (!brands.includes(prod.brand)) {
-                brands.push(prod.brand)
+                brands.push(prod.brand);
             }
             if (prod.color) {
                 if (colorOptions[prod.color] === undefined) {
@@ -344,10 +343,9 @@ export const createProduct = catchAsync(async (req, res, next) => {
         createdProduct.brand = brand;
         createdProduct.category = category;
         createdProduct.variations = variations;
-        createdProduct.created_at = new Date(Date.now());
 
         // Updating the product saved
-        createdProduct.save({ validateBeforeSave: false });
+        await createdProduct.save({ validateBeforeSave: false });
         createdProducts.push(createdProduct);
     }
 
@@ -609,7 +607,7 @@ export const getAllProductReviews = catchAsync(async (req, res, next) => {
     const reviews = await Review.findById(product.review_id);
     if (!reviews) {
         product.review_id = undefined;
-        product.save({ validateBeforeSave: false });
+        await product.save({ validateBeforeSave: false });
         return next(new ErrorHandler("Something went wrong, please try again!", 400));
     }
     const currentPage = page || 1;
@@ -734,7 +732,7 @@ export const addBundle = catchAsync(async (req, res, next) => {
     }
 
     product.bundles.push(bundle);
-    product.save({ validateBeforeSave: false })
+    await product.save({ validateBeforeSave: false })
 
     return res.json({
         success: true,
@@ -771,7 +769,7 @@ export const addOptions = catchAsync(async (req, res, next) => {
     }
     product.options.push(option);
 
-    product.save({ validateBeforeSave: false })
+    await product.save({ validateBeforeSave: false })
 
     return res.json({
         success: true,
