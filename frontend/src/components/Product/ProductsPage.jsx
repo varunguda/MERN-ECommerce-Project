@@ -717,7 +717,7 @@ const ProductsPage = () => {
                                             Object.keys(productsFilters).map((filter, index) => (
                                                 <Fragment key={index}>
                                                     <Accordian
-                                                        title={filter}
+                                                        title={filter.charAt(0).toUpperCase() + filter.slice(1).toLowerCase()}
                                                         style={{ fontSize: "15px", fontWeight: "600" }}
                                                         content={
                                                             <>

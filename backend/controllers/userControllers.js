@@ -109,6 +109,7 @@ export const getUserDetails = catchAsync(async (req, res, next) => {
             email: user.email,
             is_seller: user.is_seller,
             is_admin: user.is_admin,
+            avatar: user.avatar,
         }
     })
 })
