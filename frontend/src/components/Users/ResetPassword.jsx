@@ -136,7 +136,7 @@ const ResetPassword = () => {
 
 
                             <button
-                                className='main-btn'
+                                className='main-btn loader-btn'
                                 type="submit"
                                 disabled={resettingPassword || (pass.length < 8) || (pass !== confirmPass) || !passLengthValidator(pass) || !passLetterValidator(pass) || !passNumberOrSpecialCharValidator(pass) || (pass.length === 0)}
                             >

@@ -151,7 +151,7 @@ const LoginUser = () => {
                             </div>
 
 
-                            <button className='main-btn' type="submit" disabled={checkingUser}>
+                            <button className='main-btn loader-btn' type="submit" disabled={checkingUser}>
                                 {checkingUser ? (<Loader2 />) : "Continue"}
                             </button>
 
@@ -189,7 +189,7 @@ const LoginUser = () => {
 
                             <p ref={passErrMsgRef} className='err-msg'>{loginMessage ? loginMessage : ""}</p>
 
-                            <button className='main-btn' type="submit" disabled={loginLoading}>
+                            <button className='main-btn loader-btn' type="submit" disabled={loginLoading}>
                                 {loginLoading ? (<Loader2 />) : "Log in"}
                             </button>
 

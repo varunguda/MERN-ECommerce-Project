@@ -34,8 +34,10 @@
     --primary-hover-color: #0055a5;
     --primary-active-color: #003b72;
     --primary-error-color: #de1c24;
+    --primary-success-color: rgb(0, 165, 0);
     --secondary-error-color: #9b1419;
     --primary-error-background: #fce8e9;
+    --primary-success-background: rgb(249, 255, 249);
     --error-border-color: #e56c70;
     --secondary-color: #ffc220;
     --primary-footer: #F9F7F7;
@@ -532,6 +534,35 @@ body {
     width: 14px;
     border-radius: 50%;
     border: 1px solid var(--secondary-error-color);
+}
+
+
+.success-alert{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    padding: 10px 20px;
+    color: var(--highlight-font-color);
+    background-color: var(--primary-success-background);
+    font-size: var(--regular-content-font-size);
+    border: 1px solid var(--primary-success-color);
+    border-left: 5px solid var(--primary-success-color);
+    border-radius: 5px;
+}
+
+.success-alert::before{
+    content: "\2713";
+    font-size: 0.6rem;
+    display: grid;
+    place-content: center;
+    color: var(--highlight-font-color);
+    font-weight: 600;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--highlight-font-color);
 }
 
 

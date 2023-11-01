@@ -1,55 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import CreateProductForm from './CreateProductForm';
+import { RxCheckCircled, RxCrossCircled } from "react-icons/rx";
 import Accordion from '../../elements/Accordians/Accordion';
-import {RxCheckCircled, RxCrossCircled} from "react-icons/rx";
 
 
-const ProductAccordian = ({ productCount, category, config, variations, setProducts, removeProduct, productAdded, setProductAdded }) => {
+const ProductAccordian = ({ productCount, category, config, variations, setProducts, removeProduct, productState, setProductState }) => {
 
     const [resize, setResize] = useState(false);
-    const [activateAccordion, setActivateAccordion] = useState(true);
 
-    useEffect(() => {
-        console.log({productAdded, productCount});
-        if(productAdded){
-            setActivateAccordion(false);
-        }
-        else{
-            setActivateAccordion(true);
-        }
-    }, [productAdded])
-    
     return (
         <Accordion
-            title={<div className='title'>
-                {`Product ${productCount}`}
-                {(productAdded === true) ? (
-                    <RxCheckCircled color='green' size={16} />
-                ) : (
-                    (productAdded === false) ? (
-                        <RxCrossCircled color='red' size={16} />
-                    ) : ""
-                ) }
-            </div>}
+            title={
+                <div className='title'>
+                    {`Product ${productCount}`}
+                    {(productState && (productState.added !== undefined) && productState.added === true) ? (
+                        <RxCheckCircled color='green' size={16} />
+                    ) : (
+                        (productState && (productState.added !== undefined) && productState.added === false) ? (
+                            <RxCrossCircled color='red' size={16} />
+                        ) : ""
+                    )}
+                </div>
+            }
 
             content={
-                <CreateProductForm 
+                <CreateProductForm
                     category={category}
-                    categoryConfig={config} 
-                    setProductAdded={setProductAdded} 
-                    setProducts={setProducts} 
-                    setActivateAccordion={setActivateAccordion}
-                    setResize={setResize} 
+                    categoryConfig={config}
+                    setProductState={setProductState}
+                    setProducts={setProducts}
+                    setResize={setResize}
                     variations={variations}
                     productCount={productCount}
                     removeProduct={removeProduct}
+                    activeState={productState && (productState.active !== undefined) ? productState.active : true}
+                    setActiveState={(val) => {
+                        setProductState({ added: productState.added, active: val });
+                    }}
                 />
             }
             resize={resize}
-            close={productAdded}
-            activeProp={activateAccordion}
+            activeProp={productState && (productState.active !== undefined) ? productState.active : true}
             setActiveProp={(val) => {
-                setActivateAccordion(val);
+                setProductState({ added: productState.added, active: val });
             }}
         />
     )

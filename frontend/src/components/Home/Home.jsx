@@ -110,7 +110,7 @@ const Home = () => {
 
 
                     <section className='content-section'>
-                        <ProductsCarousel products={products} heading="Featured Products" caption="Upto 60% Off" />
+                        <ProductsCarousel products={products} heading="Latest Products" caption="New to ManyIN" />
                     </section>
                 </>
 

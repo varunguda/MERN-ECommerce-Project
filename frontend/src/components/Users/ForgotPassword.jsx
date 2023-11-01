@@ -90,7 +90,13 @@ const ForgotPassword = () => {
                                 />
                             </div>
 
-                            <button className='main-btn' type="submit" disabled={sendingRecoveryMail}>{sendingRecoveryMail ? (<Loader2 />) : "Send Link"}</button>
+                            <button 
+                                className='main-btn loader-btn' 
+                                type="submit" 
+                                disabled={sendingRecoveryMail}
+                            >
+                                {sendingRecoveryMail ? (<Loader2 />) : "Send Link"}
+                            </button>
 
                             <p className="form-caption">The email must be linked to your ManyIN account.</p>
                         </form>

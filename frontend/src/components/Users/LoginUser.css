@@ -123,11 +123,6 @@
     font-weight: 400;
 }
 
-.secondary-page-content form .loader2{
-    height: 20px;
-    width: 20px;
-}
-
 .secondary-page-content .mail-details{
     color: var(--black-font-color);
     display: flex;

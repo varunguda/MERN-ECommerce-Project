@@ -173,7 +173,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
             if (!review_data) {
                 updatedProducts.push({ rating: 0, total_reviews: 0, ...products[i]._doc });
             }
-            else{
+            else {
                 updatedProducts.push({ rating: review_data.rating, total_reviews: review_data.total_reviews, ...products[i]._doc });
                 if (review_data.rating === 5) {
                     customer_ratings[4] += 1;
@@ -272,9 +272,9 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
         similarProducts.forEach((prod) => {
             let obj = {};
             obj._id = prod._id;
-            for(const variation of product.variations){
+            for (const variation of product.variations) {
                 obj[variation] = prod[variation];
-            } 
+            }
             variationProducts.push(obj);
         })
     }
@@ -282,11 +282,13 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
     let updatedProduct;
     if (product.review_id) {
         const review_data = await Review.findById(product.review_id);
-        if(review_data){
+        if (review_data) {
             updatedProduct = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...product._doc }
         }
+    } else {
+        updatedProduct = {...product._doc};
     }
-    
+
     return res.json({
         success: true,
         product: updatedProduct,
@@ -330,7 +332,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
         const final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
 
         // creating a product with all the data provided by the seller
-        const createdProduct = await Product.create({ ...product, brand, category, variations, seller_id: req.user._id, product_id, final_price });
+        const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price });
 
         // All properties has all the flags that are present in a mongo document, to prevent a seller to fill irrelevent flags in the db, we are setting all the falg values which are not relevant to a category to undefined.
         allProperties.forEach((property) => {
@@ -342,7 +344,9 @@ export const createProduct = catchAsync(async (req, res, next) => {
         createdProduct.final_price = final_price;
         createdProduct.brand = brand;
         createdProduct.category = category;
-        createdProduct.variations = variations;
+        if(products.length > 1){
+            createdProduct.variations = variations;
+        }
 
         // Updating the product saved
         await createdProduct.save({ validateBeforeSave: false });

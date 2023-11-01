@@ -11,7 +11,7 @@ const commonFields = {
     stock: "",
 }
 
-const CreateProductForm = ({ category, categoryConfig, setResize, variations, setProducts, setProductAdded, productCount, removeProduct, setActivateAccordion }) => {
+const CreateProductForm = ({ category, categoryConfig, setResize, variations, setProducts, productCount, removeProduct, setProductState, activeState, setActiveState }) => {
 
     const { openModal, closeModal } = useContext(ModalContext);
 
@@ -98,20 +98,20 @@ const CreateProductForm = ({ category, categoryConfig, setResize, variations, se
 
         const modalContent = (
             <>
-            <div className="modal-caption">This action is permanet and cannot be undone.</div>
-            <div className="modal-btn-container">
-                <button onClick={closeModal} className='secondary-btn' type="button">No</button>
-                <button 
-                    onClick={() => {
-                        removeProduct(productCount);
-                        closeModal();
-                    }}
-                    className='main-btn'
-                    type="button"
-                >
-                    Yes
-                </button>
-            </div>
+                <div className="modal-caption">This action is permanet and cannot be undone.</div>
+                <div className="modal-btn-container">
+                    <button onClick={closeModal} className='secondary-btn' type="button">No</button>
+                    <button
+                        onClick={() => {
+                            removeProduct(productCount);
+                            closeModal();
+                        }}
+                        className='main-btn'
+                        type="button"
+                    >
+                        Yes
+                    </button>
+                </div>
             </>
         )
 
@@ -124,26 +124,25 @@ const CreateProductForm = ({ category, categoryConfig, setResize, variations, se
 
         setValidateFields(true);
         setResize(true);
-        
+
         if (isFormDatavalid()) {
             setProducts(prev => {
-                if(!prev[productCount - 1]){
+                if (!prev[productCount - 1]) {
                     return prev.concat([formData]);
                 }
-                
+
                 return prev.map((elem, index) => {
-                    if(index === productCount - 1){
+                    if (index === productCount - 1) {
                         return formData;
                     }
                     return elem;
                 })
             });
-            setProductAdded(true);
-            setActivateAccordion(false);
-        }
-        else{
-            setProductAdded(false);
-            setActivateAccordion(true);
+
+            setActiveState(false);
+            setProductState({ added: true, active: false });
+        } else {
+            setProductState({ added: false, active: true });
         }
     }
 

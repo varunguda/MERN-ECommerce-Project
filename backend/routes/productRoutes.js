@@ -68,9 +68,9 @@ router.route("/seller/myproducts/:id")
 
 
 // Admin & Seller
-router.route("/myproducts").get(isAdminOrSeller, getMyProducts)
-
-router.route('/myproducts/addnew').post(isAdminOrSeller, createProduct)
+router.route("/myproducts")
+    .get(isAdminOrSeller, getMyProducts)
+    .post(isAdminOrSeller, createProduct)
 
 
 export default router;

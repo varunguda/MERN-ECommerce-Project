@@ -287,7 +287,7 @@ const SignUpUser = () => {
                             <div className="err-msg">{signupError}</div>
 
                             <button
-                                className='main-btn'
+                                className='main-btn loader-btn'
                                 type="submit"
                                 disabled={(signupLoading) || (user.pass !== user.confirmPass) || !passLengthValidator(user.pass) || !passLetterValidator(user.pass) || !passNumberOrSpecialCharValidator(user.pass) || (user.pass.length === 0) || (user.name.length < 3)}
                             >
@@ -341,7 +341,7 @@ const SignUpUser = () => {
                                     ))}
                                 </div>
 
-                                <button type='submit' className='main-btn' disabled={verificationLoading || otp.join('').length !== 5}>{verificationLoading ? <Loader2 /> : "Verify OTP"}</button>
+                                <button type='submit' className='main-btn loader-btn' disabled={verificationLoading || otp.join('').length !== 5}>{verificationLoading ? <Loader2 /> : "Verify OTP"}</button>
 
                                 <div ref={errRef} className='err-msg'>{verifcationError}</div>
                             </form>
