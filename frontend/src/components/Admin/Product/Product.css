@@ -26,3 +26,10 @@
     align-items: center;
     gap: 5px;
 }
+
+.create-product-container .create-product-btn-container{
+    margin-top: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

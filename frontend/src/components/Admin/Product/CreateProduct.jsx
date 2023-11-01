@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Accordion from '../../elements/Accordians/Accordion';
 import { categoryValidator, stringValidator } from './utils';
 import ProductAccordian from './ProductAccordian';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { adminActionCreators } from '../../../State/action-creators';
+import Loader2 from '../../layouts/Loader/Loader2';
+import { toast } from 'react-toastify';
+import { CREATE_PRODUCT_RESET } from '../../../State/constants/AdminConstants';
+import { ModalContext } from '../../../Context/ModalContext';
 
 
 const categoryConfig = {
@@ -57,8 +63,11 @@ const categoryConfig = {
 }
 
 
-
 const CreateProduct = () => {
+
+    const { creatingProduct, createdProduct, createProductError } = useSelector(state => state.createProduct);
+
+    const { openModal, closeModal } = useContext(ModalContext);
 
     const [showCommonFieldsForm, setShowCommonFieldsForm] = useState(false);
     const [validateFields, setValidateFields] = useState(false);
@@ -70,7 +79,35 @@ const CreateProduct = () => {
     const [variations, setVariations] = useState([]);
     const [productCount, setProductCount] = useState(null);
     const [products, setProducts] = useState([]);
-    const [productAdded, setProductAdded] = useState(Array(productCount).fill(false));
+    const [productState, setProductState] = useState(Array(null).fill({ added: false, active: true }));
+    const errorRef = useRef(null);
+    const successRef = useRef(null);
+
+    const dispatch = useDispatch();
+
+    const { createProductAction } = bindActionCreators(adminActionCreators, dispatch);
+
+    useEffect(() => {
+        toast.error(createProductError, {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [createProductError]);
+
+
+    useEffect(() => {
+        if(createdProduct === true){
+            resetCreateProductForm();
+            successRef.current.style.display = "flex";
+            window.scrollTo(0,0);
+        }
+    }, [createdProduct]);
 
 
     const commonFieldsChangeHandler = (e) => {
@@ -93,6 +130,7 @@ const CreateProduct = () => {
         setValidateFields(false);
         setShowCommonFieldsForm(false);
         setProductCount(null);
+        setProductState(Array(null).fill({ added: false, active: true }));
         setDisableCommonFields(false);
         setVariations([]);
     }
@@ -115,7 +153,7 @@ const CreateProduct = () => {
 
         if (isFormDatavalid()) {
             setProductCount(1);
-            setDisableCommonFields(true)
+            setDisableCommonFields(true);
         }
     }
 
@@ -132,23 +170,70 @@ const CreateProduct = () => {
     const removeProductHandler = (prodNum) => {
         setProducts(prev => prev.filter((_, index) => index + 1 !== prodNum));
         setProductCount(prev => prev - 1);
-        setProductAdded(prev => prev.filter((_, index) => index + 1 !== prodNum))
+        setProductState(prev => prev.filter((_, index) => index + 1 !== prodNum))
     }
 
+
     useEffect(() => {
-        if (productCount > productAdded.length) {
-            setProductAdded(prev => [...prev, ...new Array(productCount - prev.length).fill(false)]);
+        if (productCount > productState.length) {
+            setProductState(prev => [...prev, ...new Array(productCount - prev.length).fill({ active: true, added: false })]);
         }
         // eslint-disable-next-line
     }, [productCount]);
 
-    useEffect(() => {
-        console.log({products});
-    }, [products]);
 
     useEffect(() => {
-        console.log({productAdded});
-    }, [productAdded]);
+        if ((productCount !== 0) && (productCount === productState.length) && productState.every(state => state.added === true)) {
+            errorRef.current.style.display = "none";
+        }
+        else if (productCount === 0) {
+            errorRef.current.style.display = "none";
+        }
+        // eslint-disable-next-line
+    }, [productState]);
+
+
+    const resetClickHandler = () => {
+
+        const modalContent = (
+            <>
+                <div className="modal-caption">
+                    The data you've entered till now to create your product would be lost.
+                </div>
+
+                <div className="modal-btn-container">
+                    <button type="button" onClick={closeModal} className='secondary-btn'>No</button>
+                    <button 
+                        type="button" 
+                        onClick={() => {
+                            resetCreateProductForm();
+                            closeModal();
+                        }}
+                        className='main-btn'
+                    >
+                        Yes
+                    </button>
+                </div>
+            </>
+        )
+
+        openModal("Are you sure you would like to reset your progress?", modalContent);
+    }
+
+
+    const createProductClickHandler = () => {
+        if ((productCount !== 0) && (productCount === productState.length) && productState.every(state => state.added === true)) {
+            errorRef.current.style.display = "none";
+
+            createProductAction(products, variations, commonFields.brand, commonFields.category);
+        }
+        else {
+            window.scrollTo({
+                top: errorRef.current.offsetTop,
+            });
+            errorRef.current.style.display = "flex";
+        }
+    };
 
 
     return (
@@ -159,9 +244,19 @@ const CreateProduct = () => {
 
             <div className="create-product-container">
 
+                <div ref={successRef} className="success-alert" style={{ marginTop: "40px", display: "none" }}>
+                    Successfully created your product.
+                </div>
+
                 {!showCommonFieldsForm && (
                     <div
-                        onClick={() => setShowCommonFieldsForm(true)}
+                        onClick={() =>{
+                            if(createdProduct === true){
+                                dispatch({ type: CREATE_PRODUCT_RESET })
+                                successRef.current.style.display = "none";
+                            }
+                            setShowCommonFieldsForm(true);
+                        }} 
                         className="inferior-btn"
                     >
                         + Add Product
@@ -213,6 +308,9 @@ const CreateProduct = () => {
                                 {(validateFields && !!categoryValidator(categoryConfig, commonFields.category)) && (
                                     <span className='input-error'>{categoryValidator(categoryConfig, commonFields.category)}</span>
                                 )}
+                                {(productCount > 0) && showCommonFieldsForm && !disableCommonFields && (
+                                    <div className="input-caption">Changing the category now may potentially reset the details you've filled in so far.</div>
+                                )}
                             </div>
 
 
@@ -250,7 +348,7 @@ const CreateProduct = () => {
                                 {!disableCommonFields ? (
                                     <>
                                         <button
-                                            onClick={resetCreateProductForm}
+                                            onClick={resetClickHandler}
                                             className='inferior-btn'
                                             type="button"
                                         >
@@ -287,29 +385,31 @@ const CreateProduct = () => {
                             </div>
                         </form>
 
+                        <div ref={errorRef} className="error-alert" style={{ marginTop: "40px", display: "none" }}>
+                            Please verify all fields below.
+                        </div>
 
                         <div className='products-container'>
                             {(productCount > 0) ? (
                                 <>
                                     {[...Array(productCount)].map((_, index) => {
                                         return (
-                                            <div key={index}>
-                                                <ProductAccordian
-                                                    productAdded={productAdded[index]}
-                                                    setProductAdded={(value) => {
-                                                        let newProductAdded = [...productAdded];
-                                                        newProductAdded[index] = value;
-                                                        setProductAdded(newProductAdded);
-                                                    }}
-                                                    category={commonFields.category}
-                                                    config={categoryConfig}
-                                                    productCount={index + 1}
-                                                    variations={variations}
-                                                    products={products}
-                                                    setProducts={setProducts}
-                                                    removeProduct={removeProductHandler}
-                                                />
-                                            </div>
+                                            <ProductAccordian
+                                                key={index}
+                                                productState={productState[index]}
+                                                setProductState={(value) => {
+                                                    let newProductState = [...productState];
+                                                    newProductState[index] = value;
+                                                    setProductState(newProductState);
+                                                }}
+                                                category={commonFields.category}
+                                                config={categoryConfig}
+                                                productCount={index + 1}
+                                                variations={variations}
+                                                products={products}
+                                                setProducts={setProducts}
+                                                removeProduct={removeProductHandler}
+                                            />
                                         )
                                     })}
 
@@ -329,7 +429,20 @@ const CreateProduct = () => {
                                                 </button>
                                             </>
                                         }
+                                        activeProp={true}
                                     />
+
+
+                                    <div className="create-product-btn-container">
+                                        <button
+                                            type="button"
+                                            className='main-btn loader-btn'
+                                            onClick={createProductClickHandler}
+                                            disabled={creatingProduct}
+                                        >
+                                            {creatingProduct === true ? (<Loader2 />) : "Create Product"}
+                                        </button>
+                                    </div>
                                 </>
                             ) : (
                                 (productCount === 0) && (
@@ -339,7 +452,7 @@ const CreateProduct = () => {
                                             <>
                                                 <button
                                                     onClick={() => {
-                                                        setProductCount(prev => prev + 1);
+                                                        setProductCount(1);
                                                     }}
                                                     type="button"
                                                     style={{ fontSize: "1rem" }}
