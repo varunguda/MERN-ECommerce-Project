@@ -25,7 +25,7 @@ import {
 } from "./ProfileReducers"
 import { loaderReducer } from "./LoaderReducers";
 import { addToCartReducer, orderValueReducer } from "./CartReducers";
-import { adminReducer, createProductReducer } from "./AdminReducers";
+import { adminReducer, createProductReducer, deleteOrCancelAnyOrderReducer, getAllOrdersReducer } from "./AdminReducers";
 
 
 const reducers = combineReducers({
@@ -52,6 +52,8 @@ const reducers = combineReducers({
     orderValue: orderValueReducer,
     admin: adminReducer,
     createProduct: createProductReducer,
+    allOrders: getAllOrdersReducer,
+    deleteOrCancelAnyOrder: deleteOrCancelAnyOrderReducer,
 });
 
 

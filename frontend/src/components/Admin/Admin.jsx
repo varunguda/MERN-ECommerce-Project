@@ -12,6 +12,7 @@ import { checkAdmin } from '../../State/action-creators/AdminActionCreators';
 import Dashboard from './Dashboard/Dashboard';
 import AllProducts from './Product/AllProducts';
 import CreateProduct from './Product/CreateProduct';
+import AllOrders from './Orders/AllOrders';
 
 
 const Admin = () => {
@@ -178,6 +179,8 @@ const Admin = () => {
                             <AllProducts />
                         ) : (activeLocation === "products/create") ? (
                             <CreateProduct />
+                        ) : (activeLocation === "orders/all") ? (
+                            <AllOrders />
                         ) : (
                             <Dashboard />
                         )}

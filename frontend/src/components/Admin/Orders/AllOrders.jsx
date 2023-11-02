@@ -1,20 +1,21 @@
 import React, { useContext, useEffect, useReducer, useRef, useState } from 'react';
-import "./Orders.css";
+import "./AllOrders.css";
+import "../../Profile/Orders/Orders.css";
 import { bindActionCreators } from 'redux';
-import { profileActionCreators } from '../../../State/action-creators';
+import { adminActionCreators } from '../../../State/action-creators';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { SET_ORDER_KEYWORD, SET_ORDER_PAGE, SET_ORDER_STATUS, SET_ORDER_TIME } from '../../../State/constants/NavigationConstants';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { TfiSearch } from 'react-icons/tfi';
 import { PiSlidersHorizontalLight } from 'react-icons/pi';
-import FilterContent from './FilterContent';
+import FilterContent from '../../Profile/Orders/FilterContent';
 import Metadata from '../../Metadata';
 import Paginate from '../../elements/Pagination/Paginate';
 import { toast } from 'react-toastify';
-import { CANCEL_USER_ORDER_RESET } from '../../../State/constants/ProfileConstants';
+import { DELETE_CANCEL_ANY_ORDER_RESET } from '../../../State/constants/AdminConstants';
 import { ModalContext } from '../../../Context/ModalContext';
-import OrderCard from './OrderCard';
+import OrderCard from '../../Profile/Orders/OrderCard';
 import { BiInfoCircle } from 'react-icons/bi';
 
 
@@ -52,21 +53,22 @@ const initialState = {
     page: 0
 }
 
-const Orders = () => {
+
+const AllOrders = () => {
 
     const [state, dispatch] = useReducer(orderParamsReducer, initialState);
 
-    const { gettingMyOrders, myOrders, myOrdersCount, totalOrdersCount } = useSelector(state => state.myOrders);
-    const { cancellingMyOrder, cancelledOrder, cancelledOrderMessage, cancelledOrderError } = useSelector(state => state.cancelMyOrder);
+    const { gettingAllOrders, allOrders, allOrdersCount, totalOrdersCount } = useSelector(state => state.allOrders);
+    const { deletingOrCancellingOrder, deletedOrCancelledOrder, deletedOrCancelledMessage, deletedOrCancelledError } = useSelector(state => state.deleteOrCancelAnyOrder);
 
     const { openModal, closeModal } = useContext(ModalContext);
 
     const ordersDispatch = useDispatch();
 
-    const { getUserOrders, cancelUserOrder } = bindActionCreators(profileActionCreators, ordersDispatch);
+    const { getAllOrders, deleteAnyOrder } = bindActionCreators(adminActionCreators, ordersDispatch);
 
     const [searchText, setSearchText] = useState("");
-    const [stateUpdated, setStateUpdated] = useState(false); // Flag to track state updates
+    const [stateUpdated, setStateUpdated] = useState(false);
     const [navigateUrl, setNavigateUrl] = useState(false);
     const inputRef = useRef(null);
 
@@ -118,7 +120,7 @@ const Orders = () => {
 
     useEffect(() => {
         if (stateUpdated) {
-            getUserOrders(state.keyword, state.status, state.time, state.page);
+            getAllOrders(state.keyword, state.status, state.time, state.page);
             setStateUpdated(false);
         }
 
@@ -127,26 +129,26 @@ const Orders = () => {
 
 
     useEffect(() => {
-        if (gettingMyOrders || cancellingMyOrder) {
+        if (gettingAllOrders || deletingOrCancellingOrder) {
             ordersDispatch(loaderSpin(true));
         } else {
             ordersDispatch(loaderSpin(false));
         }
 
         // eslint-disable-next-line
-    }, [gettingMyOrders, cancellingMyOrder]);
+    }, [gettingAllOrders, deletingOrCancellingOrder]);
 
 
     useEffect(() => {
-        if (myOrdersCount < 6) {
+        if (allOrdersCount < 6) {
             dispatch({ type: SET_ORDER_PAGE, payload: 0 });
             setNavigateUrl(true);
         }
-    }, [myOrdersCount]);
+    }, [allOrdersCount]);
 
 
     useEffect(() => {
-        toast.error(cancelledOrderError, {
+        toast.error(deletedOrCancelledError, {
             position: "bottom-center",
             autoClose: 3000,
             hideProgressBar: false,
@@ -156,11 +158,11 @@ const Orders = () => {
             progress: undefined,
             theme: "light",
         });
-    }, [cancelledOrderError]);
+    }, [deletedOrCancelledError]);
 
 
     useEffect(() => {
-        toast.success(cancelledOrderMessage, {
+        toast.success(deletedOrCancelledMessage, {
             position: "bottom-center",
             autoClose: 3000,
             hideProgressBar: false,
@@ -170,16 +172,17 @@ const Orders = () => {
             progress: undefined,
             theme: "light",
         });
-    }, [cancelledOrderMessage]);
+    }, [deletedOrCancelledMessage]);
 
 
     useEffect(() => {
-        if (cancelledOrder) {
-            ordersDispatch({ type: CANCEL_USER_ORDER_RESET });
+        if (deletedOrCancelledOrder) {
+            ordersDispatch({ type: DELETE_CANCEL_ANY_ORDER_RESET });
             setStateUpdated(true);
         }
+
         // eslint-disable-next-line
-    }, [cancelledOrder])
+    }, [deletedOrCancelledOrder]);
 
 
     useEffect(() => {
@@ -232,10 +235,14 @@ const Orders = () => {
     const filterClickHandler = () => {
         openModal(
             "Filter Orders",
-            <FilterContent state={state} setStatus={(val) => setStatus(val)} setTime={(val) => setTime(val)} setNavigateUrl={setNavigateUrl} />
+            <FilterContent
+                state={state}
+                setStatus={(val) => setStatus(val)}
+                setTime={(val) => setTime(val)}
+                setNavigateUrl={setNavigateUrl}
+            />
         );
     }
-
 
     const setPage = (page) => {
         dispatch({ type: SET_ORDER_PAGE, payload: page });
@@ -244,14 +251,14 @@ const Orders = () => {
 
 
     const cancelOrderHandler = (id) => {
-        cancelUserOrder(id);
+        // cancelUserOrder(id);
         closeModal();
     }
 
 
     const cancelOrderClickHandler = (id) => {
         openModal(
-            "Are you sure you want to Cancel your order?",
+            "Are you sure you want to Cancel this order?",
             (<>
                 <div className="modal-caption">Once cancelled, you dont get this ordered delivered to you, the money gets refunded within the next 3-7 business days if paid. You can still look up your cancelled orders in here.</div>
 
@@ -264,16 +271,37 @@ const Orders = () => {
     }
 
 
+    const deleteOrderHandler = (id) => {
+        deleteAnyOrder(id);
+        closeModal();
+    }
+
+
+    const deleteClickHandler = (id) => {
+        openModal(
+            "Are you sure you want to Delete this order?",
+            (<>
+                <div className="modal-caption">Deleting an order leaves no traces in the Seller's or Buyer's order history; the order is completely removed and cannot be located on ManyIN any longer.</div>
+
+                <div className="modal-btn-container">
+                    <button onClick={() => closeModal()} className='secondary-btn'>No</button>
+                    <button onClick={() => deleteOrderHandler(id)} className='main-btn warning'>Yes</button>
+                </div>
+            </>)
+        );
+    }
+
+
     return (
         <div className="profile-page-content">
 
-            <Metadata title={"Orders & Returns - ManyIN"} />
+            <Metadata title={"All Orders - ManyIN"} />
 
-            {!gettingMyOrders && (
+            {!gettingAllOrders && (
                 <>
                     <div className="page-head">
                         {allStatus[state.status ? state.status : "all"]} orders
-                        <div className="profile-page-caption">from {allTimes[state.time ? state.time : "any"]}</div>
+                        <div className="profile-page-caption">from {allTimes[state.time ? state.time : "any"]} on ManyIN</div>
                     </div>
 
                     <div className="orders-container">
@@ -307,37 +335,64 @@ const Orders = () => {
 
 
                         <div className="orders-content">
-
-                            {(myOrders.length > 0) ? (
+                            {(allOrders.length > 0) ? (
                                 <>
-                                    {myOrders.map((order, index) => {
-
+                                    {allOrders.map((order, index) => {
                                         return (
                                             <OrderCard
                                                 key={index}
                                                 order={order}
                                                 extraSection={
-                                                    ((order.order_items.every(item => (item.product_status === "Processing") || (item.product_status === "Cancelled"))) && (!order.order_items.every(item => (item.product_status === "Cancelled")))) && (
-                                                        <div className="cancel-order-section">
-                                                            <div>
+                                                    <>
+                                                        <div className="update-order-status-container">
+                                                            <span>Order Status: </span>
+                                                            <select
+                                                                className='input1'
+                                                                name="order-status"
+                                                            >
+                                                            <option value="">Out for Delivery</option>
+                                                            </select>
+                                                        </div>
 
+                                                        <div className="cancel-order-section">
+                                                            {((order.order_items.every(item => (item.product_status !== "Delivered") || (item.product_status === "Cancelled"))) && (!order.order_items.every(item => (item.product_status === "Cancelled")))) && (
+                                                                <div>
+                                                                    <button
+                                                                        className='inferior-btn warning'
+                                                                        type="button"
+                                                                        onClick={() => cancelOrderClickHandler(order._id)}
+                                                                    >
+                                                                        Cancel Order
+                                                                    </button>
+
+                                                                    <div
+                                                                        className="custom-tooltip light large"
+                                                                        data-tooltip="You can cancel this order until the items in this order have been delivered."
+                                                                    >
+                                                                        <BiInfoCircle className='icon' size={17} />
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            <div>
                                                                 <button
                                                                     className='inferior-btn warning'
                                                                     type="button"
-                                                                    onClick={() => cancelOrderClickHandler(order._id)}
+                                                                    onClick={() => deleteClickHandler(order._id)}
                                                                 >
-                                                                    Cancel Order?
+                                                                    Delete Order
                                                                 </button>
 
                                                                 <div
                                                                     className="custom-tooltip light large"
-                                                                    data-tooltip="You can cancel your order only when the items in your order are under processing. Once shipped, you cannot cancel your order."
+                                                                    data-tooltip="Deleting an order leaves no trace in the Seller's or Buyer's order history; the order is completely removed and cannot be located on ManyIN any longer."
                                                                 >
                                                                     <BiInfoCircle className='icon' size={17} />
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    )}
+                                                    </>
+                                                }
                                             />
                                         )
                                     })}
@@ -350,10 +405,10 @@ const Orders = () => {
                                         {totalOrdersCount === 0 ? (
                                             <>
                                                 <p className="main">
-                                                    You haven't placed any order yet!
+                                                    No orders active on ManyIN
                                                 </p>
                                                 <p className="caption">
-                                                    The order section is currently empty. After placing an order, you can track it from here!
+                                                    Order section is empty. There aren't any orders placed on ManyIN
                                                 </p>
                                             </>
                                         ) : (
@@ -373,10 +428,9 @@ const Orders = () => {
 
                         </div>
 
-                        {(myOrdersCount && myOrdersCount > 6) ? (
-                            <Paginate onChange={setPage} total={myOrdersCount} pageSize={6} current={state.page ? state.page : 1} />
+                        {(allOrdersCount && allOrdersCount > 6) ? (
+                            <Paginate onChange={setPage} total={allOrdersCount} pageSize={6} current={state.page ? state.page : 1} />
                         ) : ""}
-
                     </div>
                 </>
             )}
@@ -384,8 +438,7 @@ const Orders = () => {
     )
 }
 
-export default Orders;
-
+export default AllOrders;
 
 const allStatus = {
     "all": "All",
@@ -404,3 +457,4 @@ const allTimes = {
     "last1year": "Last year",
     "before1year": "Before an year",
 }
+

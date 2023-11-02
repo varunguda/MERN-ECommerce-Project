@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import ProductsCarousel from '../layouts/Carousel/ProductsCarousel.jsx';
 import MetaData from "../Metadata.jsx";
 import './Home.css';
-import { actionCreators, navigationActionCreators } from '../../State/action-creators/index.js';
+import { actionCreators } from '../../State/action-creators/index.js';
 import { bindActionCreators } from 'redux';
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../layouts/Loader/Loader.jsx";
@@ -18,8 +18,6 @@ const Home = () => {
     );
 
     const { getProducts } = bindActionCreators(actionCreators, dispatch);
-
-    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability } = bindActionCreators(navigationActionCreators, dispatch);
 
     useEffect(()=> {
         toast.error(error, {
@@ -42,17 +40,7 @@ const Home = () => {
         // const onScroll = () => {
         //     if(window.scrollY > 100 && !isCalled){
 
-
-        setKeyword("");
-        setAvailability("");
-        setBrand("");
-        setCategory("");
-        setMaxPrice(0);
-        setMinPrice(0);
-        setPage(0);
-
         getProducts();
-
 
 
             //         isCalled = true
@@ -65,7 +53,8 @@ const Home = () => {
             //         window.removeEventListener("scroll", onScroll);
             // }
             // eslint-disable-next-line
-    }, [])
+    }, []);
+    
 
     return (
         <>

@@ -219,9 +219,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 30px;
 
     .icon{
-        margin-top: 3px;
+        margin-top: 4px;
         color: #aaabac;
     }
+}
+
+
+.cancel-order-section > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

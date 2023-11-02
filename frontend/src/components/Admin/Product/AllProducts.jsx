@@ -19,7 +19,6 @@ const AllProducts = () => {
         dispatch(setPage(pageNum));
         dispatch(setAvailability("oos"));
         dispatch(getProducts());
-
         // eslint-disable-next-line 
     }, [pageNum]);
 
