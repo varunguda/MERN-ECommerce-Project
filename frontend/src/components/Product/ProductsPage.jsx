@@ -27,7 +27,7 @@ const ProductsPage = () => {
 
     const dispatch = useDispatch();
 
-    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability, setFacets, setRatings, setSort } = bindActionCreators(navigationActionCreators, dispatch);
+    const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability, setFacets, setRatings, setSort, resetFacets } = bindActionCreators(navigationActionCreators, dispatch);
 
 
     const location = useLocation();
@@ -48,7 +48,6 @@ const ProductsPage = () => {
     const [selectedRatings, setSelectedRatings] = useState([]);
     const sidebarRef = useRef(null);
     const btnRef = useRef(null);
-
 
     const { getProducts } = bindActionCreators(actionCreators, dispatch);
 
@@ -109,10 +108,8 @@ const ProductsPage = () => {
             setSort("");
 
 
-
         setSidebar(() => window.innerWidth < 1000 ? false : true);
-        window.scrollTo(0,0);
-
+        window.scrollTo(0, 0);
 
         // eslint-disable-next-line
     }, [location.search]);
@@ -270,7 +267,6 @@ const ProductsPage = () => {
                 }
             });
 
-
             if (facetColors.length && facetColors.length < selectedColors.length) {
                 setSelectedColors(prev => prev.filter((color) => facetColors.includes(color)))
             }
@@ -283,7 +279,6 @@ const ProductsPage = () => {
             if (facetQuantities.length < selectedQuantity.length) {
                 setSelectedQuantity(prev => prev.filter((quantity) => facetQuantities.includes(quantity)))
             }
-
         }
         else if (facets === "" && productsFilters && Object.keys(productsFilters).length > 0) {
             setSelectedColors([]);
@@ -393,6 +388,7 @@ const ProductsPage = () => {
         window.addEventListener("resize", hideSidebar);
 
         return () => {
+            resetFacets();
             window.removeEventListener("resize", hideSidebar);
         }
         // eslint-disable-next-line

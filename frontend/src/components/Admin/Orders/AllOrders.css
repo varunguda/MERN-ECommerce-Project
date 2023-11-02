@@ -1,0 +1,16 @@
+
+.update-order-status-container{
+    margin-top: 40px;
+    > span{
+        font-weight: 600;
+        color: var(--black-font-color);
+    }
+
+    > select{
+        font-size: var(--m-font-size) !important;
+        width: 200px !important;
+        min-width: 100px !important;
+        height: 36px !important;
+        padding: 2px !important;
+    }
+}

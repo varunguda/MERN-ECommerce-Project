@@ -38,18 +38,18 @@ router.route("/me/orders/:id").delete(isUser, deleteMyOrder )
 // Admin
 router.route("/orders/all").get(isAdmin, getAllOrders);
 
-router.route("/orders/all/:id").delete(isAdmin, deleteAnyOrder );
+router.route("/orders/all/:id").delete(isAdmin, deleteAnyOrder);
 
-router.route("/orders/all/:id").put(isAdmin, updateAnyOrderStatus );
+router.route("/orders/all/:id").put(isAdmin, updateAnyOrderStatus);
 
 
 
 // Seller
-router.route("/myproducts/order/status").put(isSeller, updateMyProductOrderStatus )
+router.route("/myproducts/order/status").put(isSeller, updateMyProductOrderStatus);
 
-router.route("/myproducts/orders/cancelall/:product").delete(isSeller, cancelAllOrderOfMyProduct)
+router.route("/myproducts/orders/cancel/all/:product").delete(isSeller, cancelAllOrderOfMyProduct);
 
-router.route("/myproducts/orders/cancel").delete(isSeller, cancelOrderOfMyProduct )
+router.route("/myproducts/orders/cancel").delete(isSeller, cancelOrderOfMyProduct);
 
 
 

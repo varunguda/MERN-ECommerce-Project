@@ -268,19 +268,19 @@ export const deleteMyOrder = catchAsync(async (req, res, next) => {
 
 export const getAllOrders = catchAsync(async (req, res, next) => {
 
-    const { page } = req.query;
-
-    const apiFeatures = new ApiFeatures(Orders.find({}), req.query).searchOrders().filterOrders();
+    const totalOrdersCount = await Orders.find({}).countDocuments();
+    const apiFeatures = new ApiFeatures(Orders.find({}), req.query).searchOrders().filterOrders().sortByCreate();
     const orders = await apiFeatures.items;
 
     const ordersCount = orders.length;
 
-    const paginatedOrders = pagination(orders, 6, page);
+    let updatedOrders = pagination(orders, 6, req.query.page);
 
     return res.json({
         success: true,
-        orders: paginatedOrders,
-        orders_count: ordersCount,
+        orders: updatedOrders,
+        ordersCount,
+        totalOrdersCount,
     })
 })
 
@@ -318,7 +318,7 @@ export const updateAnyOrderStatus = catchAsync(async (req, res, next) => {
         item.product_status = status;
     }
 
-    order.save({ validateBeforeSave: false });
+    await order.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,

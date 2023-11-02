@@ -1,5 +1,5 @@
 
-export const navigationReducer = (initialState = {
+const initialState = {
     keyword: "",
     minPrice: 0,
     maxPrice: 0,
@@ -9,53 +9,59 @@ export const navigationReducer = (initialState = {
     brand: "",
     facets: "",
     c_ratings: "",
-    sort_by: "",
-}, action) => {
+    sort_by: ""
+}
+
+export const navigationReducer = (state = initialState, action) => {
 
     switch (action.type) {
 
         case "SET_KEYWORD": {
-            return ({ ...initialState, keyword: action.payload })
+            return ({ ...state, keyword: action.payload })
         }
 
         case "SET_MIN_PRICE": {
-            return ({ ...initialState, minPrice: action.payload })
+            return ({ ...state, minPrice: action.payload })
         }
 
         case "SET_MAX_PRICE": {
-            return ({ ...initialState, maxPrice: action.payload })
+            return ({ ...state, maxPrice: action.payload })
         }
 
         case "SET_PAGE": {
-            return ({ ...initialState, page: action.payload })
+            return ({ ...state, page: action.payload })
         }
 
         case "SET_CATEGORY": {
-            return ({ ...initialState, category: action.payload })
+            return ({ ...state, category: action.payload })
         }
 
         case "SET_AVAILABILITY": {
-            return ({ ...initialState, availability: action.payload })
+            return ({ ...state, availability: action.payload })
         }
 
         case "SET_BRAND": {
-            return ({ ...initialState, brand: action.payload })
+            return ({ ...state, brand: action.payload })
         }
 
         case "SET_FACETS": {
-            return ({ ...initialState, facets: action.payload });
+            return ({ ...state, facets: action.payload });
         }
 
         case "SET_RATINGS": {
-            return ({ ...initialState, c_ratings: action.payload })
+            return ({ ...state, c_ratings: action.payload })
         }
 
         case "SET_SORT": {
-            return ({ ...initialState, sort_by: action.payload })
+            return ({ ...state, sort_by: action.payload })
+        }
+
+        case "RESET_FACETS": {
+            return ({ ...initialState});
         }
 
         default: {
-            return { ...initialState };
+            return { ...state };
         }
     }
 }

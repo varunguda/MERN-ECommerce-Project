@@ -78,3 +78,10 @@ export const setSort = (val) => (dispatch) => {
         payload: val,
     })
 }
+
+
+export const resetFacets = () => (dispatch) => {
+    dispatch({
+        type: "RESET_FACETS"
+    })
+}

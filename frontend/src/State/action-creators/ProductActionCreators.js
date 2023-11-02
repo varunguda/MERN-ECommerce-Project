@@ -32,12 +32,6 @@ import {
     DISLIKE_REVIEW_SUCCESS,
     DISLIKE_REVIEW_FAILURE,
 
-    // DISLIKE_REVIEW_FAILURE,
-    // DISLIKE_REVIEW_SUCCESS,
-
-    // LIKE_REVIEW_FAILURE,
-    // LIKE_REVIEW_SUCCESS,
-
 } from "../constants/ProductConstants.js";
 
 
