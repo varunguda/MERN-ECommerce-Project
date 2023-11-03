@@ -13,10 +13,12 @@ import FilterContent from '../../Profile/Orders/FilterContent';
 import Metadata from '../../Metadata';
 import Paginate from '../../elements/Pagination/Paginate';
 import { toast } from 'react-toastify';
-import { DELETE_CANCEL_ANY_ORDER_RESET } from '../../../State/constants/AdminConstants';
+import { DELETE_UPDATE_ANY_ORDER_RESET } from '../../../State/constants/AdminConstants';
 import { ModalContext } from '../../../Context/ModalContext';
 import OrderCard from '../../Profile/Orders/OrderCard';
 import { BiInfoCircle } from 'react-icons/bi';
+import Accordion from '../../elements/Accordians/Accordion';
+import UpdateOrder from './UpdateOrder';
 
 
 const orderParamsReducer = (state, action) => {
@@ -59,7 +61,7 @@ const AllOrders = () => {
     const [state, dispatch] = useReducer(orderParamsReducer, initialState);
 
     const { gettingAllOrders, allOrders, allOrdersCount, totalOrdersCount } = useSelector(state => state.allOrders);
-    const { deletingOrCancellingOrder, deletedOrCancelledOrder, deletedOrCancelledMessage, deletedOrCancelledError } = useSelector(state => state.deleteOrCancelAnyOrder);
+    const { deletingOrUpdatingOrder, deletedOrUpdatedOrder, deletedOrUpdatedMessage, deletedOrUpdatedError } = useSelector(state => state.deleteOrUpdateAnyOrder);
 
     const { openModal, closeModal } = useContext(ModalContext);
 
@@ -123,20 +125,18 @@ const AllOrders = () => {
             getAllOrders(state.keyword, state.status, state.time, state.page);
             setStateUpdated(false);
         }
-
         // eslint-disable-next-line
     }, [state, stateUpdated]);
 
 
     useEffect(() => {
-        if (gettingAllOrders || deletingOrCancellingOrder) {
+        if (gettingAllOrders || deletingOrUpdatingOrder) {
             ordersDispatch(loaderSpin(true));
         } else {
             ordersDispatch(loaderSpin(false));
         }
-
         // eslint-disable-next-line
-    }, [gettingAllOrders, deletingOrCancellingOrder]);
+    }, [gettingAllOrders, deletingOrUpdatingOrder]);
 
 
     useEffect(() => {
@@ -148,7 +148,7 @@ const AllOrders = () => {
 
 
     useEffect(() => {
-        toast.error(deletedOrCancelledError, {
+        toast.error(deletedOrUpdatedError, {
             position: "bottom-center",
             autoClose: 3000,
             hideProgressBar: false,
@@ -158,11 +158,11 @@ const AllOrders = () => {
             progress: undefined,
             theme: "light",
         });
-    }, [deletedOrCancelledError]);
+    }, [deletedOrUpdatedError]);
 
 
     useEffect(() => {
-        toast.success(deletedOrCancelledMessage, {
+        toast.success(deletedOrUpdatedMessage, {
             position: "bottom-center",
             autoClose: 3000,
             hideProgressBar: false,
@@ -172,17 +172,16 @@ const AllOrders = () => {
             progress: undefined,
             theme: "light",
         });
-    }, [deletedOrCancelledMessage]);
+    }, [deletedOrUpdatedMessage]);
 
 
     useEffect(() => {
-        if (deletedOrCancelledOrder) {
-            ordersDispatch({ type: DELETE_CANCEL_ANY_ORDER_RESET });
+        if (deletedOrUpdatedOrder) {
+            ordersDispatch({ type: DELETE_UPDATE_ANY_ORDER_RESET });
             setStateUpdated(true);
         }
-
         // eslint-disable-next-line
-    }, [deletedOrCancelledOrder]);
+    }, [deletedOrUpdatedOrder]);
 
 
     useEffect(() => {
@@ -198,7 +197,7 @@ const AllOrders = () => {
             navigate(`${queryParams && ('?' + queryParams)}`);
             setNavigateUrl(false);
         }
-
+        
         // eslint-disable-next-line
     }, [navigateUrl]);
 
@@ -248,28 +247,6 @@ const AllOrders = () => {
         dispatch({ type: SET_ORDER_PAGE, payload: page });
         setNavigateUrl(true);
     }
-
-
-    const cancelOrderHandler = (id) => {
-        // cancelUserOrder(id);
-        closeModal();
-    }
-
-
-    const cancelOrderClickHandler = (id) => {
-        openModal(
-            "Are you sure you want to Cancel this order?",
-            (<>
-                <div className="modal-caption">Once cancelled, you dont get this ordered delivered to you, the money gets refunded within the next 3-7 business days if paid. You can still look up your cancelled orders in here.</div>
-
-                <div className="modal-btn-container">
-                    <button onClick={() => closeModal()} className='secondary-btn'>No</button>
-                    <button onClick={() => cancelOrderHandler(id)} className='main-btn warning'>Yes</button>
-                </div>
-            </>)
-        );
-    }
-
 
     const deleteOrderHandler = (id) => {
         deleteAnyOrder(id);
@@ -336,72 +313,53 @@ const AllOrders = () => {
 
                         <div className="orders-content">
                             {(allOrders.length > 0) ? (
-                                <>
-                                    {allOrders.map((order, index) => {
-                                        return (
-                                            <OrderCard
-                                                key={index}
-                                                order={order}
-                                                extraSection={
-                                                    <>
-                                                        <div className="update-order-status-container">
-                                                            <span>Order Status: </span>
-                                                            <select
-                                                                className='input1'
-                                                                name="order-status"
+                                allOrders.map((order, index) => {
+                                    return (
+                                        <OrderCard
+                                            key={index}
+                                            order={order}
+                                            extraSection={
+                                                <>
+                                                    <div className="cancel-order-section">
+                                                        <div>
+                                                            <button
+                                                                className='inferior-btn warning'
+                                                                type="button"
+                                                                onClick={() => deleteClickHandler(order._id)}
                                                             >
-                                                            <option value="">Out for Delivery</option>
-                                                            </select>
-                                                        </div>
+                                                                Delete Order
+                                                            </button>
 
-                                                        <div className="cancel-order-section">
-                                                            {((order.order_items.every(item => (item.product_status !== "Delivered") || (item.product_status === "Cancelled"))) && (!order.order_items.every(item => (item.product_status === "Cancelled")))) && (
-                                                                <div>
-                                                                    <button
-                                                                        className='inferior-btn warning'
-                                                                        type="button"
-                                                                        onClick={() => cancelOrderClickHandler(order._id)}
-                                                                    >
-                                                                        Cancel Order
-                                                                    </button>
-
-                                                                    <div
-                                                                        className="custom-tooltip light large"
-                                                                        data-tooltip="You can cancel this order until the items in this order have been delivered."
-                                                                    >
-                                                                        <BiInfoCircle className='icon' size={17} />
-                                                                    </div>
-                                                                </div>
-                                                            )}
-
-                                                            <div>
-                                                                <button
-                                                                    className='inferior-btn warning'
-                                                                    type="button"
-                                                                    onClick={() => deleteClickHandler(order._id)}
-                                                                >
-                                                                    Delete Order
-                                                                </button>
-
-                                                                <div
-                                                                    className="custom-tooltip light large"
-                                                                    data-tooltip="Deleting an order leaves no trace in the Seller's or Buyer's order history; the order is completely removed and cannot be located on ManyIN any longer."
-                                                                >
-                                                                    <BiInfoCircle className='icon' size={17} />
-                                                                </div>
+                                                            <div
+                                                                className="custom-tooltip light large"
+                                                                data-tooltip="Deleting an order leaves no trace in the Seller's or Buyer's order history; the order is completely removed and cannot be located on ManyIN any longer."
+                                                            >
+                                                                <BiInfoCircle className='icon' size={17} />
                                                             </div>
                                                         </div>
-                                                    </>
-                                                }
-                                            />
-                                        )
-                                    })}
-                                </>
+                                                    </div>
+
+                                                    <Accordion
+                                                        title={"Update order status"}
+                                                        close={true}
+                                                        noBorder={true}
+                                                        content={
+                                                            <UpdateOrder 
+                                                                order={order} 
+                                                                allStatus={allStatus} 
+                                                            />
+                                                        }
+                                                    />
+                                                </>
+                                            }
+                                        />
+                                    )
+                                })
                             ) : (
                                 <>
                                     <div className="order-not-found-container">
                                         <img src="/images/order_not_found.svg" alt="order-not-found" />
-
+                                        
                                         {totalOrdersCount === 0 ? (
                                             <>
                                                 <p className="main">
@@ -421,7 +379,6 @@ const AllOrders = () => {
                                                 </p>
                                             </>
                                         )}
-
                                     </div>
                                 </>
                             )}
@@ -457,4 +414,3 @@ const allTimes = {
     "last1year": "Last year",
     "before1year": "Before an year",
 }
-

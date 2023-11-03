@@ -8,17 +8,17 @@ import {
     ALL_ORDERS_REQUEST,
     ALL_ORDERS_SUCCESS,
 
-    CANCEL_ANY_ORDER_FAILURE,
-    CANCEL_ANY_ORDER_REQUEST,
-    CANCEL_ANY_ORDER_SUCCESS,
-
     CREATE_PRODUCT_FAILURE,
     CREATE_PRODUCT_REQUEST,
     CREATE_PRODUCT_SUCCESS,
 
     DELETE_ANY_ORDER_FAILURE,
     DELETE_ANY_ORDER_REQUEST,
-    DELETE_ANY_ORDER_SUCCESS
+    DELETE_ANY_ORDER_SUCCESS,
+
+    UPDATE_ANY_ORDER_STATUS_FAILURE,
+    UPDATE_ANY_ORDER_STATUS_REQUEST,
+    UPDATE_ANY_ORDER_STATUS_SUCCESS
 } from "../constants/AdminConstants";
 
 
@@ -120,21 +120,23 @@ export const deleteAnyOrder = (id) => async(dispatch) => {
 
 
 
-export const cancelAnyOrder = (id) => async(dispatch) => {
+export const updateAnyOrderStatus = (order_id, product_id, status) => async(dispatch) => {
 
     try {
-        dispatch({ type: CANCEL_ANY_ORDER_REQUEST });
+        dispatch({ type: UPDATE_ANY_ORDER_STATUS_REQUEST });
 
-        const { data } = await axios.delete(`/api/v1/orders/all/${id}`);
+        const config = {headers: {"ContentType" : "application/json"}};
+
+        const { data } = await axios.put(`/api/v1/orders/all?order_id=${order_id}&product_id=${product_id}`, {status}, config);
 
         dispatch({
-            type: CANCEL_ANY_ORDER_SUCCESS,
+            type: UPDATE_ANY_ORDER_STATUS_SUCCESS,
             payload: data,
         });
 
     } catch (error) {
         dispatch({
-            type: CANCEL_ANY_ORDER_FAILURE,
+            type: UPDATE_ANY_ORDER_STATUS_FAILURE,
             payload: error.response.data.message,
         });
     }

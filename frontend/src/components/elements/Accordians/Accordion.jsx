@@ -4,8 +4,8 @@ import {BsChevronDown} from "react-icons/bs";
 import {BsChevronUp} from "react-icons/bs";
 
 
-const Accordion = ({ title, content, resize, style, noBorder, activeProp, setActiveProp }) => {
-    const [active, setActive] = useState(true);
+const Accordion = ({ title, content, resize, style, noBorder, activeProp, setActiveProp, close, titleClassName }) => {
+    const [active, setActive] = useState(close ? false : true);
     const [height, setHeight] = useState(`0px`);
     const contentRef = useRef(null);
 
@@ -31,6 +31,7 @@ const Accordion = ({ title, content, resize, style, noBorder, activeProp, setAct
         }
     }, [active]);
 
+
     const toggleAccordion = () => {
         if (activeProp !== undefined && setActiveProp !== undefined) {
             setActiveProp(!active);
@@ -40,7 +41,7 @@ const Accordion = ({ title, content, resize, style, noBorder, activeProp, setAct
     };
 
     return (
-        <div className="accordion__section" style={noBorder && { borderTop: "none" }}>
+        <div className={`accordion__section ${titleClassName}`} style={noBorder && { borderTop: "none" }}>
             <div className={`accordion ${active ? "active" : ""}`}>
                 <div className="accordion__title" style={{ ...style }}>
                     {title}

@@ -7,10 +7,6 @@ import {
     ALL_ORDERS_REQUEST,
     ALL_ORDERS_SUCCESS,
     
-    CANCEL_ANY_ORDER_FAILURE,
-    CANCEL_ANY_ORDER_REQUEST,
-    CANCEL_ANY_ORDER_SUCCESS,
-    
     CREATE_PRODUCT_FAILURE,
     CREATE_PRODUCT_REQUEST,
     CREATE_PRODUCT_RESET,
@@ -19,7 +15,11 @@ import {
     DELETE_ANY_ORDER_FAILURE,
     DELETE_ANY_ORDER_REQUEST,
     DELETE_ANY_ORDER_SUCCESS,
-    DELETE_CANCEL_ANY_ORDER_RESET
+    DELETE_UPDATE_ANY_ORDER_RESET,
+    
+    UPDATE_ANY_ORDER_STATUS_FAILURE,
+    UPDATE_ANY_ORDER_STATUS_REQUEST,
+    UPDATE_ANY_ORDER_STATUS_SUCCESS
 } from "../constants/AdminConstants"
 
 
@@ -122,36 +122,36 @@ export const getAllOrdersReducer = (state = { allOrders: [] }, action) => {
 
 
 
-export const deleteOrCancelAnyOrderReducer = (state = {}, action) => {
+export const deleteOrUpdateAnyOrderReducer = (state = {}, action) => {
 
     switch (action.type) {
         
-        case CANCEL_ANY_ORDER_REQUEST:
+        case UPDATE_ANY_ORDER_STATUS_REQUEST:
         case DELETE_ANY_ORDER_REQUEST:{
             return({
-                deletingOrCancellingOrder: true,
+                deletingOrUpdatingOrder: true,
             })
         }
 
-        case CANCEL_ANY_ORDER_SUCCESS:
+        case UPDATE_ANY_ORDER_STATUS_SUCCESS:
         case DELETE_ANY_ORDER_SUCCESS:{
             return ({
-                deletingOrCancellingOrder: false,
-                deletedOrCancelledOrder: action.payload.success,
-                deletedOrCancelledMessage: action.payload.message,
+                deletingOrUpdatingOrder: false,
+                deletedOrUpdatedOrder: action.payload.success,
+                deletedOrUpdatedMessage: action.payload.message,
             })
         }
 
-        case CANCEL_ANY_ORDER_FAILURE:
+        case UPDATE_ANY_ORDER_STATUS_FAILURE:
         case DELETE_ANY_ORDER_FAILURE:{
             return ({
-                deletingOrCancellingOrder: false,
-                deletedOrCancelledOrder: false,
-                deletedOrCancelledError: action.payload,
+                deletingOrUpdatingOrder: false,
+                deletedOrUpdatedOrder: false,
+                deletedOrUpdatedError: action.payload,
             })
         }
 
-        case DELETE_CANCEL_ANY_ORDER_RESET:{
+        case DELETE_UPDATE_ANY_ORDER_RESET:{
             return ({});
         }
 

@@ -17,7 +17,7 @@ const Icons = ({ status }) => {
                     (status === "Shipped") ? (
                         <PiWarehouseLight size={23} className="icon" />
                     ) : (
-                        (status === "In-transit") ? (
+                        (status === "In transit") ? (
                             <TbTruckDelivery strokeWidth={1} size={23} className="icon" />
                         ) : (
                             (status === "Out for delivery") ? (
