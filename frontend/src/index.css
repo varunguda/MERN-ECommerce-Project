@@ -296,6 +296,10 @@ body {
     text-decoration: none !important;
 }
 
+.inferior-btn:disabled{
+    opacity: 0.5;
+    pointer-events: none;
+}
 
 .secondary-btn {
     position: relative;

@@ -8,7 +8,7 @@ import { ErrorHandler } from "../utils/errorHandler.js";
 import { MeritMeter } from "../utils/meritMeter.js";
 import { sendEmail } from "../utils/sendMail.js";
 import { body, validationResult } from "express-validator";
-import {validateStripePayment} from "../utils/validateStripePayment.js";
+import { validateStripePayment } from "../utils/validateStripePayment.js";
 
 
 
@@ -58,18 +58,18 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
 
     let paidId = false;
 
-    if(req.body.stripe_payment_id){
+    if (req.body.stripe_payment_id) {
         paidId = await validateStripePayment(req.user._id, req.body.stripe_payment_id);
     }
-    else{
+    else {
         return next(new ErrorHandler("Seems like you haven't paid for your order. Please pay the amount before placing an order.", 403));
     }
 
-    if(!paidId){
+    if (!paidId) {
         return next(new ErrorHandler("Invalid payment details, please contact ManyIN customer service incase amount has been debited from your account.", 403));
     }
 
-    const order = await Orders.create({ 
+    const order = await Orders.create({
         user: req.user._id,
         order_items,
         paid_at: new Date(Date.now()),
@@ -129,7 +129,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
 
 
 
-export const getOrderPriceDetails = catchAsync( async(req, res, next) => {
+export const getOrderPriceDetails = catchAsync(async (req, res, next) => {
 
     const { order_items } = req.body;
 
@@ -306,24 +306,25 @@ export const deleteAnyOrder = catchAsync(async (req, res, next) => {
 
 export const updateAnyOrderStatus = catchAsync(async (req, res, next) => {
 
-    const { id } = req.params;
+    const { order_id, product_id } = req.query;
     const { status } = req.body;
 
-    const order = await Orders.findById(id);
+    const order = await Orders.findById(order_id);
     if (!order) {
         return next(new ErrorHandler("Order not found!", 404));
     }
 
-    for (const item in order.order_items) {
-        item.product_status = status;
+    for (const item of order.order_items) {
+        if (item.product.toString() === product_id) {
+            item.product_status = status;
+        }
     }
 
     await order.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,
-        message: `Order status updated to ${status}`,
-        order
+        message: `Order status updated to '${status}'`,
     })
 })
 

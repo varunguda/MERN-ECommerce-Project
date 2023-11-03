@@ -1,16 +1,28 @@
 
 .update-order-status-container{
-    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .product{
+        width: 200px;
+        overflow: hidden;
+    }
+}
+
+
+.update-order-status-container .order-status{
+    margin-bottom: 10px;
+
     > span{
-        font-weight: 600;
-        color: var(--black-font-color);
+        font-weight: 400;
     }
 
     > select{
-        font-size: var(--m-font-size) !important;
-        width: 200px !important;
-        min-width: 100px !important;
-        height: 36px !important;
+        font-size: var(--s-font-size) !important;
+        width: 160px !important;
+        min-width: 120px !important;
+        height: 30px !important;
         padding: 2px !important;
     }
 }
