@@ -13,6 +13,7 @@ import Dashboard from './Dashboard/Dashboard';
 import AllProducts from './Product/AllProducts';
 import CreateProduct from './Product/CreateProduct';
 import AllOrders from './Orders/AllOrders';
+import AllUsers from './Users/AllUsers';
 
 
 const Admin = () => {
@@ -136,11 +137,11 @@ const Admin = () => {
 
                             <div
                                 onClick={sidebarElemClickHandler}
-                                className={`sidebar-elem ${(activeLocation === "users") ? "active" : ""}`}
-                                link-identifier="users"
+                                className={`sidebar-elem ${(activeLocation === "customers") ? "active" : ""}`}
+                                link-identifier="customers"
                             >
                                 <PiUsersThreeLight className='sidebar-icon' size={17} />
-                                ManyIN Users
+                                ManyIN Customers
                             </div>
 
                             <div
@@ -181,6 +182,8 @@ const Admin = () => {
                             <CreateProduct />
                         ) : (activeLocation === "orders/all") ? (
                             <AllOrders />
+                        ) : (activeLocation === "customers") ? (
+                            <AllUsers />
                         ) : (
                             <Dashboard />
                         )}

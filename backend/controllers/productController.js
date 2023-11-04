@@ -783,6 +783,7 @@ export const addOptions = catchAsync(async (req, res, next) => {
 })
 
 
+
 export const getProductsOfSeller = catchAsync(async (req, res, next) => {
 
     const { id } = req.params;

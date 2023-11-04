@@ -8,6 +8,14 @@ import {
     ALL_ORDERS_REQUEST,
     ALL_ORDERS_SUCCESS,
 
+    ALL_SELLERS_FAILURE,
+    ALL_SELLERS_REQUEST,
+    ALL_SELLERS_SUCCESS,
+
+    ALL_USERS_FAILURE,
+    ALL_USERS_REQUEST,
+    ALL_USERS_SUCCESS,
+
     CREATE_PRODUCT_FAILURE,
     CREATE_PRODUCT_REQUEST,
     CREATE_PRODUCT_SUCCESS,
@@ -16,9 +24,17 @@ import {
     DELETE_ANY_ORDER_REQUEST,
     DELETE_ANY_ORDER_SUCCESS,
 
+    DELETE_USER_FAILURE,
+    DELETE_USER_REQUEST,
+    DELETE_USER_SUCCESS,
+
     UPDATE_ANY_ORDER_STATUS_FAILURE,
     UPDATE_ANY_ORDER_STATUS_REQUEST,
-    UPDATE_ANY_ORDER_STATUS_SUCCESS
+    UPDATE_ANY_ORDER_STATUS_SUCCESS,
+    
+    UPDATE_USER_ROLE_FAILURE,
+    UPDATE_USER_ROLE_REQUEST,
+    UPDATE_USER_ROLE_SUCCESS
 } from "../constants/AdminConstants";
 
 
@@ -140,4 +156,92 @@ export const updateAnyOrderStatus = (order_id, product_id, status) => async(disp
             payload: error.response.data.message,
         });
     }
+}
+
+
+
+export const getAllCustomers = (page) => async (dispatch) => {
+
+    try {
+        dispatch({ type: ALL_USERS_REQUEST });
+
+        const { data } = await axios.get(`/api/v1/admin/users/customers${page ? `?page=${page}` : ''}`);
+
+        dispatch({
+            type: ALL_USERS_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ALL_USERS_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const getAllSellers = (page) => async (dispatch) => {
+
+    try {
+        dispatch({ type: ALL_SELLERS_REQUEST });
+
+        const { data } = await axios.get(`/api/v1/admin/users/sellers${page ? `?page=${page}` : ''}`);
+
+        dispatch({
+            type: ALL_SELLERS_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ALL_SELLERS_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const deleteAnyuser = (id) => async(dispatch) => {
+    try {
+        dispatch({ type: DELETE_USER_REQUEST });
+
+        const { data } = await axios.delete(`/api/v1/admin/user/${id}`);
+
+        dispatch({
+            type: DELETE_USER_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: DELETE_USER_FAILURE,
+            payload: error.response.data.message,
+        })
+    }   
+}
+
+
+
+export const updateUserRole = (id, is_seller, is_admin) => async(dispatch) => {
+    try {
+        dispatch({ type: UPDATE_USER_ROLE_REQUEST });
+
+        const config = { headers: { "ContentType" : "application/json" } };
+
+        const { data } = await axios.put(`/api/v1/admin/user/${id}`, {is_admin, is_seller}, config);
+
+        dispatch({
+            type: UPDATE_USER_ROLE_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: UPDATE_USER_ROLE_FAILURE,
+            payload: error.response.data.message,
+        })
+    }   
 }

@@ -192,7 +192,7 @@ const SignUpUser = () => {
 
 
     return (
-        <div className='center-container'>
+        <>
 
             <Metadata title={"Sign Up - Create a ManyIN account"} />
 
@@ -302,6 +302,7 @@ const SignUpUser = () => {
 
                 ) : (
 
+                    <>
                     <BannerPage
                         type="mail"
                         letterContent={"**code**"}
@@ -314,14 +315,14 @@ const SignUpUser = () => {
                             </>
                         }
                     />
+                    </>
 
                 )
 
             ) : (
 
                 (!verifiedUser) ? (
-                    <div>
-
+                    <div className='center-container'>
                         <div className="verify-code-container">
                             <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
                             <div className='verify-head'>Enter Your 5 Digit OTP</div>
@@ -346,8 +347,6 @@ const SignUpUser = () => {
                                 <div ref={errRef} className='err-msg'>{verifcationError}</div>
                             </form>
                         </div>
-
-
                     </div>
                 ) : (
                     <BannerPage
@@ -356,7 +355,7 @@ const SignUpUser = () => {
                         caption={
                             <>
                                 <p>{verifcationMessage}</p>
-
+                                
                                 <button onClick={() => navigate("/")} type="button" className='inferior-btn' style={{ color: "#0071dc" }}>Home</button>
                             </>
                         }
@@ -364,7 +363,7 @@ const SignUpUser = () => {
                 )
 
             )}
-        </div>
+        </>
     )
 }
 
