@@ -2,7 +2,8 @@ import { Router } from "express";
 import { isAdmin } from "../middleware/isAdmin.js";
 import {
     deleteAnyUser,
-    getAllSellersAndBuyers,
+    getAllCustomers,
+    getAllSellers,
     getAnyUserDetails,
     setSellerMerit,
     updateUserRole
@@ -26,7 +27,8 @@ router.route("/admin").get(isAdmin, (req, res, next) => {
     })
 });
 
-router.route("/admin/users/all").get( isAdmin, getAllSellersAndBuyers);
+router.route("/admin/users/customers").get( isAdmin, getAllCustomers);
+router.route("/admin/users/sellers").get( isAdmin, getAllSellers);
 
 router.route("/admin/user/:id")
     .get(isAdmin, getAnyUserDetails)

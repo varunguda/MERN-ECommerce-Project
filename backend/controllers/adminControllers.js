@@ -2,26 +2,47 @@ import { body } from "express-validator";
 import { Users } from "../models/userModel.js";
 import catchAsync from "../utils/catchAsync.js";
 import { ErrorHandler } from "../utils/errorHandler.js";
+import { pagination } from "../utils/apiFeatures.js";
 
 
 
 // ADMIN FUNCTIONS
-export const getAllSellersAndBuyers = catchAsync( async (req, res, next) => {
-    const users = await Users.find({ is_admin: false });
+export const getAllCustomers = catchAsync(async (req, res, next) => {
+
+    const users = await Users.find({ is_admin: false, is_seller: false }).select("+is_seller +is_admin");
+    const count = users.length;
+
+    const paginatedUsers = pagination(users, 10, req.query.page);
 
     return res.json({
         success: true,
-        users
+        users: paginatedUsers,
+        totalUsersCount: count,
     })
 })
 
 
 
-export const getAnyUserDetails = catchAsync( async(req, res, next) => {
+export const getAllSellers = catchAsync(async (req, res, next) => {
+    const users = await Users.find({ is_admin: false, is_seller: true }).select("+is_seller +is_admin");
+    const count = users.length;
+
+    const paginatedUsers = pagination(users, 10, req.query.page);
+
+    return res.json({
+        success: true,
+        users: paginatedUsers,
+        totalUsersCount: count,
+    })
+})
+
+
+
+export const getAnyUserDetails = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
     const user = await Users.findById(id);
-    if(!user){
+    if (!user) {
         return next(new ErrorHandler("User not found!", 404));
     }
 
@@ -33,16 +54,16 @@ export const getAnyUserDetails = catchAsync( async(req, res, next) => {
 
 
 
-export const updateUserRole = catchAsync( async(req, res, next) => {
+export const updateUserRole = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const { is_seller, is_admin } = req.body;
-    
+
     let user = await Users.findById(id).select("+is_admin");
-    if(!user){
+    if (!user) {
         return next(new ErrorHandler("User not found!", 404));
     }
 
-    if(user.is_admin){
+    if (user.is_admin) {
         // An Admin can create another admin but cannot remove an Admin
         return next(new ErrorHandler("This action cannot be performed!", 403))
     }
@@ -52,26 +73,26 @@ export const updateUserRole = catchAsync( async(req, res, next) => {
     user.seller_merit = 80;
     user.total_sales = 0;
 
-    user.save({ validateBeforeSave: false });
+    await user.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,
-        message: "User Role updated successfully!",
-        user
+        message: "User Role updated successfully!"
     })
 })
 
 
 
-export const deleteAnyUser = catchAsync( async(req, res, next) => {
+export const deleteAnyUser = catchAsync(async (req, res, next) => {
+
     const { id } = req.params;
 
     const user = await Users.findById(id).select("+is_admin");
-    if(!user){
+    if (!user) {
         return next(new ErrorHandler("User not found!", 404));
     }
 
-    if(user.is_admin){
+    if (user.is_admin) {
         return next(new ErrorHandler("You are not permitted to perform this action!", 403))
     }
 
@@ -86,39 +107,39 @@ export const deleteAnyUser = catchAsync( async(req, res, next) => {
 
 
 export const setSellerMerit = [
-    
+
     body("merit")
-    .isNumeric()
-    .withMessage("Invalid Merit format!")
-    .isLength({ max: 3 }) //////////////////////////////////////////////////////////////////
-    .withMessage('Price must be a number in between the range of 0 and 100'),
+        .isNumeric()
+        .withMessage("Invalid Merit format!")
+        .isLength({ max: 3 }) //////////////////////////////////////////////////////////////////
+        .withMessage('Price must be a number in between the range of 0 and 100'),
 
     body("sales")
-    .isNumeric()
-    .withMessage("Invalid Sales format!"),
-    
-    catchAsync( async(req, res, next) => {
-        
+        .isNumeric()
+        .withMessage("Invalid Sales format!"),
+
+    catchAsync(async (req, res, next) => {
+
         const { id } = req.params;
-    
+
         const { merit, sales } = req.body;
-    
+
         const user = await Users.findById(id).select("+is_seller");
-        if(!user){
+        if (!user) {
             return next(new ErrorHandler("User not found!", 404));
         }
-        if(!user.is_seller){
+        if (!user.is_seller) {
             return next(new ErrorHandler(`${user.name} is not a seller!`, 400));
         }
-    
+
         user.seller_merit = merit;
         user.total_sales = sales;
         user.save({ validateBeforeSave: false });
-    
+
         return res.json({
             success: true,
             message: "Seller's merit has been updated!",
         })
-    
+
     })
 ] 

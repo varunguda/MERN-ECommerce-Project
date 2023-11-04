@@ -23,9 +23,17 @@ import {
     getMyOrdersReducer,
     cancelMyOrderReducer,
 } from "./ProfileReducers"
+import { 
+    adminReducer, 
+    createProductReducer, 
+    deleteAnyUserReducer, 
+    deleteOrUpdateAnyOrderReducer,
+    getAllOrdersReducer, 
+    getAllUsersReducer, 
+    updateAnyUserRoleReducer
+} from "./AdminReducers";
 import { loaderReducer } from "./LoaderReducers";
 import { addToCartReducer, orderValueReducer } from "./CartReducers";
-import { adminReducer, createProductReducer, deleteOrUpdateAnyOrderReducer, getAllOrdersReducer } from "./AdminReducers";
 
 
 const reducers = combineReducers({
@@ -54,6 +62,9 @@ const reducers = combineReducers({
     createProduct: createProductReducer,
     allOrders: getAllOrdersReducer,
     deleteOrUpdateAnyOrder: deleteOrUpdateAnyOrderReducer,
+    customersOrSellers: getAllUsersReducer,
+    deleteAnyUser: deleteAnyUserReducer,
+    updateUserRole: updateAnyUserRoleReducer,
 });
 
 
