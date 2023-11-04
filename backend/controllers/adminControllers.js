@@ -111,8 +111,8 @@ export const setSellerMerit = [
     body("merit")
         .isNumeric()
         .withMessage("Invalid Merit format!")
-        .isLength({ max: 3 }) //////////////////////////////////////////////////////////////////
-        .withMessage('Price must be a number in between the range of 0 and 100'),
+        .isLength({ maxLength: 3 })
+        .withMessage('Merit must be a number in between the range of 0 and 100'),
 
     body("sales")
         .isNumeric()
@@ -121,7 +121,6 @@ export const setSellerMerit = [
     catchAsync(async (req, res, next) => {
 
         const { id } = req.params;
-
         const { merit, sales } = req.body;
 
         const user = await Users.findById(id).select("+is_seller");
@@ -134,12 +133,12 @@ export const setSellerMerit = [
 
         user.seller_merit = merit;
         user.total_sales = sales;
-        user.save({ validateBeforeSave: false });
+
+        await user.save({ validateBeforeSave: false });
 
         return res.json({
             success: true,
             message: "Seller's merit has been updated!",
-        })
-
+        });
     })
 ] 

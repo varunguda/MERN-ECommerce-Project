@@ -14,6 +14,7 @@ import AllProducts from './Product/AllProducts';
 import CreateProduct from './Product/CreateProduct';
 import AllOrders from './Orders/AllOrders';
 import AllUsers from './Users/AllUsers';
+import AllSellers from './Sellers/AllSellers';
 
 
 const Admin = () => {
@@ -184,6 +185,8 @@ const Admin = () => {
                             <AllOrders />
                         ) : (activeLocation === "customers") ? (
                             <AllUsers />
+                        ) : (activeLocation === "sellers") ? (
+                            <AllSellers />
                         ) : (
                             <Dashboard />
                         )}

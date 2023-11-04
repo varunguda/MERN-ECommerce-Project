@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
-import { deleteAnyuser, getAllCustomers, updateUserRole } from '../../../State/action-creators/AdminActionCreators';
+import { deleteAnyuser, getAllSellers, updateUserRole } from '../../../State/action-creators/AdminActionCreators';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import Table from '../../elements/Table/Table';
 import { ModalContext } from '../../../Context/ModalContext';
@@ -9,7 +9,8 @@ import { DELETE_USER_RESET, UPDATE_USER_ROLE_RESET } from '../../../State/consta
 import { toast } from 'react-toastify';
 
 
-const UpdateUserRole = ({ closeModal, user, updateUserRole, dispatch }) => {
+
+const UpdateSellerRole = ({ closeModal, user, updateUserRole, dispatch }) => {
 
     const [userRoles, setUserRoles] = useState({
         is_admin: user.is_admin,
@@ -64,7 +65,7 @@ const UpdateUserRole = ({ closeModal, user, updateUserRole, dispatch }) => {
 }
 
 
-const AllUsers = () => {
+const AllSellers = () => {
 
     const { gettingAllUsers, totalUsersCount, users } = useSelector(state => state.customersOrSellers);
     const { deletingUser, deletedUser, deletedUserMessage, deletedUserError } = useSelector(state => state.deleteAnyUser);
@@ -80,7 +81,7 @@ const AllUsers = () => {
         if ((deletedUser !== false) && (updatedUserRole !== false)) {
             dispatch({ type: DELETE_USER_RESET });
             dispatch({ type: UPDATE_USER_ROLE_RESET });
-            dispatch(getAllCustomers(pageNum));
+            dispatch(getAllSellers(pageNum));
         }
         // eslint-disable-next-line
     }, [pageNum, deletedUser, updatedUserRole]);
@@ -127,7 +128,7 @@ const AllUsers = () => {
 
     const updateClickHandler = (id) => {
         const user = users.find((user) => user._id === id);
-        openModal("Update user role", <UpdateUserRole closeModal={closeModal} user={user} updateUserRole={updateUserRole} dispatch={dispatch} />);
+        openModal("Update Seller Role", <UpdateSellerRole closeModal={closeModal} user={user} updateUserRole={updateUserRole} dispatch={dispatch} />);
     }
 
 
@@ -151,7 +152,7 @@ const AllUsers = () => {
                 </div>
             </>
         );
-        openModal("Are you sure you want to delete this user?", modalContent);
+        openModal("Are you sure you want to delete this seller?", modalContent);
     }
 
 
@@ -166,7 +167,7 @@ const AllUsers = () => {
         },
         {
             field: 'name',
-            headerName: 'Name',
+            headerName: 'Seller Name',
             minWidth: 120,
             flex: 0.3
         },
@@ -175,6 +176,18 @@ const AllUsers = () => {
             headerName: 'Email',
             minWidth: 150,
             flex: 0.5
+        },
+        {
+            field: 'seller_merit',
+            headerName: 'Seller Merit',
+            minWidth: 70,
+            flex: 0.2
+        },
+        {
+            field: 'total_sales',
+            headerName: 'Total Sales',
+            minWidth: 70,
+            flex: 0.2
         },
         {
             field: 'actions',
@@ -199,7 +212,7 @@ const AllUsers = () => {
 
     return (
         <div className="profile-page-content">
-            <div className="page-head">ManyIN Customers</div>
+            <div className="page-head">ManyIN Sellers</div>
             {((gettingAllUsers === false) && (deletingUser !== true)) && (
                 <div className='all-products-container'>
                     <Table
@@ -216,7 +229,7 @@ const AllUsers = () => {
     )
 }
 
-export default AllUsers;
+export default AllSellers;
 
 
 const placeholderRows = [
@@ -224,50 +237,70 @@ const placeholderRows = [
         _id: '1',
         name: 'Product 1',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
     {
         _id: '2',
         name: 'Product 2',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
     {
         _id: '3',
         name: 'Product 3',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
     {
         _id: '4',
         name: 'Product 4',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
     {
         _id: '5',
         name: 'Product 5',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
     {
         _id: '6',
         name: 'Product 6',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
     {
         _id: '7',
         name: 'Product 7',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
     {
         _id: '8',
         name: 'Product 8',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
     {
         _id: '9',
         name: 'Product 9',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
     {
         _id: '10',
         name: 'Product 10',
         email: "",
+        seller_merit: 0,
+        total_sales: 0,
     },
 ];
