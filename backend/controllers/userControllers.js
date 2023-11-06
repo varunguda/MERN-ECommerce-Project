@@ -169,17 +169,19 @@ export const logoutUser = catchAsync(async (req, res, next) => {
 export const deleteUser = catchAsync(async (req, res, next) => {
 
     const user = await Users.findById(req.user._id).select("+password")
-    const { name, email, password, address, created_at, user_image_url } = user;
+    const { name, email, password, mobile, created_at, avatar } = user;
 
-    await DeletedUsers.create({ name, email, password, address, created_at, user_image_url, expires_at: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) });
+    await DeletedUsers.create({ name, email, password, mobile, created_at, avatar, expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) });
 
-    await user.deleteOne()
+    await user.deleteOne();
 
-    return res.json({
+    return res.cookie("token", "", {
+        httpOnly: true,
+        maxAge: 0,
+    }).json({
         success: true,
-        message: "Successfully deleted your account, You can log back in again within the next 10 days!"
-    })
-
+        message: "Your account deletion has been completed successfully. You can still be able to log back in anytime within the next 30 days."
+    });
 });
 
 
