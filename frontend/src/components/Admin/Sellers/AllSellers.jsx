@@ -128,7 +128,7 @@ const AllSellers = () => {
 
     const updateClickHandler = (id) => {
         const user = users.find((user) => user._id === id);
-        openModal("Update Seller Role", <UpdateSellerRole closeModal={closeModal} user={user} updateUserRole={updateUserRole} dispatch={dispatch} />);
+        openModal("Update user role", <UpdateSellerRole closeModal={closeModal} user={user} updateUserRole={updateUserRole} dispatch={dispatch} />);
     }
 
 

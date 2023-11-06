@@ -28,6 +28,12 @@ import {
     DELETE_USER_REQUEST,
     DELETE_USER_SUCCESS,
 
+    GET_DATA_ANALYSIS_FAILURE,
+
+    GET_DATA_ANALYSIS_REQUEST,
+
+    GET_DATA_ANALYSIS_SUCCESS,
+
     UPDATE_ANY_ORDER_STATUS_FAILURE,
     UPDATE_ANY_ORDER_STATUS_REQUEST,
     UPDATE_ANY_ORDER_STATUS_SUCCESS,
@@ -54,6 +60,27 @@ export const checkAdmin = () => async(dispatch) => {
     } catch (error) {
         dispatch({
             type: ADMIN_CHECK_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const getDataAnalysis = () => async(dispatch) => {
+    try {
+        dispatch({ type: GET_DATA_ANALYSIS_REQUEST });
+
+        const { data } = await axios.get("/api/v1/admin/analysis");
+
+        dispatch({
+            type: GET_DATA_ANALYSIS_SUCCESS,
+            payload: data,
+        })
+        
+    } catch (error) {
+        dispatch({
+            type: GET_DATA_ANALYSIS_FAILURE,
             payload: error.response.data.message,
         })
     }
