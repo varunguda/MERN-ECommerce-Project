@@ -126,7 +126,7 @@ const schema = new mongoose.Schema({
     seller_merit:{
         type: Number,
         default: undefined,
-        max: 101,
+        max: 100,
     },
 
     total_sales:{

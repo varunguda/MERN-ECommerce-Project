@@ -19,42 +19,18 @@ const schema = new mongoose.Schema({
         select: false
     },
 
-    user_image_url:{
-        type: String
+    avatar: {
+        public_id: {
+            type: String
+        },
+        url: {
+            type: String,
+        },
     },
 
-    address: [
-        {
-            flat_details: {
-                type: String,
-                required: true
-            },
-            area: {
-                type: String,
-                required: true
-            },
-            landmark: {
-                type: String,
-                required: true
-            },
-            city: {
-                type: String,
-                required: true
-            },
-            state: {
-                type: String,
-                required: true
-            },
-            zip: {
-                type: Number,
-                required: true
-            }
-        }
-    ],
-
-    is_seller: {
-        type: Boolean,
-        default: false
+    mobile:{
+        type: Number,
+        length: 10,
     },
 
     created_at: {
@@ -65,7 +41,7 @@ const schema = new mongoose.Schema({
     expires_at: {
         type: Date,
         default: Date.now,
-        expires: 10 * 24 * 60 * 60  // 10 days
+        expires: 30 * 24 * 60 * 60  // 30 days
     }
 })
 
