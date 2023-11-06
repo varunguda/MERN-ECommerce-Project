@@ -211,7 +211,7 @@ export const getMyOrders = catchAsync(async (req, res, next) => {
 
 
 
-export const deleteMyOrder = catchAsync(async (req, res, next) => {
+export const cancelMyOrder = catchAsync(async (req, res, next) => {
 
     const { id } = req.params;
 
@@ -236,7 +236,7 @@ export const deleteMyOrder = catchAsync(async (req, res, next) => {
         item.product_status = "Cancelled";
     }
 
-    // order.deleteOne();
+    // await order.deleteOne();
 
     await order.save({ validateBeforeSave: false });
 
@@ -406,7 +406,7 @@ export const cancelOrderOfMyProduct = [
         await order.save({ validateBeforeSave: false });
 
         const meritMeter = new MeritMeter(1, req.user._id);
-        meritMeter.reduceMerit()
+        meritMeter.reduceMerit();
 
         const html = orderHtml({
             head: "Order Cancelled!",

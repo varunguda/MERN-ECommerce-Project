@@ -136,12 +136,7 @@ const schema = new mongoose.Schema({
 
     created_at: {
         type: Date,
-        default: () => {
-            let now = new Date();
-            now.setHours(now.getHours() + 5);
-            now.setMinutes(now.getMinutes() + 30);
-            return now;
-        },
+        default: Date.now,
     },
 
     reset_password_token: {

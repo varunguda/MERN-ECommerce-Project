@@ -30,10 +30,15 @@ import {
     DELETE_USER_RESET,
     DELETE_USER_SUCCESS,
     
+    GET_DATA_ANALYSIS_FAILURE,
+    GET_DATA_ANALYSIS_REQUEST,
+    GET_DATA_ANALYSIS_SUCCESS,
+    
     UPDATE_ANY_ORDER_STATUS_FAILURE,
     UPDATE_ANY_ORDER_STATUS_REQUEST,
     UPDATE_ANY_ORDER_STATUS_SUCCESS,
     UPDATE_USER_ROLE_FAILURE,
+    
     UPDATE_USER_ROLE_REQUEST,
     UPDATE_USER_ROLE_RESET,
     UPDATE_USER_ROLE_SUCCESS
@@ -59,6 +64,36 @@ export const adminReducer = (state = {}, { type, payload }) => {
             return {
                 checkingAdmin: false,
                 isAdmin: false,
+            }
+        }
+
+        default:
+            return state
+    }
+}
+
+
+
+export const dataAnalysisReducer = (state = {}, { type, payload }) => {
+    switch (type) {
+        case GET_DATA_ANALYSIS_REQUEST:{
+            return {
+                fetchingAnalysis: true,
+            }
+        }
+
+        case GET_DATA_ANALYSIS_SUCCESS:{
+            return {
+                fetchingAnalysis: false,
+                fetchedAnalysis: payload.success,
+                analysis: payload.analysis,
+            }
+        }
+
+        case GET_DATA_ANALYSIS_FAILURE:{
+            return {
+                fetchingAnalysis: false,
+                fetchedAnalysis: payload.success,
             }
         }
 

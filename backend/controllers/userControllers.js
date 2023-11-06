@@ -10,7 +10,6 @@ import { sendEmail } from "../utils/sendMail.js";
 import { verifyMail } from "../utils/verifyMail.js";
 
 
-// USER FUNCTIONS
 
 export const checkUser = catchAsync(async (req, res, next) => {
 

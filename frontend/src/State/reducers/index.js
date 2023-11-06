@@ -26,6 +26,7 @@ import {
 import { 
     adminReducer, 
     createProductReducer, 
+    dataAnalysisReducer, 
     deleteAnyUserReducer, 
     deleteOrUpdateAnyOrderReducer,
     getAllOrdersReducer, 
@@ -59,6 +60,7 @@ const reducers = combineReducers({
     cart: addToCartReducer,
     orderValue: orderValueReducer,
     admin: adminReducer,
+    adminAnalytics: dataAnalysisReducer,
     createProduct: createProductReducer,
     allOrders: getAllOrdersReducer,
     deleteOrUpdateAnyOrder: deleteOrUpdateAnyOrderReducer,

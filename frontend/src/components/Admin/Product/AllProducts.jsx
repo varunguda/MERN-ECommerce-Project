@@ -17,6 +17,13 @@ const AllProducts = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        return () => {
+            dispatch({ type: "RESET_FACETS" });
+        }
+        // eslint-disable-next-line 
+    }, []);
+
+    useEffect(() => {
         dispatch(setPage(pageNum));
         dispatch(setAvailability("oos"));
         dispatch(getProducts());

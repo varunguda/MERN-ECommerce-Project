@@ -5,9 +5,9 @@ import { isSeller } from "../middleware/isSeller.js";
 import { isAdminOrSeller } from "../middleware/isAdminOrSeller.js"
 import {
     cancelAllOrderOfMyProduct,
+    cancelMyOrder,
     cancelOrderOfMyProduct,
     deleteAnyOrder,
-    deleteMyOrder,
     getAllOrders,
     getMyOrders,
     getMyProductsOrders,
@@ -31,7 +31,7 @@ router.route("/me/orders").get(isUser, getMyOrders);
 
 router.route("/me/orders/:id").get(isUser, getOrderDetails);
 
-router.route("/me/orders/:id").delete(isUser, deleteMyOrder )
+router.route("/me/orders/:id").delete(isUser, cancelMyOrder )
 
 
 
