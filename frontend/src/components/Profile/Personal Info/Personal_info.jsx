@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
+import axios from 'axios';
 import "./Personal_info.css";
 import { ModalContext } from '../../../Context/ModalContext';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
-import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { LOGIN_USER_RESET } from '../../../State/constants/UserConstants';
 
@@ -64,7 +64,7 @@ const PersonalInfo = ({ user }) => {
         const modalContent = (
             <>
                 <div className="modal-caption">
-                    For the next 30 days, you'll retain access to log back into your account; however, please note that your account will be permanently deleted after this grace period. Please note that you may loose your data, such as saved addresses, orders placed.
+                    For the next 30 days, you'll retain access to log back into your account; however, please note that your account will be permanently deleted after this grace period. You may loose your data, such as saved addresses, orders placed, upon deletion.
                     <br />
                     <br />
                     {(user.is_seller || user.is_admin) && "You will no longer be a Seller or an Admin."}
@@ -87,6 +87,7 @@ const PersonalInfo = ({ user }) => {
         openModal("Are you sure you want to DELETE your account?", modalContent, true);
     }
 
+    
     return (
         <div className="profile-page-content">
 
@@ -122,7 +123,9 @@ const PersonalInfo = ({ user }) => {
                 </section>
             </div>
 
-            <button type="button" onClick={deleteAccountClickHandler} className='main-btn warning'>Delete Account</button>
+            <button type="button" onClick={deleteAccountClickHandler} className='main-btn warning'>
+                Delete Account
+            </button>
         </div>
     )
 }

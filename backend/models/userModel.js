@@ -33,7 +33,7 @@ const schema = new mongoose.Schema({
         },
     },
 
-    phone_number:{
+    phone_number: {
         type: Number,
         length: 10,
         unique: true,
@@ -41,12 +41,12 @@ const schema = new mongoose.Schema({
 
     address: [
         {
-            first_name:{
-                type: String, 
+            first_name: {
+                type: String,
                 required: true,
             },
-            last_name:{
-                type: String, 
+            last_name: {
+                type: String,
                 required: true,
             },
             flat: {
@@ -75,17 +75,17 @@ const schema = new mongoose.Schema({
             zip: {
                 type: Number,
                 required: true,
-                length: [ 5, "Please enter a valid zip code!" ],
+                length: [5, "Please enter a valid zip code!"],
             },
-            mobile:{
+            mobile: {
                 type: Number,
                 required: true,
             },
             delivery_notes: {
                 type: String,
-                maxlength: [ 250, "Delivery notes cannot exceed 250 characters" ]
+                maxlength: [250, "Delivery notes cannot exceed 250 characters"]
             },
-            default_address:{
+            default_address: {
                 type: Boolean,
                 default: false,
                 required: true,
@@ -93,22 +93,10 @@ const schema = new mongoose.Schema({
         }
     ],
 
-    cart_items: [
+    wishlist_items: [
         {
-            product:{
-                type: Schema.Types.ObjectId,
-                ref: "Products",
-                required: true
-            },
-            quantity: {
-                type: Number,
-                required: true,
-                default: 1
-            },
-            name:{
-                type: String,
-                required: true,
-            }
+            type: Schema.Types.ObjectId,
+            ref: "Products",
         }
     ],
 
@@ -124,13 +112,13 @@ const schema = new mongoose.Schema({
         select: false,
     },
 
-    seller_merit:{
+    seller_merit: {
         type: Number,
         default: undefined,
         max: 100,
     },
 
-    total_sales:{
+    total_sales: {
         type: Number,
         default: undefined,
     },
@@ -144,7 +132,7 @@ const schema = new mongoose.Schema({
         type: String,
         select: false
     },
-    
+
     reset_password_expire: {
         type: Date,
         select: false

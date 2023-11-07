@@ -523,7 +523,7 @@ const Shipping = () => {
                             <p>You order has been successfully placed.</p>
                             <button
                                 onClick={() => {
-                                    navigate("/profile/orders&returns");
+                                    navigate("/profile/orders");
                                     dispatch({ type: RESET_CART_ITEMS });
                                 }}
                                 type="button"

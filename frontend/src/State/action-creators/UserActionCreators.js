@@ -32,14 +32,18 @@ import {
     SIGNOUT_USER_SUCCESS,
     SIGNOUT_USER_REQUEST,
 
+    LIST_ITEMS_REQUEST,
+    LIST_ITEMS_SUCCESS,
+    LIST_ITEMS_FAILURE,
+
 } from "../constants/UserConstants.js";
 
 
 
-export const checkUsersAccount = ( email ) => async(dispatch) => {
+export const checkUsersAccount = (email) => async (dispatch) => {
 
     try {
-        
+
         dispatch({ type: USER_CHECK_REQUEST });
 
         const config = { headers: { "Content-Type": "application/json" } };
@@ -50,7 +54,7 @@ export const checkUsersAccount = ( email ) => async(dispatch) => {
             type: USER_CHECK_SUCCESS,
             payload: data,
         })
-        
+
     } catch (error) {
 
         dispatch({
@@ -62,10 +66,10 @@ export const checkUsersAccount = ( email ) => async(dispatch) => {
 
 
 
-export const loginUser = (email, pass) => async(dispatch) => {
+export const loginUser = (email, pass) => async (dispatch) => {
 
     try {
-        
+
         dispatch({
             type: LOGIN_USER_REQUEST
         })
@@ -90,8 +94,8 @@ export const loginUser = (email, pass) => async(dispatch) => {
 
 
 
-export const loadUser = () => async(dispatch) => {
-    
+export const loadUser = () => async (dispatch) => {
+
     try {
 
         dispatch({ type: LOAD_USER_REQUEST });
@@ -102,7 +106,7 @@ export const loadUser = () => async(dispatch) => {
             type: LOAD_USER_SUCCESS,
             payload: data,
         })
-        
+
     } catch (error) {
         dispatch({
             type: LOAD_USER_FAILURE,
@@ -113,17 +117,17 @@ export const loadUser = () => async(dispatch) => {
 
 
 
-export const signupUser = (user) => async(dispatch) => {
+export const signupUser = (user) => async (dispatch) => {
 
     try {
-        
+
         dispatch({
             type: SIGNUP_USER_REQUEST
         })
 
         const config = { headers: { "Content-Type": "application/json" } }
 
-        const { data } = await axios.post("/api/v1/register", { name: user.name, email: user.mail , password: user.confirmPass, avatar: user.avatar }, config);
+        const { data } = await axios.post("/api/v1/register", { name: user.name, email: user.mail, password: user.confirmPass, avatar: user.avatar }, config);
 
         dispatch({
             type: SIGNUP_USER_SUCCESS,
@@ -141,10 +145,10 @@ export const signupUser = (user) => async(dispatch) => {
 
 
 
-export const verifyUser = (code) => async(dispatch) => {
+export const verifyUser = (code) => async (dispatch) => {
 
     try {
-        
+
         dispatch({
             type: VERIFY_USER_REQUEST
         })
@@ -169,13 +173,13 @@ export const verifyUser = (code) => async(dispatch) => {
 
 
 
-export const sendPassRecoveryMail = (email) => async(dispatch) => {
+export const sendPassRecoveryMail = (email) => async (dispatch) => {
 
     try {
 
         dispatch({ type: FORGOT_PASSWORD_REQUEST });
 
-        const config = { headers: { "Content-Type" : "application/json" } };
+        const config = { headers: { "Content-Type": "application/json" } };
 
         const { data } = await axios.post(`/api/v1/password/forgot`, { email }, config);
 
@@ -183,7 +187,7 @@ export const sendPassRecoveryMail = (email) => async(dispatch) => {
             type: FORGOT_PASSWORD_SUCCESS,
             payload: data,
         })
-        
+
     } catch (error) {
         dispatch({
             type: FORGOT_PASSWORD_FAILURE,
@@ -194,21 +198,21 @@ export const sendPassRecoveryMail = (email) => async(dispatch) => {
 
 
 
-export const resetPassword = ( pass, confirmPass, token ) => async(dispatch) => {
-    
+export const resetPassword = (pass, confirmPass, token) => async (dispatch) => {
+
     try {
-        
+
         dispatch({ type: RESET_PASSWORD_REQUEST });
 
-        const config = { headers: {"Content-Type": "application/json"} };
-        
+        const config = { headers: { "Content-Type": "application/json" } };
+
         const { data } = await axios.put(`/api/v1/password/reset/${token}`, { password: pass, confirmPassword: confirmPass }, config);
 
         dispatch({
             type: RESET_PASSWORD_SUCCESS,
             payload: data,
         })
-        
+
     } catch (error) {
         dispatch({
             type: RESET_PASSWORD_FAILURE,
@@ -219,8 +223,8 @@ export const resetPassword = ( pass, confirmPass, token ) => async(dispatch) => 
 
 
 
-export const signOutUser = () => async(dispatch) => {
-    
+export const signOutUser = () => async (dispatch) => {
+
     try {
 
         dispatch({ type: SIGNOUT_USER_REQUEST });
@@ -231,11 +235,44 @@ export const signOutUser = () => async(dispatch) => {
             type: SIGNOUT_USER_SUCCESS,
             payload: data,
         })
-        
+
     } catch (error) {
         dispatch({
             type: SIGNOUT_USER_FAILURE,
             payload: error.response.data.message,
         })
+    }
+}
+
+
+
+export const getListItems = () => async (dispatch) => {
+    try {
+
+        dispatch({ type: LIST_ITEMS_REQUEST });
+
+        const { data } = await axios.get("/api/v1/me/list");
+
+        dispatch({
+            type: LIST_ITEMS_SUCCESS,
+            payload: data,
+        });
+
+    } catch (error) {
+        dispatch({
+            type: LIST_ITEMS_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const toggleListItem = (id) => async (dispatch) => {
+    try {
+        await axios.get(`/api/v1/me/list/${id}`);
+        dispatch(getListItems());
+    } catch (error) {
+        console.error(error);
     }
 }

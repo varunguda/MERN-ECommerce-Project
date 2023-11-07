@@ -1,8 +1,6 @@
+import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react'
 import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from 'react-icons/bi';
-import { actionCreators } from '../../State/action-creators';
-import { useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 
 const LikesDislikes = ({ reviewsId, review }) => {
@@ -16,10 +14,6 @@ const LikesDislikes = ({ reviewsId, review }) => {
     const likeInterval = useRef();
     const dislikeInterval = useRef();
 
-    const dispatch = useDispatch();
-
-    const { toggleReviewLike, toggleReviewDislike } = bindActionCreators(actionCreators, dispatch);
-
     useEffect(() => {
         setLiked(review.liked);
         setSaveLike(review.liked);
@@ -28,6 +22,19 @@ const LikesDislikes = ({ reviewsId, review }) => {
         setDislikesCount(review.dislikes);
         setLikesCount(review.likes)
     }, [review]);
+
+
+    const toggleReviewLike = async(reviews_id, review_id) => {
+        const config = { headers: { "Content-Type": "application/json" } };
+
+        await axios.post("/api/v1/products/reviews/like", { reviews: reviews_id, review: review_id }, config);
+    }
+
+    const toggleReviewDislike = async(reviews_id, review_id) => {
+        const config = { headers: { "Content-Type": "application/json" } };
+
+        await axios.post("/api/v1/products/reviews/dislike", { reviews: reviews_id, review: review_id }, config);
+    }
 
 
     const likeReviewClickHandler = () => {
@@ -51,7 +58,6 @@ const LikesDislikes = ({ reviewsId, review }) => {
         clearTimeout(likeInterval.current);
         likeInterval.current = setTimeout(() => {
             if (tempLiked !== saveLike) {
-                console.log(reviewsId);
                 toggleReviewLike(reviewsId, review._id);
                 setSaveLike(tempLiked);
             }

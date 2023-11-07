@@ -7,7 +7,7 @@ import { addToCart } from '../../State/action-creators/CartActionCreators';
 import { useLocation } from 'react-router';
 import Metadata from '../Metadata';
 import { RxZoomIn } from "react-icons/rx";
-import { CiHeart, CiShop } from "react-icons/ci";
+import { CiShop } from "react-icons/ci";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { FiMinus, FiPlus } from "react-icons/fi";
 import Stars from '../elements/Cards/Stars';
@@ -18,6 +18,8 @@ import Accordion from '../elements/Accordians/Accordion';
 import ProductCard from '../elements/Cards/ProductCard';
 import ProductReview from './ProductReview';
 import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
+import ListButton from '../elements/Buttons/ListButton';
+import ListHeartButton from '../elements/Buttons/ListHeartButton';
 
 
 const images = [
@@ -315,7 +317,9 @@ const ProductPage = () => {
 
                                 <div className="section-part">
 
-                                    <CiHeart className='wishlist-icon' size={30} />
+                                    <div className="wishlist-icon">
+                                        <ListHeartButton product={product._id} size={30} />
+                                    </div>
 
                                     <div className="brand-name">
                                         {product.brand}
@@ -326,8 +330,13 @@ const ProductPage = () => {
                                     </div>
 
                                     <div onClick={handleScrollToReviews} className="star-rating">
-                                        <Stars value={product.rating ? product.rating : 0} size={12} />
-                                        <div className="rating">{product.rating ? `(${product.rating})` : "(0)"}</div>
+                                        <Stars 
+                                            value={product.rating ? product.rating : 0}
+                                            size={12}
+                                        />
+                                        <div className="rating">
+                                            {product.rating ? `(${product.rating})` : "(0)"}
+                                        </div>
                                         <div className="reviews-count">
                                             {product.total_reviews ? `${product.total_reviews} reviews` : "No reviews"}
                                         </div>
@@ -383,7 +392,7 @@ const ProductPage = () => {
                                     <div className="merit"><span>90</span> - Seller Merit</div>
                                 </div>
 
-                                <button className='inferior-btn'><CiHeart size={20} />Add to list</button>
+                                <ListButton product={product._id} />
                             </div>
 
                             {options &&

@@ -10,6 +10,7 @@ import { navigationReducer } from "./NavigationReducers";
 import { 
     checkUserReducer,
     forgotPasswordReducer,
+    listItemsReducer,
     loginReducer,
     resetPasswordReducer,
     signOutReducer,
@@ -38,13 +39,14 @@ import { addToCartReducer, orderValueReducer } from "./CartReducers";
 
 
 const reducers = combineReducers({
+    checkUser: checkUserReducer,
+    listItems: listItemsReducer,
     products: productReducer,
     detailedProducts: productDetailsReducer,
     sellerProducts: sellerProductsReducer,
     bundleProducts: bundleProductsReducer,
     productReviews: productReviewReducer,
     urlParams: navigationReducer,
-    checkUser: checkUserReducer,
     loggedIn: loginReducer,
     signup: signupReducer,
     signout: signOutReducer,
