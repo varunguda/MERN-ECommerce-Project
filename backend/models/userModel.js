@@ -33,9 +33,10 @@ const schema = new mongoose.Schema({
         },
     },
 
-    mobile:{
+    phone_number:{
         type: Number,
         length: 10,
+        unique: true,
     },
 
     address: [

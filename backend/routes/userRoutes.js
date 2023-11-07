@@ -14,7 +14,9 @@ import {
     logoutUser,
     recoverPassword,
     updateAddress,
-    updateUserDetails
+    updateUserDetails,
+    validateMobileNumber,
+    verifyMobileNumberOtp
 } from "../controllers/userControllers.js";
 
 
@@ -38,6 +40,10 @@ router.route('/login').post(loginUser)
 router.route("/me").get(isUser, getUserDetails);
 
 router.route('/me/update').put(isUser, updateUserDetails);
+
+router.route('/me/phone/verify').post(isUser, verifyMobileNumberOtp);
+
+router.route('/me/phone').post(isUser, validateMobileNumber);
 
 router.route('/me/delete').delete(isUser, deleteUser)
 

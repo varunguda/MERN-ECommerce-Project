@@ -20,6 +20,7 @@ export const addCookie = async (user, message, status, req, res, next) => {
                 email: user.email,
                 is_seller: user.is_seller,
                 is_admin: user.is_admin,
+                phone_number: user.phone_number ? user.phone_number : "",
             }
         })
 }

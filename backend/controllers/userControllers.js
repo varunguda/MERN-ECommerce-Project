@@ -8,6 +8,7 @@ import { compareHashPassword, hashPassword } from '../utils/hashFunctions.js';
 import crypto from 'crypto';
 import { sendEmail } from "../utils/sendMail.js";
 import { verifyMail } from "../utils/verifyMail.js";
+import { codeGenerator } from "../utils/generateCode.js";
 
 
 
@@ -84,7 +85,7 @@ export const createVerifiedUser = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Invalid code! Please try again.", 400))
     }
 
-    const hashPass = await hashPassword(password)
+    const hashPass = await hashPassword(password);
 
     const user = await Users.create({ name, email, password: hashPass, avatar });
 
@@ -109,6 +110,7 @@ export const getUserDetails = catchAsync(async (req, res, next) => {
             is_seller: user.is_seller,
             is_admin: user.is_admin,
             avatar: user.avatar,
+            phone_number: user.phone_number,
         }
     })
 })
@@ -496,3 +498,83 @@ export const deleteUserAddress = catchAsync(async (req, res, next) => {
         message: "Your address was successfully removed!"
     });
 })
+
+
+
+export const validateMobileNumber = catchAsync(async (req, res, next) => {
+
+    const { phone_num } = req.body;
+
+    const otp = codeGenerator();
+    const otp_expiry = Date.now() + 10 * 60 * 1000;
+
+    if(req.session.otpDetails){
+        delete req.session.otpDetails;
+    }
+
+    req.session.otpDetails = {
+        phone_num,
+        otp,
+        otp_expiry
+    };
+
+    const options = {
+        authorization: process.env.FAST2SMS_API_KEY,
+        route: "q",
+        message: `
+        Dear ${req.user.name},
+
+        To verify your mobile number, please use the following One-Time Password (OTP):
+        
+        OTP: ${otp}
+        
+        Please enter this OTP on the verification page to confirm your mobile number. This OTP is valid for the next 10 minutes. If you did not request this OTP, please ignore this message.
+        
+        If you encounter any issues or have questions, please contact us at manyinindia@gmail.com
+        
+        Thank you for choosing us.
+        
+        Sincerely,
+        ManyIN
+        `,
+        flash: "0"
+    }
+
+    const response = await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${options.authorization}&route=${options.route}&message=${options.message}&flash=0&numbers=${phone_num}`);
+    const data = await response.json();
+
+    return res.json({
+        success: true,
+        data
+    });
+});
+
+
+
+export const verifyMobileNumberOtp = catchAsync( async(req, res, next) => {
+
+    const { verification_otp } = req.body;
+
+    if(!req.session.otpDetails){
+        return next(new ErrorHandler("Seems like something went wrong please request for an OTP again.", 404));
+    }
+
+    const { otp, otp_expiry, phone_num } = req.session.otpDetails;
+
+    if(otp_expiry < Date.now()){
+        return next(new ErrorHandler("OTP has been expired.", 400));
+    }
+    
+    if(otp !== verification_otp){
+        return next(new ErrorHandler("Wrong OTP! The OTP doesn't match", 400));
+    }
+
+    await Users.findByIdAndUpdate(req.user._id, { phone_number: phone_num });
+
+    delete req.session.otpDetails;
+
+    return res.json({
+        success: true,
+        message: "Mobile number has been added to your account successfully!"
+    });
+});
