@@ -132,7 +132,7 @@ const Dashboard = () => {
             },
             {
                 label: 'SELLERS REGISTERED',
-                data: analysis && Object.keys(analysis.sellers_registered),
+                data: analysis && Object.values(analysis.sellers_registered),
                 fill: false,
                 backgroundColor: '#ffc220',
                 borderColor: '#ffc2206f',

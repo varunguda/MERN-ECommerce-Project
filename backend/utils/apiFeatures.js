@@ -129,10 +129,15 @@ export class ApiFeatures {
     }
 
 
-
     searchOrders() {
         const keyword = this.queryStr.keyword ? {
             $or: [
+                {
+                    "order_items.brand": {
+                        $regex: this.queryStr.keyword,
+                        $options: "i"
+                    }
+                },
                 {
                     "order_items.name": {
                         $regex: this.queryStr.keyword,
@@ -140,6 +145,7 @@ export class ApiFeatures {
                     }
                 }
             ]
+
         } : {};
 
         this.items = this.items.find({ ...keyword });

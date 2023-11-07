@@ -27,7 +27,6 @@ const Profile = () => {
     const { openModal, closeModal } = useContext(ModalContext);
 
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
     const location = useLocation();
     const { section } = useParams();
@@ -132,11 +131,11 @@ const Profile = () => {
                             <div className="sidebar-elem-head">My items</div>
                             <div
                                 onClick={sidebarElemClickHandler}
-                                className={`sidebar-elem ${(activeLocation === "orders&returns") ? "active" : ""}`}
-                                link-identifier="orders&returns"
+                                className={`sidebar-elem ${(activeLocation === "orders") ? "active" : ""}`}
+                                link-identifier="orders"
                             >
                                 <PiShoppingCartLight className='sidebar-icon' size={17} />
-                                Orders & Returns
+                                Orders
                             </div>
 
                             <div
@@ -230,7 +229,7 @@ const Profile = () => {
                             <PersonalInfo user={user} />
                         ) : (activeLocation === "addresses") ? (
                             <Addresses />
-                        ) : (activeLocation === "orders&returns") ? (
+                        ) : (activeLocation === "orders") ? (
                             <Orders />
                         ) : (activeLocation === "terms") ? (
                             <Terms />
@@ -242,7 +241,6 @@ const Profile = () => {
                     </div>
                 </>
             )}
-
         </div>
     )
 }

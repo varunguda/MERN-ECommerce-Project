@@ -286,7 +286,7 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
             updatedProduct = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...product._doc }
         }
     } else {
-        updatedProduct = {...product._doc};
+        updatedProduct = { ...product._doc };
     }
 
     return res.json({
@@ -344,7 +344,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
         createdProduct.final_price = final_price;
         createdProduct.brand = brand;
         createdProduct.category = category;
-        if(products.length > 1){
+        if (products.length > 1) {
             createdProduct.variations = variations;
         }
 
@@ -965,4 +965,40 @@ export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
             message: "Successfully removed your dislike!"
         })
     }
+})
+
+
+
+export const toggleWishlistProduct = catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    
+    const product = await Product.findById(id);
+    if(!product){
+        return next(new ErrorHandler("Product doesn't exist!", 404));
+    }
+
+    const user = await Users.findById(req.user._id);
+    if(!user){
+        return next(new ErrorHandler("User doesn't exist, please try again!", 404));
+    }
+
+    if(user.wishlist_items.some((prod) => prod.toString() === product._id.toString())){
+        user.wishlist_items = user.wishlist_items.filter((prod) => prod.toString() !== product._id.toString());
+
+        await user.save({ validateBeforeSave: false });
+
+        return res.json({
+            success: true, 
+            message: "Successfully removed the product from wishlist!",
+        })
+    }
+
+    user.wishlist_items.push(product._id);
+
+    await user.save({validateBeforeSave: false});
+
+    return res.json({
+        success: true, 
+        message: "Successfully added the product to wishlist!",
+    });
 })

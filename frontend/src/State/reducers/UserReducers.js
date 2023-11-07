@@ -36,6 +36,10 @@ import {
     SIGNOUT_USER_FAILURE,
     SIGNOUT_USER_RESET,
     
+    LIST_ITEMS_REQUEST,
+    LIST_ITEMS_SUCCESS,
+    LIST_ITEMS_FAILURE,
+    
 } from "../constants/UserConstants.js";
 
 
@@ -322,3 +326,33 @@ export const signOutReducer = (state = { signedOut: false, signOutMessage: "" },
     }
 }
 
+
+
+export const listItemsReducer = ( state = { listItems: [] }, action ) => {
+    switch (action.type) {
+        
+        case LIST_ITEMS_REQUEST:{
+            return ({
+                loadingList: true,
+            })
+        }
+
+        case LIST_ITEMS_SUCCESS:{
+            return ({
+                loadingList: false,
+                listItems: action.payload.list_items,
+            })
+        }
+
+        case LIST_ITEMS_FAILURE:{
+            return ({
+                loadingList: false,
+                listItemsError: action.payload
+            })
+        }
+    
+        default:{
+            return state;
+        }
+    }
+}

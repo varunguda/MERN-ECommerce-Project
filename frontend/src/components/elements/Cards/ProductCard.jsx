@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import Stars from "./Stars.jsx";
-import { CiHeart } from "react-icons/ci";
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { addToCart } from '../../../State/action-creators/CartActionCreators.js';
 import { useDispatch, useSelector } from 'react-redux';
 
 import "./ProductCard.css";
+import ListHeartButton from '../Buttons/ListHeartButton.jsx';
 
 
 const ProductCard = ({ product, height, width, noreviews = false }) => {
@@ -61,7 +61,10 @@ const ProductCard = ({ product, height, width, noreviews = false }) => {
 
                 <div className="image-container">
                     <img src={product.images[0] || "https://images.unsplash.com/photo-1682685797736-dabb341dc7de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"} alt={product.name} />
-                    <CiHeart onClick={handleWishlistClick} className='wishlist' />
+
+                    <div onClick={handleWishlistClick} className='wishlist'>
+                        <ListHeartButton product={product._id} />
+                    </div>
                 </div>
 
                 <div className="product-description">
