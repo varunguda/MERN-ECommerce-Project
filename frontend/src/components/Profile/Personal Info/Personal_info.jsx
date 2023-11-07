@@ -17,7 +17,7 @@ const PersonalInfo = ({ user }) => {
     const navigate = useNavigate();
 
 
-    const deleteAccount = async() => {
+    const deleteAccount = async () => {
         try {
 
             dispatch(loaderSpin(true));
@@ -26,7 +26,7 @@ const PersonalInfo = ({ user }) => {
 
             dispatch(loaderSpin(false));
 
-            if(data.success){
+            if (data.success) {
                 navigate("/");
                 dispatch({ type: LOGIN_USER_RESET });
                 toast.success(data.message, {
@@ -65,14 +65,14 @@ const PersonalInfo = ({ user }) => {
             <>
                 <div className="modal-caption">
                     For the next 30 days, you'll retain access to log back into your account; however, please note that your account will be permanently deleted after this grace period. Please note that you may loose your data, such as saved addresses, orders placed.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     {(user.is_seller || user.is_admin) && "You will no longer be a Seller or an Admin."}
                 </div>
                 <div className="modal-btn-container">
                     <button type="button" onClick={closeModal} className='secondary-btn'>No</button>
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         onClick={() => {
                             deleteAccount();
                             closeModal();
@@ -110,9 +110,9 @@ const PersonalInfo = ({ user }) => {
                 </section>
 
                 <section>
-                    <span className='inferior-btn'>{(user && user.mobile) ? "Edit" : "Add"}</span>
+                    <span className='inferior-btn'>{(user && user.phone_number) ? "Edit" : "Add"}</span>
                     <div className="section-head">Phone Number</div>
-                    <div className="section-content">{(user && user.mobile) ? user.mobile : "Add phone number"}</div>
+                    <div className="section-content">{(user && user.phone_number) ? user.phone_number : "Add phone number"}</div>
                 </section>
 
                 <section>

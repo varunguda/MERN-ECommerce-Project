@@ -16,7 +16,7 @@ export const verifyMail = catchAsync(async (req, res, next) => {
 
     const { name, email, password } = req.body;
 
-    // Two approaches I've come up with to Verify a user before creating his account:
+    // Two approaches I've come up with to verify a user before creating his account:
     // 1. User enters his details his details are stored in a 'tempusers' collection in the database until his email is verified, and gets added to the Users database once verified
     // 2. His data is temporarily stored in express session until his mail is verified.
 
@@ -137,7 +137,7 @@ export const verifyMail = catchAsync(async (req, res, next) => {
 
     sendEmail({
         email,
-        subject: "Confirmation code for creating your MANYin account!",
+        subject: "Confirmation code for creating your ManyIN account!",
         html
     });
 

@@ -28,6 +28,8 @@
 .banner-page-caption {
     position: relative;
     display: flex;
+    align-items: center;
+    justify-content: center;
     flex-direction: column;
     gap: 10px;
     font-size: 1rem;

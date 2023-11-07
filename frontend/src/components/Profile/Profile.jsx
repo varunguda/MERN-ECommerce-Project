@@ -224,7 +224,9 @@ const Profile = () => {
 
 
                     <div className="profile-content">
-                        {(activeLocation === "personal") ? (
+                        {(activeLocation === "") ? (
+                            <Overview user={user} />
+                        ) :(activeLocation === "personal") ? (
                             <PersonalInfo user={user} />
                         ) : (activeLocation === "addresses") ? (
                             <Addresses />
@@ -235,7 +237,7 @@ const Profile = () => {
                         ) : (activeLocation === "privacy") ? (
                             <Privacy />
                         ) : (
-                            <Overview user={user} />
+                            ""
                         )}
                     </div>
                 </>
