@@ -107,7 +107,6 @@ const OrderCard = ({ order, extraSection }) => {
                     {`${order.delivery_address.flat}, ${order.delivery_address.street_address}, ${order.delivery_address.city}, ${order.delivery_address.state}, ${order.delivery_address.zip}`}
 
                 </div>
-
             </div>
 
             {extraSection}

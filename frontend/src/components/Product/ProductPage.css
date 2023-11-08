@@ -252,13 +252,12 @@
     width: fit-content;
     gap: 5px;
     font-size: var(--s-font-size);
-    color: var(--light-font-color);
     margin: 12px 0px;
     cursor: pointer;
-}
 
-.product-detail-section .star-rating .reviews-count {
-    text-decoration: 1px underline;
+    .reviews-count{
+        text-decoration: underline;
+    }
 }
 
 .product-detail-section .price-container {

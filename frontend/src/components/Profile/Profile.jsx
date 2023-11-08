@@ -17,6 +17,7 @@ import Privacy from './Legal/Privacy';
 import { ModalContext } from '../../Context/ModalContext';
 import { loadUser, signOutUser } from '../../State/action-creators/UserActionCreators';
 import { SIGNOUT_USER_RESET } from '../../State/constants/UserConstants';
+import List from './List/List';
 
 
 const Profile = () => {
@@ -92,10 +93,15 @@ const Profile = () => {
 
                 <div className="modal-btn-container">
                     <button onClick={closeModal} className='secondary-btn'>No</button>
-                    <button onClick={() => {
-                        closeModal();
-                        dispatch(signOutUser());
-                    }} className='main-btn warning'>Yes</button>
+                    <button
+                        onClick={() => {
+                            closeModal();
+                            dispatch(signOutUser());
+                        }}
+                        className='main-btn warning'
+                    >
+                        Yes
+                    </button>
                 </div>
             </>)
         );
@@ -112,8 +118,12 @@ const Profile = () => {
                     <div className="profile-sidebar">
 
                         <div className="main-elem">
-                            <div className="main-elem-head">Hi, {user && user.name}</div>
-                            <div className="main-elem-caption">Thanks for being a ManyIN customer</div>
+                            <div className="main-elem-head">
+                                Hi, {user && user.name}
+                            </div>
+                            <div className="main-elem-caption">
+                                Thanks for being a ManyIN customer
+                            </div>
                         </div>
 
                         <div className="sidebar-elem-section">
@@ -140,11 +150,11 @@ const Profile = () => {
 
                             <div
                                 onClick={sidebarElemClickHandler}
-                                className={`sidebar-elem ${(activeLocation === "lists") ? "active" : ""}`}
-                                link-identifier="lists"
+                                className={`sidebar-elem ${(activeLocation === "list") ? "active" : ""}`}
+                                link-identifier="list"
                             >
                                 <CiHeart className='sidebar-icon' size={17} />
-                                Lists
+                                List
                             </div>
                         </div>
 
@@ -225,7 +235,7 @@ const Profile = () => {
                     <div className="profile-content">
                         {(activeLocation === "") ? (
                             <Overview user={user} />
-                        ) :(activeLocation === "personal") ? (
+                        ) : (activeLocation === "personal") ? (
                             <PersonalInfo user={user} />
                         ) : (activeLocation === "addresses") ? (
                             <Addresses />
@@ -235,6 +245,8 @@ const Profile = () => {
                             <Terms />
                         ) : (activeLocation === "privacy") ? (
                             <Privacy />
+                        ) : (activeLocation === "list") ? (
+                            <List user={user} />
                         ) : (
                             ""
                         )}

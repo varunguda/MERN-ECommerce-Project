@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import "./Cart.css";
 import Accordion from '../elements/Accordians/Accordion';
 import { FiMinus, FiPlus } from 'react-icons/fi';
@@ -9,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { GrNext } from 'react-icons/gr';
 import Metadata from '../Metadata';
 import BannerPage from '../layouts/Banner/BannerPage';
+
 
 const Cart = () => {
 
@@ -29,7 +29,6 @@ const Cart = () => {
             cartItems.forEach((item) => {
                 prodObj[item.product] = item.quantity;
             });
-
             setProdQuantities(prodObj);
         }
     }, [cartItems]);
@@ -50,7 +49,6 @@ const Cart = () => {
         dispatch(addToCart(id, qty));
     }
 
-
     const removeItem = (id) => {
         dispatch(addToCart(id, 0));
     }
@@ -59,7 +57,6 @@ const Cart = () => {
     const totalItemsFinalPrice = cartItems.reduce((c, i) => c + i.final_price, 0);
     const shippingCost = totalItemsFinalPrice > 500 ? 0 : 100;
     const estimatedTotalPrice = totalItemsFinalPrice + shippingCost;
-
 
     const checkoutClickHandler = () => {
         navigate("/account/login?redirect=shipping");

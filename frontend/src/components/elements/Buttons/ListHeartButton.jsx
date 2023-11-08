@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi2'
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleListItem } from '../../../State/action-creators/UserActionCreators';
+import { getListItems, toggleListItem } from '../../../State/action-creators/UserActionCreators';
 
 
 const ListHeartButton = ({ product, size }) => {
 
-    const { listItemsLoading, listItems } = useSelector(state => state.listItems);
+    const { listItems } = useSelector(state => state.listItems);
 
     const [added, setAdded] = useState(false);
     const listInterval = useRef(null);
@@ -24,16 +24,21 @@ const ListHeartButton = ({ product, size }) => {
 
 
     const addToListHandler = () => {
-        setAdded(!added);
+        const exist = !added;
+        setAdded(exist);
 
         clearTimeout(listInterval.current);
-        listInterval.current = setTimeout(() => {
-            dispatch(toggleListItem(product));
+        listInterval.current = setTimeout(async() => {
+            if((!exist && listItems && listItems.some((prod) => prod.toString() === product)) || (exist && listItems && !listItems.some((prod) => prod.toString() === product))){
+                await dispatch(toggleListItem(product));
+                dispatch(getListItems());
+            }
         }, 700);
     }
 
+
     return (
-        ( !listItemsLoading && added) ? (
+        (added) ? (
             <>
                 <HiHeart onClick={addToListHandler} strokeWidth={1} size={size ? size : 20} color="#e31b23" />
             </>

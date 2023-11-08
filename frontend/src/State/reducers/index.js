@@ -9,8 +9,10 @@ import {
 import { navigationReducer } from "./NavigationReducers";
 import { 
     checkUserReducer,
+    emptyListProductsReducer,
     forgotPasswordReducer,
     listItemsReducer,
+    listProductsReducer,
     loginReducer,
     resetPasswordReducer,
     signOutReducer,
@@ -55,6 +57,8 @@ const reducers = combineReducers({
     resetPassword: resetPasswordReducer,
     loader: loaderReducer,
     addresses: getAddressesReducer,
+    listProducts: listProductsReducer,
+    emptyListProducts: emptyListProductsReducer,
     addAddress: addAddressReducer,
     updateDeleteAddress: updateDeleteAddressReducer,
     myOrders: getMyOrdersReducer,

@@ -39,6 +39,13 @@ import {
     LIST_ITEMS_REQUEST,
     LIST_ITEMS_SUCCESS,
     LIST_ITEMS_FAILURE,
+    LIST_PRODUCTS_REQUEST,
+    LIST_PRODUCTS_SUCCESS,
+    LIST_PRODUCTS_FAILURE,
+    EMPTY_LIST_ITEMS_RESET,
+    EMPTY_LIST_ITEMS_SUCCESS,
+    EMPTY_LIST_ITEMS_REQUEST,
+    EMPTY_LIST_ITEMS_FAILURE,
     
 } from "../constants/UserConstants.js";
 
@@ -333,22 +340,91 @@ export const listItemsReducer = ( state = { listItems: [] }, action ) => {
         
         case LIST_ITEMS_REQUEST:{
             return ({
-                loadingList: true,
+                loadingListItems: true,
             })
         }
 
         case LIST_ITEMS_SUCCESS:{
             return ({
-                loadingList: false,
+                loadingListItems: false,
                 listItems: action.payload.list_items,
             })
         }
 
         case LIST_ITEMS_FAILURE:{
             return ({
-                loadingList: false,
+                loadingListItems: false,
                 listItemsError: action.payload
             })
+        }
+    
+        default:{
+            return state;
+        }
+    }
+}
+
+
+
+export const listProductsReducer = ( state = {}, action ) => {
+    switch (action.type) {
+        
+        case LIST_PRODUCTS_REQUEST:{
+            return ({
+                loadingListProducts: true,
+            })
+        }
+
+        case LIST_PRODUCTS_SUCCESS:{
+            return ({
+                loadingListPorducts: false,
+                listProducts: action.payload.list_products,
+            })
+        }
+
+        case LIST_PRODUCTS_FAILURE:{
+            return ({
+                loadingListProducts: false,
+                listProductsError: action.payload
+            })
+        }
+    
+        default:{
+            return state;
+        }
+    }
+}
+
+
+
+export const emptyListProductsReducer = ( state = {}, action ) => {
+
+    switch (action.type) {
+        
+        case EMPTY_LIST_ITEMS_REQUEST:{
+            return ({
+                deletingListProducts: true,
+            })
+        }
+
+        case EMPTY_LIST_ITEMS_SUCCESS:{
+            return ({
+                deletingListProducts: false,
+                deletedList: true,
+                deletedListMessage: action.payload.message,
+            })
+        }
+
+        case EMPTY_LIST_ITEMS_FAILURE:{
+            return ({
+                deletingListProducts: false,
+                deletedList: false,
+                deletedListError: action.payload
+            })
+        }
+
+        case EMPTY_LIST_ITEMS_RESET: {
+            return ({});
         }
     
         default:{

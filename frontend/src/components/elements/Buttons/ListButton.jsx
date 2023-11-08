@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi2'
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleListItem } from '../../../State/action-creators/UserActionCreators';
+import { getListItems, toggleListItem } from '../../../State/action-creators/UserActionCreators';
 
 
 const ListButton = ({ product }) => {
 
-    const { listItemsLoading, listItems } = useSelector(state => state.listItems);
+    const { listItems } = useSelector(state => state.listItems);
 
     const [added, setAdded] = useState(false);
     const listInterval = useRef(null);
@@ -14,38 +14,41 @@ const ListButton = ({ product }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(listItems && listItems.some((prod) => prod.toString() === product)){
+        if (listItems && listItems.some((prod) => prod.toString() === product)) {
             setAdded(true);
-        }else{
+        } else if (listItems && !listItems.some((prod) => prod.toString() === product)) {
             setAdded(false);
         }
         // eslint-disable-next-line
     }, [listItems, product]);
+    
 
     const addToListHandler = () => {
-        setAdded(!added);
+        const exist = !added;
+        setAdded(exist);
 
         clearTimeout(listInterval.current);
-        listInterval.current = setTimeout(() => {
-            dispatch(toggleListItem(product));
-        }, 1000);
+        listInterval.current = setTimeout(async() => {
+            if((!exist && listItems && listItems.some((prod) => prod.toString() === product)) || (exist && listItems && !listItems.some((prod) => prod.toString() === product))){
+                await dispatch(toggleListItem(product));
+                dispatch(getListItems());
+            }
+        }, 700);
     }
 
     return (
         <>
-            { !listItemsLoading && (
             <button className='inferior-btn' onClick={addToListHandler}>
                 {added ? (
                     <>
-                        <HiHeart size={20} color="#e31b23" />Visit List
+                        <HiHeart strokeWidth={1} size={18} color="#e31b23" />Visit List
                     </>
                 ) : (
                     <>
-                        <HiOutlineHeart size={20} />Add to list
+                        <HiOutlineHeart strokeWidth={1} size={18} />Add to list
                     </>
                 )}
             </button>
-            )}
         </>
     )
 }

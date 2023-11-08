@@ -35,6 +35,12 @@ import {
     LIST_ITEMS_REQUEST,
     LIST_ITEMS_SUCCESS,
     LIST_ITEMS_FAILURE,
+    LIST_PRODUCTS_REQUEST,
+    LIST_PRODUCTS_SUCCESS,
+    LIST_PRODUCTS_FAILURE,
+    EMPTY_LIST_ITEMS_REQUEST,
+    EMPTY_LIST_ITEMS_SUCCESS,
+    EMPTY_LIST_ITEMS_FAILURE,
 
 } from "../constants/UserConstants.js";
 
@@ -268,11 +274,53 @@ export const getListItems = () => async (dispatch) => {
 
 
 
-export const toggleListItem = (id) => async (dispatch) => {
+export const toggleListItem = (id) => async () => {
     try {
-        await axios.get(`/api/v1/me/list/${id}`);
-        dispatch(getListItems());
+        return await axios.get(`/api/v1/me/list/${id}`);
     } catch (error) {
         console.error(error);
+    }
+}
+
+
+
+export const getListProducts = () => async (dispatch) => {
+    try {
+
+        dispatch({ type: LIST_PRODUCTS_REQUEST });
+
+        const { data } = await axios.get("/api/v1/me/list/products");
+
+        dispatch({
+            type: LIST_PRODUCTS_SUCCESS,
+            payload: data,
+        });
+
+    } catch (error) {
+        dispatch({
+            type: LIST_PRODUCTS_FAILURE,
+            payload: error.response.data.message,
+        })
+    }
+}
+
+
+
+export const emptyListItems = () => async (dispatch) => {
+    try {
+        dispatch({ type: EMPTY_LIST_ITEMS_REQUEST });
+
+        const { data } = await axios.delete("/api/v1/me/list");
+
+        dispatch({
+            type: EMPTY_LIST_ITEMS_SUCCESS,
+            payload: data,
+        });
+        
+    } catch (error) {
+        dispatch({
+            type: EMPTY_LIST_ITEMS_FAILURE,
+            payload: error.response.data.message,
+        })
     }
 }

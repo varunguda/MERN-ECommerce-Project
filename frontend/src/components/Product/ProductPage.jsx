@@ -335,7 +335,7 @@ const ProductPage = () => {
                                             size={12}
                                         />
                                         <div className="rating">
-                                            {product.rating ? `(${product.rating})` : "(0)"}
+                                            {product.rating ? product.rating : "(0)"}
                                         </div>
                                         <div className="reviews-count">
                                             {product.total_reviews ? `${product.total_reviews} reviews` : "No reviews"}
@@ -343,15 +343,15 @@ const ProductPage = () => {
                                     </div>
 
                                     <div className="price-container">
-                                        <div className="price-sp">Now ₹{`${product.final_price}`}</div>
-                                        <div className="price-p">₹{`${product.price}`}</div>
+                                        <div className="price-sp">Now ₹{product.final_price}</div>
+                                        <div className="price-p">₹{product.price}</div>
                                     </div>
 
 
                                     {product.discount_percent && (
                                         <div className="save-price">
                                             <span className='highlight-text'>You save</span>
-                                            ₹{`${Math.round(product.price - product.final_price)}`}
+                                            ₹{Math.round(product.price - product.final_price)}
                                         </div>
                                     )}
 

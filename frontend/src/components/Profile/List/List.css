@@ -1,0 +1,82 @@
+
+.list-head{
+    font-size: var(--xl-font-size);
+    font-weight: 600;
+    margin-left: 5px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+
+    .icon{
+        cursor: pointer;
+        border-radius: 50%;
+        border: 1px solid var(--border-color);
+        padding: 2px;
+        margin-left: 5px;
+    }
+}
+
+.list-page-container{
+    position: relative;
+    display: flex;
+    gap: 30px;
+    padding: 0px 10px;
+
+    .products-section{
+        width: 65%;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .cart-section{
+        position: relative;
+        width: 35%;
+        min-height: 100vh;
+    
+        .add-cart-container{
+            position: sticky;
+            top: 160px;
+            width: 100%;
+            box-shadow: var(--primary-box-shadow);
+            border-radius: 10px;
+            padding: 20px;
+
+            .price{
+                font-weight: 600;
+                font-size: var(--xl-font-size);
+            }
+
+            > div:first-child{
+                position: relative;
+                margin-bottom: 30px;
+
+                > span{
+                    color: var(--light-font-color);
+                    font-size: var(--s-font-size);
+                }
+
+                >span:last-child{
+                    margin-left: 3px;
+                }
+            }
+
+            >div:first-child:after{
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -15px;
+                width: 100%;
+                border-top: 1px solid var(--border-color);
+            }
+
+            > button{
+                width: 100%;
+                height: 36px;
+            }
+
+            > button:last-child{
+                margin-top: 10px;
+            }
+        }
+    }   
+}

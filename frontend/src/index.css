@@ -84,7 +84,7 @@
 
 body {
     font-family: var(--primary-font-family);
-    color: var(--secondary-font-color);
+    color: var(--black-font-color);
     font-size: var(--m-font-size);
     font-weight: 400;
 }
