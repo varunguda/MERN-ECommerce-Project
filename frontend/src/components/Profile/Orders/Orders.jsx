@@ -344,7 +344,7 @@ const Orders = () => {
                                 </>
                             ) : (
                                 <>
-                                    <div className="order-not-found-container">
+                                    <div className="content-not-found-containerer">
                                         <img src="/images/order_not_found.svg" alt="order-not-found" />
 
                                         {totalOrdersCount === 0 ? (

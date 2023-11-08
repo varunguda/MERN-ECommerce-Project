@@ -7,9 +7,11 @@ import {
     createVerifiedUser,
     deleteUser,
     deleteUserAddress,
+    emptyWishlistProducts,
     forgotPassword,
     getAllAddresses,
     getUserDetails,
+    getWishlistProducts,
     loginUser,
     logoutUser,
     recoverPassword,
@@ -48,14 +50,18 @@ router.route('/me/phone').post(isUser, validateMobileNumber);
 
 router.route('/me/delete').delete(isUser, deleteUser);
 
+router.route('/me/list/products').get(isUser, getWishlistProducts);
+
 router.route('/me/list/:id').get(isUser, toggleWishlistProduct);
 
-router.route("/me/list").get(isUser, (req, res, next) => {
+router.route("/me/list")
+    .get(isUser, (req, res, next) => {
     return res.json({
         success: true,
         list_items: req.user.wishlist_items
     })
-});
+    })
+    .delete(isUser, emptyWishlistProducts);
 
 router.route('/logout').get(isUser, logoutUser);
 

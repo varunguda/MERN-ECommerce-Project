@@ -9,6 +9,7 @@ import crypto from 'crypto';
 import { sendEmail } from "../utils/sendMail.js";
 import { verifyMail } from "../utils/verifyMail.js";
 import { codeGenerator } from "../utils/generateCode.js";
+import { Product } from "../models/productModel.js";
 
 
 
@@ -508,7 +509,7 @@ export const validateMobileNumber = catchAsync(async (req, res, next) => {
     const otp = codeGenerator();
     const otp_expiry = Date.now() + 10 * 60 * 1000;
 
-    if(req.session.otpDetails){
+    if (req.session.otpDetails) {
         delete req.session.otpDetails;
     }
 
@@ -551,21 +552,21 @@ export const validateMobileNumber = catchAsync(async (req, res, next) => {
 
 
 
-export const verifyMobileNumberOtp = catchAsync( async(req, res, next) => {
+export const verifyMobileNumberOtp = catchAsync(async (req, res, next) => {
 
     const { verification_otp } = req.body;
 
-    if(!req.session.otpDetails){
+    if (!req.session.otpDetails) {
         return next(new ErrorHandler("Seems like something went wrong please request for an OTP again.", 404));
     }
 
     const { otp, otp_expiry, phone_num } = req.session.otpDetails;
 
-    if(otp_expiry < Date.now()){
+    if (otp_expiry < Date.now()) {
         return next(new ErrorHandler("OTP has been expired.", 400));
     }
-    
-    if(otp !== verification_otp){
+
+    if (otp !== verification_otp) {
         return next(new ErrorHandler("Wrong OTP! The OTP doesn't match", 400));
     }
 
@@ -578,3 +579,38 @@ export const verifyMobileNumberOtp = catchAsync( async(req, res, next) => {
         message: "Mobile number has been added to your account successfully!"
     });
 });
+
+
+
+export const getWishlistProducts = catchAsync(async (req, res, next) => {
+
+    let wishlistProducts = [];
+
+    for (const item of req.user.wishlist_items) {
+        const product = await Product.findById(item);
+        if (product) {
+            const { _id, rating, total_reviews, product_id, name, description, category, brand, stock, price, final_price, discount_percent, images } = product;
+            
+            wishlistProducts.push({
+                _id, rating, total_reviews, product_id, name, description, category, brand, stock, price, final_price, discount_percent, images
+            });
+        }
+    }
+
+    return res.json({
+        success: true,
+        list_products: wishlistProducts,
+    })
+})
+
+
+
+export const emptyWishlistProducts = catchAsync(async (req, res, next) => {
+
+    await Users.findByIdAndUpdate(req.user._id, { wishlist_items: [] });
+
+    return res.json({
+        success: true,
+        message: "Successfully removed all the products from your list."
+    })
+})

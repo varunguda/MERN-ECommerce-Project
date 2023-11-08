@@ -120,6 +120,7 @@ const Overview = ({ user }) => {
                     head="Orders" 
                     img="./images/orders.svg"
                     caption="Check your order status" 
+                    linkTo={"/profile/orders"}
                 />
                 <OverviewCard 
                     head="Addresses" 
@@ -128,10 +129,10 @@ const Overview = ({ user }) => {
                     linkTo={"/profile/addresses"}
                 />
                 <OverviewCard 
-                    head="Wishlist" 
+                    head="List" 
                     img="./images/wishlist.svg"
                     caption="All your curated products" 
-                    linkTo={"/profile/lists"}
+                    linkTo={"/profile/list"}
                 />
                 <OverviewCard 
                     head="Coupons" 

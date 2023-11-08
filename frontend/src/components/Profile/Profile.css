@@ -130,3 +130,30 @@
     position: relative;
 }
 
+
+
+.content-not-found-containerer{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 24px;
+}
+
+
+.content-not-found-containerer img{
+    height: 300px;
+}
+
+.content-not-found-containerer .main{
+    font-size: var(--l-font-size);
+    font-weight: 600;
+}
+
+.content-not-found-containerer .caption{
+    color: var(--light-font-color);
+}
