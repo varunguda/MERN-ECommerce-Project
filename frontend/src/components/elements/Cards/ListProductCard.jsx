@@ -35,7 +35,6 @@ const ListProductCard = ({ product, setTotal }) => {
         // eslint-disable-next-line
     }, [quantity]);
 
-
     const removeClickHandler = async(e) => {
         e.preventDefault();
         if(listItems && listItems.some((item) => item.toString() === product._id.toString())){
