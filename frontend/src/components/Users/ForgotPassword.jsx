@@ -8,6 +8,7 @@ import BannerPage from "../layouts/Banner/BannerPage.jsx";
 import Loader2 from "../layouts/Loader/Loader2.jsx";
 import { useLocation, useNavigate } from 'react-router';
 import { FORGOT_PASSWORD_RESET } from '../../State/constants/UserConstants';
+import { Link } from 'react-router-dom';
 
 
 const ForgotPassword = () => {
@@ -68,7 +69,9 @@ const ForgotPassword = () => {
                 <div className='center-container'>
 
                     <div className="secondary-page-content">
-                        <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
+                        <Link to="/">
+                            <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
+                        </Link>
 
                         <div className="secondary-head">Reset Password</div>
 

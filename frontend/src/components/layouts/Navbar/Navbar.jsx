@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import { useSelector } from 'react-redux';
 
+
 const Navbar = () => {
 
     const { loginLoading, loggedIn, user } = useSelector(state => state.loggedIn);
@@ -79,8 +80,8 @@ const Navbar = () => {
                     <div className='nav-elems'>
                         <IoIosHeartEmpty size={"17px"} />
                         <div className='nav-elem-desc'>
-                            <div className='nav-elem-small'>Reorder&nbsp;</div>
-                            <div>My Items</div>
+                            <div className='nav-elem-small'>Order&nbsp;</div>
+                            <div>My List</div>
                         </div>
                     </div>
 
@@ -117,10 +118,11 @@ const Navbar = () => {
                 <nav className="navbar">
 
                     <h1 className="navbar-logo">
-                        <Link to="/" className='link'>
-                            <div className='logo-new'>
+                        <Link to="/" className='link logo-new'>
+                            <span>
                                 ManyIN
-                            </div>
+                            </span>
+                            <img src="/ManyIN_LOGO.png" alt="logo" />
                         </Link>
                     </h1>
 
@@ -159,13 +161,13 @@ const Navbar = () => {
                             ""
                         )}
 
-                        <div className='nav-elems'>
+                        <Link to={"/profile/list"} className='nav-elems link'>
                             <IoIosHeartEmpty size={"17px"} />
                             <div className='nav-elem-desc'>
-                                <div className='nav-elem-small'>Reorder&nbsp;</div>
-                                <div>My Items</div>
+                                <div className='nav-elem-small'>Order&nbsp;</div>
+                                <div>My List</div>
                             </div>
-                        </div>
+                        </Link>
 
                         {(!loggedIn) ? (
                             <Link to="/account/login" className='nav-elems main-elem link'>

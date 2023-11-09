@@ -9,6 +9,7 @@ import { LOGIN_USER_RESET } from '../../State/constants/UserConstants';
 import Loader2 from '../layouts/Loader/Loader2';
 
 import "./LoginUser.css";
+import { Link } from 'react-router-dom';
 
 
 const LoginUser = () => {
@@ -125,7 +126,9 @@ const LoginUser = () => {
 
             <div className="secondary-page-content">
 
-                <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
+                <Link to="/">
+                    <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
+                </Link>
 
                 {(!fetched) && (
 
