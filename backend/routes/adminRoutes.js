@@ -39,7 +39,7 @@ router.route("/admin/user/:id")
     .put(isAdmin, updateUserRole)
     .delete(isAdmin, deleteAnyUser)
 
-router.route("/admin/seller/merit/:id").put(isAdmin, setSellerMerit)
+router.route("/admin/seller/merit/:id").put(isAdmin, setSellerMerit);
 
 
 export default router

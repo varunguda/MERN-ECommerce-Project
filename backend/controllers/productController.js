@@ -251,7 +251,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         filters,
         customer_ratings
     });
-})
+});
 
 
 
@@ -358,7 +358,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
         message: "Products added successfully!",
         products: createdProducts,
     })
-})
+});
 
 
 
@@ -442,9 +442,9 @@ export const updateMyProduct = catchAsync(async (req, res, next) => {
 export const deleteMyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Product.findOneAndDelete({ _id: id, seller_id: req.user._id })
+    const product = await Product.findOneAndDelete({ _id: id, seller_id: req.user._id });
     if (!product) {
-        return next(new ErrorHandler("Product not found", 404))
+        return next(new ErrorHandler("Product not found", 404));
     }
 
     return res.json({
@@ -664,7 +664,7 @@ export const deleteReview = catchAsync(async (req, res, next) => {
     const productReviews = await Review.findById(product.review_id);
     const isReviewed = productReviews.reviews.find((review) => {
         return review.user_id.toString() === req.user._id.toString();
-    })
+    });
 
     if (!isReviewed) {
         return next(new ErrorHandler("You haven't reviewed this product yet!", 404));
@@ -693,7 +693,7 @@ export const deleteReview = catchAsync(async (req, res, next) => {
         success: true,
         message: "Successfully deleted your review!",
         review: productReviews
-    })
+    });
 })
 
 

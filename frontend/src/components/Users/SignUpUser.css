@@ -56,3 +56,20 @@
 .verify-code-container form .err-msg{
     color: var(--primary-error-color);
 }
+
+.custom-file-upload {
+    position: relative;
+    display: inline-block;
+    /* border-radius: 50%; */
+    cursor: pointer;
+}
+
+.custom-file-upload img{
+    height: 90px;
+    width: 90px;
+    border-radius: 50%;
+}
+
+.custom-file-upload input[type = "file"] {
+    display: none;
+}

@@ -1,9 +1,11 @@
 import jwt from "jsonwebtoken";
 import { ErrorHandler } from "../utils/errorHandler.js";
 import { Users } from "../models/userModel.js";
+import catchAsync from "../utils/catchAsync.js";
 
 
-export const isUser = async(req, res, next) => {
+export const isUser = catchAsync(async(req, res, next) => {
+    
     const { token } = req.cookies;
     if(!token){
         return next(new ErrorHandler("Please login before accessing this url", 400));
@@ -20,7 +22,6 @@ export const isUser = async(req, res, next) => {
     }
 
     const user = await Users.findById(userPayload._id);
-
     if(!user){
         res.cookie("token", "", {
             httpOnly: true,
@@ -32,4 +33,4 @@ export const isUser = async(req, res, next) => {
     req.user = user;
 
     next();
-}
+})

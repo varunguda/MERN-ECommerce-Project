@@ -25,7 +25,7 @@ const List = ({ user }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!listProducts || (listProducts && listItems.length !== listProducts.length) || (listProducts && !listProducts.every(prod => listItems.includes(prod._id)))) {
+        if (!listProducts || (listProducts && listItems.length !== listProducts.length) || (listProducts && !listProducts.every(prod => listItems && listItems.includes(prod._id)))) {
             dispatch(getListProducts());
         }
         // eslint-disable-next-line
@@ -140,11 +140,11 @@ const List = ({ user }) => {
 
                 <div className="page-head">{user.name}'s List</div>
 
-                {listProducts && listItems.length > 0 ? (
+                {listProducts && listProducts.length > 0 ? (
                     <>
                         <div className="list-head">
                             {listProducts.length > 0 && listProducts.length} items
-                            <RxReload 
+                            <RxReload
                                 onClick={() => {
                                     dispatch(getListItems());
                                     dispatch(getListProducts());
