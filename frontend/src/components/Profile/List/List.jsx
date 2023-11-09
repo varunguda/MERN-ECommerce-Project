@@ -32,17 +32,29 @@ const List = ({ user }) => {
 
 
     useEffect(() => {
-        if(listProducts && (Object.keys(products).length !== listProducts.length)){
-            const updatedProds = {...products};
-            Object.keys(updatedProds).forEach((prod) => {
-                if(!listProducts.some((item) => item._id === prod)){
-                    delete updatedProds[prod];
+        if(listProducts){
+            let updatedProducts = {...products};
+            listProducts.forEach((prod) => {
+                if(!Object.keys(updatedProducts).includes(prod._id) && prod.stock !== 0){
+                    updatedProducts[prod._id] = 1 * prod.final_price;
                 }
             });
-            setProducts(updatedProds);
+
+            Object.keys(updatedProducts).forEach(id => {
+                if(!listProducts.some(prod => prod._id === id)){
+                    delete updatedProducts[id];
+                }
+            });
+
+            setProducts(updatedProducts);
         }
         // eslint-disable-next-line
     }, [listProducts]);
+
+
+    useEffect(() => {
+        console.log(products);
+    }, [products]);
 
 
     useEffect(() => {
@@ -125,7 +137,15 @@ const List = ({ user }) => {
                     <>
                         <div className="list-head">
                             {listProducts.length > 0 && listProducts.length} items
-                            <RxReload onClick={() => dispatch(getListProducts())} size={20} strokeWidth={0} className='icon' />
+                            <RxReload 
+                                onClick={() => {
+                                    dispatch(getListItems());
+                                    dispatch(getListProducts());
+                                }}
+                                size={20} 
+                                strokeWidth={0} 
+                                className='icon' 
+                            />
                         </div>
 
                         <div className="list-page-container">
