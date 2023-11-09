@@ -1,7 +1,6 @@
 import React from 'react';
 import './Footer.css';
 import '../../../index.css';
-
 import { BsLinkedin, BsGithub } from "react-icons/bs";
 
 
@@ -9,11 +8,14 @@ const Footer = () => {
     return (
         <>
             <section className='footer-section'>
+
                 <footer className="top">
-                    <div className='logo-desc'>
-                        <div className='logo-new'>ManyIN</div>
-                        <div className='desc'>Your Marketplace, Your Way</div>
+                    <div to="/" className='logo-new'>
+                        <span>ManyIN</span>
+                        <img src="/ManyIN_LOGO.png" alt="logo" />
                     </div>
+                    <div className='logo-desc'>Your Marketplace, Your Way</div>
+
                     <div className="links">
                         <div className="links-column">
                             <h2>Departments</h2>

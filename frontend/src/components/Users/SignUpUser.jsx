@@ -10,6 +10,7 @@ import BannerPage from "../layouts/Banner/BannerPage.jsx";
 import { VERIFY_USER_RESET } from '../../State/constants/UserConstants';
 
 import "./SignUpUser.css";
+import { Link } from 'react-router-dom';
 
 
 const SignUpUser = () => {
@@ -202,7 +203,9 @@ const SignUpUser = () => {
 
                     <div className='secondary-page-content'>
 
-                        <img className='logo-image logo-image-extra-small' src="/ManyIN_LOGO.png" alt="logo" />
+                        <Link to="/">
+                            <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
+                        </Link>
 
                         <div className='secondary-head'>Create your ManyIN account</div>
 
@@ -303,18 +306,18 @@ const SignUpUser = () => {
                 ) : (
 
                     <>
-                    <BannerPage
-                        type="mail"
-                        letterContent={"**code**"}
-                        onClick={() => { window.open("https://mail.google.com/", '_blank'); }}
-                        caption={
-                            <>
-                                <p>{signupMessage}</p>
+                        <BannerPage
+                            type="mail"
+                            letterContent={"**code**"}
+                            onClick={() => { window.open("https://mail.google.com/", '_blank'); }}
+                            caption={
+                                <>
+                                    <p>{signupMessage}</p>
 
-                                <button onClick={() => navigate("?q=verify")} type="button" className='main-btn' style={{ fontSize: "1rem" }}>Enter Code</button>
-                            </>
-                        }
-                    />
+                                    <button onClick={() => navigate("?q=verify")} type="button" className='main-btn' style={{ fontSize: "1rem" }}>Enter Code</button>
+                                </>
+                            }
+                        />
                     </>
 
                 )
@@ -355,7 +358,7 @@ const SignUpUser = () => {
                         caption={
                             <>
                                 <p>{verifcationMessage}</p>
-                                
+
                                 <button onClick={() => navigate("/")} type="button" className='inferior-btn' style={{ color: "#0071dc" }}>Home</button>
                             </>
                         }

@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { ModalContext } from '../../../Context/ModalContext';
 import { EMPTY_LIST_ITEMS_RESET } from '../../../State/constants/UserConstants';
 import { BiInfoCircle } from 'react-icons/bi';
+import { addToCart } from '../../../State/action-creators/CartActionCreators';
 
 
 const List = ({ user }) => {
@@ -50,11 +51,6 @@ const List = ({ user }) => {
         }
         // eslint-disable-next-line
     }, [listProducts]);
-
-
-    useEffect(() => {
-        console.log(products);
-    }, [products]);
 
 
     useEffect(() => {
@@ -127,6 +123,17 @@ const List = ({ user }) => {
     }
 
 
+    const addAllToCartHandler = () => {
+        if(listProducts && listProducts.length > 0 && Object.keys(products).length
+         > 0){
+            Object.keys(products).forEach((id) => {
+                const product = listProducts.find(prod => prod._id === id);
+                dispatch(addToCart(id, Math.round(products[id]/product.final_price)));
+            })
+        }
+    }
+
+
     return (
         (!loadingListProducts && listProducts) && (
             <div className="profile-page-content">
@@ -177,7 +184,10 @@ const List = ({ user }) => {
                                         </span>
                                     </div>
 
-                                    <button className="main-btn">
+                                    <button 
+                                        className="main-btn"
+                                        onClick={addAllToCartHandler}
+                                    >
                                         Add all to cart
                                     </button>
 
