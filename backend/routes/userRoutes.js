@@ -26,8 +26,6 @@ import { toggleWishlistProduct } from "../controllers/productController.js";
 const router = Router();
 
 
-// USER ROUTES
-
 router.route("/checkuser").post(checkUser);
 
 router.route("/register").post(createUser);
@@ -70,8 +68,6 @@ router.route("/me/address/:addressId?")
     .delete(isUser, deleteUserAddress)
     .post(isUser, addUserAddress)
     .get(isUser, getAllAddresses);
-
-
 
 
 export default router;

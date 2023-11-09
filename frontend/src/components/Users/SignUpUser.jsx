@@ -214,7 +214,9 @@ const SignUpUser = () => {
                             <div id="registerImage">
 
                                 <label htmlFor="avatar" className="custom-file-upload">
-                                    <span><img src={avatarPreview} alt="Avatar Preview" /></span>
+                                    <span>
+                                        <img src={avatarPreview} alt="Avatar Preview" />
+                                    </span>
 
                                     <input
                                         type="file"

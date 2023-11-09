@@ -102,7 +102,7 @@ const Overview = ({ user }) => {
 
             <div className="user-details-container">
                 <img 
-                    src={(user && user.avatar) ? user.avatar.url : "/images/profileplaceholder.png"} 
+                    src={(user && user.avatar && user.avatar.url) ? user.avatar.url : "/images/profileplaceholder.png"} 
                     alt="user" 
                 />
                 <div className="user-info">

@@ -34,7 +34,6 @@ router.route("/me/orders/:id").get(isUser, getOrderDetails);
 router.route("/me/orders/:id").delete(isUser, cancelMyOrder )
 
 
-
 // Admin
 router.route("/orders/all").get(isAdmin, getAllOrders);
 
@@ -43,14 +42,12 @@ router.route("/orders/all").put(isAdmin, updateAnyOrderStatus);
 router.route("/orders/all/:id").delete(isAdmin, deleteAnyOrder);
 
 
-
 // Seller
 router.route("/myproducts/order/status").put(isSeller, updateMyProductOrderStatus);
 
 router.route("/myproducts/orders/cancel/all/:product").delete(isSeller, cancelAllOrderOfMyProduct);
 
 router.route("/myproducts/orders/cancel").delete(isSeller, cancelOrderOfMyProduct);
-
 
 
 // Admin & Seller
