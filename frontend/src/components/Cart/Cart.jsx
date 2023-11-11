@@ -88,7 +88,6 @@ const Cart = () => {
                                     cartItems.map((item, index) => {
                                         return (
                                             <div key={index} className='cart-item'>
-
                                                 <div>
                                                     <div className="cart-item-details link" >
                                                         <Link
@@ -98,6 +97,7 @@ const Cart = () => {
                                                         >
                                                             <img src={item.image} alt={item.name} />
                                                         </Link>
+
                                                         <span>{item.name}</span>
 
                                                         <Link
@@ -107,17 +107,20 @@ const Cart = () => {
                                                         >
                                                             <GrNext />
                                                         </Link>
-
                                                     </div>
 
                                                     <div className="cart-item-price">
                                                         <span className='final-price price'>{item.final_price}</span>
                                                         {(item.final_price !== item.price) && (
                                                             <>
-                                                                <span className='total-price price'>{item.price}</span>
+                                                                <span className='total-price price'>
+                                                                    {item.price}
+                                                                </span>
                                                                 <div>
                                                                     <span className='highlight-text'>You save</span>
-                                                                    <span className='highlight-price price'>{Math.round(item.price - item.final_price)}</span>
+                                                                    <span className='highlight-price price'>
+                                                                        {Math.round(item.price - item.final_price)}
+                                                                    </span>
                                                                 </div>
                                                             </>
                                                         )}
@@ -125,25 +128,33 @@ const Cart = () => {
                                                 </div>
 
                                                 <div className="cart-btn-container">
-                                                    <button onClick={() => removeItem(item.product)} type="button" className='inferior-btn'>Remove</button>
-                                                    <button type="button" className='inferior-btn'>Save for later</button>
+                                                    <button 
+                                                        onClick={() => removeItem(item.product)} 
+                                                        type="button" 
+                                                        className='inferior-btn'
+                                                    >
+                                                        Remove
+                                                    </button>
 
                                                     <div className="add-quantity">
-                                                        <FiMinus className="minus" onClick={() => handleMinusClick(item.product, index)} />
+                                                        <FiMinus 
+                                                            className="minus"
+                                                            onClick={() => handleMinusClick(item.product, index)}
+                                                        />
                                                         <span>{prodQuantities[item.product]}</span>
-                                                        <FiPlus className="plus" onClick={() => handlePlusClick(item.product, index)} />
+                                                        <FiPlus
+                                                            className="plus"
+                                                            onClick={() => handlePlusClick(item.product, index)}
+                                                        />
                                                     </div>
                                                 </div>
-
                                             </div>
                                         )
                                     })
                                 }
                             />
                         </div>
-
                     </section>
-
 
 
                     <section className="section section2" style={{ marginTop: "57px" }}>
@@ -156,9 +167,9 @@ const Cart = () => {
 
                                 <div>
                                     <span className='bold dark'>Subtotal ({`${cartItems.length} ${cartItems.length === 1 ? "item" : "items"}`})</span>
-                                    <span className="dashed price">{
-                                        cartItems.reduce((c, i) => c + i.price, 0)
-                                    }</span>
+                                    <span className="dashed price">
+                                        {cartItems.reduce((c, i) => c + i.price, 0)}
+                                    </span>
                                 </div>
 
                                 {(totalSavings) && (
@@ -179,7 +190,6 @@ const Cart = () => {
                             </div>
 
                             <div className='price-container'>
-
                                 <div>
                                     <span>Shipping</span>
                                     <span className={`hl-text ${shippingCost && "price"}`}>
@@ -191,7 +201,6 @@ const Cart = () => {
                                     <span className='bold'>Taxes</span>
                                     <span>Calculated at checkout</span>
                                 </div>
-
                             </div>
 
                             <div className="price-container">
@@ -203,7 +212,6 @@ const Cart = () => {
                                 </div>
                             </div>
                         </section>
-
                     </section>
                 </div>
             ) : (

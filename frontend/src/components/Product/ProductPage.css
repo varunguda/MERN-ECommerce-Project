@@ -6,7 +6,7 @@
     top: 40px;
 }
 
-.page-section1 {
+.page-section {
     position: relative;
     display: flex;
     gap: 30px;
@@ -398,7 +398,7 @@
 }
 
 @media screen and (max-width: 900px) {
-    .page-section1 {
+    .page-section {
         flex-direction: column;
     }
 

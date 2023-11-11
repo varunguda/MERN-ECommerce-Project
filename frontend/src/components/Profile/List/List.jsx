@@ -25,12 +25,12 @@ const List = ({ user }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!listProducts || (listProducts && listItems.length !== listProducts.length) || (listProducts && !listProducts.every(prod => listItems && listItems.includes(prod._id)))) {
+        if (!listProducts || (listProducts && listItems && listItems.length !== listProducts.length) || (listProducts && !listProducts.every(prod => listItems && listItems.includes(prod._id)))) {
             dispatch(getListProducts());
         }
         // eslint-disable-next-line
     }, []);
-
+    
 
     useEffect(() => {
         if(listProducts){

@@ -37,29 +37,29 @@ const images = [
 ];
 
 
-const options = [
-    {
-        name: "SamsungCare+",
-        description: "1 Extended warranty and support",
-        price: 4999,
-        discount_percent: 0,
-        final_price: 4999
-    },
-    {
-        name: "SamsungCare+",
-        description: "2 Extended warranty and support",
-        price: 7999,
-        discount_percent: 0,
-        final_price: 7999
-    },
-    {
-        name: "SamsungCare+",
-        description: "3 Extended warranty and support",
-        price: 9999,
-        discount_percent: 0,
-        final_price: 9999
-    }
-];
+// const options = [
+//     {
+//         name: "SamsungCare+",
+//         description: "1 Extended warranty and support",
+//         price: 4999,
+//         discount_percent: 0,
+//         final_price: 4999
+//     },
+//     {
+//         name: "SamsungCare+",
+//         description: "2 Extended warranty and support",
+//         price: 7999,
+//         discount_percent: 0,
+//         final_price: 7999
+//     },
+//     {
+//         name: "SamsungCare+",
+//         description: "3 Extended warranty and support",
+//         price: 9999,
+//         discount_percent: 0,
+//         final_price: 9999
+//     }
+// ];
 
 
 const ProductPage = () => {
@@ -74,7 +74,7 @@ const ProductPage = () => {
     const [activeImageIndex, setActiveImageIndex] = useState(currentImageIndex);
     const [hoverImageIndex, setHoverImageIndex] = useState(activeImageIndex);
     const [origin, setOrigin] = useState('50% 50%');
-    const [selectedPlan, setSelectedPlan] = useState('No Plan');
+    // const [selectedPlan, setSelectedPlan] = useState('No Plan');
     const [zoom, setZoom] = useState(1);
     const [quantity, setQuantity] = useState(0);
     const reviewRef = useRef(null);
@@ -131,10 +131,10 @@ const ProductPage = () => {
 
 
     useEffect(() => {
-        if(loading){
+        if (loading) {
             dispatch(loaderSpin(true));
         }
-        else{
+        else {
             dispatch(loaderSpin(false));
         }
 
@@ -205,9 +205,9 @@ const ProductPage = () => {
     }
 
 
-    const handleChange = (event) => {
-        setSelectedPlan(event.target.value);
-    };
+    // const handleOptionChange = (event) => {
+    //     setSelectedPlan(event.target.value);
+    // };
 
 
     const handleScrollToReviews = () => {
@@ -256,13 +256,10 @@ const ProductPage = () => {
                         title={(product.name.length > 80) ? (product.name.slice(0, 80) + "...") : product.name}
                     />
 
-                    <section className="page-section1">
-
+                    <section className="page-section">
                         <section className="page-column1">
-
                             <div className="product-images">
                                 <div className="image-carousel">
-
                                     {images.map((url, index) => (
                                         <div key={index} className={images[activeImageIndex] === url ? "image-wrapper active" : "image-wrapper"}>
                                             <img
@@ -292,8 +289,8 @@ const ProductPage = () => {
                                 <div onClick={handleNextImageClick} className={`image-btn next-image ${!images[currentImageIndex + 1] ? "disabled" : ""} `}>
                                     <GrFormNext size={30} />
                                 </div>
-
                             </div>
+
                             <div className='image-caption'>
                                 <div className='zoom-caption'>Roll over image to zoom in</div>
                                 <RxZoomIn className='zoom-icon' size="30px" />
@@ -309,14 +306,76 @@ const ProductPage = () => {
                                 </div>
                             </div>
 
+
+                            <div className="about-product">
+                                <div className="heading">
+                                    About this item
+                                </div>
+                                <Accordion
+                                    title="Product details"
+                                    content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur.Mollit officia sunt tempor do incididunt nulla do irure nisi voluptate culpa amet adipisicing anim.In veniam ullamco dolore consequat.Tempor velit sit consequat non id nisi Lorem nisi in commodo veniam fugiat.Anim tempor cupidatat veniam nisi laboris esse.Ut dolor aliqua fugiat commodo sunt.Quis excepteur deserunt nulla voluptate adipisicing laborum deserunt est irure nostrud.Fugiat et nostrud consequat ullamco quis adipisicing reprehenderit."
+                                />
+                                <Accordion
+                                    title="Specifications"
+                                    content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur.Mollit officia sunt tempor do incididunt nulla do irure nisi voluptate culpa amet adipisicing anim.In veniam ullamco dolore consequat.Tempor velit sit consequat non id nisi Lorem nisi in commodo veniam fugiat.Anim tempor cupidatat veniam nisi laboris esse.Ut dolor aliqua fugiat commodo sunt.Quis excepteur deserunt nulla voluptate adipisicing laborum deserunt est irure nostrud.Fugiat et nostrud consequat ullamco quis adipisicing reprehenderit."
+                                />
+                                <Accordion
+                                    title="Warranty"
+                                    content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur."
+                                />
+                                <Accordion
+                                    title="Warnings"
+                                    content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur."
+                                />
+                            </div>
+
+
+                            {(product.bundles && product.bundles.length > 0) && (bundles && bundles.length > 0) && (
+                                <div className="bundles-container">
+                                    <div className="heading">Often bought together</div>
+                                    <div className="bundles-caption">Get this product at great value in bundles</div>
+                                    {bundles.map((bundle, bundleIndex) => (
+                                        <div key={bundleIndex} className="bundle-container">
+                                            <div className="bundle-name">{bundle.name}</div>
+                                            <div className="bundle-description">{bundle.description}</div>
+                                            <div className="bundle-products">
+                                                {bundle.products.map((product, productIndex) => {
+                                                    return (
+                                                        <div key={productIndex} className="bundle-product">
+                                                            <ProductCard
+                                                                height="auto"
+                                                                width="180px"
+                                                                product={product}
+                                                                noreviews={true}
+                                                            />
+                                                        </div>
+                                                    );
+                                                })}
+                                                <div className="bundle-price">
+                                                    <div className="price-sp">Get for ₹{bundle.final_price || bundle.price}</div>
+                                                    {bundle.final_price && (
+                                                        <div className="price-p">₹{bundle.price}</div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+
+                            {(sellersProducts && sellersProducts.length > 0) && (
+                                <ProductsCarousel products={sellersProducts} desktopItems={4} tabletItems={3} flipItems={2} mobileItems={1} heading="More products from the seller" />
+                            )}
+
+                            <div ref={reviewRef}>
+                                <ProductReview mainProduct={product} />
+                            </div>
                         </section>
 
                         <section className="page-column2">
-
                             <div className="product-detail-section">
-
                                 <div className="section-part">
-
                                     <div className="wishlist-icon">
                                         <ListHeartButton product={product._id} size={30} />
                                     </div>
@@ -330,7 +389,7 @@ const ProductPage = () => {
                                     </div>
 
                                     <div onClick={handleScrollToReviews} className="star-rating">
-                                        <Stars 
+                                        <Stars
                                             value={product.rating ? product.rating : 0}
                                             size={12}
                                         />
@@ -383,7 +442,6 @@ const ProductPage = () => {
                                     )
                                 }
 
-
                                 <div className="seller-details">
                                     <div className="about-seller">
                                         <CiShop className='icon' size={20} />
@@ -395,7 +453,7 @@ const ProductPage = () => {
                                 <ListButton product={product._id} />
                             </div>
 
-                            {options &&
+                            {/* {options &&
                                 <div className="more-options">
                                     <div className="section-part">
                                         <div className="option-head">
@@ -404,7 +462,6 @@ const ProductPage = () => {
                                         <div className="option-description">
                                             Secure your product with these options
                                         </div>
-
 
                                         <div className="options">
                                             {
@@ -416,7 +473,7 @@ const ProductPage = () => {
                                                                 name="plan"
                                                                 value={option.description}
                                                                 checked={selectedPlan === option.description}
-                                                                onChange={handleChange}
+                                                                onChange={handleOptionChange}
                                                                 id={option.description}
                                                             />
                                                             <label htmlFor={option.description}>{option.description}</label>
@@ -426,83 +483,17 @@ const ProductPage = () => {
                                             }
 
                                             <div className="checkboxes">
-                                                <input type="checkbox" name="plan" value="No Plan" checked={selectedPlan === 'No Plan'} onChange={handleChange} id='no-plan' />
+                                                <input type="checkbox" name="plan" value="No Plan" checked={selectedPlan === 'No Plan'} onChange={handleOptionChange} id='no-plan' />
                                                 <label htmlFor="no-plan">I don't need protection at this time</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            }
-
+                            } */}
                         </section>
-
                     </section>
-
-
-                    <section className="page-section1">
-
-                        <section className="page-column1">
-
-                            <div className="about-product">
-                                <div className="heading">
-                                    About this item
-                                </div>
-                                <Accordion title="Product details" content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur.Mollit officia sunt tempor do incididunt nulla do irure nisi voluptate culpa amet adipisicing anim.In veniam ullamco dolore consequat.Tempor velit sit consequat non id nisi Lorem nisi in commodo veniam fugiat.Anim tempor cupidatat veniam nisi laboris esse.Ut dolor aliqua fugiat commodo sunt.Quis excepteur deserunt nulla voluptate adipisicing laborum deserunt est irure nostrud.Fugiat et nostrud consequat ullamco quis adipisicing reprehenderit." />
-                                <Accordion title="Specifications" content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur.Mollit officia sunt tempor do incididunt nulla do irure nisi voluptate culpa amet adipisicing anim.In veniam ullamco dolore consequat.Tempor velit sit consequat non id nisi Lorem nisi in commodo veniam fugiat.Anim tempor cupidatat veniam nisi laboris esse.Ut dolor aliqua fugiat commodo sunt.Quis excepteur deserunt nulla voluptate adipisicing laborum deserunt est irure nostrud.Fugiat et nostrud consequat ullamco quis adipisicing reprehenderit." />
-                                <Accordion title="Warranty" content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur." />
-                                <Accordion title="Warnings" content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur." />
-                            </div>
-
-
-                            {(product.bundles && product.bundles.length > 0) && (bundles && bundles.length > 0) && (
-                                <div className="bundles-container">
-                                    <div className="heading">Often bought together</div>
-                                    <div className="bundles-caption">Get this product at great value in bundles</div>
-                                    {bundles.map((bundle, bundleIndex) => (
-                                        <div key={bundleIndex} className="bundle-container">
-                                            <div className="bundle-name">{bundle.name}</div>
-                                            <div className="bundle-description">{bundle.description}</div>
-                                            <div className="bundle-products">
-                                                {bundle.products.map((product, productIndex) => {
-                                                    return (
-                                                        <div key={productIndex} className="bundle-product">
-                                                            <ProductCard
-                                                                height="auto"
-                                                                width="180px"
-                                                                product={product}
-                                                                noreviews={true}
-                                                            />
-                                                        </div>
-                                                    );
-                                                })}
-                                                <div className="bundle-price">
-                                                    <div className="price-sp">Get for ₹{bundle.final_price || bundle.price}</div>
-                                                    {bundle.final_price && (
-                                                        <div className="price-p">₹{bundle.price}</div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-
-                            {(sellersProducts && sellersProducts.length > 0) && (
-                                <ProductsCarousel products={sellersProducts} desktopItems={4} tabletItems={3} flipItems={2} mobileItems={1} heading="More products from the seller" />
-                            )}
-
-                            <div ref={reviewRef}>
-                                <ProductReview mainProduct={product} />
-                            </div>
-
-                        </section>
-
-                    </section>
-
                 </div>
-            )
-            }
+            )}
         </>
     )
 }

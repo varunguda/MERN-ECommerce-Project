@@ -10,6 +10,7 @@ import { config } from 'dotenv';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';
+import cors from "cors";
 
 
 config({
@@ -30,6 +31,12 @@ app.use(session({
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(fileUpload());
+
+app.use(cors({
+    origin: [process.env.FRONTEND_URL],
+    methods: [ "GET", "POST", "DELETE", "PUT" ],
+    credentials: true,
+}));
 
 
 // Using routes

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./ListProductCard.css";
 import { useDispatch, useSelector } from 'react-redux';
-import Stars from './Stars';
 import { Link, useNavigate } from 'react-router-dom';
 import { getListItems, getListProducts, toggleListItem } from '../../../State/action-creators/UserActionCreators';
 import { addToCart } from '../../../State/action-creators/CartActionCreators';
@@ -67,13 +66,7 @@ const ListProductCard = ({ product, setTotal }) => {
                 <div className="product-description">
 
                     <p>{product.name}</p>
-
-                    <div className='review-container'>
-                        <>
-                            <Stars value={product.rating || 0} size={window.innerWidth > 600 ? "12px" : "10px"} />
-                            <span>{product.total_reviews || 0}</span>
-                        </>
-                    </div>
+                    <p style={{ fontWeight: 600 }}>{product.brand}</p>
 
                     <div className='product-price'>
                         <div className="product-sp">Now ₹{product.final_price}</div>
@@ -96,7 +89,12 @@ const ListProductCard = ({ product, setTotal }) => {
                     </div>
 
                     <div>
-                        <button onClick={removeClickHandler} type="button" style={{ opacity: "1", zIndex: "2" }} className='inferior-btn'>
+                        <button 
+                            onClick={removeClickHandler} 
+                            type="button" 
+                            style={{ opacity: "1", zIndex: "2" }} 
+                            className='inferior-btn'
+                        >
                             Remove
                         </button>
 

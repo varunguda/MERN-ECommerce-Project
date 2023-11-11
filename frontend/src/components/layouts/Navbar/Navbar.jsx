@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import './Navbar.css';
-
-import { BiCategory } from "react-icons/bi";
+import { BiCategory } from 'react-icons/bi';
 import { IoIosHeartEmpty } from "react-icons/io";
 import { FiShoppingCart } from "react-icons/fi";
 import { HiOutlineUser, HiOutlineUserPlus } from "react-icons/hi2";
 import { PiTShirt, PiGraphThin } from "react-icons/pi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import { useSelector } from 'react-redux';
 
@@ -20,6 +19,8 @@ const Navbar = () => {
 
     const [sidebar, setSidebar] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    const location = useLocation();
 
     useEffect(() => {
 
@@ -72,17 +73,17 @@ const Navbar = () => {
                         <span>Portal</span>
                     </Link>
 
-                    <div className='nav-elems'>
+                    <Link to={"/seller"} className='nav-elems link'>
                         <PiTShirt size={"17px"} />
                         <span>My Products</span>
-                    </div>
+                    </Link>
 
                     <div className='nav-elems'>
                         <IoIosHeartEmpty size={"17px"} />
-                        <div className='nav-elem-desc'>
+                        <Link to={"/profile/list"} className='nav-elem-desc link'>
                             <div className='nav-elem-small'>Order&nbsp;</div>
                             <div>My List</div>
-                        </div>
+                        </Link>
                     </div>
 
                 </nav>
@@ -96,127 +97,119 @@ const Navbar = () => {
                     <div className="sec-nav-elems">Beauty</div>
                     <div className="sec-nav-elems">Write Us</div>
                 </nav>
-
             </div>
         </>
     )
 
 
     return (
-        <>
-            <nav className='parent-navbar'>
+        ["/shipping", "/account"].every(elem => !location.pathname.includes(elem)) && (
+            <>
+                <nav className='parent-navbar'>
 
-                {isSmallScreen ?
-                    (
-                        <div className={`sidebar ${sidebar ? "active" : ""}`} >
+                    {isSmallScreen ?
+                        (<div className={`sidebar ${sidebar ? "active" : ""}`} >
                             {sidebar ? renderSidebarContent() : ""}
+                        </div>) : ""
+                    }
+
+                    <nav className="navbar">
+
+                        <h1 className="navbar-logo">
+                            <Link to="/" className='link logo-new'>
+                                <span>
+                                    ManyIN
+                                </span>
+                                <img src="/ManyIN_LOGO.png" alt="logo" />
+                            </Link>
+                        </h1>
+
+                        <div className='menu-icon' onClick={showSidebar} >
+                            {sidebar ?
+                                <MdClose size={"20px"} />
+                                :
+                                <RxHamburgerMenu size={"20px"} color='white' />
+                            }
                         </div>
 
-                    ) : ""
-                }
+                        <nav className={sidebar ? "navbar-menu active" : "navbar-menu"}>
 
-                <nav className="navbar">
-
-                    <h1 className="navbar-logo">
-                        <Link to="/" className='link logo-new'>
-                            <span>
-                                ManyIN
-                            </span>
-                            <img src="/ManyIN_LOGO.png" alt="logo" />
-                        </Link>
-                    </h1>
-
-                    <div className='menu-icon' onClick={showSidebar} >
-                        {sidebar ?
-                            <MdClose size={"20px"} />
-                            :
-                            <RxHamburgerMenu size={"20px"} color='white' />
-                        }
-                    </div>
-
-                    <nav className={sidebar ? "navbar-menu active" : "navbar-menu"}>
-
-                        <div className='nav-elems'>
-                            <BiCategory size={"20px"} />
-                            <span>Departments</span>
-                        </div>
-
-                        {(!isNaN(loginLoading) && !loginLoading) ? (
-                            <>
-                                {(user && user.is_admin) && (
-                                    <Link to="/admin" className='nav-elems link'>
-                                        <PiGraphThin size={"20px"} />
-                                        <span>Portal</span>
-                                    </Link>
-                                )}
-
-                                {(user && user.is_seller) && (
-                                    <div className='nav-elems'>
-                                        <PiTShirt size={"17px"} />
-                                        <span>My Products</span>
-                                    </div>
-                                )}
-                            </>
-                        ) : (
-                            ""
-                        )}
-
-                        <Link to={"/profile/list"} className='nav-elems link'>
-                            <IoIosHeartEmpty size={"17px"} />
-                            <div className='nav-elem-desc'>
-                                <div className='nav-elem-small'>Order&nbsp;</div>
-                                <div>My List</div>
+                            <div className='nav-elems'>
+                                <BiCategory size={"20px"} />
+                                <span>Departments</span>
                             </div>
+
+                            {(!isNaN(loginLoading) && !loginLoading) ? (
+                                <>
+                                    {(user && user.is_admin) && (
+                                        <Link to="/admin" className='nav-elems link'>
+                                            <PiGraphThin size={"20px"} />
+                                            <span>Portal</span>
+                                        </Link>
+                                    )}
+
+                                    {(user && user.is_seller) && (
+                                        <Link to="/seller" className='nav-elems link'>
+                                            <PiTShirt size={"17px"} />
+                                            <span>My Products</span>
+                                        </Link>
+                                    )}
+                                </>
+                            ) : (
+                                ""
+                            )}
+
+                            <Link to={"/profile/list"} className='nav-elems link'>
+                                <IoIosHeartEmpty size={"17px"} />
+                                <Link to={"/profile/list"} className='nav-elem-desc link'>
+                                    <div className='nav-elem-small'>Order&nbsp;</div>
+                                    <div>My List</div>
+                                </Link>
+                            </Link>
+
+                            {(!loggedIn) ? (
+                                <Link to="/account/login" className='nav-elems main-elem link'>
+                                    <HiOutlineUserPlus size={"17px"} />
+                                    <div className='nav-elem-desc'>
+                                        <div className='nav-elem-small'>Sign In&nbsp;</div>
+                                        <div>Account</div>
+                                    </div>
+                                </Link>
+                            ) : (
+                                <Link to="/profile" className='nav-elems main-elem link'>
+                                    <HiOutlineUser size={"17px"} />
+                                    <div className='nav-elem-desc'>
+                                        <div className='nav-elem-small'>Hi, {user.name}&nbsp;</div>
+                                        <div>Account</div>
+                                    </div>
+                                </Link>
+                            )}
+                        </nav>
+
+                        <Link to="/cart" className='nav-elems cart-icon link'>
+                            <FiShoppingCart size={"25px"} />
+                            <span className='cart-items'>
+                                {cartItems.reduce((count, item) => { return count += item.quantity }, 0)}
+                            </span>
                         </Link>
-
-                        {(!loggedIn) ? (
-                            <Link to="/account/login" className='nav-elems main-elem link'>
-                                <HiOutlineUserPlus size={"17px"} />
-                                <div className='nav-elem-desc'>
-                                    <div className='nav-elem-small'>Sign In&nbsp;</div>
-                                    <div>Account</div>
-                                </div>
-                            </Link>
-                        ) : (
-                            <Link to="/profile" className='nav-elems main-elem link'>
-                                <HiOutlineUser size={"17px"} />
-                                <div className='nav-elem-desc'>
-                                    <div className='nav-elem-small'>Hi, {user.name}&nbsp;</div>
-                                    <div>Account</div>
-                                </div>
-                            </Link>
-                        )}
-
                     </nav>
 
-                    <Link to="/cart" className='nav-elems cart-icon link'>
-                        <FiShoppingCart size={"25px"} />
-                        <span className='cart-items'>
-                            {cartItems.reduce((count, item) => { return count += item.quantity}, 0)}
-                        </span>
-                    </Link>
+                    <nav className="secondary-navbar">
 
-                </nav>
+                        <SearchBar />
 
-
-                <nav className="secondary-navbar">
-
-                    <SearchBar />
-
-                    <nav className={sidebar ? "secondary-navbar-menu active" : "secondary-navbar-menu"}>
-                        <div className="sec-nav-elems">Deals</div>
-                        <div className="sec-nav-elems">ManyIN Trending</div>
-                        <div className="sec-nav-elems">Electronics</div>
-                        <div className="sec-nav-elems">Fashion</div>
-                        <div className="sec-nav-elems">Home</div>
-                        <div className="sec-nav-elems">Beauty</div>
-                        <div className="sec-nav-elems">Write Us</div>
+                        <nav className={sidebar ? "secondary-navbar-menu active" : "secondary-navbar-menu"}>
+                            <div className="sec-nav-elems">Deals</div>
+                            <div className="sec-nav-elems">ManyIN Trending</div>
+                            <div className="sec-nav-elems">Electronics</div>
+                            <div className="sec-nav-elems">Fashion</div>
+                            <div className="sec-nav-elems">Home</div>
+                            <div className="sec-nav-elems">Beauty</div>
+                            <div className="sec-nav-elems">Write Us</div>
+                        </nav>
                     </nav>
-
                 </nav>
-            </nav>
-
-        </>
+            </>)
     )
 }
 

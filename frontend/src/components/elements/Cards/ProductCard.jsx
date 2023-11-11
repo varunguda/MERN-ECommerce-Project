@@ -18,13 +18,13 @@ const ProductCard = ({ product, height, width, noreviews = false }) => {
 
     useEffect(() => {
         cartItems.forEach(item => {
-            if(item.product === product._id){
+            if (item.product === product._id) {
                 setQuantity(item.quantity);
             }
         });
         // eslint-disable-next-line
     }, [product])
-    
+
 
     const handleWishlistClick = (e) => {
         e.preventDefault();
@@ -77,18 +77,16 @@ const ProductCard = ({ product, height, width, noreviews = false }) => {
                     <p>{product.name}</p>
 
                     <div className='review-container'>
-                        {
-                            (noreviews !== true) && (
-                                <>
-                                    <Stars value={product.rating || 0} size={window.innerWidth > 600 ? "12px" : "10px"} />
-                                    <span>{product.total_reviews || 0}</span>
-                                </>
-                            )
-                        }
+                        {(noreviews !== true) && (
+                            <>
+                                <Stars value={product.rating || 0} size={window.innerWidth > 600 ? "12px" : "10px"} />
+                                <span>{product.total_reviews || 0}</span>
+                            </>
+                        )}
                     </div>
 
                     {!quantity ?
-                        (<button 
+                        (<button
                             onClick={handleAddClick}
                             className='secondary-btn'
                             style={{ padding: "0px 15px", height: "35px" }}

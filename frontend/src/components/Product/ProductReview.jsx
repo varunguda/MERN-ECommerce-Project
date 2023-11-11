@@ -50,7 +50,7 @@ const reviewReducer = (state, action) => {
 const reviewCardOptions = ["Delete", "Edit"];
 
 
-const ProductReview = ({ products, mainProduct }) => {
+const ProductReview = ({ mainProduct }) => {
 
     const [state, reviewDispatch] = useReducer(reviewReducer, initialState);
 
@@ -69,6 +69,9 @@ const ProductReview = ({ products, mainProduct }) => {
 
 
     useEffect(() => {
+        if(productReviewsError){
+            setNoReviews(true);
+        }
         toast.error(productReviewsError, {
             position: "bottom-center",
             autoClose: 3000,
@@ -79,7 +82,7 @@ const ProductReview = ({ products, mainProduct }) => {
             progress: undefined,
             theme: "light",
         });
-    }, [productReviewsError])
+    }, [productReviewsError]);
 
 
     useEffect(() => {
@@ -96,13 +99,11 @@ const ProductReview = ({ products, mainProduct }) => {
                 }
             }
         }
-
         window.addEventListener("scroll", fetchReviews);
 
         return () => {
             window.removeEventListener("scroll", fetchReviews);
         }
-
         // eslint-disable-next-line
     }, [mainProduct]);
 
@@ -147,12 +148,10 @@ const ProductReview = ({ products, mainProduct }) => {
         }
     }
 
-
     const cancelClickHandler = () => {
         closeModal();
         setValidateFields(false);
     }
-
 
     const addReviewHandler = (e) => {
         e.preventDefault();
@@ -196,8 +195,16 @@ const ProductReview = ({ products, mainProduct }) => {
 
             <div className="input-section">
                 <label htmlFor="comment" className="label1">Comment*</label>
-                <textarea onChange={reviewChangeHandler} maxLength={800} className='textarea1' name="comment" id="comment" defaultValue={state.comment} />
+                <textarea 
+                    onChange={reviewChangeHandler} 
+                    maxLength={800} 
+                    className='textarea1' 
+                    name="comment" 
+                    id="comment" 
+                    defaultValue={state.comment} 
+                />
                 <span className="input-caption" style={{ alignSelf: "flex-end" }}>{state.comment.length}/800</span>
+
                 {(validateFields && reviewCommentValidator(state.comment)) && (
                     <span className='input-error'>{reviewCommentValidator(state.comment)}</span>
                 )}
@@ -231,6 +238,8 @@ const ProductReview = ({ products, mainProduct }) => {
                             <div onClick={() => {
                                 deleteProductReview(mainProduct._id);
                                 closeModal();
+                                setValidateFields(false);
+                                reviewDispatch({ type: RESET_REVIEW });
                             }} className="main-btn">Yes</div>
                         </div>
                     </>
