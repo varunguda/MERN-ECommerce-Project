@@ -4,12 +4,12 @@ import {
 } from "react-router-dom";
 import store from "./State/store.js";
 import { getListItems, loadUser } from './State/action-creators/UserActionCreators.js';
-import AccountRoutes from './AccountRoutes.js';
 import ContentRoutes from './ContentRoutes.js';
+
 
 const App = () => {
 
-    useEffect(()=> {
+    useEffect(() => {
         store.dispatch(loadUser());
         store.dispatch(getListItems());
     }, []);
@@ -17,7 +17,6 @@ const App = () => {
     return (
         <div className='main-container'>
             <Router>
-                <AccountRoutes />
                 <ContentRoutes />
             </Router>
         </div>

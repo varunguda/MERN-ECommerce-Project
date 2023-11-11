@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import "./Profile.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { CiDeliveryTruck, CiHeart, CiViewList } from 'react-icons/ci';
-import { PiHandCoinsLight, PiInfoThin, PiShoppingCartLight, PiSignOutLight, PiTicketThin, PiUserListThin } from 'react-icons/pi';
+import { PiInfoThin, PiShoppingCartLight, PiSignOutLight, PiUserListThin } from 'react-icons/pi';
 import { GoShieldLock } from 'react-icons/go';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Loader from '../layouts/Loader/Loader';
@@ -158,7 +158,7 @@ const Profile = () => {
                             </div>
                         </div>
 
-                        <div className="sidebar-elem-section">
+                        {/* <div className="sidebar-elem-section">
                             <div className="sidebar-elem-head">Credits</div>
 
                             <div
@@ -178,7 +178,7 @@ const Profile = () => {
                                 Savings
 
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="sidebar-elem-section">
                             <div className="sidebar-elem-head">Manage Account</div>

@@ -679,20 +679,25 @@ export const deleteReview = catchAsync(async (req, res, next) => {
         return true;
     });
 
-    const totalRating = total / productReviews.reviews.length;
+    let totalRating = total / productReviews.reviews.length;
     productReviews.rating = Math.round(totalRating * 10) / 10;
     productReviews.total_reviews = productReviews.reviews.length;
 
     if (productReviews.reviews.length === 0) {
-        product.review_id = undefined;
+        const products = await Product.find({ product_id: product.product_id });
+        for(const prod of products){
+            prod.review_id = undefined;
+            await prod.save({ validateBeforeSave: false });
+        }
+        await productReviews.deleteOne();
     }
-
-    await productReviews.save({ validateBeforeSave: false });
+    else{
+        await productReviews.save({ validateBeforeSave: false });
+    }
 
     return res.json({
         success: true,
-        message: "Successfully deleted your review!",
-        review: productReviews
+        message: "Successfully deleted your review!"
     });
 })
 
@@ -971,34 +976,34 @@ export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
 
 export const toggleWishlistProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
-    
+
     const product = await Product.findById(id);
-    if(!product){
+    if (!product) {
         return next(new ErrorHandler("Product doesn't exist!", 404));
     }
 
     const user = await Users.findById(req.user._id);
-    if(!user){
+    if (!user) {
         return next(new ErrorHandler("User doesn't exist, please try again!", 404));
     }
 
-    if(user.wishlist_items.some((prod) => prod.toString() === product._id.toString())){
+    if (user.wishlist_items.some((prod) => prod.toString() === product._id.toString())) {
         user.wishlist_items = user.wishlist_items.filter((prod) => prod.toString() !== product._id.toString());
 
         await user.save({ validateBeforeSave: false });
 
         return res.json({
-            success: true, 
+            success: true,
             message: "Successfully removed the product from wishlist!",
         })
     }
 
     user.wishlist_items.push(product._id);
 
-    await user.save({validateBeforeSave: false});
+    await user.save({ validateBeforeSave: false });
 
     return res.json({
-        success: true, 
+        success: true,
         message: "Successfully added the product to wishlist!",
     });
 })

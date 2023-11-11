@@ -599,7 +599,7 @@ export const getWishlistProducts = catchAsync(async (req, res, next) => {
 
     return res.json({
         success: true,
-        list_products: wishlistProducts,
+        list_products: wishlistProducts.reverse(),
     })
 })
 
