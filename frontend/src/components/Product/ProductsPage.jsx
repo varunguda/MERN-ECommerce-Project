@@ -5,7 +5,6 @@ import Accordian from "../elements/Accordians/Accordion";
 import ProductCard from "../elements/Cards/ProductCard.jsx";
 import Paginate from "../elements/Pagination/Paginate.jsx";
 import { useLocation, useNavigate } from 'react-router';
-
 import "./ProductsPage.css";
 import Metadata from '../Metadata';
 import { bindActionCreators } from 'redux';
@@ -13,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators, navigationActionCreators } from '../../State/action-creators';
 import Loader from '../layouts/Loader/Loader';
 import { Link } from 'react-router-dom';
-import { MdOutlineShortText } from 'react-icons/md';
+import IconMenu from '@tabler/icons-react/dist/esm/icons/IconMenu.js';
 import { ramFormatter, ratingFormatter, removeDoublePipe, storageFormatter } from './utils';
 import Stars from '../elements/Cards/Stars';
 import FilterButton from '../elements/Buttons/FilterButton';
@@ -624,11 +623,10 @@ const ProductsPage = () => {
 
                                     {btnActive && (
                                         <button ref={btnRef} className='primary-btn' onClick={moreClickHandler} >
-                                            <MdOutlineShortText size={"20px"} color="#212121" />
+                                            <IconMenu strokeWidth={1.5} size={18} color="#212121" />
                                             <span>More Filters</span>
                                         </button>
                                     )}
-
                                 </div>
                             </div>
 

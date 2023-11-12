@@ -6,10 +6,12 @@ import { actionCreators } from "../../State/action-creators";
 import { addToCart } from '../../State/action-creators/CartActionCreators';
 import { useLocation } from 'react-router';
 import Metadata from '../Metadata';
-import { RxZoomIn } from "react-icons/rx";
-import { CiShop } from "react-icons/ci";
-import { GrFormNext, GrFormPrevious } from "react-icons/gr";
-import { FiMinus, FiPlus } from "react-icons/fi";
+import IconZoomIn from '@tabler/icons-react/dist/esm/icons/IconZoomIn';
+import IconStore from '@tabler/icons-react/dist/esm/icons/IconBuildingStore';
+import IconChevronRight from '@tabler/icons-react/dist/esm/icons/IconChevronRight';
+import IconChevronLeft from '@tabler/icons-react/dist/esm/icons/IconChevronLeft';
+import IconPlus from '@tabler/icons-react/dist/esm/icons/IconPlus';
+import IconMinus from '@tabler/icons-react/dist/esm/icons/IconMinus';
 import Stars from '../elements/Cards/Stars';
 import { toast } from 'react-toastify';
 import ProductVariations from './ProductVariations';
@@ -275,7 +277,7 @@ const ProductPage = () => {
                                 </div>
 
                                 <div onClick={handlePrevImageClick} className={`image-btn prev-image ${!images[currentImageIndex - 1] ? "disabled" : ""} `} disabled={true} >
-                                    <GrFormPrevious size={30} />
+                                    <IconChevronLeft size={30} />
                                 </div>
                                 <div
                                     onMouseEnter={handleMouseEnter}
@@ -287,13 +289,13 @@ const ProductPage = () => {
 
                                 </div>
                                 <div onClick={handleNextImageClick} className={`image-btn next-image ${!images[currentImageIndex + 1] ? "disabled" : ""} `}>
-                                    <GrFormNext size={30} />
+                                    <IconChevronRight size={30} />
                                 </div>
                             </div>
 
                             <div className='image-caption'>
                                 <div className='zoom-caption'>Roll over image to zoom in</div>
-                                <RxZoomIn className='zoom-icon' size="30px" />
+                                <IconZoomIn className='zoom-icon' size={30} strokeWidth={1.25} />
                             </div>
 
                             <div className="quick-highlights">
@@ -428,9 +430,9 @@ const ProductPage = () => {
                                             ))
                                             :
                                             (<div className="add-quantity">
-                                                <FiMinus className="minus" onClick={handleMinusClick} />
+                                                <IconMinus strokeWidth={1.5} className="minus" onClick={handleMinusClick} />
                                                 <span>{quantity}</span>
-                                                <FiPlus className="plus" onClick={handlePlusClick} />
+                                                <IconPlus strokeWidth={1.5} className="plus" onClick={handlePlusClick} />
                                             </div>)
                                         }
                                     </div>
@@ -444,7 +446,7 @@ const ProductPage = () => {
 
                                 <div className="seller-details">
                                     <div className="about-seller">
-                                        <CiShop className='icon' size={20} />
+                                        <IconStore className='icon' size={20} strokeWidth={1} />
                                         Sold by <span className="seller-name">Apple Official</span>
                                     </div>
                                     <div className="merit"><span>90</span> - Seller Merit</div>

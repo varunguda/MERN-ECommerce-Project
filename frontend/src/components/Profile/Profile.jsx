@@ -1,13 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
-
 import "./Profile.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { CiDeliveryTruck, CiHeart, CiViewList } from 'react-icons/ci';
-import { PiInfoThin, PiShoppingCartLight, PiSignOutLight, PiUserListThin } from 'react-icons/pi';
-import { GoShieldLock } from 'react-icons/go';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Loader from '../layouts/Loader/Loader';
-import PersonalInfo from './Personal Info/Personal_info';
+import PersonalInfo from './PersonalInfo/Personal_info';
 import Overview from './Overview/Overview';
 import Addresses from './Addresses/Addresses';
 import Orders from './Orders/Orders';
@@ -18,6 +14,14 @@ import { ModalContext } from '../../Context/ModalContext';
 import { loadUser, signOutUser } from '../../State/action-creators/UserActionCreators';
 import { SIGNOUT_USER_RESET } from '../../State/constants/UserConstants';
 import List from './List/List';
+import IconAlbum from '@tabler/icons-react/dist/esm/icons/IconAlbum';
+import IconCart from '@tabler/icons-react/dist/esm/icons/IconShoppingCart';
+import IconHeart from '@tabler/icons-react/dist/esm/icons/IconHeart';
+import IconUser from '@tabler/icons-react/dist/esm/icons/IconUser';
+import IconShield from '@tabler/icons-react/dist/esm/icons/IconShield';
+import IconTruck from '@tabler/icons-react/dist/esm/icons/IconTruck';
+import IconInfoCircle from '@tabler/icons-react/dist/esm/icons/IconInfoCircle';
+import IconLogout from '@tabler/icons-react/dist/esm/icons/IconLogout';
 
 
 const Profile = () => {
@@ -132,7 +136,7 @@ const Profile = () => {
                                 className={`sidebar-elem ${(activeLocation === "") ? "active" : ""}`}
                                 link-identifier=""
                             >
-                                <CiViewList className='sidebar-icon' size={17} />
+                                <IconAlbum strokeWidth={1.25} className='sidebar-icon' size={15} />
                                 Overview
                             </div>
                         </div>
@@ -144,7 +148,7 @@ const Profile = () => {
                                 className={`sidebar-elem ${(activeLocation === "orders") ? "active" : ""}`}
                                 link-identifier="orders"
                             >
-                                <PiShoppingCartLight className='sidebar-icon' size={17} />
+                                <IconCart strokeWidth={1.25} className='sidebar-icon' size={15} />
                                 Orders
                             </div>
 
@@ -153,20 +157,19 @@ const Profile = () => {
                                 className={`sidebar-elem ${(activeLocation === "list") ? "active" : ""}`}
                                 link-identifier="list"
                             >
-                                <CiHeart className='sidebar-icon' size={17} />
+                                <IconHeart strokeWidth={1.25} className='sidebar-icon' size={15} />
                                 List
                             </div>
                         </div>
 
                         {/* <div className="sidebar-elem-section">
                             <div className="sidebar-elem-head">Credits</div>
-
                             <div
                                 onClick={sidebarElemClickHandler}
                                 className={`sidebar-elem ${(activeLocation === "coupons") ? "active" : ""}`}
                                 link-identifier="coupons"
                             >
-                                <PiTicketThin className='sidebar-icon' size={17} />
+                                <PiTicketThin className='sidebar-icon' size={15} />
                                 Coupons
                             </div>
                             <div
@@ -174,9 +177,8 @@ const Profile = () => {
                                 className={`sidebar-elem ${(activeLocation === "savings") ? "active" : ""}`}
                                 link-identifier="savings"
                             >
-                                <PiHandCoinsLight className='sidebar-icon' size={17} />
+                                <PiHandCoinsLight className='sidebar-icon' size={15} />
                                 Savings
-
                             </div>
                         </div> */}
 
@@ -188,7 +190,7 @@ const Profile = () => {
                                 className={`sidebar-elem ${(activeLocation === "personal") ? "active" : ""}`}
                                 link-identifier="personal"
                             >
-                                <PiUserListThin className='sidebar-icon' size={17} />
+                                <IconUser strokeWidth={1.25} className='sidebar-icon' size={15} />
                                 Personal info
                             </div>
 
@@ -197,7 +199,7 @@ const Profile = () => {
                                 className={`sidebar-elem ${(activeLocation === "addresses") ? "active" : ""}`}
                                 link-identifier="addresses"
                             >
-                                <CiDeliveryTruck className='sidebar-icon' size={17} />
+                                <IconTruck strokeWidth={1.25} className='sidebar-icon' size={15} />
                                 Addresses
                             </div>
 
@@ -211,7 +213,7 @@ const Profile = () => {
                                 className={`sidebar-elem ${(activeLocation === "terms") ? "active" : ""}`}
                                 link-identifier="terms"
                             >
-                                <PiInfoThin className='sidebar-icon' size={17} />
+                                <IconInfoCircle strokeWidth={1.25} className='sidebar-icon' size={15} />
                                 Terms of use
                             </div>
 
@@ -220,13 +222,16 @@ const Profile = () => {
                                 className={`sidebar-elem ${(activeLocation === "privacy") ? "active" : ""}`}
                                 link-identifier="privacy"
                             >
-                                <GoShieldLock className='sidebar-icon' size={15} />
+                                <IconShield strokeWidth={1.25} className='sidebar-icon' size={15} />
                                 Privacy Policy
                             </div>
                         </div>
 
                         <div className="sidebar-elem-section">
-                            <div onClick={signOutClickHandler} className="sidebar-elem"><PiSignOutLight className='sidebar-icon' size={17} />Sign out</div>
+                            <div onClick={signOutClickHandler} className="sidebar-elem">
+                                <IconLogout strokeWidth={1.25} className='sidebar-icon' size={15} />
+                                 Sign out
+                            </div>
                         </div>
 
                     </div>

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import './Navbar.css';
-import { BiCategory } from 'react-icons/bi';
-import { IoIosHeartEmpty } from "react-icons/io";
-import { FiShoppingCart } from "react-icons/fi";
-import { HiOutlineUser, HiOutlineUserPlus } from "react-icons/hi2";
-import { PiTShirt, PiGraphThin } from "react-icons/pi";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { MdClose } from "react-icons/md";
+import IconCategory from '@tabler/icons-react/dist/esm/icons/IconCategory';
+import IconHeart from '@tabler/icons-react/dist/esm/icons/IconHeart';
+import IconCart from '@tabler/icons-react/dist/esm/icons/IconShoppingCart';
+import IconUser from '@tabler/icons-react/dist/esm/icons/IconUser';
+import IconUserPlus from '@tabler/icons-react/dist/esm/icons/IconUserPlus';
+import IconShirt from '@tabler/icons-react/dist/esm/icons/IconShirt';
+import IconChartPie from '@tabler/icons-react/dist/esm/icons/IconChartPie';
+import IconMenu from '@tabler/icons-react/dist/esm/icons/IconMenu2';
+import IconX from '@tabler/icons-react/dist/esm/icons/IconX';
 import { Link, useLocation } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import { useSelector } from 'react-redux';
@@ -43,7 +45,7 @@ const Navbar = () => {
             <div className='fixed'>
                 {(!loggedIn) ? (
                     <Link to="/account/login" className='nav-elems main-elem link'>
-                        <HiOutlineUserPlus size={"17px"} />
+                        <IconUserPlus size={17} strokeWidth={1.5} />
                         <div className='nav-elem-desc'>
                             <div className='nav-elem-small'>Sign In&nbsp;</div>
                             <div>Account</div>
@@ -51,7 +53,7 @@ const Navbar = () => {
                     </Link>
                 ) : (
                     <Link to="/profile" className='nav-elems main-elem link'>
-                        <HiOutlineUser size={"17px"} />
+                        <IconUser strokeWidth={1.5} size={17} />
                         <div className='nav-elem-desc'>
                             <div className='nav-elem-small'>Hi, {user.name}&nbsp;</div>
                             <div>Account</div>
@@ -64,28 +66,27 @@ const Navbar = () => {
 
                 <nav className={sidebar ? "navbar-menu active" : "navbar-menu"}>
                     <div className='nav-elems'>
-                        <BiCategory size={"20px"} />
+                        <IconCategory strokeWidth={1.25} size={20} />
                         <span>Departments</span>
                     </div>
 
                     <Link to="/admin" className='nav-elems link'>
-                        <PiGraphThin size={"20px"} />
+                        <IconChartPie size={20} strokeWidth={1.5} />
                         <span>Portal</span>
                     </Link>
 
                     <Link to={"/seller"} className='nav-elems link'>
-                        <PiTShirt size={"17px"} />
+                        <IconShirt strokeWidth={1.5} size={17} />
                         <span>My Products</span>
                     </Link>
 
                     <div className='nav-elems'>
-                        <IoIosHeartEmpty size={"17px"} />
+                        <IconHeart strokeWidth={1.25} size={17} />
                         <Link to={"/profile/list"} className='nav-elem-desc link'>
                             <div className='nav-elem-small'>Order&nbsp;</div>
                             <div>My List</div>
                         </Link>
                     </div>
-
                 </nav>
 
                 <nav className={sidebar ? "secondary-navbar-menu active" : "secondary-navbar-menu"}>
@@ -126,16 +127,16 @@ const Navbar = () => {
 
                         <div className='menu-icon' onClick={showSidebar} >
                             {sidebar ?
-                                <MdClose size={"20px"} />
+                                <IconX size={25} strokeWidth={1.5} />
                                 :
-                                <RxHamburgerMenu size={"20px"} color='white' />
+                                <IconMenu size={25} strokeWidth={1.5} />
                             }
                         </div>
 
                         <nav className={sidebar ? "navbar-menu active" : "navbar-menu"}>
 
                             <div className='nav-elems'>
-                                <BiCategory size={"20px"} />
+                                <IconCategory strokeWidth={1.5} size={20} />
                                 <span>Departments</span>
                             </div>
 
@@ -143,14 +144,14 @@ const Navbar = () => {
                                 <>
                                     {(user && user.is_admin) && (
                                         <Link to="/admin" className='nav-elems link'>
-                                            <PiGraphThin size={"20px"} />
+                                            <IconChartPie strokeWidth={1.5} size={20} />
                                             <span>Portal</span>
                                         </Link>
                                     )}
 
                                     {(user && user.is_seller) && (
                                         <Link to="/seller" className='nav-elems link'>
-                                            <PiTShirt size={"17px"} />
+                                            <IconShirt strokeWidth={1.5} size={17} />
                                             <span>My Products</span>
                                         </Link>
                                     )}
@@ -160,7 +161,7 @@ const Navbar = () => {
                             )}
 
                             <Link to={"/profile/list"} className='nav-elems link'>
-                                <IoIosHeartEmpty size={"17px"} />
+                                <IconHeart strokeWidth={1.5} size={17} />
                                 <Link to={"/profile/list"} className='nav-elem-desc link'>
                                     <div className='nav-elem-small'>Order&nbsp;</div>
                                     <div>My List</div>
@@ -169,7 +170,7 @@ const Navbar = () => {
 
                             {(!loggedIn) ? (
                                 <Link to="/account/login" className='nav-elems main-elem link'>
-                                    <HiOutlineUserPlus size={"17px"} />
+                                    <IconUserPlus size={17} strokeWidth={1.5} />
                                     <div className='nav-elem-desc'>
                                         <div className='nav-elem-small'>Sign In&nbsp;</div>
                                         <div>Account</div>
@@ -177,7 +178,7 @@ const Navbar = () => {
                                 </Link>
                             ) : (
                                 <Link to="/profile" className='nav-elems main-elem link'>
-                                    <HiOutlineUser size={"17px"} />
+                                    <IconUser strokeWidth={1.5} size={17} />
                                     <div className='nav-elem-desc'>
                                         <div className='nav-elem-small'>Hi, {user.name}&nbsp;</div>
                                         <div>Account</div>
@@ -187,7 +188,7 @@ const Navbar = () => {
                         </nav>
 
                         <Link to="/cart" className='nav-elems cart-icon link'>
-                            <FiShoppingCart size={"25px"} />
+                            <IconCart strokeWidth={1.5} size={25} />
                             <span className='cart-items'>
                                 {cartItems.reduce((count, item) => { return count += item.quantity }, 0)}
                             </span>

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import "./Modal.css";
-import { AiOutlineClose } from "react-icons/ai"
+import IconX from '@tabler/icons-react/dist/esm/icons/IconX';
 import { ModalContext } from '../../../Context/ModalContext';
 
 
@@ -38,7 +38,7 @@ const Modal = () => {
         <div ref={modalContainerRef} className={`modal-container ${isModalOpen ? "open" : ""}`}>
             <div className="background" />
             <div ref={modalRef} className="modal">
-                <AiOutlineClose onClick={() => closeModal()} className="close-modal-icon" color='#74767c' />
+                <IconX strokeWidth={1.5} size={25} onClick={() => closeModal()} className="close-modal-icon" color='#74767c' />
                 <div className="modal-heading-content">
                     <div className='heading'>{modalHeading}</div>
                     <div className="modal-content">{modalContent}</div>

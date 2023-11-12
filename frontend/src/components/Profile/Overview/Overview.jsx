@@ -1,15 +1,14 @@
 import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import {PiSignOutBold} from "react-icons/pi";
 import OverviewCard from './OverviewCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { toast } from 'react-toastify';
 import { loadUser, signOutUser } from '../../../State/action-creators/UserActionCreators';
 import { SIGNOUT_USER_RESET } from '../../../State/constants/UserConstants';
-
 import "./Overview.css";
 import { ModalContext } from '../../../Context/ModalContext';
+import IconLogout from '@tabler/icons-react/dist/esm/icons/IconLogout';
 
 
 const Overview = ({ user }) => {
@@ -149,7 +148,10 @@ const Overview = ({ user }) => {
             </div>
 
             <div className="overview-btn-container">
-                <button onClick={signOutClickHandler} className="main-btn warning"><PiSignOutBold size={20}/>Sign Out</button>
+                <button onClick={signOutClickHandler} className="main-btn warning">
+                    <IconLogout size={20}/>
+                     Sign Out
+                </button>
             </div>
         </div>
     )

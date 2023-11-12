@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CiBoxes } from 'react-icons/ci';
-import { SlGraph } from 'react-icons/sl';
-import { PiUsersThreeLight } from 'react-icons/pi';
+import IconPackages from '@tabler/icons-react/dist/esm/icons/IconPackages';
+import IconChartLine from '@tabler/icons-react/dist/esm/icons/IconChartLine';
+import IconUsersGroup from '@tabler/icons-react/dist/esm/icons/IconUsersGroup';
+import IconUsers from '@tabler/icons-react/dist/esm/icons/IconUsers';
+import IconDevices from '@tabler/icons-react/dist/esm/icons/IconDevices';
+import IconPlus from '@tabler/icons-react/dist/esm/icons/IconPlus';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Loader from '../layouts/Loader/Loader';
 import Metadata from '../Metadata';
-import { IoIosLaptop } from 'react-icons/io';
-import { BsPlusLg } from 'react-icons/bs';
 import { checkAdmin } from '../../State/action-creators/AdminActionCreators';
 import Dashboard from './Dashboard/Dashboard';
 import AllProducts from './Product/AllProducts';
@@ -76,6 +77,7 @@ const Admin = () => {
 
     return (
         <div className='page-container'>
+
             {(checkingAdmin !== false) ? <Loader /> : (
 
                 (isAdmin && (
@@ -95,7 +97,7 @@ const Admin = () => {
                                     className={`sidebar-elem ${(activeLocation === "") ? "active" : ""}`}
                                     link-identifier=""
                                 >
-                                    <SlGraph className='sidebar-icon' size={17} />
+                                    <IconChartLine className='sidebar-icon' size={17} strokeWidth={1.25} />
                                     Dashboard
                                 </div>
                             </div>
@@ -107,7 +109,7 @@ const Admin = () => {
                                     className={`sidebar-elem ${(activeLocation === "products/all") ? "active" : ""}`}
                                     link-identifier="products/all"
                                 >
-                                    <IoIosLaptop className='sidebar-icon' size={17} />
+                                    <IconDevices className='sidebar-icon' size={17} strokeWidth={1.25} />
                                     All Products
                                 </div>
 
@@ -116,7 +118,7 @@ const Admin = () => {
                                     className={`sidebar-elem ${(activeLocation === "products/create") ? "active" : ""}`}
                                     link-identifier="products/create"
                                 >
-                                    <BsPlusLg className='sidebar-icon' size={17} />
+                                    <IconPlus className='sidebar-icon' size={17} strokeWidth={1.25} />
                                     Create
                                 </div>
                             </div>
@@ -129,7 +131,7 @@ const Admin = () => {
                                     className={`sidebar-elem ${(activeLocation === "orders/all") ? "active" : ""}`}
                                     link-identifier="orders/all"
                                 >
-                                    <CiBoxes className='sidebar-icon' size={17} />
+                                    <IconPackages className='sidebar-icon' size={17} strokeWidth={1} />
                                     All Orders
                                 </div>
                             </div>
@@ -142,7 +144,7 @@ const Admin = () => {
                                     className={`sidebar-elem ${(activeLocation === "customers") ? "active" : ""}`}
                                     link-identifier="customers"
                                 >
-                                    <PiUsersThreeLight className='sidebar-icon' size={17} />
+                                    <IconUsersGroup className='sidebar-icon' size={17} strokeWidth={1.25} />
                                     ManyIN Customers
                                 </div>
                             </div>
@@ -156,7 +158,7 @@ const Admin = () => {
                                     className={`sidebar-elem ${(activeLocation === "sellers") ? "active" : ""}`}
                                     link-identifier="sellers"
                                 >
-                                    <PiUsersThreeLight className='sidebar-icon' size={17} />
+                                    <IconUsers className='sidebar-icon' size={17} strokeWidth={1.25} />
                                     ManyIN Sellers
                                 </div>
 

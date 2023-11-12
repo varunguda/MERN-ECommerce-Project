@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import "./List.css";
-import { RxReload } from "react-icons/rx";
 import ListProductCard from '../../elements/Cards/ListProductCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
@@ -8,8 +7,9 @@ import { emptyListItems, getListItems, getListProducts } from '../../../State/ac
 import { toast } from 'react-toastify';
 import { ModalContext } from '../../../Context/ModalContext';
 import { EMPTY_LIST_ITEMS_RESET } from '../../../State/constants/UserConstants';
-import { BiInfoCircle } from 'react-icons/bi';
 import { addToCart } from '../../../State/action-creators/CartActionCreators';
+import IconInfo from '@tabler/icons-react/dist/esm/icons/IconInfoCircle';
+import IconReload from '@tabler/icons-react/dist/esm/icons/IconReload';
 
 
 const List = ({ user }) => {
@@ -144,13 +144,13 @@ const List = ({ user }) => {
                     <>
                         <div className="list-head">
                             {listProducts.length > 0 && listProducts.length} items
-                            <RxReload
+                            <IconReload
                                 onClick={() => {
                                     dispatch(getListItems());
                                     dispatch(getListProducts());
                                 }}
-                                size={20} 
-                                strokeWidth={0} 
+                                size={20}
+                                strokeWidth={1.5}
                                 className='icon' 
                             />
                         </div>
@@ -180,7 +180,7 @@ const List = ({ user }) => {
                                             className="custom-tooltip light large"
                                             data-tooltip="This estimated total reflects only the sum of items currently in your list. Please note that the final price in your cart may vary if there are other items already included in the cart."
                                         >
-                                            <BiInfoCircle className='icon' size={14} />
+                                            <IconInfo className='icon' size={15} strokeWidth={1.25} />
                                         </span>
                                     </div>
 
@@ -202,7 +202,7 @@ const List = ({ user }) => {
                         </div>
                     </>
                 ) : (
-                    <div className="content-not-found-containerer">
+                    <div className="content-not-found-container">
                         <img src="/images/empty_list.svg" alt="list-empty" />
                         <>
                             <p className="main">

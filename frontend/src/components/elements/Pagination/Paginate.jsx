@@ -1,6 +1,8 @@
 import React from 'react';
 import Pagination from 'rc-pagination';
-import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import IconChevronRight from '@tabler/icons-react/dist/esm/icons/IconChevronRight';
+import IconChevronLeft from '@tabler/icons-react/dist/esm/icons/IconChevronLeft';
+
 
 import "./Paginate.css";
 
@@ -13,8 +15,8 @@ const Paginate = ({ onChange, total, pageSize, current }) => {
                 total={total}
                 pageSize={pageSize}
                 current={current}
-                nextIcon={<GrFormNext size={20} />}
-                prevIcon={<GrFormPrevious size={20} />}
+                nextIcon={<IconChevronRight strokeWidth={1.5} size={20} />}
+                prevIcon={<IconChevronLeft strokeWidth={1.5} size={20} />}
             />
         </>
     )

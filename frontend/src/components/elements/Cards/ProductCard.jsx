@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import Stars from "./Stars.jsx";
-import { FiMinus, FiPlus } from 'react-icons/fi';
+import IconPlus from '@tabler/icons-react/dist/esm/icons/IconPlus.js';
+import IconMinus from '@tabler/icons-react/dist/esm/icons/IconMinus.js';
 import { addToCart } from '../../../State/action-creators/CartActionCreators.js';
 import { useDispatch, useSelector } from 'react-redux';
-
 import "./ProductCard.css";
 import ListHeartButton from '../Buttons/ListHeartButton.jsx';
 
@@ -95,14 +95,12 @@ const ProductCard = ({ product, height, width, noreviews = false }) => {
                         </button>)
                         :
                         (<div className="add-quantity">
-                            <FiMinus className="minus" onClick={handleMinusClick} />
+                            <IconMinus strokeWidth={1.5} className="minus" onClick={handleMinusClick} />
                             <span>{quantity}</span>
-                            <FiPlus className="plus" onClick={handlePlusClick} />
+                            <IconPlus strokeWidth={1.5} className="plus" onClick={handlePlusClick} />
                         </div>)
                     }
-
                 </div>
-
             </Link>
         </div>
     )

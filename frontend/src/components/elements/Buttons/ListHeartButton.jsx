@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { HiHeart, HiOutlineHeart } from 'react-icons/hi2'
+import IconHeart from '@tabler/icons-react/dist/esm/icons/IconHeart';
+import IconHeartFilled from '@tabler/icons-react/dist/esm/icons/IconHeartFilled';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListItems, toggleListItem } from '../../../State/action-creators/UserActionCreators';
 
@@ -40,11 +41,11 @@ const ListHeartButton = ({ product, size }) => {
     return (
         (added) ? (
             <>
-                <HiHeart onClick={addToListHandler} strokeWidth={1} size={size ? size : 20} color="#e31b23" />
+                <IconHeartFilled onClick={addToListHandler} strokeWidth={1} size={size ? size : 20} style={{ color: "#e31b23" }} />
             </>
         ) : (
             <>
-                <HiOutlineHeart onClick={addToListHandler} strokeWidth={1} size={size ? size : 20} />
+                <IconHeart onClick={addToListHandler} strokeWidth={1} size={size ? size : 20} />
             </>
         )
     )

@@ -2,15 +2,15 @@ import React from 'react';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import ProductCard from "../../elements/Cards/ProductCard";
-import { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowLeft } from "react-icons/md";
-
+import IconChevronRight from '@tabler/icons-react/dist/esm/icons/IconChevronRight';
+import IconChevronLeft from '@tabler/icons-react/dist/esm/icons/IconChevronLeft';
 import "./ProductCarousel.css"
 
 
 const CustomLeftArrow = ({ onClick, ...rest }) => {
     return (
         <div {...rest} onClick={onClick} className='left-arrow'>
-            <MdOutlineKeyboardArrowLeft size={35} />
+            <IconChevronLeft strokeWidth={1.75} size={30} />
         </div>
     );
 };
@@ -18,7 +18,7 @@ const CustomLeftArrow = ({ onClick, ...rest }) => {
 const CustomRightArrow = ({ onClick, ...rest }) => {
     return (
         <div {...rest} onClick={onClick} className='right-arrow'>
-            <MdOutlineKeyboardArrowRight size={35} />
+            <IconChevronRight strokeWidth={1.75} size={30} />
         </div>
     );
 };

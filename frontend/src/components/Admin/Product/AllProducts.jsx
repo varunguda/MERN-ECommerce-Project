@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../../../State/action-creators/ProductActionCreators';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { setAvailability, setPage } from '../../../State/action-creators/NavigationActionCreators';
-import { AiOutlineDelete, AiOutlineEdit, AiOutlineExport } from "react-icons/ai"
+import IconTrash from '@tabler/icons-react/dist/esm/icons/IconTrash';
+import IconEdit from '@tabler/icons-react/dist/esm/icons/IconEdit';
+import IconExternalLink from '@tabler/icons-react/dist/esm/icons/IconExternalLink';
 
 
 const AllProducts = () => {
@@ -90,10 +92,10 @@ const AllProducts = () => {
             renderCell: (params) => {
                 return (
                     <div className="table-icons-container">
-                        <span><AiOutlineEdit size={18} /></span>
-                        <span><AiOutlineDelete size={18} /></span>
+                        <span><IconEdit size={18} strokeWidth={1.25} /></span>
+                        <span><IconTrash strokeWidth={1.25} size={18} /></span>
                         <span onClick={() => window.open(`/product/${params.row._id}`)}>
-                            <AiOutlineExport size={18} />
+                            <IconExternalLink size={18} strokeWidth={1.25} />
                         </span>
                     </div>
                 )
