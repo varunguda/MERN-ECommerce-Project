@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-
 import { useDispatch, useSelector } from "react-redux";
-
 import "./Addresses.css";
 import {
     cityValidator,
@@ -14,11 +12,11 @@ import {
 } from './AddressValidators.js';
 import { toast } from 'react-toastify';
 import { USER_ADDRESS_ADD_RESET, USER_ADDRESS_UPDATE_RESET } from '../../../State/constants/ProfileConstants';
-import AddressForm from './AddressForm';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import AddressCard from './AddressCard';
 import { bindActionCreators } from 'redux';
 import { profileActionCreators } from '../../../State/action-creators';
+import AddressForm from './AddressForm.jsx';
 
 
 const Addresses = () => {
@@ -49,6 +47,21 @@ const Addresses = () => {
         default_address: false,
     });
     const errorRef = useRef(null);
+    const [ module, setModule ] = useState({
+        State: null,
+        City: null
+    });
+
+
+    useEffect(() => {
+        import("country-state-city").then(module => {
+            const { State, City } = module;
+            setModule({
+                State,
+                City
+            })
+        });
+    }, []);
 
 
     useEffect(() => {
@@ -84,7 +97,7 @@ const Addresses = () => {
         // eslint-disable-next-line
     }, []);
 
-    
+
     useEffect(() => {
         if (gettingAddresses || updatingDeletingAddress) {
             dispatch(loaderSpin(true));
@@ -103,8 +116,8 @@ const Addresses = () => {
             nameValidator(address.last_name, "Last name"),
             flatValidator(address.flat),
             streetValidator(address.street_address),
-            cityValidator(address.city, address.state_code),
-            stateValidator(address.state),
+            cityValidator(address.city, address.state_code, module.City),
+            stateValidator(address.state, module.State),
             zipValidator(address.zip),
             mobileNumValidator(address.mobile),
         ];
@@ -175,8 +188,8 @@ const Addresses = () => {
 
     const editClickHandler = (id) => {
 
-        window.scrollTo(0,0);
-        
+        window.scrollTo(0, 0);
+
         for (let i = 0; i < addresses.length; i++) {
             const element = addresses[i];
             if (element._id === id) {
@@ -229,7 +242,6 @@ const Addresses = () => {
                         <div ref={errorRef} className="error-alert" style={{ marginBottom: "10px", display: "none" }}>
                             Please verify all fields below.
                         </div>
-
                         <AddressForm
                             onSubmit={addAddressHandler}
                             address={address}
@@ -237,11 +249,11 @@ const Addresses = () => {
                             disableSaveBtn={addingAddress}
                             validateFields={validateFields}
                             cancelClickHandler={resetAddressForm}
+                            module={module}
                         />
                     </>
 
                 ) : (showEditAddressForm ? (
-
                     <>
                         <div className="addresses-container-head">
                             + Edit Address
@@ -250,7 +262,6 @@ const Addresses = () => {
                         <div ref={errorRef} className="error-alert" style={{ marginBottom: "10px", display: "none" }}>
                             Please verify all fields below.
                         </div>
-
                         <AddressForm
                             onSubmit={editAddressHandler}
                             address={address}
@@ -258,6 +269,7 @@ const Addresses = () => {
                             disableSaveBtn={updatingDeletingAddress}
                             validateFields={validateFields}
                             cancelClickHandler={resetAddressForm}
+                            module={module}
                         />
                     </>
 

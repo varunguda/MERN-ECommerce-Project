@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { TfiSearch } from 'react-icons/tfi';
+import IconSearch from '@tabler/icons-react/dist/esm/icons/IconSearch';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -43,9 +43,8 @@ const SearchBar = () => {
             />
 
             <button type="submit" className="search-toggle" >
-                <TfiSearch color='black' size={"22px"} />
+                <IconSearch color='black' size={22} strokeWidth={1.25} />
             </button>
-            
         </form>
     )
 }

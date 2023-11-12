@@ -1,5 +1,5 @@
 import React from 'react'
-import { RxCross2 } from 'react-icons/rx';
+import IconX from '@tabler/icons-react/dist/esm/icons/IconX';
 
 import "./FilterButton.css";
 
@@ -10,7 +10,7 @@ const FilterButton = ({ onClick, content }) => {
             className='filter-btn'
         >
             <span>{content}</span>
-            <RxCross2 className='icon' size={12}/>
+            <IconX className='icon' strokeWidth={1.5} size={13}/>
         </div>
     )
 }

@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { HiHeart, HiOutlineHeart } from 'react-icons/hi2'
+import React, { useEffect, useRef, useState } from 'react';
+import IconHeart from '@tabler/icons-react/dist/esm/icons/IconHeart';
+import IconHeartFilled from '@tabler/icons-react/dist/esm/icons/IconHeartFilled';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListItems, toggleListItem } from '../../../State/action-creators/UserActionCreators';
 
@@ -41,11 +42,11 @@ const ListButton = ({ product }) => {
             <button className='inferior-btn' onClick={addToListHandler}>
                 {added ? (
                     <>
-                        <HiHeart strokeWidth={1} size={18} color="#e31b23" />Visit List
+                        <IconHeartFilled strokeWidth={1.25} size={18} style={{ color: "#e31b23" }} />Visit List
                     </>
                 ) : (
                     <>
-                        <HiOutlineHeart strokeWidth={1} size={18} />Add to list
+                        <IconHeart strokeWidth={1.25} size={18} />Add to list
                     </>
                 )}
             </button>

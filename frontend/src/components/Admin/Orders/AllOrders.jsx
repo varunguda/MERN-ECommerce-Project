@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { SET_ORDER_KEYWORD, SET_ORDER_PAGE, SET_ORDER_STATUS, SET_ORDER_TIME } from '../../../State/constants/NavigationConstants';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
-import { TfiSearch } from 'react-icons/tfi';
-import { PiSlidersHorizontalLight } from 'react-icons/pi';
+import IconSearch from '@tabler/icons-react/dist/esm/icons/IconSearch';
+import IconFilterSearch from '@tabler/icons-react/dist/esm/icons/IconFilterSearch';
 import FilterContent from '../../Profile/Orders/FilterContent';
 import Metadata from '../../Metadata';
 import Paginate from '../../elements/Pagination/Paginate';
@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 import { DELETE_UPDATE_ANY_ORDER_RESET } from '../../../State/constants/AdminConstants';
 import { ModalContext } from '../../../Context/ModalContext';
 import OrderCard from '../../Profile/Orders/OrderCard';
-import { BiInfoCircle } from 'react-icons/bi';
+import IconInfoCircle from '@tabler/icons-react/dist/esm/icons/IconInfoCircle';
 import Accordion from '../../elements/Accordians/Accordion';
 import UpdateOrder from './UpdateOrder';
 
@@ -300,12 +300,12 @@ const AllOrders = () => {
                                 />
 
                                 <button className='search-icon' type="submit">
-                                    <TfiSearch size={13} />
+                                    <IconSearch size={15} />
                                 </button>
                             </form>
 
                             <button onClick={filterClickHandler} type='button' className="order-filter-btn">
-                                <PiSlidersHorizontalLight />
+                                <IconFilterSearch size={15} strokeWidth={1.25} />
                                 Filters
                             </button>
                         </div>
@@ -334,7 +334,7 @@ const AllOrders = () => {
                                                                 className="custom-tooltip light large"
                                                                 data-tooltip="Deleting an order leaves no trace in the Seller's or Buyer's order history; the order is completely removed and cannot be located on ManyIN any longer."
                                                             >
-                                                                <BiInfoCircle className='icon' size={17} />
+                                                                <IconInfoCircle strokeWidth={1.25} size={17} className="icon" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -357,7 +357,7 @@ const AllOrders = () => {
                                 })
                             ) : (
                                 <>
-                                    <div className="order-not-found-container">
+                                    <div className="content-not-found-container">
                                         <img src="/images/order_not_found.svg" alt="order-not-found" />
                                         
                                         {totalOrdersCount === 0 ? (
@@ -382,7 +382,6 @@ const AllOrders = () => {
                                     </div>
                                 </>
                             )}
-
                         </div>
 
                         {(allOrdersCount && allOrdersCount > 6) ? (

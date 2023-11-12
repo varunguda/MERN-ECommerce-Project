@@ -1,5 +1,3 @@
-import { State, City } from "country-state-city";
-
 
 export const nameValidator = (val, str) => {
     if(val.length === 0){
@@ -48,7 +46,7 @@ export const streetValidator = (val) => {
 }
 
 
-export const cityValidator = (city, stateCode) => {
+export const cityValidator = (city, stateCode, City) => {
     if(city.length === 0){
         return "City name is required";
     }
@@ -57,7 +55,7 @@ export const cityValidator = (city, stateCode) => {
         return "Enter a valid City name";
     }
 
-    if(!City.getCitiesOfState("IN", stateCode).some((c) => c.name === city)){
+    if(City && !City.getCitiesOfState("IN", stateCode).some((c) => c.name === city)){
         return "Please select a valid city name";
     }
 
@@ -65,12 +63,12 @@ export const cityValidator = (city, stateCode) => {
 }
 
 
-export const stateValidator = (val) => {
+export const stateValidator = (val, State) => {
     if(val.length === 0){
         return "State name is required";
     }
 
-    if(!State.getStatesOfCountry("IN").some((state) => state.name === val)){
+    if(State && !State.getStatesOfCountry("IN").some((state) => state.name === val)){
         return "Please select a valid state name";
     }
 

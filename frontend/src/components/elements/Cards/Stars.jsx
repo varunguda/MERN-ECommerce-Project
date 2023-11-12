@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { BsStar } from "react-icons/bs";
-import { BsStarFill } from "react-icons/bs";
-import { BsStarHalf } from "react-icons/bs";
-
+import IconStar from '@tabler/icons-react/dist/esm/icons/IconStar';
+import IconStarFilled from '@tabler/icons-react/dist/esm/icons/IconStarFilled';
+import IconStarHalfFilled from '@tabler/icons-react/dist/esm/icons/IconStarHalfFilled';
 import "./Stars.css";
+
 
 const Stars = ({ value, size, readOnly, getVal }) => {
 
@@ -25,20 +25,20 @@ const Stars = ({ value, size, readOnly, getVal }) => {
                 <span key={index}>
                     {
                         value >= index + 1 ?
-                            <BsStarFill className="star-icon" size={size} />
+                            <IconStarFilled strokeWidth={1.25} className="star-icon" size={size} />
                         : value >= num ? 
-                            <BsStarHalf className="star-icon" size={size} />
+                            <IconStarHalfFilled strokeWidth={1.25} className="star-icon" size={size} />
                         :
-                            <BsStar className="star-icon" size={size} />
+                            <IconStar strokeWidth={1.25} className="star-icon" size={size} />
                     }
                 </span>
             ) : (
                 <span key={index} onClick={() => starClickHandler(index)}>
                     {
                         starValue >= index + 1 ?
-                            <BsStarFill className="star-icon light" size={size} />
+                            <IconStarFilled strokeWidth={1.25} className="star-icon light" size={size} />
                         :
-                            <BsStar className="star-icon light" size={size} />
+                            <IconStar strokeWidth={1.25} className="star-icon light" size={size} />
                     }
                 </span>
             )
