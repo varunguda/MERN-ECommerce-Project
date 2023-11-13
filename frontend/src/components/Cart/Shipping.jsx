@@ -1,8 +1,11 @@
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import "./Shipping.css";
-import { IoIosArrowBack } from "react-icons/io";
-import { IoCheckmarkOutline, IoWalletOutline } from "react-icons/io5";
-import { LiaShippingFastSolid } from "react-icons/lia"
+import IconChevronLeft from '@tabler/icons-react/dist/esm/icons/IconChevronLeft';
+import IconCheck from '@tabler/icons-react/dist/esm/icons/IconCheck';
+import IconWallet from '@tabler/icons-react/dist/esm/icons/IconWallet';
+import IconTruckDelivery from '@tabler/icons-react/dist/esm/icons/IconTruckDelivery';
+import IconPlus from '@tabler/icons-react/dist/esm/icons/IconPlus';
+import IconMinus from '@tabler/icons-react/dist/esm/icons/IconMinus';
 import Metadata from '../Metadata';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -10,7 +13,6 @@ import { addToCart, getOrderValue } from '../../State/action-creators/CartAction
 import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
 import Accordion from '../elements/Accordians/Accordion';
 import { Link } from 'react-router-dom';
-import { FiMinus, FiPlus } from 'react-icons/fi';
 import Loader from '../layouts/Loader/Loader';
 import AddressForm from '../Profile/Addresses/AddressForm';
 import { USER_ADDRESS_ADD_RESET } from '../../State/constants/ProfileConstants';
@@ -275,7 +277,7 @@ const Shipping = () => {
             {!orderPlaced ? (
                 <>
                     <nav>
-                        <IoIosArrowBack onClick={goBackClickHandler} className='nav-icon' />
+                        <IconChevronLeft onClick={goBackClickHandler} className='nav-icon' />
                         Checkout
                     </nav>
 
@@ -285,7 +287,7 @@ const Shipping = () => {
 
                             <div className="step step1">
                                 <div className="head">
-                                    <LiaShippingFastSolid size={30} />
+                                    <IconTruckDelivery strokeWidth={1.25} size={30} />
                                     1. Shipping
                                 </div>
 
@@ -310,7 +312,7 @@ const Shipping = () => {
 
                                                             {address.default_address && (
                                                                 <div className="default-check">
-                                                                    <IoCheckmarkOutline color='green' />
+                                                                    <IconCheck color='green' strokeWidth={1.25} size={12} />
                                                                     Default address
                                                                 </div>
                                                             )}
@@ -345,7 +347,7 @@ const Shipping = () => {
 
                                                                 {address.default_address && (
                                                                     <div className="default-check">
-                                                                        <IoCheckmarkOutline color='green' />
+                                                                        <IconCheck size={12} color='green' strokeWidth={1.25} />
                                                                         Default address
                                                                     </div>
                                                                 )}
@@ -423,9 +425,9 @@ const Shipping = () => {
                                                             <button type="button" className='inferior-btn'>Save for later</button>
 
                                                             <div className="add-quantity">
-                                                                <FiMinus className="minus" onClick={() => handleMinusClick(item.product, index)} />
+                                                                <IconMinus strokeWidth={1.5} className="minus" onClick={() => handleMinusClick(item.product, index)} />
                                                                 <span>{prodQuantities[item.product]}</span>
-                                                                <FiPlus className="plus" onClick={() => handlePlusClick(item.product, index)} />
+                                                                <IconPlus strokeWidth={1.5} className="plus" onClick={() => handlePlusClick(item.product, index)} />
                                                             </div>
                                                         </div>
 
@@ -440,12 +442,12 @@ const Shipping = () => {
 
                             <div className={`step step2 ${!savedShipping && "inactive"}`}>
                                 <div className="head">
-                                    <IoWalletOutline size={30} />
+                                    <IconWallet strokeWidth={1.25} size={30} />
                                     2. Payment method
                                 </div>
 
                                 {(savedShipping) && (
-                                    <Payment cartItems={cartItems} price={finalOrderPrice} address={(addresses.filter((address) => address._id === selectedAddress))[0]} setOrderPlaced={setOrderPlaced} />
+                                    <Payment cartItems={cartItems} price={finalOrderPrice} address={(addresses && addresses.filter((address) => address._id === selectedAddress))[0]} setOrderPlaced={setOrderPlaced} />
                                 )}
 
                             </div>

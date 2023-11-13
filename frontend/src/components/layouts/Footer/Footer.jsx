@@ -1,7 +1,8 @@
 import React from 'react';
 import './Footer.css';
 import '../../../index.css';
-import { BsLinkedin, BsGithub } from "react-icons/bs";
+import IconGithub from '@tabler/icons-react/dist/esm/icons/IconBrandGithub';
+import IconLinkedin from '@tabler/icons-react/dist/esm/icons/IconBrandLinkedin';
 import { useLocation } from 'react-router';
 
 
@@ -50,10 +51,10 @@ const Footer = () => {
                                 <h2>Contact</h2>
                                 <div className="socials">
                                     <a href='https://www.linkedin.com/in/varunguda' target='_blank' rel='noreferrer'>
-                                        <BsLinkedin size={18} />
+                                        <IconLinkedin strokeWidth={1.5} size={22} />
                                     </a>
                                     <a href='https://github.com/varunguda' target='_blank' rel='noreferrer'>
-                                        <BsGithub size={18} />
+                                        <IconGithub strokeWidth={1.5} size={22} />
                                     </a>
                                 </div>
                             </div>

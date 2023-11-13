@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import "./Cart.css";
 import Accordion from '../elements/Accordians/Accordion';
-import { FiMinus, FiPlus } from 'react-icons/fi';
 import { addToCart } from '../../State/action-creators/CartActionCreators';
 import { Link, useNavigate } from 'react-router-dom';
-import { GrNext } from 'react-icons/gr';
+import IconChevronRight from '@tabler/icons-react/dist/esm/icons/IconChevronRight';
+import IconPlus from '@tabler/icons-react/dist/esm/icons/IconPlus';
+import IconMinus from '@tabler/icons-react/dist/esm/icons/IconMinus';
 import Metadata from '../Metadata';
 import BannerPage from '../layouts/Banner/BannerPage';
 
@@ -105,7 +106,7 @@ const Cart = () => {
                                                             target='_blank'
                                                             className="icon link"
                                                         >
-                                                            <GrNext />
+                                                            <IconChevronRight strokeWidth={1.25} />
                                                         </Link>
                                                     </div>
 
@@ -137,14 +138,16 @@ const Cart = () => {
                                                     </button>
 
                                                     <div className="add-quantity">
-                                                        <FiMinus 
+                                                        <IconMinus 
                                                             className="minus"
                                                             onClick={() => handleMinusClick(item.product, index)}
+                                                            strokeWidth={1.5}
                                                         />
                                                         <span>{prodQuantities[item.product]}</span>
-                                                        <FiPlus
+                                                        <IconPlus
                                                             className="plus"
                                                             onClick={() => handlePlusClick(item.product, index)}
+                                                            strokeWidth={1.5}
                                                         />
                                                     </div>
                                                 </div>

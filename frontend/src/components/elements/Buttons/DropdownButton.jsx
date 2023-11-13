@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BsChevronDown } from "react-icons/bs";
-import { TbDotsVertical } from "react-icons/tb";
+import IconChevronDown from '@tabler/icons-react/dist/esm/icons/IconChevronDown';
+import IconDotsVertical from '@tabler/icons-react/dist/esm/icons/IconDotsVertical';
+
 
 import "./DropdownButton.css";
 
@@ -38,13 +39,11 @@ const DropdownButton = ({ name, contentArr, icon, clickedElem }) => {
                 {!icon ? (
                     <div onClick={handleButtonClick} className="dd-button">
                         {name}
-                        <span style={{ transform: `rotate(${rotate}deg)` }}>
-                            <BsChevronDown size={11} />
-                        </span>
+                            <IconChevronDown style={{ transform: `rotate(${rotate}deg)` }} size={20} strokeWidth={1.25} />
                     </div>
                 ) : (
                     <div onClick={handleButtonClick} className="dd-icon-button">
-                        <TbDotsVertical />
+                        <IconDotsVertical size={13} />
                     </div>
                 )}
 
