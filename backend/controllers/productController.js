@@ -8,9 +8,9 @@ import { Review } from '../models/reviewModel.js';
 import { Orders } from '../models/orderModel.js';
 
 
-const allProperties = ["name", "description", "price", "images", "stock", "discount_percent", "final_price", "options", "bundles", "color", "ram", "processor", "resolution", "storage", "size", "quantity", "variations", "brand", "category", "review_id"]
+const allProperties = ["name", "description", "price", "images", "stock", "discount_percent", "final_price", "options", "bundles", "color", "ram", "processor", "resolution", "storage", "size", "quantity", "variations", "brand", "category", "review_id"];
 
-const commonProperties = ["name", "description", "price", "images", "stock", "discount_percent", "options", "bundles"]
+const commonProperties = ["name", "description", "price", "images", "stock", "discount_percent", "options", "bundles"];
 
 const categoryConfig = {
 
@@ -61,7 +61,7 @@ const categoryConfig = {
     "Beauty & Health": {
         properties: [...commonProperties, "quantity"],
     }
-}
+};
 
 
 
@@ -377,7 +377,7 @@ export const updateAnyProduct = catchAsync(async (req, res, next) => {
         success: true,
         message: "Product updated successfully!"
     })
-})
+});
 
 
 
@@ -393,7 +393,7 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
         success: true,
         message: "Product has been deleted successfully!"
     })
-})
+});
 
 
 
@@ -409,7 +409,7 @@ export const getMyProducts = catchAsync(async (req, res, next) => {
         products,
         product_count,
     })
-})
+});
 
 
 
@@ -435,7 +435,7 @@ export const updateMyProduct = catchAsync(async (req, res, next) => {
         success: true,
         message: "Product details updated successfully!"
     })
-})
+});
 
 
 
@@ -451,7 +451,7 @@ export const deleteMyProduct = catchAsync(async (req, res, next) => {
         success: true,
         message: "Successfully deleted your product!"
     })
-})
+});
 
 
 
@@ -699,7 +699,7 @@ export const deleteReview = catchAsync(async (req, res, next) => {
         success: true,
         message: "Successfully deleted your review!"
     });
-})
+});
 
 
 
@@ -785,7 +785,7 @@ export const addOptions = catchAsync(async (req, res, next) => {
         message: "Options added successfully!",
         options: product.options
     })
-})
+});
 
 
 
@@ -809,7 +809,7 @@ export const getProductsOfSeller = catchAsync(async (req, res, next) => {
         success: true,
         products
     })
-})
+});
 
 
 
@@ -851,7 +851,7 @@ export const getAllBundleProducts = catchAsync(async (req, res, next) => {
         bundles: newBundles
     })
 
-})
+});
 
 
 
@@ -913,7 +913,7 @@ export const toggleLikeOfAReview = catchAsync(async (req, res, next) => {
             message: "Successfully removed your like!"
         })
     }
-})
+});
 
 
 
@@ -970,7 +970,7 @@ export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
             message: "Successfully removed your dislike!"
         })
     }
-})
+});
 
 
 
@@ -1006,4 +1006,4 @@ export const toggleWishlistProduct = catchAsync(async (req, res, next) => {
         success: true,
         message: "Successfully added the product to wishlist!",
     });
-})
+});

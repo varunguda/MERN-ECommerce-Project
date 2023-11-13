@@ -38,6 +38,7 @@ import {
 } from "./AdminReducers";
 import { loaderReducer } from "./LoaderReducers";
 import { addToCartReducer, orderValueReducer } from "./CartReducers";
+import { sellerReducer } from "./SellerReducers";
 
 
 const reducers = combineReducers({
@@ -66,6 +67,7 @@ const reducers = combineReducers({
     cart: addToCartReducer,
     orderValue: orderValueReducer,
     admin: adminReducer,
+    seller: sellerReducer,
     adminAnalytics: dataAnalysisReducer,
     createProduct: createProductReducer,
     allOrders: getAllOrdersReducer,
