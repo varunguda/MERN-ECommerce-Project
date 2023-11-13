@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Accordion.css";
-import {BsChevronDown} from "react-icons/bs";
-import {BsChevronUp} from "react-icons/bs";
+import IconChevronUp from '@tabler/icons-react/dist/esm/icons/IconChevronUp';
+import IconChevronDown from '@tabler/icons-react/dist/esm/icons/IconChevronDown';
 
 
 const Accordion = ({ title, content, resize, style, noBorder, activeProp, setActiveProp, close, titleClassName }) => {
@@ -47,7 +47,7 @@ const Accordion = ({ title, content, resize, style, noBorder, activeProp, setAct
                     {title}
                 </div>
                 <span className="accordion-toggle-icon" onClick={toggleAccordion} style={{ marginLeft: "20px" }}>
-                    {active ? <BsChevronUp /> : <BsChevronDown />}
+                    {active ? <IconChevronUp size={20} strokeWidth={1.25} /> : <IconChevronDown size={20} strokeWidth={1.25} />}
                 </span>
             </div>
             <div ref={contentRef} style={{ maxHeight: `${height}` }} className="accordion__content">

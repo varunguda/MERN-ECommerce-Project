@@ -1,6 +1,9 @@
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react'
-import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from 'react-icons/bi';
+import React, { useEffect, useRef, useState } from 'react';
+import IconLike from '@tabler/icons-react/dist/esm/icons/IconThumbUp';
+import IconLikeFilled from '@tabler/icons-react/dist/esm/icons/IconThumbUpFilled';
+import IconDislike from '@tabler/icons-react/dist/esm/icons/IconThumbDown';
+import IconDislikeFilled from '@tabler/icons-react/dist/esm/icons/IconThumbDownFilled';
 
 
 const LikesDislikes = ({ reviewsId, review }) => {
@@ -96,11 +99,11 @@ const LikesDislikes = ({ reviewsId, review }) => {
     return (
         <div className="likes-dislikes">
             <div onClick={likeReviewClickHandler}>
-                {liked ? <BiSolidLike /> : <BiLike />}
+                {liked ? <IconLikeFilled size={16} /> : <IconLike size={16} strokeWidth={1.5} />}
                 <span>{likesCount}</span>
             </div>
             <div onClick={dislikeReviewClickHandler}>
-                {disliked ? <BiSolidDislike /> : <BiDislike />}
+                {disliked ? <IconDislikeFilled size={16} /> : <IconDislike size={16} strokeWidth={1.5} />}
                 <span>{dislikesCount}</span>
             </div>
         </div>

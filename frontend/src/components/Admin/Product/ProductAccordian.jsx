@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CreateProductForm from './CreateProductForm';
-import { RxCheckCircled, RxCrossCircled } from "react-icons/rx";
+import IconCircleX from '@tabler/icons-react/dist/esm/icons/IconCircleX';
+import IconCircleCheck from '@tabler/icons-react/dist/esm/icons/IconCircleCheck';
 import Accordion from '../../elements/Accordians/Accordion';
 
 
@@ -14,10 +15,10 @@ const ProductAccordian = ({ productCount, category, config, variations, setProdu
                 <div className='title'>
                     {`Product ${productCount}`}
                     {(productState && (productState.added !== undefined) && productState.added === true) ? (
-                        <RxCheckCircled color='green' size={16} />
+                        <IconCircleCheck color='green' size={16} strokeWidth={1.25} />
                     ) : (
                         (productState && (productState.added !== undefined) && productState.added === false) ? (
-                            <RxCrossCircled color='red' size={16} />
+                            <IconCircleX color='red' size={16} strokeWidth={1.25} />
                         ) : ""
                     )}
                 </div>

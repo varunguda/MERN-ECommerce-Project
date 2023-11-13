@@ -194,8 +194,8 @@
     gap: 30px;
 
     .icon{
-        margin-top: 4px;
-        color: #aaabac;
+        margin-top: 7px;
+        color: var(--light-font-color);
     }
 }
 

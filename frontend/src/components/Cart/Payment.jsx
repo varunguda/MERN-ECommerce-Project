@@ -8,7 +8,7 @@ import {
     useElements,
 } from "@stripe/react-stripe-js";
 import axios from 'axios';
-import { GoCreditCard } from "react-icons/go";
+import IconCreditCard from '@tabler/icons-react/dist/esm/icons/IconCreditCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
 import { toast } from 'react-toastify';
@@ -170,7 +170,7 @@ const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
 
                 <form className='payment-form' onSubmit={paymentSubmitHandler}>
                     <div>
-                        <GoCreditCard className='icon' size={24} />
+                        <IconCreditCard className='icon' size={25} strokeWidth={1.25} />
                         <label htmlFor='card-number' className="label1">Card number*</label>
                         <CardNumberElement className='payment-card-input extra' id='card-number' />
                     </div>

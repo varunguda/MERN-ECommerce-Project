@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { deleteAnyuser, getAllCustomers, updateUserRole } from '../../../State/action-creators/AdminActionCreators';
-import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import IconTrash from '@tabler/icons-react/dist/esm/icons/IconTrash';
+import IconEdit from '@tabler/icons-react/dist/esm/icons/IconEdit';
 import Table from '../../elements/Table/Table';
 import { ModalContext } from '../../../Context/ModalContext';
 import { DELETE_USER_RESET, UPDATE_USER_ROLE_RESET } from '../../../State/constants/AdminConstants';
@@ -186,9 +187,11 @@ const AllUsers = () => {
             renderCell: (params) => {
                 return (
                     <div className="table-icons-container">
-                        <span onClick={() => updateClickHandler(params.row._id)}><AiOutlineEdit size={18} /></span>
+                        <span onClick={() => updateClickHandler(params.row._id)}>
+                            <IconEdit size={18} strokeWidth={1.25} />
+                        </span>
                         <span onClick={() => deleteClickHandler(params.row._id)}>
-                            <AiOutlineDelete size={18} />
+                            <IconTrash size={18} strokeWidth={1.25} />
                         </span>
                     </div>
                 )

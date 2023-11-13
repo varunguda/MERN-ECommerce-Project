@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import "./Dashboard.css";
-import { PiShirtFoldedLight } from 'react-icons/pi';
-import { HiOutlineUsers } from 'react-icons/hi2';
-import { BsBoxSeam } from 'react-icons/bs';
+import IconDevices2 from '@tabler/icons-react/dist/esm/icons/IconDevices2';
+import IconUsers from '@tabler/icons-react/dist/esm/icons/IconUsers';
+import IconPackages from '@tabler/icons-react/dist/esm/icons/IconPackages';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import { CategoryScale } from 'chart.js';
@@ -288,7 +288,7 @@ const Dashboard = () => {
                             </div>
 
                             <div className="icon">
-                                <PiShirtFoldedLight size={30} />
+                                <IconDevices2 size={30} strokeWidth={1.25} />
                             </div>
                         </Link>
 
@@ -301,7 +301,7 @@ const Dashboard = () => {
                             </div>
 
                             <div className="icon">
-                                <BsBoxSeam size={25} />
+                                <IconPackages size={30} strokeWidth={1} />
                             </div>
                         </Link>
 
@@ -314,7 +314,7 @@ const Dashboard = () => {
                             </div>
 
                             <div className="icon">
-                                <HiOutlineUsers size={25} strokeWidth={1.5} />
+                                <IconUsers size={30} strokeWidth={1.25} />
                             </div>
                         </Link>
                     </div>

@@ -6,8 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { SET_ORDER_KEYWORD, SET_ORDER_PAGE, SET_ORDER_STATUS, SET_ORDER_TIME } from '../../../State/constants/NavigationConstants';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
-import { TfiSearch } from 'react-icons/tfi';
-import { PiSlidersHorizontalLight } from 'react-icons/pi';
 import FilterContent from './FilterContent';
 import Metadata from '../../Metadata';
 import Paginate from '../../elements/Pagination/Paginate';
@@ -15,7 +13,9 @@ import { toast } from 'react-toastify';
 import { CANCEL_USER_ORDER_RESET } from '../../../State/constants/ProfileConstants';
 import { ModalContext } from '../../../Context/ModalContext';
 import OrderCard from './OrderCard';
-import { BiInfoCircle } from 'react-icons/bi';
+import IconInfo from '@tabler/icons-react/dist/esm/icons/IconInfoCircle';
+import IconSearch from '@tabler/icons-react/dist/esm/icons/IconSearch';
+import IconFilterSearch from '@tabler/icons-react/dist/esm/icons/IconFilterSearch';
 
 
 const orderParamsReducer = (state, action) => {
@@ -295,12 +295,12 @@ const Orders = () => {
                                 />
 
                                 <button className='search-icon' type="submit">
-                                    <TfiSearch size={13} />
+                                    <IconSearch size={15} />
                                 </button>
                             </form>
 
                             <button onClick={filterClickHandler} type='button' className="order-filter-btn">
-                                <PiSlidersHorizontalLight />
+                                <IconFilterSearch size={15} strokeWidth={1.25} />
                                 Filters
                             </button>
                         </div>
@@ -333,18 +333,19 @@ const Orders = () => {
                                                                     className="custom-tooltip light large"
                                                                     data-tooltip="You can cancel your order only when the items in your order are under processing. Once shipped, you cannot cancel your order."
                                                                 >
-                                                                    <BiInfoCircle className='icon' size={17} />
+                                                                    <IconInfo className='icon' size={17} strokeWidth={1.25} />
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    )}
+                                                    )
+                                                }
                                             />
                                         )
                                     })}
                                 </>
                             ) : (
                                 <>
-                                    <div className="content-not-found-containerer">
+                                    <div className="content-not-found-container">
                                         <img src="/images/order_not_found.svg" alt="order-not-found" />
 
                                         {totalOrdersCount === 0 ? (
