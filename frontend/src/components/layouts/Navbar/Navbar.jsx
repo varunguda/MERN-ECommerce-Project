@@ -25,7 +25,6 @@ const Navbar = () => {
     const location = useLocation();
 
     useEffect(() => {
-
         const checkScreenSize = () => {
             setIsSmallScreen(window.innerWidth < 960);
         }
@@ -35,7 +34,6 @@ const Navbar = () => {
         window.addEventListener("resize", checkScreenSize);
 
         return () => window.removeEventListener("resize", checkScreenSize);
-
     }, []);
 
     const showSidebar = () => setSidebar(!sidebar);
@@ -63,7 +61,6 @@ const Navbar = () => {
             </div>
 
             <div className="scrollable">
-
                 <nav className={sidebar ? "navbar-menu active" : "navbar-menu"}>
                     <div className='nav-elems'>
                         <IconCategory strokeWidth={1.25} size={20} />
@@ -75,7 +72,7 @@ const Navbar = () => {
                         <span>Portal</span>
                     </Link>
 
-                    <Link to={"/seller"} className='nav-elems link'>
+                    <Link to="/seller" className='nav-elems link'>
                         <IconShirt strokeWidth={1.5} size={17} />
                         <span>My Products</span>
                     </Link>
@@ -107,7 +104,6 @@ const Navbar = () => {
         ["/shipping", "/account"].every(elem => !location.pathname.includes(elem)) && (
             <>
                 <nav className='parent-navbar'>
-
                     {isSmallScreen ?
                         (<div className={`sidebar ${sidebar ? "active" : ""}`} >
                             {sidebar ? renderSidebarContent() : ""}
@@ -115,15 +111,14 @@ const Navbar = () => {
                     }
 
                     <nav className="navbar">
-
-                        <h1 className="navbar-logo">
+                        <div className="navbar-logo">
                             <Link to="/" className='link logo-new'>
                                 <span>
                                     ManyIN
                                 </span>
                                 <img src="/ManyIN_LOGO.png" alt="logo" />
                             </Link>
-                        </h1>
+                        </div>
 
                         <div className='menu-icon' onClick={showSidebar} >
                             {sidebar ?
@@ -162,10 +157,10 @@ const Navbar = () => {
 
                             <Link to={"/profile/list"} className='nav-elems link'>
                                 <IconHeart strokeWidth={1.5} size={17} />
-                                <Link to={"/profile/list"} className='nav-elem-desc link'>
+                                <div className='nav-elem-desc link'>
                                     <div className='nav-elem-small'>Order&nbsp;</div>
                                     <div>My List</div>
-                                </Link>
+                                </div>
                             </Link>
 
                             {(!loggedIn) ? (

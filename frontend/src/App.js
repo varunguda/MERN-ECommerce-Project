@@ -8,7 +8,6 @@ import ContentRoutes from './ContentRoutes.js';
 
 
 const App = () => {
-
     useEffect(() => {
         store.dispatch(loadUser());
         store.dispatch(getListItems());

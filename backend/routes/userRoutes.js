@@ -21,6 +21,7 @@ import {
     verifyMobileNumberOtp
 } from "../controllers/userControllers.js";
 import { toggleWishlistProduct } from "../controllers/productController.js";
+import { isSeller } from "../middleware/isSeller.js";
 
 
 const router = Router();
@@ -68,6 +69,22 @@ router.route("/me/address/:addressId?")
     .delete(isUser, deleteUserAddress)
     .post(isUser, addUserAddress)
     .get(isUser, getAllAddresses);
+
+
+// Seller
+
+router.route("/seller").get(isSeller, (req, res) => {
+    return res.json({
+        success: true,
+        seller: {
+            _id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            is_seller: req.user.is_seller,
+            is_admin: req.user.is_admin,
+        }
+    });
+});
 
 
 export default router;
