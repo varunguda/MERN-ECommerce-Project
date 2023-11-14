@@ -2,6 +2,7 @@ import express from 'express';
 import productRoute from './routes/productRoutes.js';
 import userRoute from './routes/userRoutes.js';
 import adminRoute from './routes/adminRoutes.js';
+import sellerRoute from './routes/sellerRoutes.js';
 import orderRoute from "./routes/orderRoutes.js"; 
 import paymentRoute from "./routes/paymentRoutes.js";
 import { ErrorHandler } from './utils/errorHandler.js';
@@ -15,7 +16,7 @@ import cors from "cors";
 
 config({
     path: "./config/config.env"
-})
+});
 
 
 const app = express();
@@ -41,6 +42,7 @@ app.use(cors({
 
 // Using routes
 app.use('/api/v1', adminRoute)
+app.use('/api/v1', sellerRoute)
 app.use('/api/v1', userRoute)
 app.use('/api/v1', productRoute)
 app.use("/api/v1", orderRoute)
