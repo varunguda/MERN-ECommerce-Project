@@ -37,10 +37,9 @@ const Admin = () => {
 
     useEffect(() => {
         if (location.pathname) {
-            window.scrollTo(0, 0)
+            window.scrollTo(0, 0);
         }
     }, [location.pathname]);
-
 
     useEffect(() => {
         if (section) {
@@ -51,15 +50,12 @@ const Admin = () => {
         }
     }, [section, subcategory]);
 
-
     useEffect(() => {
         if ((checkingAdmin === false) && !isAdmin) {
             navigate("/");
         }
-
         // eslint-disable-next-line
     }, [checkingAdmin]);
-
 
     const sidebarElemClickHandler = (e) => {
         let val;
@@ -169,7 +165,7 @@ const Admin = () => {
 
                         <div className="profile-content">
                             {(activeLocation === "") ? (
-                                <Dashboard />
+                                <Dashboard user={admin} />
                             ) : (activeLocation === "products/all") ? (
                                 <AllProducts />
                             ) : (activeLocation === "products/create") ? (

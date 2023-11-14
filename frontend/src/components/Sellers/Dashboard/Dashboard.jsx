@@ -1,27 +1,27 @@
 import React, { useEffect } from 'react';
 import "./Dashboard.css";
 import IconDevices2 from '@tabler/icons-react/dist/esm/icons/IconDevices2';
-import IconUsers from '@tabler/icons-react/dist/esm/icons/IconUsers';
 import IconPackages from '@tabler/icons-react/dist/esm/icons/IconPackages';
-import { Line, Doughnut, Bar } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import { CategoryScale } from 'chart.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
-import { getDataAnalysis } from '../../../State/action-creators/AdminActionCreators';
 import { Link } from 'react-router-dom';
+import { getSellerDataAnalysis } from '../../../State/action-creators/SellerActionCreators';
 Chart.register(CategoryScale);
 
 
-const Dashboard = () => {
+const Dashboard = ({user}) => {
 
-    const { fetchingAnalysis, fetchedAnalysis, analysis } = useSelector(state => state.adminAnalytics);
+    const { fetchingAnalysis, fetchedAnalysis, analysis } = useSelector(state => state.sellerAnalytics);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getDataAnalysis());
-    }, [dispatch]);
+        dispatch(getSellerDataAnalysis());
+        // eslint-disable-next-line
+    }, []);
 
     useEffect(() => {
         if (fetchingAnalysis) {
@@ -119,110 +119,6 @@ const Dashboard = () => {
         devicePixelRatio: 3
     };
 
-
-    const usersRegisteredData = {
-        labels: analysis && Object.keys(analysis.users_registered),
-        datasets: [
-            {
-                label: 'USERS REGISTERED',
-                data: analysis && Object.values(analysis.users_registered),
-                fill: false,
-                backgroundColor: '#0071dc',
-                borderColor: '#0071dc6f',
-            },
-            {
-                label: 'SELLERS REGISTERED',
-                data: analysis && Object.values(analysis.sellers_registered),
-                fill: false,
-                backgroundColor: '#ffc220',
-                borderColor: '#ffc2206f',
-            },
-        ],
-    };
-
-    const usersRegisteredOptions = {
-        scales: {
-            yAxes: [
-                {
-                    ticks: {
-                        beginAtZero: true,
-                    },
-                },
-            ],
-        },
-
-        plugins: {
-            tooltip: {
-                backgroundColor: 'white',
-                displayColors: false,
-                borderColor: 'gainsboro',
-                borderWidth: 1,
-                caretPadding: 10,
-                bodyColor: "#46474a",
-                titleColor: "#46474a",
-            },
-        },
-
-        devicePixelRatio: 3
-    };
-
-
-    const usersVsSellersData = {
-        labels: ['CUSTOMERS', 'SELLERS'],
-        datasets: [
-            {
-                data: [analysis && analysis.total_customers, analysis && analysis.total_sellers],
-                backgroundColor: ['#0071dc', '#ffc220'],
-                hoverOffset: 4
-            }
-        ]
-    };
-
-    const usersVsSellersOptions = {
-        plugins: {
-            tooltip: {
-                backgroundColor: 'white',
-                displayColors: false,
-                borderColor: 'gainsboro',
-                borderWidth: 1,
-                caretPadding: 10,
-                bodyColor: "#46474a",
-                titleColor: "#46474a",
-            },
-        },
-
-        devicePixelRatio: 2,
-    };
-
-
-    const activeVsDeletedUsersData = {
-        labels: ['ACTIVE USERS', 'DELETED USERS'],
-        datasets: [
-            {
-                data: [analysis && analysis.total_users_count, analysis && analysis.total_deleted_users_count],
-                backgroundColor: ['#0071dc', '#ffc220'],
-                hoverOffset: 4
-            }
-        ]
-    };
-
-    const activeVsDeletedUsersOptions = {
-        plugins: {
-            tooltip: {
-                backgroundColor: 'white',
-                displayColors: false,
-                borderColor: 'gainsboro',
-                borderWidth: 1,
-                caretPadding: 10,
-                bodyColor: "#46474a",
-                titleColor: "#46474a",
-            },
-        },
-
-        devicePixelRatio: 2,
-    };
-
-
     const barChartData = {
         labels: analysis && Object.keys(analysis.products_analysis),
         datasets: [
@@ -274,12 +170,12 @@ const Dashboard = () => {
 
             <div className="profile-page-content">
 
-                <div className="page-head">Dashboard</div>
+                <div className="page-head">{`${user && user.name}'s Seller Dashboard`}</div>
 
                 <div className="dashboard-container">
 
                     <div className="head-templates">
-                        <Link to="/admin/products/all" className='link template'>
+                        <Link to="/seller/products/all" className='link template'>
                             <div>
                                 Products
                                 <span className={analysis.total_products_count < 20 ? "red" : analysis.total_products_count > 200 ? "green" : "" }>
@@ -292,7 +188,7 @@ const Dashboard = () => {
                             </div>
                         </Link>
 
-                        <Link to="/admin/orders/all" className='link template'>
+                        <Link to="/seller/orders/all" className='link template'>
                             <div>
                                 Orders
                                 <span className={analysis.total_orders_count < 20 ? "red" : analysis.total_orders_count > 100 ? "green" : "" }>
@@ -304,43 +200,19 @@ const Dashboard = () => {
                                 <IconPackages size={30} strokeWidth={1} />
                             </div>
                         </Link>
-
-                        <Link to="/admin/customers" className='link template'>
-                            <div>
-                                Users
-                                <span className={analysis.total_users_count < 20 ? "red" : analysis.total_users_count > 200 ? "green" : "" }>
-                                    {analysis.total_users_count}
-                                </span>
-                            </div>
-
-                            <div className="icon">
-                                <IconUsers size={30} strokeWidth={1.25} />
-                            </div>
-                        </Link>
                     </div>
 
                     <div className="graphs-charts-container">
                         <div className="graph">
                             <Line data={incomeGeneratedData} options={incomeGeneratedOptions} />
                         </div>
+
                         <div className="graph">
                             <Line data={ordersPlacedData} options={ordersPlacedOptions} />
-                        </div>
-                        <div className="graph">
-                            <Line data={usersRegisteredData} options={usersRegisteredOptions} />
                         </div>
 
                         <div className="graph">
                             <Bar data={barChartData} options={barChartOptions} />
-                        </div>
-
-                        <div className="chart-grid">
-                            <div className="chart">
-                                <Doughnut data={usersVsSellersData} options={usersVsSellersOptions} />
-                            </div>
-                            <div className="chart">
-                                <Doughnut data={activeVsDeletedUsersData} options={activeVsDeletedUsersOptions} />
-                            </div>
                         </div>
                     </div>
 
