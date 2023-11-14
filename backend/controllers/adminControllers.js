@@ -162,7 +162,7 @@ export const setSellerMerit = [
 
 
 
-export const dataAnalysis = catchAsync(async (req, res, next) => {
+export const dataAnalysis = catchAsync(async (req, res) => {
 
     // const products = await Product.find({});
     // const totalProductsCount = await Product.countDocuments();

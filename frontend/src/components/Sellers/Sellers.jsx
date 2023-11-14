@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import IconPackages from '@tabler/icons-react/dist/esm/icons/IconPackages';
 import IconChartLine from '@tabler/icons-react/dist/esm/icons/IconChartLine';
-import IconUsersGroup from '@tabler/icons-react/dist/esm/icons/IconUsersGroup';
-import IconUsers from '@tabler/icons-react/dist/esm/icons/IconUsers';
 import IconDevices from '@tabler/icons-react/dist/esm/icons/IconDevices';
 import IconPlus from '@tabler/icons-react/dist/esm/icons/IconPlus';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Loader from '../layouts/Loader/Loader';
 import Metadata from '../Metadata';
-import Dashboard from './Dashboard/Dashboard';
 import { checkSeller } from '../../State/action-creators/SellerActionCreators';
+import Dashboard from './Dashboard/Dashboard';
+import CreateProduct from '../Admin/Product/CreateProduct';
 
 
 const Sellers = () => {
@@ -100,11 +99,11 @@ const Sellers = () => {
                                 <div className="sidebar-elem-head">Products</div>
                                 <div
                                     onClick={sidebarElemClickHandler}
-                                    className={`sidebar-elem ${(activeLocation === "products/all") ? "active" : ""}`}
-                                    link-identifier="products/all"
+                                    className={`sidebar-elem ${(activeLocation === "products/my") ? "active" : ""}`}
+                                    link-identifier="products/my"
                                 >
                                     <IconDevices className='sidebar-icon' size={17} strokeWidth={1.25} />
-                                    All Products
+                                    My Products
                                 </div>
 
                                 <div
@@ -122,48 +121,20 @@ const Sellers = () => {
 
                                 <div
                                     onClick={sidebarElemClickHandler}
-                                    className={`sidebar-elem ${(activeLocation === "orders/all") ? "active" : ""}`}
-                                    link-identifier="orders/all"
+                                    className={`sidebar-elem ${(activeLocation === "orders/my") ? "active" : ""}`}
+                                    link-identifier="orders/my"
                                 >
                                     <IconPackages className='sidebar-icon' size={17} strokeWidth={1} />
-                                    All Orders
+                                    Product Orders
                                 </div>
                             </div>
-
-                            <div className="sidebar-elem-section">
-                                <div className="sidebar-elem-head">Users</div>
-
-                                <div
-                                    onClick={sidebarElemClickHandler}
-                                    className={`sidebar-elem ${(activeLocation === "customers") ? "active" : ""}`}
-                                    link-identifier="customers"
-                                >
-                                    <IconUsersGroup className='sidebar-icon' size={17} strokeWidth={1.25} />
-                                    ManyIN Customers
-                                </div>
-                            </div>
-
-
-                            <div className="sidebar-elem-section">
-                                <div className="sidebar-elem-head">Sellers</div>
-
-                                <div
-                                    onClick={sidebarElemClickHandler}
-                                    className={`sidebar-elem ${(activeLocation === "sellers") ? "active" : ""}`}
-                                    link-identifier="sellers"
-                                >
-                                    <IconUsers className='sidebar-icon' size={17} strokeWidth={1.25} />
-                                    ManyIN Sellers
-                                </div>
-
-                            </div>
-
                         </div>
-
 
                         <div className="profile-content">
                             {(activeLocation === "") ? (
-                                <Dashboard />
+                                <Dashboard user={seller} />
+                            ) : (activeLocation === "products/create") ? (
+                                <CreateProduct />
                             ) : (
                                 ""
                                 // <Dashboard /> 

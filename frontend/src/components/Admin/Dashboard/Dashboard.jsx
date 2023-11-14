@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 Chart.register(CategoryScale);
 
 
-const Dashboard = () => {
+const Dashboard = ({ user }) => {
 
     const { fetchingAnalysis, fetchedAnalysis, analysis } = useSelector(state => state.adminAnalytics);
 
@@ -274,7 +274,7 @@ const Dashboard = () => {
 
             <div className="profile-page-content">
 
-                <div className="page-head">Dashboard</div>
+                <div className="page-head">{`${user && user.name}'s Admin Dashboard`}</div>
 
                 <div className="dashboard-container">
 

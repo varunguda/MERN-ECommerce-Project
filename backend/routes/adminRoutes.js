@@ -13,9 +13,10 @@ import {
 
 const router = Router();
 
+
 // ADMIN ROUTES
 
-router.route("/admin").get(isAdmin, (req, res, next) => {
+router.route("/admin").get(isAdmin, (req, res) => {
     return res.json({
         success: true,
         admin: {
@@ -42,4 +43,4 @@ router.route("/admin/user/:id")
 router.route("/admin/seller/merit/:id").put(isAdmin, setSellerMerit);
 
 
-export default router
+export default router;
