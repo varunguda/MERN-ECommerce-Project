@@ -9,8 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { Link } from 'react-router-dom';
 import { getSellerDataAnalysis } from '../../../State/action-creators/SellerActionCreators';
-Chart.register(CategoryScale);
 
+Chart.register(CategoryScale);
 
 const Dashboard = ({user}) => {
 
@@ -165,7 +165,6 @@ const Dashboard = ({user}) => {
 
 
     return (
-
         (fetchedAnalysis && analysis && Object.keys(analysis).length > 0) && (
 
             <div className="profile-page-content">
@@ -175,27 +174,25 @@ const Dashboard = ({user}) => {
                 <div className="dashboard-container">
 
                     <div className="head-templates">
-                        <Link to="/seller/products/all" className='link template'>
+                        <Link to="/seller/products/my" className='link template'>
                             <div>
                                 Products
                                 <span className={analysis.total_products_count < 20 ? "red" : analysis.total_products_count > 200 ? "green" : "" }>
                                     {analysis.total_products_count}
                                 </span>
                             </div>
-
                             <div className="icon">
                                 <IconDevices2 size={30} strokeWidth={1.25} />
                             </div>
                         </Link>
 
-                        <Link to="/seller/orders/all" className='link template'>
+                        <Link to="/seller/orders/my" className='link template'>
                             <div>
                                 Orders
                                 <span className={analysis.total_orders_count < 20 ? "red" : analysis.total_orders_count > 100 ? "green" : "" }>
                                     {analysis.total_orders_count}
                                 </span>
                             </div>
-
                             <div className="icon">
                                 <IconPackages size={30} strokeWidth={1} />
                             </div>

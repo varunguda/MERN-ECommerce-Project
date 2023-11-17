@@ -74,7 +74,7 @@ const Navbar = () => {
 
                     <Link to="/seller" className='nav-elems link'>
                         <IconShirt strokeWidth={1.5} size={17} />
-                        <span>My Products</span>
+                        <span>My Portal</span>
                     </Link>
 
                     <div className='nav-elems'>
@@ -147,7 +147,7 @@ const Navbar = () => {
                                     {(user && user.is_seller) && (
                                         <Link to="/seller" className='nav-elems link'>
                                             <IconShirt strokeWidth={1.5} size={17} />
-                                            <span>My Products</span>
+                                            <span>My Portal</span>
                                         </Link>
                                     )}
                                 </>
@@ -183,7 +183,7 @@ const Navbar = () => {
                         </nav>
 
                         <Link to="/cart" className='nav-elems cart-icon link'>
-                            <IconCart strokeWidth={1.5} size={25} />
+                            <IconCart strokeWidth={1.5} size={28} />
                             <span className='cart-items'>
                                 {cartItems.reduce((count, item) => { return count += item.quantity }, 0)}
                             </span>

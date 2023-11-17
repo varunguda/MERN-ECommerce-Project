@@ -1,24 +1,23 @@
-
-.update-order-status-container{
+.update-order-status-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    .product{
+    .product {
         width: 200px;
         overflow: hidden;
     }
 }
 
 
-.update-order-status-container .order-status{
+.update-order-status-container .order-status {
     margin-bottom: 10px;
 
-    > span{
+    >span {
         font-weight: 400;
     }
 
-    > select{
+    >select {
         font-size: var(--s-font-size) !important;
         width: 160px !important;
         min-width: 120px !important;

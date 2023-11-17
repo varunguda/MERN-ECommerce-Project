@@ -6,16 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { SET_ORDER_KEYWORD, SET_ORDER_PAGE, SET_ORDER_STATUS, SET_ORDER_TIME } from '../../../State/constants/NavigationConstants';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
-import FilterContent from './FilterContent';
 import Metadata from '../../Metadata';
 import Paginate from '../../elements/Pagination/Paginate';
 import { toast } from 'react-toastify';
 import { CANCEL_USER_ORDER_RESET } from '../../../State/constants/ProfileConstants';
 import { ModalContext } from '../../../Context/ModalContext';
-import OrderCard from './OrderCard';
 import IconInfo from '@tabler/icons-react/dist/esm/icons/IconInfoCircle';
 import IconSearch from '@tabler/icons-react/dist/esm/icons/IconSearch';
-import IconFilterSearch from '@tabler/icons-react/dist/esm/icons/IconFilterSearch';
+import OrderFilterButton from '../../elements/Buttons/OrderFilterButton';
+import OrderCard from '../../elements/Cards/OrderCard';
 
 
 const orderParamsReducer = (state, action) => {
@@ -229,13 +228,6 @@ const Orders = () => {
         dispatch({ type: SET_ORDER_TIME, payload: val });
     }
 
-    const filterClickHandler = () => {
-        openModal(
-            "Filter Orders",
-            <FilterContent state={state} setStatus={(val) => setStatus(val)} setTime={(val) => setTime(val)} setNavigateUrl={setNavigateUrl} />
-        );
-    }
-
 
     const setPage = (page) => {
         dispatch({ type: SET_ORDER_PAGE, payload: page });
@@ -299,10 +291,12 @@ const Orders = () => {
                                 </button>
                             </form>
 
-                            <button onClick={filterClickHandler} type='button' className="order-filter-btn">
-                                <IconFilterSearch size={15} strokeWidth={1.25} />
-                                Filters
-                            </button>
+                            <OrderFilterButton 
+                                state={state}
+                                setStatus={(val) => setStatus(val)} 
+                                setTime={(val) => setTime(val)} 
+                                setNavigateUrl={setNavigateUrl}
+                            />
                         </div>
 
 

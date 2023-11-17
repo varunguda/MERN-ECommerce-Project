@@ -145,24 +145,24 @@ export const getAllOrdersReducer = (state = { allOrders: [] }, action) => {
         
         case ALL_ORDERS_REQUEST:{
             return({
-                gettingAllOrders: true,
+                gettingOrders: true,
             })
         }
 
         case ALL_ORDERS_SUCCESS:{
             return ({
-                gettingAllOrders: false,
-                allOrders: action.payload.orders,
-                allOrdersCount: action.payload.ordersCount,
+                gettingOrders: false,
+                orders: action.payload.orders,
+                ordersCount: action.payload.ordersCount,
                 totalOrdersCount: action.payload.totalOrdersCount,
             })
         }
 
         case ALL_ORDERS_FAILURE:{
             return ({
-                gettingAllOrders: false,
-                allOrders: [],
-                allOrdersCount: 0,
+                gettingOrders: false,
+                orders: [],
+                ordersCount: 0,
                 totalOrdersCount: 0,
             })
         }

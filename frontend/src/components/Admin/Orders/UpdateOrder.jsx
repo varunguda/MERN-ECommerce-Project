@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux';
-import { updateAnyOrderStatus } from '../../../State/action-creators/AdminActionCreators';
+import React, { useEffect, useState } from 'react';
+import "./UpdateOrder.css";
+import { allStatus } from '../../Data';
 
-const UpdateOrder = ({ order, allStatus }) => {
+
+const UpdateOrder = ({ order, updateOrder, noCancel }) => {
 
     const [orderStatus, setOrderStatus] = useState([]);
-
-    const dispatch = useDispatch();
 
     useEffect(() => {
         if (order && Object.keys(order).length > 0 && order.order_items) {
@@ -16,9 +15,10 @@ const UpdateOrder = ({ order, allStatus }) => {
         }
     }, [order]);
 
+
     const saveOrderStatus = (product, product_status, order_id) => {
-        if(!orderStatus.find(elem => (elem.product === product) && (elem.status === product_status))){
-            dispatch(updateAnyOrderStatus(order_id, product, orderStatus.find(elem => elem.product === product).status));
+        if (!orderStatus.find(elem => (elem.product === product) && (elem.status === product_status))) {
+            updateOrder(order_id, product, orderStatus.find(elem => elem.product === product).status);
         }
     }
 
@@ -31,9 +31,12 @@ const UpdateOrder = ({ order, allStatus }) => {
         }));
     }
 
+
     return (
-        (orderStatus.length > 0) && (
+        (orderStatus && orderStatus.length > 0) && (
+
             order.order_items.map((item, index) => {
+
                 return (
                     <div key={index} className="update-order-status-container">
                         <div className="product">
@@ -50,9 +53,12 @@ const UpdateOrder = ({ order, allStatus }) => {
                             >
                                 {Object.keys(allStatus).slice(1).map((status, index) => {
                                     return (
-                                        <option key={index} value={allStatus[status]}>
-                                            {allStatus[status]}
-                                        </option>
+                                        (noCancel && allStatus[status] !== "Cancelled") && (
+                                            <option key={index} value={allStatus[status]}>
+                                                {allStatus[status]}
+                                            </option>
+
+                                        )
                                     )
                                 })}
                             </select>

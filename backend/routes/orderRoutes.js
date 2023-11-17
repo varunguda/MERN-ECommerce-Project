@@ -43,11 +43,12 @@ router.route("/orders/all/:id").delete(isAdmin, deleteAnyOrder);
 
 
 // Seller
-router.route("/myproducts/order/status").put(isSeller, updateMyProductOrderStatus);
+router.route("/myproducts/order")
+    .put(isSeller, updateMyProductOrderStatus)
+    .delete(isSeller, cancelOrderOfMyProduct);
 
-router.route("/myproducts/orders/cancel/all/:product").delete(isSeller, cancelAllOrderOfMyProduct);
+router.route("/myproducts/orders/:product").delete(isSeller, cancelAllOrderOfMyProduct);
 
-router.route("/myproducts/orders/cancel").delete(isSeller, cancelOrderOfMyProduct);
 
 
 // Admin & Seller

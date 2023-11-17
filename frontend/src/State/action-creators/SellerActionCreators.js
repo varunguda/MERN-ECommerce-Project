@@ -1,5 +1,12 @@
 import axios from "axios";
-import { SELLER_CHECK_FAILURE, SELLER_CHECK_REQUEST, SELLER_CHECK_SUCCESS, SELLER_DATA_ANALYSIS_FAILURE, SELLER_DATA_ANALYSIS_REQUEST, SELLER_DATA_ANALYSIS_SUCCESS } from "../constants/SellerConstants";
+import { 
+    SELLER_CHECK_FAILURE,
+    SELLER_CHECK_REQUEST, 
+    SELLER_CHECK_SUCCESS, 
+    SELLER_DATA_ANALYSIS_FAILURE, 
+    SELLER_DATA_ANALYSIS_REQUEST,
+    SELLER_DATA_ANALYSIS_SUCCESS 
+} from "../constants/SellerConstants";
 
 
 export const checkSeller = () => async(dispatch) => {

@@ -81,7 +81,6 @@ const Admin = () => {
                         <Metadata title={`Admin Portal - ManyIN`} />
 
                         <div className="profile-sidebar">
-
                             <div className="main-elem">
                                 <div className="main-elem-head">Hi, {admin && admin.name}</div>
                                 <div className="main-elem-caption">Welcome to Admin's Portal</div>
@@ -157,9 +156,7 @@ const Admin = () => {
                                     <IconUsers className='sidebar-icon' size={17} strokeWidth={1.25} />
                                     ManyIN Sellers
                                 </div>
-
                             </div>
-
                         </div>
 
 
@@ -178,7 +175,6 @@ const Admin = () => {
                                 <AllSellers />
                             ) : (
                                 ""
-                                // <Dashboard /> 
                             )}
                         </div>
                     </>

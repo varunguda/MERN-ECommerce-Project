@@ -1,46 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import "./Product.css";
-import Table from '../../elements/Table/Table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getProducts } from '../../../State/action-creators/ProductActionCreators';
+import { useQuery } from "react-query";
+import { fetchMyProducts } from '../fetchers';
+import { useDispatch } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
-import { setAvailability, setPage } from '../../../State/action-creators/NavigationActionCreators';
+import { toast } from 'react-toastify';
+import Table from '../../elements/Table/Table';
 import IconTrash from '@tabler/icons-react/dist/esm/icons/IconTrash';
 import IconEdit from '@tabler/icons-react/dist/esm/icons/IconEdit';
 import IconExternalLink from '@tabler/icons-react/dist/esm/icons/IconExternalLink';
 
 
-const AllProducts = () => {
-
-    const { loading, products, productCount } = useSelector(state => state.products);
-
+const MyProducts = () => {
+    
     const [ pageNum, setPageNum ] = useState(1);
-
+    const { data, error, isLoading } = useQuery(["my products", pageNum], fetchMyProducts);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        return () => {
-            dispatch({ type: "RESET_FACETS" });
-        }
-        // eslint-disable-next-line 
-    }, []);
-
-    useEffect(() => {
-        dispatch(setPage(pageNum));
-        dispatch(setAvailability("oos"));
-        dispatch(getProducts());
-        // eslint-disable-next-line 
-    }, [pageNum]);
-
-    useEffect(() => {
-        if(loading){
+        if(isLoading){
             dispatch(loaderSpin(true));
-        }
-        else{
+        } else {
             dispatch(loaderSpin(false));
         }
         // eslint-disable-next-line
-    }, [loading]);
+    }, [isLoading]);
+
+    useEffect(() => {
+        toast.success(error, {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [error]);
+    
 
     const columns = [
         {
@@ -104,15 +101,15 @@ const AllProducts = () => {
 
     return (
         <div className="profile-page-content">
-            <div className="page-head">Products</div>
-            {(loading === false) && (
+            <div className="page-head">My Products</div>
+            {(isLoading === false && !!data) && (
                 <div className='all-products-container'>
                     <Table 
-                        rows={products} 
+                        rows={data.products} 
                         page={pageNum} 
                         getPage={setPageNum} 
-                        productCount={productCount} 
-                        columns={columns} 
+                        productCount={data.product_count}
+                        columns={columns}
                         placeholderRows={placeholderRows}
                     />
                 </div>
@@ -121,7 +118,8 @@ const AllProducts = () => {
     )
 }
 
-export default AllProducts;
+export default MyProducts;
+
 
 
 const placeholderRows = [
@@ -186,3 +184,4 @@ const placeholderRows = [
         final_price: 11.99,
     },
 ];
+

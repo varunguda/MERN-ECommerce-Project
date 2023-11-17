@@ -20,19 +20,7 @@ router.route("/seller").get(isSeller, (req, res) => {
     });
 });
 
-
 router.route("/seller/analysis").get(isSeller, sellerDataAnalysis);
-
-// router.route("/admin/users/customers").get( isAdmin, getAllCustomers);
-
-// router.route("/admin/users/sellers").get( isAdmin, getAllSellers);
-
-// router.route("/admin/user/:id")
-//     .get(isAdmin, getAnyUserDetails)
-//     .put(isAdmin, updateUserRole)
-//     .delete(isAdmin, deleteAnyUser)
-
-// router.route("/admin/seller/merit/:id").put(isAdmin, setSellerMerit);
 
 
 export default router;

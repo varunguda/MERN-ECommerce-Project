@@ -332,24 +332,25 @@ export const updateAnyOrderStatus = catchAsync(async (req, res, next) => {
 
 export const getMyProductsOrders = catchAsync(async (req, res, next) => {
 
-    // Getting the orders including sellers id in them
-    const orders = await Orders.find({ "order_items.seller": { $in: req.user._id } });
+    const totalOrdersCount = await Orders.find({ "order_items.seller": { $in: req.user._id } }).countDocuments();
+    const apiFeatures = new ApiFeatures(Orders.find({ "order_items.seller": { $in: req.user._id } }), req.query).searchOrders().filterOrders().sortByCreate();
+    const orders = await apiFeatures.items;
 
-    // Showing seller his Product that are bought by different buyers, instead of revealing the other orders of buyers to the seller which are placed along with seller's Product.
-    const orderDetails = orders.map(order => {
-        const Product = order.order_items.filter(item => item.seller.toString() === req.user._id.toString());
-        return {
-            _id: order._id,
-            user: order.user,
-            shipping_info: order.shipping_info,
-            product: Product,
-        }
+    const ordersCount = orders.length;
+
+    let updatedOrders = orders.map(order => {
+        order.order_items = order.order_items.filter(item => item.seller.toString() === req.user._id.toString());
+        return order;
     });
+
+    updatedOrders = pagination(updatedOrders, 6, req.query.page);
 
     return res.json({
         success: true,
-        orders: orderDetails
-    })
+        orders: updatedOrders,
+        ordersCount,
+        totalOrdersCount,
+    });
 })
 
 
@@ -357,8 +358,8 @@ export const getMyProductsOrders = catchAsync(async (req, res, next) => {
 export const cancelOrderOfMyProduct = [
 
     body("justification")
-        .isLength({ min: 10, max: 300 })
-        .withMessage("The Justification provided must contain atleast 10 characters and atmost 300 characters!"),
+        .isLength({ min: 10, max: 400 })
+        .withMessage("The Justification provided must contain atleast 10 characters and atmost 400 characters!"),
 
     catchAsync(async (req, res, next) => {
 
@@ -367,7 +368,7 @@ export const cancelOrderOfMyProduct = [
             return next(new ErrorHandler(errors.array().map((err) => err.msg).join(","), 400))
         }
 
-        const { order_id, product } = req.query;
+        const { order_id } = req.query;
         const { justification } = req.body;
 
         const order = await Orders.findById(order_id);
@@ -380,9 +381,15 @@ export const cancelOrderOfMyProduct = [
             return next(new ErrorHandler("User not found!", 404))
         }
 
+        if(order.order_items.every(item => (item.product_status === "Out for delivery" || item.product_status === "Delivered" || item.product_status === "Cancelled")
+        )){
+            return next(new ErrorHandler("Order cannot be cancelled!"));
+        }
+
         order.order_items = order.order_items.map(item => {
-            if (item.product.toString() === product.toString()) {
-                return item.product_status = "Cancelled";
+            if ((item.seller.toString() === req.user._id.toString()) && (item.product_status !== "Out for delivery") && (item.product_status !== "Delivered") && (item.product_status !== "Cancelled")
+            ) {
+                item.product_status = "Cancelled";
             }
             return item;
         });
@@ -427,7 +434,7 @@ export const cancelOrderOfMyProduct = [
 
         return res.json({
             success: true,
-            message: `Successfully cancelled the order placed by ${user.name}!`
+            message: `Successfully cancelled the order!`
         })
 
     })
@@ -519,13 +526,29 @@ export const updateMyProductOrderStatus = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Order not found!", 404));
     }
 
+    if (status === "Cancelled") {
+        return next(new ErrorHandler("Can't cancel the order!", 400));
+    }
+
+    let error = false;
     order.order_items = order.order_items.map(item => {
         if (item.product.toString() === product.toString()) {
-            item.product_status = status;
+            if(item.product_status !== "Cancelled"){
+                item.product_status = status;
+            }
+            else{
+                error = true;
+            }
             return item;
         }
-        return item;
+        else {
+            return item;
+        }
     });
+
+    if(error){
+        return next(new ErrorHandler("Cannot update order status since the order has been cancelled!"));
+    }
 
     await order.save({ validateBeforeSave: false });
 
