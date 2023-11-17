@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useReducer, useRef, useState } from 'react';
-import "./AllOrders.css";
 import "../../Profile/Orders/Orders.css";
 import { bindActionCreators } from 'redux';
 import { adminActionCreators } from '../../../State/action-creators';
@@ -8,17 +7,16 @@ import { useLocation, useNavigate } from "react-router";
 import { SET_ORDER_KEYWORD, SET_ORDER_PAGE, SET_ORDER_STATUS, SET_ORDER_TIME } from '../../../State/constants/NavigationConstants';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import IconSearch from '@tabler/icons-react/dist/esm/icons/IconSearch';
-import IconFilterSearch from '@tabler/icons-react/dist/esm/icons/IconFilterSearch';
-import FilterContent from '../../Profile/Orders/FilterContent';
 import Metadata from '../../Metadata';
 import Paginate from '../../elements/Pagination/Paginate';
 import { toast } from 'react-toastify';
 import { DELETE_UPDATE_ANY_ORDER_RESET } from '../../../State/constants/AdminConstants';
 import { ModalContext } from '../../../Context/ModalContext';
-import OrderCard from '../../Profile/Orders/OrderCard';
 import IconInfoCircle from '@tabler/icons-react/dist/esm/icons/IconInfoCircle';
 import Accordion from '../../elements/Accordians/Accordion';
 import UpdateOrder from './UpdateOrder';
+import OrderFilterButton from '../../elements/Buttons/OrderFilterButton';
+import OrderCard from '../../elements/Cards/OrderCard';
 
 
 const orderParamsReducer = (state, action) => {
@@ -60,14 +58,14 @@ const AllOrders = () => {
 
     const [state, dispatch] = useReducer(orderParamsReducer, initialState);
 
-    const { gettingAllOrders, allOrders, allOrdersCount, totalOrdersCount } = useSelector(state => state.allOrders);
+    const { gettingOrders, orders, ordersCount, totalOrdersCount } = useSelector(state => state.allOrders);
     const { deletingOrUpdatingOrder, deletedOrUpdatedOrder, deletedOrUpdatedMessage, deletedOrUpdatedError } = useSelector(state => state.deleteOrUpdateAnyOrder);
 
     const { openModal, closeModal } = useContext(ModalContext);
 
     const ordersDispatch = useDispatch();
 
-    const { getAllOrders, deleteAnyOrder } = bindActionCreators(adminActionCreators, ordersDispatch);
+    const { getAllOrders, deleteAnyOrder, updateAnyOrderStatus } = bindActionCreators(adminActionCreators, ordersDispatch);
 
     const [searchText, setSearchText] = useState("");
     const [stateUpdated, setStateUpdated] = useState(false);
@@ -85,7 +83,6 @@ const AllOrders = () => {
     };
 
     useEffect(() => {
-
         const queryParams = new URLSearchParams(location.search);
         const queryKeyword = queryParams.get("keyword");
         const queryStatus = queryParams.get("status");
@@ -119,7 +116,6 @@ const AllOrders = () => {
         // eslint-disable-next-line
     }, [location.search]);
 
-
     useEffect(() => {
         if (stateUpdated) {
             getAllOrders(state.keyword, state.status, state.time, state.page);
@@ -128,24 +124,21 @@ const AllOrders = () => {
         // eslint-disable-next-line
     }, [state, stateUpdated]);
 
-
     useEffect(() => {
-        if (gettingAllOrders || deletingOrUpdatingOrder) {
+        if (gettingOrders || deletingOrUpdatingOrder) {
             ordersDispatch(loaderSpin(true));
         } else {
             ordersDispatch(loaderSpin(false));
         }
         // eslint-disable-next-line
-    }, [gettingAllOrders, deletingOrUpdatingOrder]);
-
+    }, [gettingOrders, deletingOrUpdatingOrder]);
 
     useEffect(() => {
-        if (allOrdersCount < 6) {
+        if (ordersCount < 6) {
             dispatch({ type: SET_ORDER_PAGE, payload: 0 });
             setNavigateUrl(true);
         }
-    }, [allOrdersCount]);
-
+    }, [ordersCount]);
 
     useEffect(() => {
         toast.error(deletedOrUpdatedError, {
@@ -160,7 +153,6 @@ const AllOrders = () => {
         });
     }, [deletedOrUpdatedError]);
 
-
     useEffect(() => {
         toast.success(deletedOrUpdatedMessage, {
             position: "bottom-center",
@@ -174,7 +166,6 @@ const AllOrders = () => {
         });
     }, [deletedOrUpdatedMessage]);
 
-
     useEffect(() => {
         if (deletedOrUpdatedOrder) {
             ordersDispatch({ type: DELETE_UPDATE_ANY_ORDER_RESET });
@@ -183,9 +174,7 @@ const AllOrders = () => {
         // eslint-disable-next-line
     }, [deletedOrUpdatedOrder]);
 
-
     useEffect(() => {
-
         const queryParams = [
             state.keyword && `keyword=${encodeURIComponent(state.keyword)}`,
             state.status && `status=${encodeURIComponent(state.status)}`,
@@ -197,10 +186,8 @@ const AllOrders = () => {
             navigate(`${queryParams && ('?' + queryParams)}`);
             setNavigateUrl(false);
         }
-        
         // eslint-disable-next-line
     }, [navigateUrl]);
-
 
     const searchOrdersHandler = (e) => {
         e.preventDefault();
@@ -222,25 +209,12 @@ const AllOrders = () => {
         }
     }
 
-
     const setStatus = (val) => {
         dispatch({ type: SET_ORDER_STATUS, payload: val });
     }
 
     const setTime = (val) => {
         dispatch({ type: SET_ORDER_TIME, payload: val });
-    }
-
-    const filterClickHandler = () => {
-        openModal(
-            "Filter Orders",
-            <FilterContent
-                state={state}
-                setStatus={(val) => setStatus(val)}
-                setTime={(val) => setTime(val)}
-                setNavigateUrl={setNavigateUrl}
-            />
-        );
     }
 
     const setPage = (page) => {
@@ -252,7 +226,6 @@ const AllOrders = () => {
         deleteAnyOrder(id);
         closeModal();
     }
-
 
     const deleteClickHandler = (id) => {
         openModal(
@@ -274,7 +247,7 @@ const AllOrders = () => {
 
             <Metadata title={"All Orders - ManyIN"} />
 
-            {!gettingAllOrders && (
+            {!gettingOrders && (
                 <>
                     <div className="page-head">
                         {allStatus[state.status ? state.status : "all"]} orders
@@ -286,7 +259,6 @@ const AllOrders = () => {
                         <div className="orders-search-filters">
 
                             <form onSubmit={searchOrdersHandler} className='secondary-search-container' >
-
                                 <input
                                     className='secondary-search'
                                     type="text"
@@ -298,22 +270,23 @@ const AllOrders = () => {
                                     value={searchText}
                                     ref={inputRef}
                                 />
-
                                 <button className='search-icon' type="submit">
                                     <IconSearch size={15} />
                                 </button>
                             </form>
 
-                            <button onClick={filterClickHandler} type='button' className="order-filter-btn">
-                                <IconFilterSearch size={15} strokeWidth={1.25} />
-                                Filters
-                            </button>
+                            <OrderFilterButton
+                                state={state}
+                                setStatus={(val) => setStatus(val)}
+                                setTime={(val) => setTime(val)}
+                                setNavigateUrl={setNavigateUrl}
+                            />
                         </div>
 
 
                         <div className="orders-content">
-                            {(allOrders.length > 0) ? (
-                                allOrders.map((order, index) => {
+                            {(orders && orders.length > 0) ? (
+                                orders.map((order, index) => {
                                     return (
                                         <OrderCard
                                             key={index}
@@ -344,9 +317,9 @@ const AllOrders = () => {
                                                         close={true}
                                                         noBorder={true}
                                                         content={
-                                                            <UpdateOrder 
-                                                                order={order} 
-                                                                allStatus={allStatus} 
+                                                            <UpdateOrder
+                                                                order={order}
+                                                                updateOrder={updateAnyOrderStatus}
                                                             />
                                                         }
                                                     />
@@ -359,7 +332,7 @@ const AllOrders = () => {
                                 <>
                                     <div className="content-not-found-container">
                                         <img src="/images/order_not_found.svg" alt="order-not-found" />
-                                        
+
                                         {totalOrdersCount === 0 ? (
                                             <>
                                                 <p className="main">
@@ -384,8 +357,8 @@ const AllOrders = () => {
                             )}
                         </div>
 
-                        {(allOrdersCount && allOrdersCount > 6) ? (
-                            <Paginate onChange={setPage} total={allOrdersCount} pageSize={6} current={state.page ? state.page : 1} />
+                        {(ordersCount && ordersCount > 6) ? (
+                            <Paginate onChange={setPage} total={ordersCount} pageSize={6} current={state.page ? state.page : 1} />
                         ) : ""}
                     </div>
                 </>
@@ -395,6 +368,7 @@ const AllOrders = () => {
 }
 
 export default AllOrders;
+
 
 const allStatus = {
     "all": "All",

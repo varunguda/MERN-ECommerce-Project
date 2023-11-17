@@ -1,14 +1,12 @@
 import React from 'react';
-import "./Orders.css";
-import Icons from './Icons';
-import { formatDate } from './OrderUtils';
+import Icons from '../../Profile/Orders/Icons';
+import { formatDate } from '../../Profile/Orders/OrderUtils';
 import { Link } from "react-router-dom";
 
 
 const OrderCard = ({ order, extraSection }) => {
     return (
         <div className='order-cards'>
-
             {order.order_items.map((item, ind) => {
                 return (
                     <div key={ind} className="order-item">

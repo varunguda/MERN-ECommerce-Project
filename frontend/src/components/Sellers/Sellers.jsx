@@ -10,6 +10,8 @@ import Metadata from '../Metadata';
 import { checkSeller } from '../../State/action-creators/SellerActionCreators';
 import Dashboard from './Dashboard/Dashboard';
 import CreateProduct from '../Admin/Product/CreateProduct';
+import MyProducts from './Product/MyProducts';
+import ProductOrders from './Order/ProductOrders';
 
 
 const Sellers = () => {
@@ -35,7 +37,6 @@ const Sellers = () => {
         }
     }, [location.pathname]);
 
-
     useEffect(() => {
         if (section) {
             setActiveLocation(section + (subcategory ? "/" + subcategory : ""));
@@ -45,7 +46,6 @@ const Sellers = () => {
         }
     }, [section, subcategory]);
 
-
     useEffect(() => {
         if ((checkingSeller === false) && !isSeller) {
             navigate("/");
@@ -53,7 +53,7 @@ const Sellers = () => {
         // eslint-disable-next-line
     }, [checkingSeller]);
 
-
+    
     const sidebarElemClickHandler = (e) => {
         let val;
         if (e.target.attributes["link-identifier"]) {
@@ -91,7 +91,7 @@ const Sellers = () => {
                                     link-identifier=""
                                 >
                                     <IconChartLine className='sidebar-icon' size={17} strokeWidth={1.25} />
-                                    Dashboard
+                                    Seller Dashboard
                                 </div>
                             </div>
 
@@ -121,8 +121,8 @@ const Sellers = () => {
 
                                 <div
                                     onClick={sidebarElemClickHandler}
-                                    className={`sidebar-elem ${(activeLocation === "orders/my") ? "active" : ""}`}
-                                    link-identifier="orders/my"
+                                    className={`sidebar-elem ${(activeLocation === "products/orders") ? "active" : ""}`}
+                                    link-identifier="products/orders"
                                 >
                                     <IconPackages className='sidebar-icon' size={17} strokeWidth={1} />
                                     Product Orders
@@ -135,6 +135,10 @@ const Sellers = () => {
                                 <Dashboard user={seller} />
                             ) : (activeLocation === "products/create") ? (
                                 <CreateProduct />
+                            ) : (activeLocation === "products/my") ? (
+                                <MyProducts />
+                            ) : (activeLocation === "products/orders") ? (
+                                <ProductOrders />
                             ) : (
                                 ""
                                 // <Dashboard /> 
