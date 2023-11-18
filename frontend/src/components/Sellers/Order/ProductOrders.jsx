@@ -11,7 +11,7 @@ import IconInfoCircle from '@tabler/icons-react/dist/esm/icons/IconInfoCircle';
 import { ModalContext } from '../../../Context/ModalContext';
 
 
-const JustificationModalContent = ({ cancelOrderHandler }) => {
+export const JustificationModalContent = ({ cancelOrderHandler }) => {
 
     const { closeModal } = useContext(ModalContext);
     const [justification, setJustification] = useState("");
@@ -43,7 +43,7 @@ const JustificationModalContent = ({ cancelOrderHandler }) => {
 
             <div className="modal-btn-container">
                 <button className="inferior-btn" onClick={closeModal}>Abort</button>
-                <button className="main-btn" onClick={cancelClickHandler}>Cancel Order</button>
+                <button className="main-btn warning" onClick={cancelClickHandler}>Cancel Order(s)</button>
             </div>
         </>
     )
@@ -145,7 +145,6 @@ const ProductOrders = () => {
     };
 
     const cancelOrderHandler = (order_id, justification) => {
-        console.log(justification);
         cancelMutation.mutate({ order_id, justification });
     }
 

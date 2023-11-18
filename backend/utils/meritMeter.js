@@ -4,70 +4,69 @@ import { sendEmail } from "./sendMail.js";
 
 export class MeritMeter {
 
-  constructor(orderCount, sellerId) {
-    this.orderCount = orderCount;
-    this.sellerId = sellerId;
-    this.sellerMerit = 0;
-  }
-
-  async addMerit() {
-
-    const seller = await Users.findById(this.sellerId);
-    this.sellerMerit = seller.seller_merit;
-
-    seller.total_sales += this.orderCount;
-
-    let multiplyingFactor = 1 + (seller.total_sales / 200);
-
-    for (let i = 0; i < this.orderCount; i++) {
-      let meritToAdd = ((100 - this.sellerMerit) / 140) * multiplyingFactor ;
-      this.sellerMerit += meritToAdd;
+    constructor(orderCount, sellerId) {
+        this.orderCount = orderCount;
+        this.sellerId = sellerId;
+        this.sellerMerit = 0;
     }
 
-    if (this.sellerMerit > 100) {
-      this.sellerMerit = 100;
+    async addMerit() {
+
+        const seller = await Users.findById(this.sellerId);
+        this.sellerMerit = seller.seller_merit;
+
+        seller.total_sales += this.orderCount;
+
+        let multiplyingFactor = 1 + (seller.total_sales / 200);
+
+        for (let i = 0; i < this.orderCount; i++) {
+            let meritToAdd = ((100 - this.sellerMerit) / 140) * multiplyingFactor;
+            this.sellerMerit += meritToAdd;
+        }
+
+        if (this.sellerMerit > 100) {
+            this.sellerMerit = 100;
+        }
+
+        seller.seller_merit = this.sellerMerit;
+        await seller.save({ validateBeforeSave: false });
+
+        return this.sellerMerit;
     }
 
-    seller.seller_merit = this.sellerMerit;
-    await seller.save({ validateBeforeSave: false });
+    async reduceMerit() {
 
-    return this.sellerMerit;
-  }
+        const seller = await Users.findById(this.sellerId);
+        this.sellerMerit = seller.seller_merit;
 
-  async reduceMerit() {
+        if (this.orderCount === 1) {
+            this.sellerMerit -= 1;
+        }
+        else {
+            let reductions = this.orderCount / 8;
+            this.sellerMerit -= reductions;
+        }
 
-    const seller = await Users.findById(this.sellerId);
-    this.sellerMerit = seller.seller_merit;
+        seller.seller_merit = this.sellerMerit;
+        if (this.sellerMerit < 30) {
+            this.dropSeller();
+        }
+        else{
+            await seller.save({ validateBeforeSave: false });
+        }
 
-    if (this.orderCount === 1) {
-      this.sellerMerit -= 1;
+        return this.sellerMerit;
     }
-    else {
-      let reductions = this.orderCount / 8;
-      let meritToReduce = reductions;
-      this.sellerMerit -= meritToReduce;
-    }
 
-    seller.seller_merit = this.sellerMerit * 10;
-    if (this.sellerMerit < 30) {
-      this.dropSeller();
-    }
+    async dropSeller() {
 
-    await seller.save({ validateBeforeSave: false })
+        const seller = await Users.findById(this.sellerId);
+        seller.is_seller = false;
+        seller.seller_merit = undefined;
+        
+        await seller.save({ validateBeforeSave: false });
 
-    return this.sellerMerit;
-  }
-
-
-  async dropSeller() {
-
-    const seller = await Users.findById(this.sellerId);
-    seller.is_seller = false;
-    seller.seller_merit = undefined;
-
-    await seller.save({ validateBeforeSave: false });
-
-    const html = `
+        const html = `
         <!DOCTYPE html>
         <html>
           <head> </head>
@@ -112,10 +111,10 @@ export class MeritMeter {
         </html>        
         `
 
-    sendEmail({
-      email: seller.email,
-      subject: "Seller Status Revoking Notice!",
-      html
-    })
-  }
+        sendEmail({
+            email: seller.email,
+            subject: "Seller Status Revoking Notice!",
+            html
+        })
+    }
 }

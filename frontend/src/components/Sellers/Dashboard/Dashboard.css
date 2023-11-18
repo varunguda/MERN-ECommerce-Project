@@ -26,12 +26,18 @@
     font-weight: 600;
 
     .icon {
+        position: relative;
         display: grid;
         place-items: center;
         height: 50px;
         width: 50px;
         border-radius: 50%;
         border: 1px solid var(--border-color);
+        font-size: 30px;
+
+        > img{
+            height: 34px;
+        }
     }
 
     .red {

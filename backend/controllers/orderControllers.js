@@ -386,10 +386,12 @@ export const cancelOrderOfMyProduct = [
             return next(new ErrorHandler("Order cannot be cancelled!"));
         }
 
+        let cancelOrderCount = 0;
         order.order_items = order.order_items.map(item => {
             if ((item.seller.toString() === req.user._id.toString()) && (item.product_status !== "Out for delivery") && (item.product_status !== "Delivered") && (item.product_status !== "Cancelled")
             ) {
                 item.product_status = "Cancelled";
+                cancelOrderCount += 1;
             }
             return item;
         });
@@ -412,7 +414,7 @@ export const cancelOrderOfMyProduct = [
 
         await order.save({ validateBeforeSave: false });
 
-        const meritMeter = new MeritMeter(1, req.user._id);
+        const meritMeter = new MeritMeter(cancelOrderCount, req.user._id);
         meritMeter.reduceMerit();
 
         const html = orderHtml({
@@ -438,15 +440,15 @@ export const cancelOrderOfMyProduct = [
         })
 
     })
-]
+];
 
 
 
 export const cancelAllOrderOfMyProduct = [
 
     body('justification')
-        .isLength({ min: 10, max: 300 })
-        .withMessage("The Justification provided must contain atleast 10 characters and atmost 300 characters!"),
+        .isLength({ min: 10, max: 400 })
+        .withMessage("The Justification provided must contain atleast 10 characters and atmost 400 characters!"),
 
     catchAsync(async (req, res, next) => {
 
@@ -462,58 +464,64 @@ export const cancelAllOrderOfMyProduct = [
         if (!orders) {
             return next(new ErrorHandler("No orders of this product are found!", 404));
         }
-
+        
+        let totalCancelledOrders = 0;
         for (const order of orders) {
-
             const user = await Users.findById(order.user);
 
-            let noOrders = true;
             let totalItemsPrice = 0;
             order.order_items = order.order_items.map((item) => {
-                if (item.product.toString() === product.toString()) {
+                if ((item.product.toString() === product.toString()) && (item.product_status === "Processing")) {
                     item.product_status = 'Cancelled';
-                    return item
+                    totalCancelledOrders += 1;
+                    return item;
                 }
-                noOrders = false
                 totalItemsPrice += item.price
                 return item
-            })
+            });
 
             order.items_price = totalItemsPrice;
             order.tax_price = totalItemsPrice * 18 / 100;
             order.total_price = order.items_price + order.tax_price + order.shipping_cost;
 
-            await order.save({ validateBeforeSave: false });
+            if(totalCancelledOrders > 0){
+                await order.save({ validateBeforeSave: false });
 
-            const html = orderHtml({
-                head: "Order Cancelled!",
-                user_name: user.name,
-                head_caption: `We regret to inform you that your order has been canceled by your seller, ${req.user.name}. Below are the details of your cancelled order:`,
-                order: (noOrders) ? "" : order,
-                order_caption: `<strong>Seller's Justification for this inconvinience:</strong> ${justification}`,
-                button_url: "#",
-                button_text: "Check Order Status",
-                mail_caption: "We apologize for any inconvenience we may have caused. If you have any questions or concerns, please don't hesitate to reply to this Mail."
-            });
-
-            sendEmail({
-                email: user.email,
-                subject: "Order Cancelled:(",
-                html
-            })
-
+                const html = orderHtml({
+                    head: "Order Cancelled!",
+                    user_name: user.name,
+                    head_caption: `We regret to inform you that your order has been canceled by your seller, ${req.user.name}. Below are the details of your cancelled order:`,
+                    order,
+                    order_caption: `<strong>Seller's Justification for this inconvinience:</strong> ${justification}`,
+                    button_url: "#",
+                    button_text: "Check Order Status",
+                    mail_caption: "We apologize for any inconvenience we may have caused. If you have any questions or concerns, please don't hesitate to reply to this Mail."
+                });
+    
+                sendEmail({
+                    email: user.email,
+                    subject: "Order Cancelled:(",
+                    html
+                })
+            }
         }
 
-        const meritMeter = new MeritMeter(orders.length, req.user._id)
+        if(!totalCancelledOrders){
+            return res.json({
+                success: true,
+                message: `Seems like there are no orders currently placed for this product.`,
+            });
+        }
+
+        const meritMeter = new MeritMeter(totalCancelledOrders, req.user._id)
         meritMeter.reduceMerit();
 
         return res.json({
             success: true,
-            message: `Successfully cancelled all the orders of your product!`,
-            orders
+            message: `Successfully cancelled ${totalCancelledOrders} processing orders of your product!`,
         })
     })
-]
+];
 
 
 

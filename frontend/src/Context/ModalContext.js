@@ -34,7 +34,7 @@ export const ModalProvider = ({ children }) => {
     }, [isModalOpen])
 
     return (
-        <ModalContext.Provider value={{ modalHeading, modalContent, isModalOpen, noOutClick, openModal, closeModal, setModalContent }}>
+        <ModalContext.Provider value={{ modalHeading, modalContent, isModalOpen, noOutClick, openModal, closeModal, setModalContent, setModalHeading }}>
             {children}
         </ModalContext.Provider>
     );

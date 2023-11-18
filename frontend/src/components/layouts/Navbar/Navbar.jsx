@@ -201,7 +201,7 @@ const Navbar = () => {
                             <div className="sec-nav-elems">Fashion</div>
                             <div className="sec-nav-elems">Home</div>
                             <div className="sec-nav-elems">Beauty</div>
-                            <div className="sec-nav-elems">Write Us</div>
+                            <a href='mailto:manyinindia@gmail.com' className="sec-nav-elems link">Write Us</a>
                         </nav>
                     </nav>
                 </nav>
