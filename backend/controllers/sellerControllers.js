@@ -41,12 +41,7 @@ export const sellerDataAnalysis = catchAsync(async (req, res) => {
                 { paid_at: { $gte: sevenDaysAgo, $lte: currentDate } }
             ]
         }),
-        Orders.countDocuments({
-            $and: [
-                { "order_items.seller": req.user._id },
-                { paid_at: { $gte: sevenDaysAgo, $lte: currentDate } }
-            ]
-        }),
+        Orders.countDocuments({ "order_items.seller": req.user._id }),
     ]);
     
 
@@ -154,7 +149,8 @@ export const sellerDataAnalysis = catchAsync(async (req, res) => {
             income_generated: totalIncomeGenerated,
             orders_placed: totalOrdersPlaced,
             orders_cancelled: totalOrdersCancelled,
-            products_analysis: productCategoryAnalysis
+            products_analysis: productCategoryAnalysis,
+            merit: req.user.seller_merit
         }
     })
 })

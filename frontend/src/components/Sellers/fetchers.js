@@ -51,3 +51,14 @@ export const cancelMyProductOrder = async ({ order_id, justification }) => {
         throw new Error(error.response.data.message);
     }
 }
+
+
+export const cancelAllProductOrders = async({ product, justification }) => {
+    try {
+        const config = { headers: { "ContentType": "application/json" } };
+        const { data } = await axios.put(`/api/v1/myproducts/orders/${product}`, { justification }, config);
+        return data;
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
+}

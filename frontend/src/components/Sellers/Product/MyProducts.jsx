@@ -1,43 +1,104 @@
-import React, { useEffect, useState } from 'react';
-import { useQuery } from "react-query";
-import { fetchMyProducts } from '../fetchers';
+import React, { useContext, useEffect, useState } from 'react';
+import { useMutation, useQuery } from "react-query";
+import { cancelAllProductOrders, fetchMyProducts } from '../fetchers';
 import { useDispatch } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { toast } from 'react-toastify';
+import { ModalContext } from '../../../Context/ModalContext';
 import Table from '../../elements/Table/Table';
 import IconTrash from '@tabler/icons-react/dist/esm/icons/IconTrash';
 import IconEdit from '@tabler/icons-react/dist/esm/icons/IconEdit';
 import IconExternalLink from '@tabler/icons-react/dist/esm/icons/IconExternalLink';
+import IconShirtOff from '@tabler/icons-react/dist/esm/icons/IconShirtOff';
+import { JustificationModalContent } from '../Order/ProductOrders';
 
 
 const MyProducts = () => {
-    
-    const [ pageNum, setPageNum ] = useState(1);
-    const { data, error, isLoading } = useQuery(["my products", pageNum], fetchMyProducts);
+
+    const { openModal, closeModal, setModalContent, setModalHeading } = useContext(ModalContext);
+
+    const [pageNum, setPageNum] = useState(1);
+    const { data, error, isLoading, refetch } = useQuery(["my products", pageNum], fetchMyProducts);
+    const cancelMutation = useMutation(cancelAllProductOrders);
+
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(isLoading){
+        if (isLoading || cancelMutation.isLoading) {
             dispatch(loaderSpin(true));
         } else {
             dispatch(loaderSpin(false));
         }
         // eslint-disable-next-line
-    }, [isLoading]);
+    }, [isLoading, cancelMutation.isLoading]);
 
     useEffect(() => {
-        toast.success(error, {
-            position: "bottom-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
-    }, [error]);
-    
+        if (!!error || cancelMutation.isError) {
+            toast.error((error.message || cancelMutation.error.message), {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            cancelMutation.reset();
+            refetch();
+        }
+        // eslint-disable-next-line
+    }, [error, cancelMutation.isError]);
+
+    useEffect(() => {
+        if(cancelMutation.isSuccess){
+            toast.success(cancelMutation.data.message, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            cancelMutation.reset();
+            refetch();
+        }
+        // eslint-disable-next-line
+    }, [cancelMutation.isSuccess]);
+
+
+    const cancelClickHandler = (product) => {
+        setModalHeading("Justification");
+        setModalContent(
+            <JustificationModalContent
+                cancelOrderHandler={(justification) => cancelMutation.mutate({ product, justification })}
+            />
+        );
+    };
+
+    const cancelProductOrdersHandler = (product) => {
+        openModal(
+            "Cancel all the orders of this product!",
+            <>
+                <div className="modal-caption">
+                    This option cancels this specific product from all the processing orders. We recommend using this option if you're facing stock shortages. However, keep in mind that canceling orders may significantly impact your merit based on the number of orders cancelled.
+                </div>
+
+                <div className="modal-btn-container">
+                    <button type="button" onClick={closeModal} className='secondary-btn'>No</button>
+                    <button
+                        type="button"
+                        onClick={() => cancelClickHandler(product)}
+                        className='main-btn warning'
+                    >
+                        Yes, Continue
+                    </button>
+                </div>
+            </>
+        )
+    }
 
     const columns = [
         {
@@ -58,14 +119,14 @@ const MyProducts = () => {
             field: 'category',
             headerName: 'Department',
             minWidth: 130,
-            flex: 0.3
+            flex: 0.25
         },
         {
             field: 'stock',
             headerName: 'Stock',
             type: 'number',
             minWidth: 90,
-            flex: 0.25,
+            flex: 0.2,
             cellClassName: (params) => {
                 return (params.row.stock === 0) ? "red-color" : (params.row.stock < 100) && "orange-color";
             }
@@ -81,7 +142,7 @@ const MyProducts = () => {
             field: 'actions',
             headerName: 'Actions',
             minWidth: 50,
-            flex: 0.25,
+            flex: 0.35,
             sortable: false,
             filterable: false,
             renderCell: (params) => {
@@ -89,6 +150,9 @@ const MyProducts = () => {
                     <div className="table-icons-container">
                         <span><IconEdit size={18} strokeWidth={1.25} /></span>
                         <span><IconTrash strokeWidth={1.25} size={18} /></span>
+                        <span onClick={() => cancelProductOrdersHandler(params.row._id)}>
+                            <IconShirtOff strokeWidth={1.25} size={18} />
+                        </span>
                         <span onClick={() => window.open(`/product/${params.row._id}`)}>
                             <IconExternalLink size={18} strokeWidth={1.25} />
                         </span>
@@ -102,12 +166,12 @@ const MyProducts = () => {
     return (
         <div className="profile-page-content">
             <div className="page-head">My Products</div>
-            {(isLoading === false && !!data) && (
+            {(!isLoading && !!data) && (
                 <div className='all-products-container'>
-                    <Table 
-                        rows={data.products} 
-                        page={pageNum} 
-                        getPage={setPageNum} 
+                    <Table
+                        rows={data.products}
+                        page={pageNum}
+                        getPage={setPageNum}
                         productCount={data.product_count}
                         columns={columns}
                         placeholderRows={placeholderRows}

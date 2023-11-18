@@ -19,7 +19,7 @@ export const isSeller = catchAsync( async(req, res, next) => {
         return next(new ErrorHandler("Something went wrong! Please Login again.", 404));
     }
 
-    const user = await Users.findById(userPayload._id).select("+is_seller");
+    const user = await Users.findById(userPayload._id).select("+is_seller +seller_merit");
     
     if(!user){
         return next(new ErrorHandler("User not found!", 404));

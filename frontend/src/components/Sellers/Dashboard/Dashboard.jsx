@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import "./Dashboard.css";
 import IconDevices2 from '@tabler/icons-react/dist/esm/icons/IconDevices2';
 import IconPackages from '@tabler/icons-react/dist/esm/icons/IconPackages';
+// import IconMedal from '@tabler/icons-react/dist/esm/icons/IconMedal';
 import { Line, Bar } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import { CategoryScale } from 'chart.js';
@@ -174,6 +175,20 @@ const Dashboard = ({user}) => {
                 <div className="dashboard-container">
 
                     <div className="head-templates">
+                        <div className='template'>
+                            <div>
+                                Merit
+                                <span className={analysis.merit < 45 ? "red" : analysis.merit > 90 ? "green" : "" }>
+                                    {analysis.merit}
+                                </span>
+                            </div>
+                            <div className="icon">
+                                {/* <IconMedal size={30} strokeWidth={1} /> */}
+                                <img src="/images/medal.svg" alt="medal" />
+                                {/* 🎖️ */}
+                            </div>
+                        </div>
+
                         <Link to="/seller/products/my" className='link template'>
                             <div>
                                 Products
@@ -186,7 +201,7 @@ const Dashboard = ({user}) => {
                             </div>
                         </Link>
 
-                        <Link to="/seller/orders/my" className='link template'>
+                        <Link to="/seller/products/orders" className='link template'>
                             <div>
                                 Orders
                                 <span className={analysis.total_orders_count < 20 ? "red" : analysis.total_orders_count > 100 ? "green" : "" }>
