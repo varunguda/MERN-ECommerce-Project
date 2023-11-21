@@ -1,5 +1,7 @@
 
-export const stringValidator = (str, val, min, max, required = true) => {
+const stringValidator = (str, value, min, max, required = true) => {
+
+    let val = value.toString();
 
     if(((val.length === 0) || val.trim() === "") && !required){
         return false;
@@ -21,7 +23,7 @@ export const stringValidator = (str, val, min, max, required = true) => {
 }
 
 
-export const numberValidator = (str, val, min, max, required = true) => {
+const numberValidator = (str, val, min, max, required = true) => {
 
     if(((val.length === 0) || val.trim() === "") && !required){
         return false;
@@ -48,4 +50,14 @@ export const categoryValidator = (config, val) => {
         return "Choose a valid category";
     }
     return false;
+}
+
+
+export const inputValidator = (field, str, val, min, max, required = true) => {
+    if(["brand", "name", "description", "color", "processor", "size"].includes(field)){
+        return stringValidator(str, val, min, max, required);
+    }
+    else if(["price", "discount_percent", "stock", "ram", "storage", "quantity"].includes(field)){
+        return numberValidator(str, val, min, max, required);
+    }
 }

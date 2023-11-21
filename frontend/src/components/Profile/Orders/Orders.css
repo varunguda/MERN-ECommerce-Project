@@ -77,12 +77,12 @@
 }
 
 
-.order-cards {
+.order-card {
     position: relative;
     width: 100%;
     padding: 40px 30px;
     box-shadow: var(--primary-box-shadow);
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 

@@ -351,6 +351,7 @@ body {
     font-size: var(--m-font-size);
     font-weight: 600;
     margin-bottom: 3px;
+    text-transform: capitalize;
 }
 
 .input-section{

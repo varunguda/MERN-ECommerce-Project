@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import Accordion from '../../elements/Accordians/Accordion';
-import { categoryValidator, stringValidator } from './utils';
+import { categoryValidator, inputValidator } from './utils';
 import ProductAccordian from './ProductAccordian';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -9,58 +9,7 @@ import Loader2 from '../../layouts/Loader/Loader2';
 import { toast } from 'react-toastify';
 import { CREATE_PRODUCT_RESET } from '../../../State/constants/AdminConstants';
 import { ModalContext } from '../../../Context/ModalContext';
-
-
-const categoryConfig = {
-
-    "Mobile Phone": {
-        properties: ["ram", "storage", "color", "processor"]
-    },
-
-    "Laptop": {
-        properties: ["ram", "color", "processor", "storage", "size"]
-    },
-
-    "Monitor": {
-        properties: ["color", "size"]
-    },
-
-    "Clothing": {
-        properties: ["size", "color"]
-    },
-
-    "Shoes": {
-        properties: ["color", "size"]
-    },
-
-    "Watches": {
-        properties: ["color"]
-    },
-
-    "Telivision": {
-        properties: ["color", "size"],
-    },
-
-    "Refrigerator": {
-        properties: ["color", "size"],
-    },
-
-    "Washing Machines": {
-        properties: ["color", "size"],
-    },
-
-    "Accessories": {
-        properties: ["color", "size"],
-    },
-
-    "Audio devices": {
-        properties: ["color"],
-    },
-
-    "Beauty & Health": {
-        properties: ["quantity"],
-    }
-}
+import { categoryConfig } from '../../Data';
 
 
 const CreateProduct = () => {
@@ -138,10 +87,9 @@ const CreateProduct = () => {
 
     const isFormDatavalid = () => {
         const validtors = [
-            stringValidator("Brand", commonFields.brand, 1, 50),
+            !!inputValidator("brand", "Brand", commonFields.brand, 3, 50),
             categoryValidator(categoryConfig, commonFields.category),
         ];
-
         return validtors.every(validator => !validator) && variations.length > 0;
     }
 
@@ -272,7 +220,7 @@ const CreateProduct = () => {
                                 <input
                                     onChange={commonFieldsChangeHandler}
                                     className={
-                                        `${(validateFields && !!stringValidator("Brand", commonFields.brand, 1, 50)) ? "invalid" : ""}  input1`
+                                        `${(validateFields && !!inputValidator("brand", "Brand", commonFields.brand, 3, 50)) ? "invalid" : ""}  input1`
                                     }
                                     type="text"
                                     name="brand"
@@ -281,8 +229,8 @@ const CreateProduct = () => {
                                     value={commonFields.brand}
                                     disabled={disableCommonFields}
                                 />
-                                {(validateFields && !!stringValidator("Brand", commonFields.brand, 1, 50)) && (
-                                    <span className='input-error'>{stringValidator("Brand", commonFields.brand, 1, 50)}</span>
+                                {(validateFields && !!inputValidator("brand" ,"Brand", commonFields.brand, 3, 50)) && (
+                                    <span className='input-error'>{inputValidator("brand" ,"Brand", commonFields.brand, 3, 50)}</span>
                                 )}
                             </div>
 
@@ -473,4 +421,4 @@ const CreateProduct = () => {
     )
 }
 
-export default CreateProduct
+export default CreateProduct;

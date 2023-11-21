@@ -16,3 +16,93 @@ export const allTimes = {
     "last1year": "Last year",
     "before1year": "Before an year",
 }
+
+export const categoryConfig = {
+
+    "Mobile Phone": {
+        properties: ["ram", "storage", "color", "processor"]
+    },
+
+    "Laptop": {
+        properties: ["ram", "color", "processor", "storage", "size"]
+    },
+
+    "Monitor": {
+        properties: ["color", "size"]
+    },
+
+    "Clothing": {
+        properties: ["size", "color"]
+    },
+
+    "Shoes": {
+        properties: ["color", "size"]
+    },
+
+    "Watches": {
+        properties: ["color"]
+    },
+
+    "Telivision": {
+        properties: ["color", "size"],
+    },
+
+    "Refrigerator": {
+        properties: ["color", "size"],
+    },
+
+    "Washing Machines": {
+        properties: ["color", "size"],
+    },
+
+    "Accessories": {
+        properties: ["color", "size"],
+    },
+
+    "Audio devices": {
+        properties: ["color"],
+    },
+
+    "Beauty & Health": {
+        properties: ["quantity"],
+    }
+}
+
+export const commonFields = {
+    name: "",
+    description: "",
+    // images: "",
+    price: "",
+    discount_percent: "",
+    stock: "",
+}
+
+export const allFields = {
+    name: "",
+    description: "",
+    // images: "",
+    price: "",
+    discount_percent: "",
+    stock: "",
+    color: "",
+    size: "",
+    storage: "",
+    ram: "",
+    quantity: "",
+    processor: "",
+}
+
+export const allFieldsRange = {
+    name: [10, 250],
+    description: [10, 1000],
+    // images: "",
+    price: 7,
+    discount_percent: 2,
+    stock: 5,
+    color: 40,
+    ram: 4,
+    storage: 5,
+    processor: 100,
+    size: 10,
+    quantity: 5
+};

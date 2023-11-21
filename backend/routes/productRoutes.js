@@ -64,7 +64,7 @@ router.route("/seller/myproducts/options/:id").post(isSeller, addOptions);
 
 router.route("/seller/myproducts/:id")
     .put(isSeller, updateMyProduct )
-    .delete(isSeller, deleteMyProduct)
+    .delete(isSeller, deleteMyProduct);
 
 
 // Admin & Seller

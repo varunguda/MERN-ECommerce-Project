@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const OrderCard = ({ order, extraSection }) => {
     return (
-        <div className='order-cards'>
+        <div className='order-card'>
             {order.order_items.map((item, ind) => {
                 return (
                     <div key={ind} className="order-item">
