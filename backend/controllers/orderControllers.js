@@ -476,8 +476,8 @@ export const cancelAllOrderOfMyProduct = [
                     totalCancelledOrders += 1;
                     return item;
                 }
-                totalItemsPrice += item.price
-                return item
+                totalItemsPrice += item.price;
+                return item;
             });
 
             order.items_price = totalItemsPrice;
@@ -502,7 +502,7 @@ export const cancelAllOrderOfMyProduct = [
                     email: user.email,
                     subject: "Order Cancelled:(",
                     html
-                })
+                });
             }
         }
 

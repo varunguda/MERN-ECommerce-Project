@@ -62,3 +62,13 @@ export const cancelAllProductOrders = async({ product, justification }) => {
         throw new Error(error.response.data.message);
     }
 }
+
+
+export const deleteProduct = async({ product }) => {
+    try {
+        const { data } = await axios.delete(`/api/v1/seller/myproducts/${product}`);
+        return data;
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
+}

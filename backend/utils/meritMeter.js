@@ -35,7 +35,6 @@ export class MeritMeter {
     }
 
     async reduceMerit() {
-
         const seller = await Users.findById(this.sellerId);
         this.sellerMerit = seller.seller_merit;
 
@@ -46,6 +45,23 @@ export class MeritMeter {
             let reductions = this.orderCount / 8;
             this.sellerMerit -= reductions;
         }
+
+        seller.seller_merit = this.sellerMerit;
+        if (this.sellerMerit < 30) {
+            this.dropSeller();
+        }
+        else{
+            await seller.save({ validateBeforeSave: false });
+        }
+
+        return this.sellerMerit;
+    }
+
+    async reduceMeritBy(count) {
+        const seller = await Users.findById(this.sellerId);
+        this.sellerMerit = seller.seller_merit;
+
+        this.sellerMerit -= count;
 
         seller.seller_merit = this.sellerMerit;
         if (this.sellerMerit < 30) {

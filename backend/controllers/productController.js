@@ -6,6 +6,9 @@ import { ApiFeatures, pagination, sortBy } from '../utils/apiFeatures.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Review } from '../models/reviewModel.js';
 import { Orders } from '../models/orderModel.js';
+import { orderHtml } from '../html/orderHtml.js';
+import { sendEmail } from '../utils/sendMail.js';
+import { MeritMeter } from '../utils/meritMeter.js';
 
 
 const allProperties = ["name", "description", "price", "images", "stock", "discount_percent", "final_price", "options", "bundles", "color", "ram", "processor", "resolution", "storage", "size", "quantity", "variations", "brand", "category", "review_id"];
@@ -355,8 +358,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
     return res.status(201).json({
         success: true,
-        message: "Products added successfully!",
-        products: createdProducts,
+        message: `${products.length === 1 ? "Product" : "Products"} added successfully!`
     })
 });
 
@@ -429,12 +431,12 @@ export const updateMyProduct = catchAsync(async (req, res, next) => {
         })
     }
 
-    product.save({ validateBeforeSave: false })
+    await product.save({ validateBeforeSave: false });
 
     return res.json({
         success: true,
         message: "Product details updated successfully!"
-    })
+    });
 });
 
 
@@ -446,6 +448,52 @@ export const deleteMyProduct = catchAsync(async (req, res, next) => {
     if (!product) {
         return next(new ErrorHandler("Product not found", 404));
     }
+
+    const orders = await Orders.find({});
+
+    let totalCancelledOrders = 0;
+    for (const order of orders) {
+        const user = await Users.findById(order.user);
+
+        let totalItemsPrice = 0;
+        order.order_items = order.order_items.map((item) => {
+            if ((item.product.toString() === product.toString()) && (item.product_status === "Processing")) {
+                item.product_status = 'Cancelled';
+                totalCancelledOrders += 1;
+                return item;
+            }
+            totalItemsPrice += item.price;
+            return item;
+        });
+
+        order.items_price = totalItemsPrice;
+        order.tax_price = totalItemsPrice * 18 / 100;
+        order.total_price = order.items_price + order.tax_price + order.shipping_cost;
+
+        if (totalCancelledOrders > 0) {
+            await order.save({ validateBeforeSave: false });
+
+            const html = orderHtml({
+                head: "Order Cancelled!",
+                user_name: user.name,
+                head_caption: `We regret to inform you that your order has been cancelled. Below are the details of your cancelled order:`,
+                order,
+                order_caption: `<strong>Reason for this inconvinience:</strong> Seller has tookdown his product and the product is no longer available on ManyIN.`,
+                button_url: "#",
+                button_text: "Check Order Status",
+                mail_caption: "We apologize for any inconvenience we may have caused. If you have any questions or concerns, please don't hesitate to reply to this Mail."
+            });
+
+            sendEmail({
+                email: user.email,
+                subject: "Order Cancelled!",
+                html
+            });
+        }
+    }
+
+    const meritMeter = new MeritMeter(totalCancelledOrders, req.user._id);
+    meritMeter.reduceMeritBy(3);
 
     return res.json({
         success: true,
@@ -685,13 +733,13 @@ export const deleteReview = catchAsync(async (req, res, next) => {
 
     if (productReviews.reviews.length === 0) {
         const products = await Product.find({ product_id: product.product_id });
-        for(const prod of products){
+        for (const prod of products) {
             prod.review_id = undefined;
             await prod.save({ validateBeforeSave: false });
         }
         await productReviews.deleteOne();
     }
-    else{
+    else {
         await productReviews.save({ validateBeforeSave: false });
     }
 

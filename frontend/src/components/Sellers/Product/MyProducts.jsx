@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from "react-query";
-import { cancelAllProductOrders, fetchMyProducts } from '../fetchers';
+import { cancelAllProductOrders, deleteProduct, fetchMyProducts } from '../fetchers';
 import { useDispatch } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { toast } from 'react-toastify';
 import { ModalContext } from '../../../Context/ModalContext';
+import { JustificationModalContent } from '../Order/ProductOrders';
 import Table from '../../elements/Table/Table';
 import IconTrash from '@tabler/icons-react/dist/esm/icons/IconTrash';
 import IconEdit from '@tabler/icons-react/dist/esm/icons/IconEdit';
 import IconExternalLink from '@tabler/icons-react/dist/esm/icons/IconExternalLink';
 import IconShirtOff from '@tabler/icons-react/dist/esm/icons/IconShirtOff';
-import { JustificationModalContent } from '../Order/ProductOrders';
+import EditProductForm from '../../layouts/ProductLayouts/EditProductForm';
 
 
 const MyProducts = () => {
@@ -20,21 +21,22 @@ const MyProducts = () => {
     const [pageNum, setPageNum] = useState(1);
     const { data, error, isLoading, refetch } = useQuery(["my products", pageNum], fetchMyProducts);
     const cancelMutation = useMutation(cancelAllProductOrders);
+    const deleteMutation = useMutation(deleteProduct);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (isLoading || cancelMutation.isLoading) {
+        if (isLoading || cancelMutation.isLoading || deleteMutation.isLoading) {
             dispatch(loaderSpin(true));
         } else {
             dispatch(loaderSpin(false));
         }
         // eslint-disable-next-line
-    }, [isLoading, cancelMutation.isLoading]);
+    }, [isLoading, cancelMutation.isLoading, deleteMutation.isLoading]);
 
     useEffect(() => {
-        if (!!error || cancelMutation.isError) {
-            toast.error((error.message || cancelMutation.error.message), {
+        if (!!error || cancelMutation.isError || deleteMutation.isError) {
+            toast.error(((error && error.message) || (cancelMutation.error && cancelMutation.error.message) || (deleteMutation.error && deleteMutation.error.message)), {
                 position: "bottom-center",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -45,14 +47,15 @@ const MyProducts = () => {
                 theme: "light",
             });
             cancelMutation.reset();
+            deleteMutation.reset();
             refetch();
         }
         // eslint-disable-next-line
-    }, [error, cancelMutation.isError]);
+    }, [error, cancelMutation.isError, deleteMutation.isError]);
 
     useEffect(() => {
-        if(cancelMutation.isSuccess){
-            toast.success(cancelMutation.data.message, {
+        if(cancelMutation.isSuccess || deleteMutation.isSuccess){
+            toast.success(((cancelMutation.data && cancelMutation.data.message) || (deleteMutation.data && deleteMutation.data.message)), {
                 position: "bottom-center",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -63,10 +66,11 @@ const MyProducts = () => {
                 theme: "light",
             });
             cancelMutation.reset();
+            deleteMutation.reset();
             refetch();
         }
         // eslint-disable-next-line
-    }, [cancelMutation.isSuccess]);
+    }, [cancelMutation.isSuccess, deleteMutation.isSuccess]);
 
 
     const cancelClickHandler = (product) => {
@@ -98,6 +102,41 @@ const MyProducts = () => {
                 </div>
             </>
         )
+    };
+
+    const deleteClickHandler = (product) => {
+        deleteMutation.mutate({ product });
+        closeModal();
+    };
+
+    const deleteProductHandler = (product) => {
+        openModal(
+            "Are you sure you want to delete this product permanently?",
+            <>
+                <div className="modal-caption">
+                    This product will no longer be available on ManyIN from now and product will be cancelled from all the Orders if the product status is 'Processing'. You shall be losing 3 merit points as well.
+                </div>
+
+                <div className="modal-btn-container">
+                    <button type="button" onClick={closeModal} className='secondary-btn'>No</button>
+                    <button
+                        type="button"
+                        onClick={() => deleteClickHandler(product)}
+                        className='main-btn warning'
+                    >
+                        Yes
+                    </button>
+                </div>
+            </>
+        )
+    };
+
+    const editPorductHandler = (product_id) => {
+        const product = data.products.find(prod => prod._id === product_id);
+        openModal(
+            "Edit Product Details",
+            <EditProductForm product={product} />
+        );
     }
 
     const columns = [
@@ -148,8 +187,12 @@ const MyProducts = () => {
             renderCell: (params) => {
                 return (
                     <div className="table-icons-container">
-                        <span><IconEdit size={18} strokeWidth={1.25} /></span>
-                        <span><IconTrash strokeWidth={1.25} size={18} /></span>
+                        <span onClick={() => editPorductHandler(params.row._id)}>
+                            <IconEdit size={18} strokeWidth={1.25} />
+                        </span>
+                        <span onClick={() => deleteProductHandler(params.row._id)}>
+                            <IconTrash strokeWidth={1.25} size={18} />
+                        </span>
                         <span onClick={() => cancelProductOrdersHandler(params.row._id)}>
                             <IconShirtOff strokeWidth={1.25} size={18} />
                         </span>
