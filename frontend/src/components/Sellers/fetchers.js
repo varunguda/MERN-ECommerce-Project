@@ -72,3 +72,14 @@ export const deleteProduct = async({ product }) => {
         throw new Error(error.response.data.message);
     }
 }
+
+
+export const editProductDetails = async({ product,  updatedData}) => {
+    try {
+        const config = { headers: {"ContentType": "application/json"} };
+        const { data } = await axios.put(`/api/v1/seller/myproducts/${product}`, { ...updatedData }, config);
+        return data;
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
+}

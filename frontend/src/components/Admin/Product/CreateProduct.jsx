@@ -87,7 +87,7 @@ const CreateProduct = () => {
 
     const isFormDatavalid = () => {
         const validtors = [
-            !!inputValidator("brand", "Brand", commonFields.brand, 3, 50),
+            !!inputValidator("Brand", commonFields.brand, 3, 50),
             categoryValidator(categoryConfig, commonFields.category),
         ];
         return validtors.every(validator => !validator) && variations.length > 0;
@@ -220,7 +220,7 @@ const CreateProduct = () => {
                                 <input
                                     onChange={commonFieldsChangeHandler}
                                     className={
-                                        `${(validateFields && !!inputValidator("brand", "Brand", commonFields.brand, 3, 50)) ? "invalid" : ""}  input1`
+                                        `${(validateFields && !!inputValidator("Brand", commonFields.brand, 3, 50)) ? "invalid" : ""}  input1`
                                     }
                                     type="text"
                                     name="brand"
@@ -229,8 +229,8 @@ const CreateProduct = () => {
                                     value={commonFields.brand}
                                     disabled={disableCommonFields}
                                 />
-                                {(validateFields && !!inputValidator("brand" ,"Brand", commonFields.brand, 3, 50)) && (
-                                    <span className='input-error'>{inputValidator("brand" ,"Brand", commonFields.brand, 3, 50)}</span>
+                                {(validateFields && !!inputValidator("Brand", commonFields.brand, 3, 50)) && (
+                                    <span className='input-error'>{inputValidator("Brand", commonFields.brand, 3, 50)}</span>
                                 )}
                             </div>
 

@@ -367,14 +367,16 @@ export const createProduct = catchAsync(async (req, res, next) => {
 export const updateAnyProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Product.findByIdAndUpdate(id, { ...req.body }, {
+    const final_price = Math.round(Number(req.body.price) - (Number(req.body.price) * Number(req.body.discount_percent) / 100));
+
+    const product = await Product.findByIdAndUpdate(id, { ...req.body, final_price }, {
         new: true,
         runValidators: true,
     });
     if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
     }
-
+    
     return res.json({
         success: true,
         message: "Product updated successfully!"
@@ -389,6 +391,31 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
     const product = await Product.findByIdAndDelete(id);
     if (!product) {
         return next(new ErrorHandler("Product not found!", 400));
+    }
+
+    const orders = await Orders.find({});
+
+    let totalCancelledOrders = 0;
+    for (const order of orders) {
+        
+        let totalItemsPrice = 0;
+        order.order_items = order.order_items.map((item) => {
+            if ((item.product.toString() === product.toString()) && (item.product_status === "Processing")) {
+                item.product_status = 'Cancelled';
+                totalCancelledOrders += 1;
+                return item;
+            }
+            totalItemsPrice += item.price;
+            return item;
+        });
+
+        order.items_price = totalItemsPrice;
+        order.tax_price = totalItemsPrice * 18 / 100;
+        order.total_price = order.items_price + order.tax_price + order.shipping_cost;
+
+        if (totalCancelledOrders > 0) {
+            await order.save({ validateBeforeSave: false });
+        }
     }
 
     return res.json({
@@ -430,6 +457,8 @@ export const updateMyProduct = catchAsync(async (req, res, next) => {
             product[property] = req.body[property] || undefined;
         })
     }
+
+    product.final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
 
     await product.save({ validateBeforeSave: false });
 
