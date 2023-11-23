@@ -131,8 +131,8 @@ const ProductSchema = new Schema({
     // Category -- Mobiles
     ram: {
         type: Number,
-        min: [1, "Ram value must be in range 1 and 10,000"],
-        max: [10000, "Ram value must be in range 1 and 10,000"],
+        min: [1, "Ram value must be in range 1 and 9999"],
+        max: [9999, "Ram value must be in range 1 and 9999"],
     },
 
     size:{
@@ -144,9 +144,9 @@ const ProductSchema = new Schema({
     // Category -- Laptops & Computers
     storage: {
         type: Number,
-        min: [1, "Ram value must be in range 1 and 10,000"],
-        maxLength: [10000, "Storage value must be in range 1 and 10,000"]
-    },    
+        min: [1, "Ram value must be in range 1 and 9999"],
+        max: [9999, "Storage value must be in range 1 and 9999"]
+    },
 
     processer: {
         type: String,
@@ -158,11 +158,11 @@ const ProductSchema = new Schema({
     // Category -- Beauty
     quantity: {
         type: Number,
-        min: [1, "Quantity must be in range 1 and 10,000"],
-        max: [10000, "Quantity must be in range 0 and 10,000"]
+        min: [1, "Quantity must be in range 1 and 9999"],
+        max: [9999, "Quantity must be in range 0 and 9999"]
     },
 
-
+    
     // Category -- TV
     resolution: {
         type: String

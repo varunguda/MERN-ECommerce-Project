@@ -22,6 +22,7 @@ import {
     USER_ORDERS_REQUEST,
     USER_ORDERS_SUCCESS,
     USER_ORDERS_FAILURE,
+
     CANCEL_USER_ORDER_REQUEST,
     CANCEL_USER_ORDER_SUCCESS,
     CANCEL_USER_ORDER_FAILURE,
@@ -54,7 +55,7 @@ export const addAddressReducer = (state = { addedAddress: false }, action) => {
             return ({
                 addingAddress: false,
                 addedAddress: false,
-                addAddressError: "Unable to add your address, please try again!"
+                addAddressError: action.payload,
             })
         }
 
@@ -121,7 +122,7 @@ export const updateDeleteAddressReducer = (state = { updatedDeletedAddress: fals
             return ({
                 updatingDeletingAddress: false,
                 updatedDeletedAddress: action.payload.success,
-                updateAddressMessage: action.payload.message,
+                updatedDeletedAddressMessage: action.payload.message,
             })
         }
 
@@ -130,7 +131,7 @@ export const updateDeleteAddressReducer = (state = { updatedDeletedAddress: fals
             return ({
                 updatingDeletingAddress: false,
                 updatedDeletedAddress: false,
-                updateAddressError: action.payload.message,
+                updatedDeletedAddressError: action.payload,
             })
         }
 

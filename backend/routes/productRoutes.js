@@ -53,8 +53,8 @@ router.route("/products/bundles/:id").get(getAllBundleProducts);
 
 // Admin
 router.route('/admin/products/:id')
-    .put( isAdmin, updateAnyProduct)
-    .delete( isAdmin ,deleteAnyProduct)
+    .put(isAdmin, updateAnyProduct)
+    .delete(isAdmin ,deleteAnyProduct);
 
 
 // Seller
@@ -63,7 +63,7 @@ router.route("/seller/myproducts/bundles/:id").post(isSeller, addBundle);
 router.route("/seller/myproducts/options/:id").post(isSeller, addOptions);
 
 router.route("/seller/myproducts/:id")
-    .put(isSeller, updateMyProduct )
+    .put(isSeller, updateMyProduct)
     .delete(isSeller, deleteMyProduct);
 
 

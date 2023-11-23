@@ -93,16 +93,15 @@ export const allFields = {
 }
 
 export const allFieldsRange = {
-    name: [10, 250],
-    description: [10, 1000],
-    // images: "",
-    price: 7,
-    discount_percent: 2,
-    stock: 5,
-    color: 40,
-    ram: 4,
-    storage: 5,
-    processor: 100,
-    size: 10,
-    quantity: 5
+    name: [10,250],
+    description: [10,1000],
+    price: [2,6],
+    discount_percent: [0,2],
+    stock: [2,6],
+    color: [2,40],
+    ram: [1,4],
+    storage: [1,4],
+    processor: [5,100],
+    size: [2,10],
+    quantity: [1,4]
 };

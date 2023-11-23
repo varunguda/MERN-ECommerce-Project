@@ -22,31 +22,14 @@ const CreateProductForm = ({ category, categoryConfig, setResize, variations, se
 
 
     const isFormDatavalid = () => {
-        const validators = [
-            (formData.name !== undefined) ? !!inputValidator("name", "Product name", formData.name, 10, 250, Object.keys(commonFields).concat(variations).includes("name")) : false,
-
-            (formData.description !== undefined) ? !!inputValidator("description", "Product description", formData.description, 10, 1000, Object.keys(commonFields).concat(variations).includes("description")) : false,
-
-            (formData.price !== undefined) ? !!inputValidator("Product price", formData.price, 10, 999999, Object.keys(commonFields).concat(variations).includes("price")) : false,
-
-            (formData.discount_percent !== undefined) ? !!inputValidator("discount_percent", "Product discount percentage", formData.discount_percent, 0, 90, false) : false,
-
-            (formData.stock !== undefined) ? !!inputValidator("stock", "Product stock", formData.stock, 5, 100000, Object.keys(commonFields).concat(variations).includes("stock")) : false,
-
-            (formData.color !== undefined) ? !!inputValidator("stock", "Color", formData.color, 2, 40, Object.keys(commonFields).concat(variations).includes("color")) : false,
-
-            (formData.ram !== undefined) ? !!inputValidator("ram", "Ram", formData.ram, 1, 10000, Object.keys(commonFields).concat(variations).includes("ram")) : false,
-
-            (formData.storage !== undefined) ? !!inputValidator("storage", "Storage", formData.storage, 1, 10000, Object.keys(commonFields).concat(variations).includes("storage")) : false,
-
-            (formData.processor !== undefined) ? !!inputValidator("processor", "Processor", formData.processor, 5, 100, Object.keys(commonFields).concat(variations).includes("processor")) : false,
-
-            (formData.size !== undefined) ? !!inputValidator("size", "Size", formData.size, 2, 10, Object.keys(commonFields).concat(variations).includes("size")) : false,
-
-            (formData.quantity !== undefined) ? !!inputValidator("quantity", "Quantity", formData.quantity, 1, 10000, Object.keys(commonFields).concat(variations).includes("quantity")) : false
-        ];
-
-        return validators.every(validator => !validator);
+        return Object.keys(allFields).every((field) => {
+            if (formData[field] !== undefined) {
+                return !inputValidator("_", formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(variations).includes(field));
+            }
+            else {
+                return true;
+            }
+        });
     }
 
     const formInputChangeHandler = (e) => {
@@ -116,212 +99,26 @@ const CreateProductForm = ({ category, categoryConfig, setResize, variations, se
                     Please verify all fields below.
                 </div>
 
-                <div className='input-section'>
-                    <label className='label1' htmlFor="name">{`Name${Object.keys(commonFields).concat(variations).includes("name") ? "*" : ""}`}</label>
-                    <input
-                        onChange={formInputChangeHandler}
-                        className={
-                            `${(validateFields && !!inputValidator("name", "Product name", formData.name, 10, 250, Object.keys(commonFields).concat(variations).includes("name"))) ? "invalid" : ""}  input1`
-                        }
-                        type="text"
-                        name="name"
-                        id="name"
-                        spellCheck={false}
-                        value={formData.name}
-                    />
-                    {(validateFields && !!inputValidator("name", "Product name", formData.name, 10, 250, Object.keys(commonFields).concat(variations).includes("name"))) && (
-                        <span className='input-error'>{inputValidator("name", "Product name", formData.name, 10, 250, Object.keys(commonFields).concat(variations).includes("name"))}</span>
-                    )}
-                </div>
-
-
-                <div className='input-section'>
-                    <label className='label1' htmlFor="description">{`Description${Object.keys(commonFields).concat(variations).includes("description") ? "*" : ""}`}</label>
-                    <textarea
-                        onChange={formInputChangeHandler}
-                        className={`${(validateFields && !!inputValidator("description", "Product description", formData.description, 10, 1000, Object.keys(commonFields).concat(variations).includes("description"))) ? "invalid" : ""}  textarea1`}
-                        name="description"
-                        id="description"
-                        spellCheck={false}
-                        value={formData.description}
-                    />
-                    {(validateFields && !!inputValidator("description", "Product description", formData.description, 10, 1000, Object.keys(commonFields).concat(variations).includes("description"))) && (
-                        <span className='input-error'>{inputValidator("description", "Product description", formData.description, 10, 1000, Object.keys(commonFields).concat(variations).includes("description"))}</span>
-                    )}
-                </div>
-
-
-                <div className='input-section'>
-                    <label className='label1' htmlFor="price">{`Price${Object.keys(commonFields).concat(variations).includes("price") ? "*" : ""}`}</label>
-                    <input
-                        onChange={formInputChangeHandler}
-                        className={`${(validateFields && !!inputValidator("price", "Product price", formData.price, 10, 999999, Object.keys(commonFields).concat(variations).includes("price"))) ? "invalid" : ""}  input1`}
-                        type="number"
-                        name="price"
-                        id="price"
-                        onWheel={() => document.activeElement.blur()}
-                        spellCheck={false}
-                        value={formData.price}
-                    />
-                    {(validateFields && !!inputValidator("price", "Product price", formData.price, 10, 999999, Object.keys(commonFields).concat(variations).includes("price"))) && (
-                        <span className='input-error'>{inputValidator("price", "Product price", formData.price, 10, 999999, Object.keys(commonFields).concat(variations).includes("price"))}</span>
-                    )}
-                </div>
-
-
-                <div className='input-section'>
-                    <label className='label1' htmlFor="discount_percent">{`Discount Percent`}</label>
-                    <input
-                        onChange={formInputChangeHandler}
-                        className={`${(validateFields && !!inputValidator("discount_percent", "Product discount percentage", formData.discount_percent, 0, 90, false)) ? "invalid" : ""}  input1`}
-                        type="number"
-                        name="discount_percent"
-                        id="discount_percent"
-                        onWheel={() => document.activeElement.blur()}
-                        spellCheck={false}
-                        value={formData.discount_percent}
-                    />
-                    {(validateFields && !!inputValidator("discount_percent", "Product discount percentage", formData.discount_percent, 0, 90, false)) && (
-                        <span className='input-error'>{inputValidator("discount_percent", "Product discount percentage", formData.discount_percent, 0, 90, false)}</span>
-                    )}
-                </div>
-
-
-                <div className='input-section'>
-                    <label className='label1' htmlFor="stock">{`Stock${Object.keys(commonFields).concat(variations).includes("stock") ? "*" : ""}`}</label>
-                    <input
-                        onChange={formInputChangeHandler}
-                        className={`${(validateFields && !!inputValidator("stock", "Product stock", formData.stock, 5, 100000, Object.keys(commonFields).concat(variations).includes("stock"))) ? "invalid" : ""}  input1`}
-                        type="number"
-                        name="stock"
-                        id="stock"
-                        onWheel={() => document.activeElement.blur()}
-                        spellCheck={false}
-                        value={formData.stock}
-                    />
-                    {(validateFields && !!inputValidator("stock", "Product stock", formData.stock, 5, 100000, Object.keys(commonFields).concat(variations).includes("stock"))) && (
-                        <span className='input-error'>{inputValidator("stock", "Product stock", formData.stock, 5, 100000, Object.keys(commonFields).concat(variations).includes("stock"))}</span>
-                    )}
-                </div>
-
-
-                {categoryConfig[category].properties.includes("color") && (
-                    <div className='input-section'>
-                        <label className='label1' htmlFor="color">{`Color${Object.keys(commonFields).concat(variations).includes("color") ? "*" : ""}`}</label>
+                {Object.keys(formData).map((field, index) => (
+                    <div key={index} className='input-section'>
+                        <label className='label1' htmlFor={field}>{`${field.replace("_", " ")}${Object.keys(commonFields).concat(variations).includes(field) ? "*" : ""}`}</label>
                         <input
-                            type='text'
-                            className={`${(validateFields && !!inputValidator("color", "Color", formData.color, 2, 40, Object.keys(commonFields).concat(variations).includes("color"))) ? "invalid" : ""}  input1`}
-                            name="color"
-                            id='color'
                             onChange={formInputChangeHandler}
+                            className={
+                                `${(validateFields && !!inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(variations).includes(field))) ? "invalid" : ""}  input1`
+                            }
+                            type={["price", "discount_percent", "stock", "ram", "storage", "quantity"].includes(field) ? "number" : "text"}
+                            name={field}
+                            id={field}
                             spellCheck={false}
-                            value={formData.color}
+                            onWheel={() => document.activeElement.blur()}
+                            value={formData[field]}
                         />
-                        {(validateFields && !!inputValidator("color", "Color", formData.color, 2, 40, Object.keys(commonFields).concat(variations).includes("color"))) && (
-                            <span className='input-error'>{inputValidator("color", "Color", formData.color, 2, 40, Object.keys(commonFields).concat(variations).includes("color"))}</span>
+                        {(validateFields && !!inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(variations).includes(field))) && (
+                            <span className='input-error'>{inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(variations).includes(field))}</span>
                         )}
                     </div>
-                )}
-
-
-                <div className='single-line'>
-                    {categoryConfig[category].properties.includes("ram") && (
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="ram">{`Ram${Object.keys(commonFields).concat(variations).includes("ram") ? "*" : ""}`}</label>
-                            <input
-                                onChange={formInputChangeHandler}
-                                className={`${(validateFields && !!inputValidator("ram", "Ram", formData.ram, 1, 10000, Object.keys(commonFields).concat(variations).includes("ram"))) ? "invalid" : ""}  input1`}
-                                type="number"
-                                name="ram"
-                                id="ram"
-                                onWheel={() => document.activeElement.blur()}
-                                spellCheck={false}
-                                value={formData.ram}
-                            />
-                            {(validateFields && !!!!inputValidator("ram", "Ram", formData.ram, 1, 10000, Object.keys(commonFields).concat(variations).includes("ram"))) && (
-                                <span className='input-error'>{inputValidator("ram", "Ram", formData.ram, 1, 10000, Object.keys(commonFields).concat(variations).includes("ram"))}</span>
-                            )}
-                        </div>
-                    )}
-
-                    {categoryConfig[category].properties.includes("storage") && (
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="storage">{`Storage${Object.keys(commonFields).concat(variations).includes("storage") ? "*" : ""}`}</label>
-                            <input
-                                onChange={formInputChangeHandler}
-                                className={`${(validateFields && !!inputValidator("storage", "Storage", formData.storage, 1, 10000, Object.keys(commonFields).concat(variations).includes("storage"))) ? "invalid" : ""}  input1`}
-                                type="number"
-                                name="storage"
-                                id="storage"
-                                onWheel={() => document.activeElement.blur()}
-                                spellCheck={false}
-                                value={formData.storage}
-                            />
-                            {(validateFields && !!inputValidator("storage", "Storage", formData.storage, 1, 10000, Object.keys(commonFields).concat(variations).includes("storage"))) && (
-                                <span className='input-error'>{inputValidator("storage", "Storage", formData.storage, 1, 10000, Object.keys(commonFields).concat(variations).includes("storage"))}</span>
-                            )}
-                        </div>
-                    )}
-                </div>
-
-
-                {categoryConfig[category].properties.includes("processor") && (
-                    <div className='input-section'>
-                        <label className='label1' htmlFor="processor">{`Processor${Object.keys(commonFields).concat(variations).includes("processor") ? "*" : ""}`}</label>
-                        <input
-                            type='text'
-                            className={`${(validateFields & !!inputValidator("processor", "Processor", formData.processor, 5, 100, Object.keys(commonFields).concat(variations).includes("processor"))) ? "invalid" : ""}  input1`}
-                            name="processor"
-                            id='processor'
-                            onChange={formInputChangeHandler}
-                            spellCheck={false}
-                            value={formData.processor}
-                        />
-                        {(validateFields && !!inputValidator("processor", "Processor", formData.processor, 5, 100, Object.keys(commonFields).concat(variations).includes("processor"))) && (
-                            <span className='input-error'>{inputValidator("processor", "Processor", formData.processor, 5, 100, Object.keys(commonFields).concat(variations).includes("processor"))}</span>
-                        )}
-                    </div>
-                )}
-
-
-                <div className='single-line'>
-                    {categoryConfig[category].properties.includes("size") && (
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="size">{`Size${Object.keys(commonFields).concat(variations).includes("size") ? "*" : ""}`}</label>
-                            <input
-                                type='text'
-                                className={`${(validateFields & !!inputValidator("size", "Size", formData.size, 2, 10, Object.keys(commonFields).concat(variations).includes("size"))) ? "invalid" : ""}  input1`}
-                                name="size"
-                                id='size'
-                                onChange={formInputChangeHandler}
-                                spellCheck={false}
-                                value={formData.size}
-                            />
-                            {(validateFields && !!inputValidator("size", "Size", formData.size, 2, 10, Object.keys(commonFields).concat(variations).includes("size"))) && (
-                                <span className='input-error'>{inputValidator("size", "Size", formData.size, 2, 10, Object.keys(commonFields).concat(variations).includes("size"))}</span>
-                            )}
-                        </div>
-                    )}
-
-                    {categoryConfig[category].properties.includes("quantity") && (
-                        <div className='input-section'>
-                            <label className='label1' htmlFor="quantity">{`Quantity${Object.keys(commonFields).concat(variations).includes("quantity") ? "*" : ""}`}</label>
-                            <input
-                                onChange={formInputChangeHandler}
-                                className={`${(validateFields & !!inputValidator("quantity", "Quantity", formData.quantity, 1, 10000, Object.keys(commonFields).concat(variations).includes("quantity"))) ? "invalid" : ""}  input1`}
-                                type="number"
-                                name="quantity"
-                                id="quantity"
-                                onWheel={() => document.activeElement.blur()}
-                                spellCheck={false}
-                                value={formData.quantity}
-                            />
-                            {(validateFields & !!inputValidator("quantity", "Quantity", formData.quantity, 1, 10000, Object.keys(commonFields).concat(variations).includes("quantity"))) && (
-                                <span className='input-error'>{inputValidator("quantity", "Quantity", formData.quantity, 1, 10000, Object.keys(commonFields).concat(variations).includes("quantity"))}</span>
-                            )}
-                        </div>
-                    )}
-                </div>
+                ))}
 
                 <div className="btn-container">
                     <button
@@ -343,4 +140,4 @@ const CreateProductForm = ({ category, categoryConfig, setResize, variations, se
     )
 }
 
-export default CreateProductForm
+export default CreateProductForm;

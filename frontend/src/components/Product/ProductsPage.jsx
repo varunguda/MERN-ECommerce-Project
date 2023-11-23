@@ -115,7 +115,6 @@ const ProductsPage = () => {
 
 
     useEffect(() => {
-
         if (keyword) {
             const urlQuery = [
                 category && `category=${encodeURIComponent(category)}`,
@@ -136,14 +135,12 @@ const ProductsPage = () => {
         // eslint-disable-next-line
     }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings, sort_by]);
 
-
     useEffect(() => {
         if (keyword) {
             getProducts();
         }
         // eslint-disable-next-line
     }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings, sort_by]);
-
 
     useEffect(() => {
         if (brand && brand.split(",").length > 0 && selectedBrands.length !== brand.split(",").length) {
@@ -155,14 +152,12 @@ const ProductsPage = () => {
         // eslint-disable-next-line
     }, [brand]);
 
-
     useEffect(() => {
         if (selectedBrands.join(",") !== brand) {
             setBrand(selectedBrands.join(","));
         }
         // eslint-disable-next-line
     }, [selectedBrands]);
-
 
     useEffect(() => {
 
@@ -174,7 +169,6 @@ const ProductsPage = () => {
             if (allCategories && (Object.keys(allCategories).length > 0)) {
 
                 let productCategories = Object.keys(allCategories).filter(category => allCategories[category] > 0);
-
                 let newSelectedCategories = selectedCategories.filter(category => productCategories.includes(category));
 
                 productCategories.forEach(category => {
@@ -188,7 +182,6 @@ const ProductsPage = () => {
         }
         // eslint-disable-next-line
     }, [category, allCategories]);
-
 
     useEffect(() => {
 
@@ -213,7 +206,6 @@ const ProductsPage = () => {
         // eslint-disable-next-line
     }, [selectedCategories]);
 
-
     useEffect(() => {
 
         if ((minPrice === productsMinPrice) && (maxPrice === productsMaxPrice)) {
@@ -232,7 +224,6 @@ const ProductsPage = () => {
 
         // eslint-disable-next-line
     }, [minPrice, maxPrice, productsMinPrice, productsMaxPrice]);
-
 
     useEffect(() => {
 
@@ -395,7 +386,6 @@ const ProductsPage = () => {
 
 
     useEffect(() => {
-
         const handleSidebarOutClick = (e) => {
             if (btnActive && sidebarRef.current && btnRef.current) {
                 if (!sidebarRef.current.contains(e.target) && !btnRef.current.contains(e.target)) {
@@ -403,15 +393,12 @@ const ProductsPage = () => {
                 }
             }
         }
-
         window.addEventListener("click", handleSidebarOutClick);
-
         return () => {
             window.removeEventListener('click', handleSidebarOutClick)
         }
         // eslint-disable-next-line
     }, [])
-
 
 
     const pageChangeHandler = (page) => {
@@ -488,7 +475,6 @@ const ProductsPage = () => {
     const ratingsClickHandler = (e) => {
         handleCheckboxSelection(e.target.name, setSelectedRatings, selectedRatings);
     }
-
 
     const removeFilter = (val, setSelectedValues, allSelectedValues) => {
         const newValues = allSelectedValues.filter((elem) => elem !== val);
@@ -634,6 +620,7 @@ const ProductsPage = () => {
                             <div className="products-page-section">
 
                                 {sidebar && (
+
                                     <div ref={sidebarRef} className={`products-page-sidebar ${btnActive ? "active" : ""}`}>
 
                                         <Accordian
@@ -762,7 +749,6 @@ const ProductsPage = () => {
                                                 </Fragment>
                                             ))
                                         )}
-
 
 
                                         <Accordian
