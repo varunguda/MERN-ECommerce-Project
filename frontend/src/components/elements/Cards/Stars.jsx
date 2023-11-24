@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import IconStar from '@tabler/icons-react/dist/esm/icons/IconStar';
 import IconStarFilled from '@tabler/icons-react/dist/esm/icons/IconStarFilled';
 import IconStarHalfFilled from '@tabler/icons-react/dist/esm/icons/IconStarHalfFilled';
@@ -15,6 +15,14 @@ const Stars = ({ value, size, readOnly, getVal }) => {
             setStarValue(ind + 1);
         }
     }
+
+    useEffect(() => {
+        if(value !== starValue){
+            setStarValue(value);
+        }
+        // eslint-disable-next-line
+    }, [value]);
+    
 
     const ratingStars = [...Array(5)].map((elem, index) => {
 

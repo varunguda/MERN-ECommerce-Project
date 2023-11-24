@@ -9,6 +9,8 @@ import { Orders } from '../models/orderModel.js';
 import { orderHtml } from '../html/orderHtml.js';
 import { sendEmail } from '../utils/sendMail.js';
 import { MeritMeter } from '../utils/meritMeter.js';
+import { createProductValidator, productValidator, reviewValidator } from '../validators/productValidators.js';
+import { validationError } from '../validators/validationError.js';
 
 
 const allProperties = ["name", "description", "price", "images", "stock", "discount_percent", "final_price", "options", "bundles", "color", "ram", "processor", "resolution", "storage", "size", "quantity", "variations", "brand", "category", "review_id"];
@@ -317,71 +319,92 @@ export const getSingleProductDetails = catchAsync(async (req, res, next) => {
 
 
 
-export const createProduct = catchAsync(async (req, res, next) => {
+export const createProduct = [
 
-    const { products, variations, category, brand } = req.body;
+    ...createProductValidator,
 
-    const createdProducts = [];
-    const product_id = (products.length > 1) ? uuidv4() : undefined;
+    catchAsync(async (req, res, next) => {
 
-    if (!categoryConfig.hasOwnProperty(category)) {
-        return next(new ErrorHandler("This category is not available!", 400));
-    }
+        validationError(req);
 
-    const { properties } = categoryConfig[category];
+        const { products, variations, category, brand } = req.body;
 
-    for (const product of products) {
+        const createdProducts = [];
+        const product_id = (products.length > 1) ? uuidv4() : undefined;
 
-        const final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
-
-        // creating a product with all the data provided by the seller
-        const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price });
-
-        // All properties has all the flags that are present in a mongo document, to prevent a seller to fill irrelevent flags in the db, we are setting all the falg values which are not relevant to a category to undefined.
-        allProperties.forEach((property) => {
-            if (!properties.includes(property)) {
-                createdProduct[property] = undefined;
-            }
-        })
-
-        createdProduct.final_price = final_price;
-        createdProduct.brand = brand;
-        createdProduct.category = category;
-        if (products.length > 1) {
-            createdProduct.variations = variations;
+        if (!categoryConfig.hasOwnProperty(category)) {
+            return next(new ErrorHandler("This category is not available!", 400));
         }
 
-        // Updating the product saved
-        await createdProduct.save({ validateBeforeSave: false });
-        createdProducts.push(createdProduct);
-    }
+        const { properties } = categoryConfig[category];
 
-    return res.status(201).json({
-        success: true,
-        message: `${products.length === 1 ? "Product" : "Products"} added successfully!`
+        for (const product of products) {
+
+            let final_price;
+            if (!product.discount_percent) {
+                final_price = Math.round(product.price);
+            }
+            else {
+                final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
+            }
+
+            // creating a product with all the data provided by the seller
+            const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price });
+
+            // All properties has all the flags that are present in a mongo document, to prevent a seller to fill irrelevent flags in the db, we are setting all the falg values which are not relevant to a category to undefined.
+            allProperties.forEach((property) => {
+                if (!properties.includes(property)) {
+                    createdProduct[property] = undefined;
+                }
+            })
+
+            createdProduct.final_price = final_price;
+            createdProduct.brand = brand;
+            createdProduct.category = category;
+            if (products.length > 1) {
+                createdProduct.variations = variations;
+            }
+
+            // Updating the product saved
+            await createdProduct.save({ validateBeforeSave: false });
+            createdProducts.push(createdProduct);
+        }
+
+        return res.status(201).json({
+            success: true,
+            message: `${products.length === 1 ? "Product" : "Products"} added successfully!`
+        })
     })
-});
+];
 
 
 
-export const updateAnyProduct = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
+export const updateAnyProduct = [
 
-    const final_price = Math.round(Number(req.body.price) - (Number(req.body.price) * Number(req.body.discount_percent) / 100));
+    ...productValidator(),
 
-    const product = await Product.findByIdAndUpdate(id, { ...req.body, final_price }, {
-        new: true,
-        runValidators: true,
-    });
-    if (!product) {
-        return next(new ErrorHandler("Product not found!", 400));
-    }
-    
-    return res.json({
-        success: true,
-        message: "Product updated successfully!"
+    catchAsync(async (req, res, next) => {
+
+        validationError(req);
+
+        const { id } = req.params;
+
+        const final_price = Math.round(Number(req.body.price) - (Number(req.body.price) * Number(req.body.discount_percent) / 100));
+
+        const product = await Product.findByIdAndUpdate(id, { ...req.body, final_price }, {
+            new: true,
+            runValidators: true,
+        });
+        if (!product) {
+            return next(new ErrorHandler("Product not found!", 400));
+        }
+
+        return res.json({
+            success: true,
+            message: "Product updated successfully!"
+        })
     })
-});
+];
 
 
 
@@ -397,7 +420,7 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
 
     let totalCancelledOrders = 0;
     for (const order of orders) {
-        
+
         let totalItemsPrice = 0;
         order.order_items = order.order_items.map((item) => {
             if ((item.product.toString() === product.toString()) && (item.product_status === "Processing")) {
@@ -442,31 +465,39 @@ export const getMyProducts = catchAsync(async (req, res, next) => {
 
 
 
-export const updateMyProduct = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
+export const updateMyProduct = [
 
-    const product = await Product.findOne({ _id: id, seller_id: req.user._id })
-    if (!product) {
-        return next(new ErrorHandler("Product not found!", 404));
-    }
+    ...productValidator(),
 
-    if (categoryConfig.hasOwnProperty(product.category)) {
-        const { properties } = categoryConfig[product.category];
+    catchAsync(async (req, res, next) => {
 
-        properties.forEach((property) => {
-            product[property] = req.body[property] || undefined;
-        })
-    }
+        validationError(req);
 
-    product.final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
+        const { id } = req.params;
 
-    await product.save({ validateBeforeSave: false });
+        const product = await Product.findOne({ _id: id, seller_id: req.user._id })
+        if (!product) {
+            return next(new ErrorHandler("Product not found!", 404));
+        }
 
-    return res.json({
-        success: true,
-        message: "Product details updated successfully!"
-    });
-});
+        if (categoryConfig.hasOwnProperty(product.category)) {
+            const { properties } = categoryConfig[product.category];
+
+            properties.forEach((property) => {
+                product[property] = req.body[property] || undefined;
+            })
+        }
+
+        product.final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
+
+        await product.save({ validateBeforeSave: false });
+
+        return res.json({
+            success: true,
+            message: "Product details updated successfully!"
+        });
+    })
+];
 
 
 
@@ -532,35 +563,104 @@ export const deleteMyProduct = catchAsync(async (req, res, next) => {
 
 
 
-export const craeateProductReview = catchAsync(async (req, res, next) => {
+export const createProductReview = [
 
-    const { id } = req.params;
-    const { title, comment, rating, images } = req.body;
+    ...reviewValidator,
 
-    const userReview = {
-        user_id: req.user._id,
-        name: req.user.name,
-        rating,
-        title,
-        comment,
-        images
-    }
+    catchAsync(async (req, res, next) => {
 
-    let product = await Product.findById(id);
-    if (!product) {
-        return next(new ErrorHandler("Product not found!", 404));
-    }
+        validationError(req);
 
-    if (!product.review_id) {
-        const productReviews = await Review.create({});
-        product.review_id = productReviews._id;
-        await product.save({ validateBeforeSave: false })
+        const { id } = req.params;
+        const { title, comment, rating } = req.body;
 
-        if (product.product_id) {
-            const products = await Product.find({ product_id: product.product_id });
-            products.forEach(async (product) => {
-                product.review_id = productReviews._id;
-                await product.save({ validateBeforeSave: false })
+        const userReview = {
+            user_id: req.user._id,
+            name: req.user.name,
+            rating,
+            title,
+            comment
+        }
+
+        let product = await Product.findById(id);
+        if (!product) {
+            return next(new ErrorHandler("Product not found!", 404));
+        }
+
+        if (!product.review_id) {
+            const productReviews = await Review.create({});
+            product.review_id = productReviews._id;
+            await product.save({ validateBeforeSave: false })
+
+            if (product.product_id) {
+                const products = await Product.find({ product_id: product.product_id });
+                products.forEach(async (product) => {
+                    product.review_id = productReviews._id;
+                    await product.save({ validateBeforeSave: false })
+                });
+            }
+
+            const orders = await Orders.find({ user: req.user._id });
+            if (!orders) {
+                userReview.is_verified_purchase = false;
+            }
+
+            orders.map((order) => {
+                order.order_items.map((item) => {
+                    if ((item.product.toString() === product._id.toString()) || item.product_status === "Delivered") {
+                        userReview.is_verified_purchase = true;
+                    }
+                    else {
+                        userReview.is_verified_purchase = false;
+                    }
+                })
+            })
+
+            userReview.product_name = product.name;
+
+            productReviews.reviews = productReviews.reviews.push(userReview);
+            productReviews.total_reviews = productReviews.reviews.length;
+            productReviews.rating = Math.round(rating);
+
+            await productReviews.save({ validateBeforeSave: false });
+
+            return res.status(201).json({
+                success: true,
+                message: "Review added successfully!",
+                review: productReviews
+            });
+        }
+
+        const productReview = await Review.findById(product.review_id);
+        if (!productReview) {
+            product.review_id = undefined;
+            await product.save({ validateBeforeSave: false });
+            return next(new ErrorHandler("Something went wrong, please try again!", 400));
+        }
+
+        let isReviewed = false;
+
+        if (productReview && productReview.reviews) {
+            isReviewed = productReview.reviews.some((review) => review.user_id.toString() === req.user._id.toString());
+        }
+
+        if (isReviewed) {
+            // If user has already reviewed the product, users old review gets updated to his new review
+            productReview.reviews = productReview.reviews.map((review) => {
+                if (review.user_id.toString() === req.user._id.toString()) {
+                    let updatedRating = ((productReview.rating * productReview.total_reviews) - review.rating + userReview.rating) / productReview.total_reviews;
+                    productReview.rating = Math.round(updatedRating * 10) / 10;
+                    return userReview;
+                }
+                return review;
+            });
+
+            await productReview.save({ validateBeforeSave: false });
+
+            return res.status(201).json({
+                success: true,
+                message: "Review updated successfully!",
+                review: productReview,
             });
         }
 
@@ -569,12 +669,12 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
             userReview.is_verified_purchase = false;
         }
 
+
         orders.map((order) => {
             order.order_items.map((item) => {
                 if ((item.product.toString() === product._id.toString()) || item.product_status === "Delivered") {
                     userReview.is_verified_purchase = true;
-                }
-                else {
+                } else {
                     userReview.is_verified_purchase = false;
                 }
             })
@@ -582,89 +682,26 @@ export const craeateProductReview = catchAsync(async (req, res, next) => {
 
         userReview.product_name = product.name;
 
-        productReviews.reviews = productReviews.reviews.push(userReview);
-        productReviews.total_reviews = productReviews.reviews.length;
-        productReviews.rating = Math.round(rating);
+        productReview.reviews.push(userReview);
+        productReview.total_reviews = productReview.reviews.length;
 
-        await productReviews.save({ validateBeforeSave: false });
+        let total = 0;
+        productReview.reviews.forEach((rev) => {
+            total += rev.rating;
+        })
 
-        return res.status(201).json({
-            success: true,
-            message: "Review added successfully!",
-            review: productReviews
-        });
-    }
-
-    const productReview = await Review.findById(product.review_id);
-    if (!productReview) {
-        product.review_id = undefined;
-        await product.save({ validateBeforeSave: false });
-        return next(new ErrorHandler("Something went wrong, please try again!", 400));
-    }
-
-    let isReviewed = false;
-
-    if (productReview && productReview.reviews) {
-        isReviewed = productReview.reviews.some((review) => review.user_id.toString() === req.user._id.toString());
-    }
-
-    if (isReviewed) {
-        // If user has already reviewed the product, users old review gets updated to his new review
-        productReview.reviews = productReview.reviews.map((review) => {
-            if (review.user_id.toString() === req.user._id.toString()) {
-                let updatedRating = ((productReview.rating * productReview.total_reviews) - review.rating + userReview.rating) / productReview.total_reviews;
-                productReview.rating = Math.round(updatedRating * 10) / 10;
-                return userReview;
-            }
-            return review;
-        });
+        const totalRating = total / productReview.reviews.length;
+        productReview.rating = Math.round(totalRating * 10) / 10;
 
         await productReview.save({ validateBeforeSave: false });
 
         return res.status(201).json({
             success: true,
-            message: "Review updated successfully!",
-            review: productReview,
+            message: "Review added successfully!",
+            review: productReview
         });
-    }
-
-    const orders = await Orders.find({ user: req.user._id });
-    if (!orders) {
-        userReview.is_verified_purchase = false;
-    }
-
-
-    orders.map((order) => {
-        order.order_items.map((item) => {
-            if ((item.product.toString() === product._id.toString()) || item.product_status === "Delivered") {
-                userReview.is_verified_purchase = true;
-            } else {
-                userReview.is_verified_purchase = false;
-            }
-        })
     })
-
-    userReview.product_name = product.name;
-
-    productReview.reviews.push(userReview);
-    productReview.total_reviews = productReview.reviews.length;
-
-    let total = 0;
-    productReview.reviews.forEach((rev) => {
-        total += rev.rating;
-    })
-
-    const totalRating = total / productReview.reviews.length;
-    productReview.rating = Math.round(totalRating * 10) / 10;
-
-    await productReview.save({ validateBeforeSave: false });
-
-    return res.status(201).json({
-        success: true,
-        message: "Review added successfully!",
-        review: productReview,
-    });
-});
+];
 
 
 
@@ -767,15 +804,22 @@ export const deleteReview = catchAsync(async (req, res, next) => {
             await prod.save({ validateBeforeSave: false });
         }
         await productReviews.deleteOne();
+
+        return res.json({
+            success: true,
+            message: "Successfully deleted your review!",
+            review: {}
+        });
     }
     else {
         await productReviews.save({ validateBeforeSave: false });
-    }
 
-    return res.json({
-        success: true,
-        message: "Successfully deleted your review!"
-    });
+        return res.json({
+            success: true,
+            message: "Successfully deleted your review!",
+            review: productReviews
+        });
+    }
 });
 
 
@@ -1052,6 +1096,7 @@ export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
 
 
 export const toggleWishlistProduct = catchAsync(async (req, res, next) => {
+    
     const { id } = req.params;
 
     const product = await Product.findById(id);

@@ -50,6 +50,107 @@ const reviewReducer = (state, action) => {
 const reviewCardOptions = ["Delete", "Edit"];
 
 
+
+const ReviewModalContent = ({ state, addReviewHandler }) => {
+
+    const [modalState, modalReviewDispatch] = useReducer(reviewReducer, initialState);
+
+    const { closeModal } = useContext(ModalContext);
+
+    const [validateFields, setValidateFields] = useState(false);
+
+    useEffect(() => {
+        modalReviewDispatch({ type: SET_REVIEW_TITLE, payload: state.title });
+        modalReviewDispatch({ type: SET_REVIEW_COMMENT, payload: state.comment });
+        modalReviewDispatch({ type: SET_REVIEW_RATING, payload: state.rating });
+    }, [state]);
+
+
+    const reviewChangeHandler = (e) => {
+        switch (e.target.name) {
+            case "title": {
+                return modalReviewDispatch({ type: SET_REVIEW_TITLE, payload: e.target.value.slice(0, 50) })
+            }
+            case "comment": {
+                return modalReviewDispatch({ type: SET_REVIEW_COMMENT, payload: e.target.value.slice(0, 600) })
+            }
+            default: {
+                return
+            }
+        }
+    }
+
+    const cancelClickHandler = () => {
+        closeModal();
+        setValidateFields(false);
+    }
+
+    const submitHandler = (e) => {
+        e.preventDefault();
+
+        setValidateFields(true);
+
+        if (!reviewTitleValidator(modalState.title) && !reviewCommentValidator(modalState.comment) && !reviewRatingValidator(modalState.rating)) {
+            addReviewHandler(modalState.title, modalState.comment, modalState.rating);
+            closeModal();
+            modalReviewDispatch({ type: RESET_REVIEW });
+        }
+    }
+
+
+    return (
+        <form onSubmit={submitHandler}>
+
+            <div className="review-stars-container input-section">
+                <Stars
+                    size={30}
+                    readOnly={false}
+                    value={modalState.rating}
+                    getVal={(val) => modalReviewDispatch({ type: SET_REVIEW_RATING, payload: val })}
+                />
+                {(validateFields && !!reviewRatingValidator(modalState.rating)) && (
+                    <span className='input-error'>{reviewRatingValidator(modalState.rating)}</span>
+                )}
+            </div>
+
+            <div className="form-instruction" style={{ marginBottom: "8px" }}>*Required fields</div>
+
+            <div className="input-section">
+                <label htmlFor="title" className="label1">Title*</label>
+                <input onChange={reviewChangeHandler} maxLength={50} className='input1' type="text" name="title" id="title" defaultValue={modalState.title} />
+                <span className="input-caption" style={{ alignSelf: "flex-end" }}>{modalState.title.length}/50</span>
+                {(validateFields && !!reviewTitleValidator(modalState.title)) && (
+                    <span className='input-error'>{reviewTitleValidator(modalState.title)}</span>
+                )}
+            </div>
+
+            <div className="input-section">
+                <label htmlFor="comment" className="label1">Comment*</label>
+                <textarea 
+                    onChange={reviewChangeHandler} 
+                    maxLength={600} 
+                    className='textarea1'
+                    name="comment" 
+                    id="comment" 
+                    defaultValue={modalState.comment} 
+                />
+                <span className="input-caption" style={{ alignSelf: "flex-end" }}>{modalState.comment.length}/600</span>
+
+                {(validateFields && !!reviewCommentValidator(modalState.comment)) && (
+                    <span className='input-error'>{reviewCommentValidator(modalState.comment)}</span>
+                )}
+            </div>
+
+            <div className="modal-btn-container">
+                <button type="button" onClick={cancelClickHandler} className='secondary-btn'>Cancel</button>
+                <button type="submit" className='main-btn'>Add</button>
+            </div>
+        </form>
+    )
+}
+
+
+
 const ProductReview = ({ mainProduct }) => {
 
     const [state, reviewDispatch] = useReducer(reviewReducer, initialState);
@@ -60,28 +161,26 @@ const ProductReview = ({ mainProduct }) => {
     const dispatch = useDispatch();
     const { getProductReviews, addProductReview, deleteProductReview } = bindActionCreators(actionCreators, dispatch);
 
-    const { openModal, closeModal, setModalContent } = useContext(ModalContext);
+    const { openModal, closeModal } = useContext(ModalContext);
 
     const [reviewPage, setReviewPage] = useState(null);
     const [reviewExist, setReviewExist] = useState(false);
-    const [validateFields, setValidateFields] = useState(false);
     const [noReviews, setNoReviews] = useState(false);
-
 
     useEffect(() => {
         if(productReviewsError){
             setNoReviews(true);
+            toast.error(productReviewsError, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
-        toast.error(productReviewsError, {
-            position: "bottom-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
     }, [productReviewsError]);
 
 
@@ -110,13 +209,18 @@ const ProductReview = ({ mainProduct }) => {
 
     useEffect(() => {
         if (productReview && Object.keys(productReview).length && productReview.reviews && (productReview.reviews.length > 0) && loggedIn) {
+            setNoReviews(false);
             const exist = productReview.reviews.find((rev) => rev.user_id.toString() === user._id.toString());
-            if (exist) {
+            if (!!exist) {
                 reviewDispatch({ type: SET_REVIEW_TITLE, payload: exist.title })
                 reviewDispatch({ type: SET_REVIEW_COMMENT, payload: exist.comment })
                 reviewDispatch({ type: SET_REVIEW_RATING, payload: exist.rating })
                 setReviewExist(true);
-            };
+            }
+        }
+        else if(productReview && Object.keys(productReview).length === 0){
+            setReviewExist(false);
+            setNoReviews(true);
         }
         // eslint-disable-next-line
     }, [productReview])
@@ -134,98 +238,21 @@ const ProductReview = ({ mainProduct }) => {
         setReviewPage(page);
     }
 
-    const reviewChangeHandler = (e) => {
-        switch (e.target.name) {
-            case "title": {
-                return reviewDispatch({ type: SET_REVIEW_TITLE, payload: e.target.value.slice(0, 100) })
-            }
-            case "comment": {
-                return reviewDispatch({ type: SET_REVIEW_COMMENT, payload: e.target.value.slice(0, 800) })
-            }
-            default: {
-                return
-            }
-        }
+    const addReviewHandler = (title, comment, rating) => {
+        addProductReview({ title, comment, rating }, mainProduct._id);
+        getProductReviews(mainProduct._id, reviewPage ? reviewPage : 1);
     }
-
-    const cancelClickHandler = () => {
-        closeModal();
-        setValidateFields(false);
-    }
-
-    const addReviewHandler = (e) => {
-        e.preventDefault();
-
-        setValidateFields(true);
-
-        if (!reviewTitleValidator(state.title) && !reviewCommentValidator(state.comment) && !reviewRatingValidator(state.rating)) {
-            addProductReview(state, mainProduct._id);
-            closeModal();
-            reviewDispatch({ type: RESET_REVIEW });
-        }
-    }
-
-
-    const reviewContainer = (state) => (
-
-        <form onSubmit={addReviewHandler}>
-
-            <div className="review-stars-container input-section">
-                <Stars
-                    size={30}
-                    readOnly={false}
-                    value={state.rating}
-                    getVal={(val) => reviewDispatch({ type: SET_REVIEW_RATING, payload: val })}
-                />
-                {(validateFields && reviewRatingValidator(state.rating)) && (
-                    <span className='input-error'>{reviewRatingValidator(state.rating)}</span>
-                )}
-            </div>
-
-            <div className="form-instruction" style={{ marginBottom: "8px" }}>*Required fields</div>
-
-            <div className="input-section">
-                <label htmlFor="title" className="label1">Title*</label>
-                <input onChange={reviewChangeHandler} maxLength={100} className='input1' type="text" name="title" id="title" defaultValue={state.title} />
-                <span className="input-caption" style={{ alignSelf: "flex-end" }}>{state.title.length}/100</span>
-                {(validateFields && reviewTitleValidator(state.title)) && (
-                    <span className='input-error'>{reviewTitleValidator(state.title)}</span>
-                )}
-            </div>
-
-            <div className="input-section">
-                <label htmlFor="comment" className="label1">Comment*</label>
-                <textarea 
-                    onChange={reviewChangeHandler} 
-                    maxLength={800} 
-                    className='textarea1' 
-                    name="comment" 
-                    id="comment" 
-                    defaultValue={state.comment} 
-                />
-                <span className="input-caption" style={{ alignSelf: "flex-end" }}>{state.comment.length}/800</span>
-
-                {(validateFields && reviewCommentValidator(state.comment)) && (
-                    <span className='input-error'>{reviewCommentValidator(state.comment)}</span>
-                )}
-            </div>
-
-            <div className="modal-btn-container">
-                <button type="button" onClick={cancelClickHandler} className='secondary-btn'>Cancel</button>
-                <button type="submit" className='main-btn'>Add</button>
-            </div>
-        </form>
-    )
 
     const handleWriteReview = () => {
-        openModal(reviewExist ? "Edit your review" : "Write your review", reviewContainer(state), true);
+        openModal(
+            reviewExist ? "Edit your review" : "Write your review", 
+            <ReviewModalContent 
+                state={state}
+                addReviewHandler={addReviewHandler}
+            />,
+            true
+        );
     }
-
-    useEffect(() => {
-        setModalContent(reviewContainer(state));
-        // eslint-disable-next-line
-    }, [state, validateFields]);
-
 
     const reviewOptionsClickHandler = (val) => {
         switch (val) {
@@ -238,7 +265,6 @@ const ProductReview = ({ mainProduct }) => {
                             <div onClick={() => {
                                 deleteProductReview(mainProduct._id);
                                 closeModal();
-                                setValidateFields(false);
                                 reviewDispatch({ type: RESET_REVIEW });
                             }} className="main-btn">Yes</div>
                         </div>
@@ -257,6 +283,7 @@ const ProductReview = ({ mainProduct }) => {
             }
         }
     }
+
 
     return (
         <div className="customer-reviews-container">
@@ -292,7 +319,6 @@ const ProductReview = ({ mainProduct }) => {
                                         <Masonry gutter='20px'>
                                             {productReview.reviews.map((review, index) => {
                                                 return (
-                                                    
                                                     <div key={index} className="review-card">
                                                         {(user && (review.user_id === user._id)) && (
                                                             <div className="review-card-more-btn">
@@ -323,7 +349,6 @@ const ProductReview = ({ mainProduct }) => {
                                                     </div>
                                                 )
                                             })}
-
                                         </Masonry>
                                     </ResponsiveMasonry>
                                 )}

@@ -41,7 +41,7 @@ const ProductSchema = new Schema({
 
     name: {
         type: String,
-        required: [true, "Please enter product Name"],
+        required: [true, "Please enter Product name"],
         minLength: [10, "Product name must contain atleast 10 characters!"],
         maxLength: [250, "Product name is too large!"],
     },
@@ -236,6 +236,11 @@ const ProductSchema = new Schema({
 })
 
 
+export const Product = model("Product", ProductSchema)
+
+
+
+
 
 // // Define a function that contains the validation logic
 // const validateCustomFields = (doc) => {
@@ -298,4 +303,3 @@ const ProductSchema = new Schema({
 
 
 
-export const Product = model("Product", ProductSchema)
