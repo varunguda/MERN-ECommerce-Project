@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import './Footer.css';
 import '../../../index.css';
 import IconGithub from '@tabler/icons-react/dist/esm/icons/IconBrandGithub';
@@ -29,8 +30,9 @@ const Footer = () => {
                                 <a href="/">Home Appliances</a>
                                 <a href="/">Fashion</a>
                                 <a href="/">Beauty</a>
-                                <a href="/">Home</a>
+                                <Link to="/">Home</Link>
                             </div>
+
                             <div className="links-column">
                                 <h2>ToBeFilled</h2>
                                 <a href="/">ToBeFilled</a>
@@ -39,6 +41,7 @@ const Footer = () => {
                                 <a href="/">ToBeFilled</a>
                                 <a href="/">ToBeFilled</a>
                             </div>
+
                             <div className="links-column">
                                 <h2>ToBeFilled</h2>
                                 <a href="/">ToBeFilled</a>
@@ -47,6 +50,7 @@ const Footer = () => {
                                 <a href="/">ToBeFilled</a>
                                 <a href="/">ToBeFilled</a>
                             </div>
+
                             <div className="links-column socials-column">
                                 <h2>Contact</h2>
                                 <div className="socials">
@@ -60,12 +64,13 @@ const Footer = () => {
                             </div>
                         </div>
                     </footer>
+
                     <footer className="bottom">
-                        <p className="copyright">© 2023 All rights reserved</p>
+                        <p className="copyright">&#169; 2023 All rights reserved</p>
                         <div className="legal">
-                            <a href="/"> License </a>
-                            <a href="/"> Terms </a>
-                            <a href="/"> Privacy </a>
+                            <Link href="/">License</Link>
+                            <Link href="/">Terms</Link>
+                            <Link href="/">Privacy</Link>
                         </div>
                     </footer>
                 </section>
