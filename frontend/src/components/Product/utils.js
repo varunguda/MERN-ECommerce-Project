@@ -75,8 +75,8 @@ export const reviewTitleValidator = (val) => {
         return `Enter a valid title`;
     }
 
-    if (val.length > 100) {
-        return `Title must not contain more than 100 characters`
+    if (val.length > 50) {
+        return `Title must not contain more than 50 characters!`
     }
 
     return false;
@@ -92,8 +92,8 @@ export const reviewCommentValidator = (val) => {
         return `Enter a valid comment`;
     }
 
-    if (val.length > 400) {
-        return `Comment must not contain more than 400 characters`
+    if ((val.length > 600) || (val.length < 5)) {
+        return `Comment must contain atleast 5 and atmost 600 characters`
     }
 
     return false;
@@ -102,11 +102,11 @@ export const reviewCommentValidator = (val) => {
 
 export const reviewRatingValidator = (val) => {
     if (typeof val !== "number") {
-        return `Please select a valid rating`;
+        return `Please select a valid rating!`;
     }
 
     if ((val <= 0) || (val > 5)) {
-        return "Please rate your product";
+        return "Please rate your product!";
     }
 
     return false;

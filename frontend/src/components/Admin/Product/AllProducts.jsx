@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import "./Product.css";
 import Table from '../../elements/Table/Table';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,11 +8,20 @@ import { setAvailability, setPage } from '../../../State/action-creators/Navigat
 import IconTrash from '@tabler/icons-react/dist/esm/icons/IconTrash';
 import IconEdit from '@tabler/icons-react/dist/esm/icons/IconEdit';
 import IconExternalLink from '@tabler/icons-react/dist/esm/icons/IconExternalLink';
+import { useMutation } from 'react-query';
+import { deleteAnyProduct, editAnyProductDetails } from '../fetchers';
+import { toast } from 'react-toastify';
+import EditProductForm from '../../layouts/ProductLayouts/EditProductForm';
+import { ModalContext } from '../../../Context/ModalContext';
 
 
 const AllProducts = () => {
 
+    const { openModal, closeModal } = useContext(ModalContext);
+
     const { loading, products, productCount } = useSelector(state => state.products);
+    const deleteProductMutation = useMutation(deleteAnyProduct);
+    const editProductMutation = useMutation(editAnyProductDetails);
 
     const [ pageNum, setPageNum ] = useState(1);
 
@@ -25,22 +34,104 @@ const AllProducts = () => {
         // eslint-disable-next-line 
     }, []);
 
-    useEffect(() => {
+    const fetchProducts = () => {
         dispatch(setPage(pageNum));
         dispatch(setAvailability("oos"));
         dispatch(getProducts());
+    }
+
+    useEffect(() => {
+        fetchProducts();
         // eslint-disable-next-line 
     }, [pageNum]);
 
     useEffect(() => {
-        if(loading){
+        if (editProductMutation.isError || deleteProductMutation.isError) {
+            toast.error(((editProductMutation.error && editProductMutation.error.message) || (deleteProductMutation.error && deleteProductMutation.error.message)), {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            editProductMutation.reset();
+            deleteProductMutation.reset();
+        }
+        // eslint-disable-next-line
+    }, [editProductMutation.isError, deleteProductMutation.isError]);
+
+    useEffect(() => {
+        if(loading || editProductMutation.isLoading || deleteProductMutation.isLoading){
             dispatch(loaderSpin(true));
         }
         else{
             dispatch(loaderSpin(false));
         }
         // eslint-disable-next-line
-    }, [loading]);
+    }, [loading, editProductMutation.isLoading, deleteProductMutation.isLoading]);
+
+    useEffect(() => {
+        if(editProductMutation.isSuccess || deleteProductMutation.isSuccess){
+            toast.success(((editProductMutation.data && editProductMutation.data.message) || (deleteProductMutation.data && deleteProductMutation.data.message)), {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            editProductMutation.reset();
+            deleteProductMutation.reset();
+            fetchProducts();
+        }
+        // eslint-disable-next-line
+    }, [editProductMutation.isSuccess, deleteProductMutation.isSuccess]);
+
+
+    const editHandler = (product, updatedData) => {
+        editProductMutation.mutate({ product, updatedData });
+        closeModal();
+    }
+
+    const editPorductHandler = (product_id) => {
+        const product = products.find(prod => prod._id === product_id);
+        openModal(
+            "Edit Product Details",
+            <EditProductForm product={product} updateProduct={(updatedData) => editHandler(product_id, updatedData)} />
+        );
+    }
+
+    const deleteClickHandler = (product) => {
+        deleteProductMutation.mutate({ product });
+        closeModal();
+    };
+
+    const deleteProductHandler = (product) => {
+        openModal(
+            "Are you sure you want to delete this product permanently?",
+            <>
+                <div className="modal-caption">
+                    This product will no longer be available on ManyIN from now and product will be cancelled from all the Orders if the product status is 'Processing'.
+                </div>
+
+                <div className="modal-btn-container">
+                    <button type="button" onClick={closeModal} className='secondary-btn'>No</button>
+                    <button
+                        type="button"
+                        onClick={() => deleteClickHandler(product)}
+                        className='main-btn warning'
+                    >
+                        Yes
+                    </button>
+                </div>
+            </>
+        )
+    };
 
     const columns = [
         {
@@ -90,8 +181,12 @@ const AllProducts = () => {
             renderCell: (params) => {
                 return (
                     <div className="table-icons-container">
-                        <span><IconEdit size={18} strokeWidth={1.25} /></span>
-                        <span><IconTrash strokeWidth={1.25} size={18} /></span>
+                        <span onClick={() => editPorductHandler(params.row._id)}>
+                            <IconEdit size={18} strokeWidth={1.25} />
+                        </span>
+                        <span onClick={() => deleteProductHandler(params.row._id)}>
+                            <IconTrash strokeWidth={1.25} size={18} />
+                        </span>
                         <span onClick={() => window.open(`/product/${params.row._id}`)}>
                             <IconExternalLink size={18} strokeWidth={1.25} />
                         </span>
@@ -107,7 +202,7 @@ const AllProducts = () => {
             <div className="page-head">Products</div>
             {(loading === false) && (
                 <div className='all-products-container'>
-                    <Table 
+                    <Table
                         rows={products} 
                         page={pageNum} 
                         getPage={setPageNum} 

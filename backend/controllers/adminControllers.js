@@ -6,6 +6,8 @@ import { pagination } from "../utils/apiFeatures.js";
 import { Product } from "../models/productModel.js";
 import { Orders } from "../models/orderModel.js";
 import { DeletedUsers } from "../models/deletedUserModel.js";
+import { userRoleValidator } from "../validators/adminValidators.js";
+import { validationError } from "../validators/validationError.js";
 
 
 const productCategories = [
@@ -71,32 +73,40 @@ export const getAnyUserDetails = catchAsync(async (req, res, next) => {
 
 
 
-export const updateUserRole = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const { is_seller, is_admin } = req.body;
+export const updateUserRole = [
 
-    let user = await Users.findById(id).select("+is_admin");
-    if (!user) {
-        return next(new ErrorHandler("User not found!", 404));
-    }
+    ...userRoleValidator,
 
-    if (user.is_admin) {
-        // An Admin can create another admin but cannot remove an Admin
-        return next(new ErrorHandler("This action cannot be performed!", 403))
-    }
+    catchAsync(async (req, res, next) => {
 
-    user.is_seller = is_seller;
-    user.is_admin = is_admin;
-    user.seller_merit = 80;
-    user.total_sales = 0;
+        validationError(req);
 
-    await user.save({ validateBeforeSave: false });
+        const { id } = req.params;
+        const { is_seller, is_admin } = req.body;
 
-    return res.json({
-        success: true,
-        message: "User Role updated successfully!"
+        let user = await Users.findById(id).select("+is_admin");
+        if (!user) {
+            return next(new ErrorHandler("User not found!", 404));
+        }
+
+        if (user.is_admin) {
+            // An Admin can create another admin but cannot remove an Admin
+            return next(new ErrorHandler("This action cannot be performed!", 403))
+        }
+
+        user.is_seller = is_seller;
+        user.is_admin = is_admin;
+        user.seller_merit = 80;
+        user.total_sales = 0;
+
+        await user.save({ validateBeforeSave: false });
+
+        return res.json({
+            success: true,
+            message: "User Role updated successfully!"
+        })
     })
-})
+];
 
 
 
@@ -126,16 +136,16 @@ export const deleteAnyUser = catchAsync(async (req, res, next) => {
 export const setSellerMerit = [
 
     body("merit")
-        .isNumeric()
-        .withMessage("Invalid Merit format!")
-        .isLength({ maxLength: 3 })
-        .withMessage('Merit must be a number in between the range of 0 and 100'),
+        .isNumeric().withMessage("Invalid Merit format!")
+        .bail()
+        .isFloat({ min: 0, max: 100 }).withMessage('Merit must be a number in between the range of 0 and 100'),
 
     body("sales")
-        .isNumeric()
-        .withMessage("Invalid Sales format!"),
+        .isNumeric().withMessage("Invalid Sales format!"),
 
     catchAsync(async (req, res, next) => {
+
+        validationError(req);
 
         const { id } = req.params;
         const { merit, sales } = req.body;
@@ -210,14 +220,14 @@ export const dataAnalysis = catchAsync(async (req, res) => {
     });
 
     products.forEach((product) => {
-        if(product.stock > 0){
+        if (product.stock > 0) {
             productCategoryAnalysis[product.category].in_stock += 1;
-        }else{
+        } else {
             productCategoryAnalysis[product.category].out_of_stock += 1;
         }
     });
 
-    
+
     let totalIncomeGenerated = {
         "Sunday": 0,
         "Monday": 0,
@@ -324,7 +334,7 @@ export const dataAnalysis = catchAsync(async (req, res) => {
 
             if (registeredDate.toISOString().split('T')[0] === day) {
                 totalUsersRegistered[daysInWeek[registeredDate.getUTCDay()]] += 1;
-                if(user.is_seller === true){
+                if (user.is_seller === true) {
                     totalSellersRegistered[daysInWeek[registeredDate.getUTCDay()]] += 1;
                 }
             }

@@ -10,6 +10,8 @@ import { sendEmail } from "../utils/sendMail.js";
 import { verifyMail } from "../utils/verifyMail.js";
 import { codeGenerator } from "../utils/generateCode.js";
 import { Product } from "../models/productModel.js";
+import { validationError } from "../validators/validationError.js";
+import { addAddressValidator, emailValidator, nameValidator, passwordValidator, phoneNumberValidator, updateAddressValidator } from "../validators/userValidation.js";
 
 
 
@@ -34,28 +36,37 @@ export const checkUser = catchAsync(async (req, res, next) => {
         success: true,
         exists,
         email,
-    })
-})
-
-
-
-export const createUser = catchAsync(async (req, res, next) => {
-
-    const { email } = req.body;
-
-    const user = await Users.findOne({ email });
-    if (user) {
-        return next(new ErrorHandler("This Mail is already registered!", 400))
-    }
-
-    const deletedUser = await DeletedUsers.findOne({ email }).select("+password");
-    if (deletedUser) {
-        return next(new ErrorHandler("This Mail is already registered!", 400));
-    }
-
-    verifyMail(req, res, next);
-
+    });
 });
+
+
+
+export const createUser = [
+
+    nameValidator("name", 3, 40),
+    ...emailValidator,
+    passwordValidator("password"),
+
+    catchAsync(async (req, res, next) => {
+
+        validationError(req);
+
+        const { email } = req.body;
+
+        const user = await Users.findOne({ email });
+        if (user) {
+            return next(new ErrorHandler("This Mail is already registered!", 400));
+        }
+
+        const deletedUser = await DeletedUsers.findOne({ email }).select("+password");
+        if (deletedUser) {
+            return next(new ErrorHandler("This Mail is already registered!", 400));
+        }
+
+        verifyMail(req, res, next);
+
+    })
+];
 
 
 
@@ -64,7 +75,7 @@ export const createVerifiedUser = catchAsync(async (req, res, next) => {
     const { userCode } = req.body;
 
     if (!userCode) {
-        return next(new ErrorHandler("Invalid Input!", 400));
+        return next(new ErrorHandler("Please provide the verification code!", 400));
     }
 
     if (!req.session.registrationDetails) {
@@ -114,7 +125,7 @@ export const getUserDetails = catchAsync(async (req, res, next) => {
             phone_number: user.phone_number,
         }
     })
-})
+});
 
 
 
@@ -138,22 +149,30 @@ export const loginUser = catchAsync(async (req, res, next) => {
 
 
 
-export const updateUserDetails = catchAsync(async (req, res, next) => {
-    const { name, email, address, avatar } = req.body;
+export const updateUserDetails = [
 
-    const user = await Users.findByIdAndUpdate(req.user._id, { name, email, address, avatar },
-        {
-            new: true,
-            runValidators: true,
+    nameValidator("name", 3, 40),
+    ...emailValidator,
+
+    catchAsync(async (req, res, next) => {
+
+        validationError(req);
+
+        const { name, email, avatar } = req.body;
+
+        await Users.findByIdAndUpdate(req.user._id, { name, email, avatar },
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
+
+        return res.json({
+            success: true,
+            message: "User details updated successfully!"
         });
-
-    return res.json({
-        success: true,
-        message: "User details updated successfully!",
-        user
     })
-
-})
+];
 
 
 
@@ -189,27 +208,33 @@ export const deleteUser = catchAsync(async (req, res, next) => {
 
 
 
-export const forgotPassword = catchAsync(async (req, res, next) => {
+export const forgotPassword = [
 
-    const { email } = req.body;
+    ...emailValidator,
 
-    const user = await Users.findOne({ email });
-    if (!user) {
-        return next(new ErrorHandler("Account doesn't exist", 400));
-    }
+    catchAsync(async (req, res, next) => {
 
-    const resetToken = crypto.randomBytes(20).toString("hex");
+        validationError(req);
 
-    const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+        const { email } = req.body;
 
-    user.reset_password_token = resetPasswordToken;
-    user.reset_password_expire = new Date(Date.now() + 15 * 60 * 1000);
+        const user = await Users.findOne({ email });
+        if (!user) {
+            return next(new ErrorHandler("Account doesn't exist", 400));
+        }
 
-    await user.save({ validateBeforeSave: false });
+        const resetToken = crypto.randomBytes(20).toString("hex");
 
-    const resetPasswordURL = `${req.protocol}://${req.headers["x-forwarded-host"]}/account/password/reset/${resetToken}`;
+        const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
-    const html = `<html>
+        user.reset_password_token = resetPasswordToken;
+        user.reset_password_expire = new Date(Date.now() + 15 * 60 * 1000);
+
+        await user.save({ validateBeforeSave: false });
+
+        const resetPasswordURL = `${req.protocol}://${req.headers["x-forwarded-host"]}/account/password/reset/${resetToken}`;
+
+        const html = `<html>
     <head>
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
       <style>
@@ -292,116 +317,129 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     </html>
     `
 
-    try {
+        try {
 
-        await sendEmail({
-            email,
-            subject: "Link to recover your MANYin password!",
-            html,
-        });
+            await sendEmail({
+                email,
+                subject: "Link to recover your ManyIN password!",
+                html,
+            });
+
+            return res.json({
+                success: true,
+                message: `A password recovery mail has been sent to ${email}`
+            })
+
+        } catch (error) {
+            user.reset_password_token = undefined;
+            user.reset_password_expire = undefined;
+            await user.save({ validateBeforeSave: false });
+
+            return next(new ErrorHandler(error.message, 500))
+        }
+    })
+];
+
+
+
+export const recoverPassword = [
+
+    passwordValidator("password"),
+    passwordValidator("confirmPassword"),
+
+    catchAsync(async (req, res, next) => {
+
+        validationError(req);
+
+        const { resetToken } = req.params;
+        const { password, confirmPassword } = req.body;
+
+        const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+        const user = await Users.findOne({ reset_password_token: resetPasswordToken, reset_password_expire: { $gt: Date.now() } }).select("+password+resetPasswordExpire+resetPasswordToken");
+
+        if (!user) {
+            return next(new ErrorHandler("Reset password link is invalid or has been expired!", 400))
+        }
+
+        if (password !== confirmPassword) {
+            return next(new ErrorHandler("Password doesn't match the confirm password!", 400))
+        }
+
+        user.password = await hashPassword(password);
+        user.reset_password_token = undefined;
+        user.reset_password_expire = undefined;
+
+        await user.save({ validateBeforeSave: false });
+
+        // addCookie(user, `${user.name}'s password has been changed!`, 200, req, res, next);
 
         return res.json({
             success: true,
-            message: `A password recovery mail has been sent to ${email}`
+            message: `Your password has been successfully changed, Please login to continue!`
         })
-
-    } catch (error) {
-        user.reset_password_token = undefined;
-        user.reset_password_expire = undefined;
-        user.save()
-        return next(new ErrorHandler(error.message, 500))
-    }
-
-});
-
-
-
-export const recoverPassword = catchAsync(async (req, res, next) => {
-
-    const { resetToken } = req.params;
-    const { password, confirmPassword } = req.body;
-
-    const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-
-    const user = await Users.findOne({ reset_password_token: resetPasswordToken, reset_password_expire: { $gt: Date.now() } }).select("+password+resetPasswordExpire+resetPasswordToken");
-
-    if (!user) {
-        return next(new ErrorHandler("Reset password link is invalid or has been expired!", 400))
-    }
-
-    if (password !== confirmPassword) {
-        return next(new ErrorHandler("Password doesn't match the confirm password!", 400))
-    }
-
-    user.password = await hashPassword(password);
-    user.reset_password_token = undefined;
-    user.reset_password_expire = undefined;
-
-    await user.save();
-
-    // addCookie(user, `${user.name}'s password has been changed!`, 200, req, res, next);
-
-    return res.json({
-        success: true,
-        message: `Your password has been successfully changed! Please login to continue.`
     })
-
-});
-
+];
 
 
-export const addUserAddress = catchAsync(async (req, res, next) => {
 
-    const {
-        first_name,
-        last_name,
-        flat,
-        street_address,
-        landmark,
-        city,
-        state,
-        state_code,
-        zip,
-        mobile,
-        delivery_notes,
-        default_address,
-    } = req.body;
+export const addUserAddress = [
 
-    const user = await Users.findById(req.user._id);
+    ...addAddressValidator,
 
-    if (default_address === true) {
-        user.address = user.address.map((address) => {
-            if (address.default_address === true) {
-                address.default_address = false;
-            }
+    catchAsync(async (req, res, next) => {
 
-            return address;
+        validationError(req);
+
+        const {
+            first_name,
+            last_name,
+            flat,
+            street_address,
+            landmark,
+            city,
+            state,
+            state_code,
+            zip,
+            mobile,
+            delivery_notes,
+            default_address,
+        } = req.body;
+
+        const user = await Users.findById(req.user._id);
+
+        if (default_address === true) {
+            user.address = user.address.map((address) => {
+                if (address.default_address === true) {
+                    address.default_address = false;
+                }
+                return address;
+            });
+        }
+
+        user.address.push({
+            first_name,
+            last_name,
+            flat,
+            street_address,
+            landmark,
+            city,
+            state,
+            state_code,
+            zip,
+            mobile,
+            delivery_notes,
+            default_address,
         });
-    }
 
-    user.address.push({
-        first_name,
-        last_name,
-        flat,
-        street_address,
-        landmark,
-        city,
-        state,
-        state_code,
-        zip,
-        mobile,
-        delivery_notes,
-        default_address,
-    });
+        await user.save({ validateBeforeSave: false });
 
-    await user.save({ validateBeforeSave: false });
-
-    return res.status(201).json({
-        success: true,
-        addresses: user.address,
-        message: "Added your address successfully!",
+        return res.status(201).json({
+            success: true,
+            message: "Added your address successfully!",
+        })
     })
-});
+];
 
 
 
@@ -414,69 +452,76 @@ export const getAllAddresses = catchAsync(async (req, res, next) => {
 
 
 
-export const updateAddress = catchAsync(async (req, res, next) => {
+export const updateAddress = [
 
-    const { addressId } = req.params;
-    const {
-        first_name,
-        last_name,
-        flat,
-        street_address,
-        landmark,
-        city,
-        state,
-        state_code,
-        zip,
-        mobile,
-        delivery_notes,
-        default_address,
-    } = req.body;
+    ...updateAddressValidator,
 
-    const user = await Users.findById(req.user._id);
+    catchAsync(async (req, res, next) => {
 
-    if (!user.address.some((address) => address._id.toString() === addressId)) {
-        return next(new ErrorHandler("Address doesn't exist", 404));
-    }
+        validationError(req);
 
-    if (default_address === true) {
+        const { addressId } = req.params;
+        const {
+            first_name,
+            last_name,
+            flat,
+            street_address,
+            landmark,
+            city,
+            state,
+            state_code,
+            zip,
+            mobile,
+            delivery_notes,
+            default_address,
+        } = req.body;
+
+        const user = await Users.findById(req.user._id);
+
+        if (!user.address.some((address) => address._id.toString() === addressId)) {
+            return next(new ErrorHandler("Address doesn't exist", 404));
+        }
+
+        if (default_address === true) {
+            user.address = user.address.map((address) => {
+                if (address.default_address === true) {
+                    address.default_address = false;
+                }
+                return address;
+            });
+        }
+
         user.address = user.address.map((address) => {
-            if (address.default_address === true) {
-                address.default_address = false;
+            if (address._id.toString() === addressId) {
+                return ({
+                    ...address,
+                    first_name,
+                    last_name,
+                    flat,
+                    street_address,
+                    landmark,
+                    city,
+                    state,
+                    state_code,
+                    zip,
+                    mobile,
+                    delivery_notes,
+                    default_address,
+                })
             }
-            return address;
+            else {
+                return address
+            }
         });
-    }
 
-    user.address = user.address.map((address) => {
-        if (address._id.toString() === addressId) {
-            return ({
-                ...address,
-                first_name,
-                last_name,
-                flat,
-                street_address,
-                landmark,
-                city,
-                state,
-                state_code,
-                zip,
-                mobile,
-                delivery_notes,
-                default_address,
-            })
-        }
-        else {
-            return address
-        }
-    });
+        await user.save({ validateBeforeSave: false });
 
-    await user.save({ validateBeforeSave: false });
-
-    return res.json({
-        success: true,
-        message: "Your address was successfully updated!"
-    });
-});
+        return res.json({
+            success: true,
+            message: "Your address has been successfully updated!"
+        });
+    })
+];
 
 
 
@@ -502,27 +547,33 @@ export const deleteUserAddress = catchAsync(async (req, res, next) => {
 
 
 
-export const validateMobileNumber = catchAsync(async (req, res, next) => {
+export const validateMobileNumber = [
 
-    const { phone_num } = req.body;
+    ...phoneNumberValidator,
 
-    const otp = codeGenerator();
-    const otp_expiry = Date.now() + 10 * 60 * 1000;
+    catchAsync(async (req, res, next) => {
 
-    if (req.session.otpDetails) {
-        delete req.session.otpDetails;
-    }
+        validationError(req);
 
-    req.session.otpDetails = {
-        phone_num,
-        otp,
-        otp_expiry
-    };
+        const { phone_num } = req.body;
 
-    const options = {
-        authorization: process.env.FAST2SMS_API_KEY,
-        route: "q",
-        message: `
+        const otp = codeGenerator();
+        const otp_expiry = Date.now() + 10 * 60 * 1000;
+
+        if (req.session.otpDetails) {
+            delete req.session.otpDetails;
+        }
+
+        req.session.otpDetails = {
+            phone_num,
+            otp,
+            otp_expiry
+        };
+
+        const options = {
+            authorization: process.env.FAST2SMS_API_KEY,
+            route: "q",
+            message: `
         Dear ${req.user.name},
 
         To verify your mobile number, please use the following One-Time Password (OTP):
@@ -538,17 +589,18 @@ export const validateMobileNumber = catchAsync(async (req, res, next) => {
         Sincerely,
         ManyIN
         `,
-        flash: "0"
-    }
+            flash: "0"
+        }
 
-    const response = await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${options.authorization}&route=${options.route}&message=${options.message}&flash=0&numbers=${phone_num}`);
-    const data = await response.json();
+        const response = await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${options.authorization}&route=${options.route}&message=${options.message}&flash=0&numbers=${phone_num}`);
+        const data = await response.json();
 
-    return res.json({
-        success: true,
-        data
-    });
-});
+        return res.json({
+            success: true,
+            data
+        });
+    })
+];
 
 
 
@@ -590,7 +642,7 @@ export const getWishlistProducts = catchAsync(async (req, res, next) => {
         const product = await Product.findById(item);
         if (product) {
             const { _id, rating, total_reviews, product_id, name, description, category, brand, stock, price, final_price, discount_percent, images } = product;
-            
+
             wishlistProducts.push({
                 _id, rating, total_reviews, product_id, name, description, category, brand, stock, price, final_price, discount_percent, images
             });
@@ -613,4 +665,4 @@ export const emptyWishlistProducts = catchAsync(async (req, res, next) => {
         success: true,
         message: "Successfully removed all the products from your list."
     })
-})
+});

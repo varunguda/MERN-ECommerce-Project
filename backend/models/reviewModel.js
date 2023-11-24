@@ -30,25 +30,24 @@ const ReviewSchema = new Schema({
             name: {
                 type: String,
                 required: true,
-                maxLength: [10, "Review name is too large!"]
             },
         
             title: {
                 type: String,
                 required: true,
-                maxLength: [20, "Review Title is too large!"]
+                maxLength: [50, "Review title is too large!"]
             },
         
             comment: {
                 type: String,
                 required: true,
-                maxLength: [400, "Review name is too large!"]
+                maxLength: [600, "Review comment is too large!"]
             },
         
             rating: {
                 type: Number,
                 required: true,
-                max: [5, "Rate the product in 0-5 star range"]
+                max: [5, "Rate the product in 1-5 star range"]
             },
         
             images: [
@@ -104,8 +103,7 @@ const ReviewSchema = new Schema({
         select: false,
         immutable: true,
     }
-
-})
+});
 
 
 

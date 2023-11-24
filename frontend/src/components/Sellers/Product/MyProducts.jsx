@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from "react-query";
-import { cancelAllProductOrders, deleteProduct, fetchMyProducts } from '../fetchers';
+import { cancelAllProductOrders, deleteProduct, editProductDetails, fetchMyProducts } from '../fetchers';
 import { useDispatch } from 'react-redux';
 import { loaderSpin } from '../../../State/action-creators/LoaderActionCreator';
 import { toast } from 'react-toastify';
@@ -22,21 +22,22 @@ const MyProducts = () => {
     const { data, error, isLoading, refetch } = useQuery(["my products", pageNum], fetchMyProducts);
     const cancelMutation = useMutation(cancelAllProductOrders);
     const deleteMutation = useMutation(deleteProduct);
+    const editMutation = useMutation(editProductDetails);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (isLoading || cancelMutation.isLoading || deleteMutation.isLoading) {
+        if (isLoading || cancelMutation.isLoading || deleteMutation.isLoading || editMutation.isLoading) {
             dispatch(loaderSpin(true));
         } else {
             dispatch(loaderSpin(false));
         }
         // eslint-disable-next-line
-    }, [isLoading, cancelMutation.isLoading, deleteMutation.isLoading]);
+    }, [isLoading, cancelMutation.isLoading, deleteMutation.isLoading, editMutation.isLoading]);
 
     useEffect(() => {
-        if (!!error || cancelMutation.isError || deleteMutation.isError) {
-            toast.error(((error && error.message) || (cancelMutation.error && cancelMutation.error.message) || (deleteMutation.error && deleteMutation.error.message)), {
+        if (!!error || cancelMutation.isError || deleteMutation.isError || editMutation.isError) {
+            toast.error(((error && error.message) || (cancelMutation.error && cancelMutation.error.message) || (deleteMutation.error && deleteMutation.error.message) || (editMutation.error && editMutation.error.message)), {
                 position: "bottom-center",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -48,14 +49,15 @@ const MyProducts = () => {
             });
             cancelMutation.reset();
             deleteMutation.reset();
+            editMutation.reset();
             refetch();
         }
         // eslint-disable-next-line
-    }, [error, cancelMutation.isError, deleteMutation.isError]);
+    }, [error, cancelMutation.isError, deleteMutation.isError, editMutation.isError]);
 
     useEffect(() => {
-        if(cancelMutation.isSuccess || deleteMutation.isSuccess){
-            toast.success(((cancelMutation.data && cancelMutation.data.message) || (deleteMutation.data && deleteMutation.data.message)), {
+        if(cancelMutation.isSuccess || deleteMutation.isSuccess || editMutation.isSuccess){
+            toast.success(((cancelMutation.data && cancelMutation.data.message) || (deleteMutation.data && deleteMutation.data.message) || (editMutation.data && editMutation.data.message)), {
                 position: "bottom-center",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -67,10 +69,11 @@ const MyProducts = () => {
             });
             cancelMutation.reset();
             deleteMutation.reset();
+            editMutation.reset();
             refetch();
         }
         // eslint-disable-next-line
-    }, [cancelMutation.isSuccess, deleteMutation.isSuccess]);
+    }, [cancelMutation.isSuccess, deleteMutation.isSuccess, editMutation.isSuccess]);
 
 
     const cancelClickHandler = (product) => {
@@ -131,11 +134,16 @@ const MyProducts = () => {
         )
     };
 
+    const editHandler = (product, updatedData) => {
+        editMutation.mutate({ product, updatedData });
+        closeModal();
+    }
+
     const editPorductHandler = (product_id) => {
         const product = data.products.find(prod => prod._id === product_id);
         openModal(
             "Edit Product Details",
-            <EditProductForm product={product} />
+            <EditProductForm product={product} updateProduct={(updatedData) => editHandler(product_id, updatedData)} />
         );
     }
 
@@ -228,7 +236,6 @@ const MyProducts = () => {
 export default MyProducts;
 
 
-
 const placeholderRows = [
     {
         _id: '1',
@@ -291,4 +298,3 @@ const placeholderRows = [
         final_price: 11.99,
     },
 ];
-

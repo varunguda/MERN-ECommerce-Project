@@ -5,7 +5,7 @@ import { Product } from "../models/productModel.js";
 import { ErrorHandler } from "../utils/errorHandler.js";
 
 
-export const stripePayment = catchAsync( async(req, res, next) => {
+export const stripePayment = catchAsync(async (req, res, next) => {
 
     const { order_items } = req.body;
     const idempotencyKey = uuidv4();
@@ -26,8 +26,8 @@ export const stripePayment = catchAsync( async(req, res, next) => {
             return next(new ErrorHandler("Product not found!", 404));
         }
 
-        if(product.seller_id.toString() === req.user._id.toString()){
-            return next( new ErrorHandler("You are not allowed to purchase your own product.", 400));
+        if (product.seller_id.toString() === req.user._id.toString()) {
+            return next(new ErrorHandler("You are not allowed to purchase your own product.", 400));
         }
 
         productNames.push(product.name);
@@ -41,9 +41,8 @@ export const stripePayment = catchAsync( async(req, res, next) => {
     shippingCost = (finalOrderPrice > 500) ? 0 : 100;
     finalOrderPrice += shippingCost;
 
-
     const myPayment = await stripe.paymentIntents.create({
-        amount: Math.round(finalOrderPrice)* 100,
+        amount: Math.round(finalOrderPrice) * 100,
         currency: "inr",
         metadata: {
             company: "ManyIN",
@@ -51,9 +50,8 @@ export const stripePayment = catchAsync( async(req, res, next) => {
         }
     }, { idempotencyKey });
 
-
     return res.status(200).json({
-        success: true, 
-        client_secret: myPayment.client_secret,  
+        success: true,
+        client_secret: myPayment.client_secret,
     })
 })
