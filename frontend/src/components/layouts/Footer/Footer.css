@@ -1,163 +1,162 @@
-
 .footer-section {
-  background-color: var(--primary-color);
-  color: white;
-  margin-top: 200px;
-  width: 100%;
-  padding: 50px 30px 0px 30px;
+    background-color: var(--primary-color);
+    color: white;
+    margin-top: 200px;
+    width: 100%;
+    padding: 50px 30px 0px 30px;
 }
 
 footer {
-  position: relative;
+    position: relative;
 }
 
-footer .logo-new{
+footer .logo-new {
     z-index: inherit;
     font-weight: 600;
     font-size: 32px;
     padding: 0px;
 }
 
-footer .logo-desc{
+footer .logo-desc {
     margin: auto;
     font-size: var(--s-font-size);
     margin-bottom: 30px;
 }
 
-footer a{
-  color: white;
-  font-size: 14px;
+footer a {
+    color: white;
+    font-size: 14px;
 }
 
-footer a:hover{
-  text-decoration: underline;
+footer a:hover {
+    text-decoration: underline;
 }
 
 footer.top {
-  display: grid;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 20px;
+    display: grid;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
 }
 
 footer.bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: column-reverse;
-  gap: 8px;
-  padding: 20px 0px;
-  text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column-reverse;
+    gap: 8px;
+    padding: 20px 0px;
+    text-align: center;
 }
 
 footer.top .links {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 30px;
-  justify-items: center;
-  margin-bottom: 30px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 30px;
+    justify-items: center;
+    margin-bottom: 30px;
 }
 
 .links-column {
-  display: grid;
-  gap: 10px;
-  text-align: center;
+    display: grid;
+    gap: 10px;
+    text-align: center;
 }
 
-.links-column .socials i{
-  font-size: 20px;
+.links-column .socials i {
+    font-size: 20px;
 }
 
 footer h2 {
-  margin: 0 0 10px;
-  font-size: 12px;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--black-font-color);
+    margin: 0 0 10px;
+    font-size: var(--xs-font-size);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--secondary-color);
 }
 
 .legal>a {
-  margin: 0 0 0 4px;
+    margin: 0 0 0 7px;
 }
 
 .legal,
 .copyright {
-  font-size: 12px;
+    font-size: 12px;
 }
 
 .legal>span {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 footer.top .socials {
-  position: absolute;
-  left: 50%;
-  bottom: 10px;
-  translate: -50% 0;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  height: 56px;
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    translate: -50% 0;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 56px;
 }
 
 footer.top .socials>a {
-  font-size: 24px;
+    font-size: 24px;
 }
 
 .socials-column :is(h2, p) {
-  display: none;
+    display: none;
 }
 
 @media (width > 400px) {
-  .links-column {
-    text-align: left;
-  }
+    .links-column {
+        text-align: left;
+    }
 
-  footer.top .links {
-    grid-template-columns: repeat(3, 1fr);
-    margin-right: 50px;
-  }
+    footer.top .links {
+        grid-template-columns: repeat(3, 1fr);
+        margin-right: 50px;
+    }
 
-  footer.bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
-    gap: 20px;
-    text-align: left;
-  }
+    footer.bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+        gap: 20px;
+        text-align: left;
+    }
 
-  footer.top .socials {
-    left: 0;
-    translate: 0;
-  }
+    footer.top .socials {
+        left: 0;
+        translate: 0;
+    }
 
-  footer.top>img {
-    margin: 0 0 50px;
-  }
+    footer.top>img {
+        margin: 0 0 50px;
+    }
 }
 
 @media (width >=640px) {
-  footer {
-    margin: 0 auto;
-    max-width: 100%;
-    padding: 0;
-  }
+    footer {
+        margin: 0 auto;
+        max-width: 100%;
+        padding: 0;
+    }
 
-  footer.top .links {
-    grid-template-columns: repeat(4, 1fr);
-  }
+    footer.top .links {
+        grid-template-columns: repeat(4, 1fr);
+    }
 
-  footer.top .socials {
-    position: static;
-  }
+    footer.top .socials {
+        position: static;
+    }
 
-  footer.bottom {
-    justify-content: flex-start;
-  }
+    footer.bottom {
+        justify-content: flex-start;
+    }
 
-  .socials-column :is(h2, p) {
-    display: block;
-  }
+    .socials-column :is(h2, p) {
+        display: block;
+    }
 }
