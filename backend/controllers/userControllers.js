@@ -43,9 +43,9 @@ export const checkUser = catchAsync(async (req, res, next) => {
 
 export const createUser = [
 
-    ...nameValidator,
+    nameValidator("name", 3, 40),
     ...emailValidator,
-    ...passwordValidator,
+    passwordValidator("password"),
 
     catchAsync(async (req, res, next) => {
 
@@ -151,7 +151,7 @@ export const loginUser = catchAsync(async (req, res, next) => {
 
 export const updateUserDetails = [
 
-    ...nameValidator,
+    nameValidator("name", 3, 40),
     ...emailValidator,
 
     catchAsync(async (req, res, next) => {
@@ -208,27 +208,33 @@ export const deleteUser = catchAsync(async (req, res, next) => {
 
 
 
-export const forgotPassword = catchAsync(async (req, res, next) => {
+export const forgotPassword = [
 
-    const { email } = req.body;
+    ...emailValidator,
 
-    const user = await Users.findOne({ email });
-    if (!user) {
-        return next(new ErrorHandler("Account doesn't exist", 400));
-    }
+    catchAsync(async (req, res, next) => {
 
-    const resetToken = crypto.randomBytes(20).toString("hex");
+        validationError(req);
 
-    const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+        const { email } = req.body;
 
-    user.reset_password_token = resetPasswordToken;
-    user.reset_password_expire = new Date(Date.now() + 15 * 60 * 1000);
+        const user = await Users.findOne({ email });
+        if (!user) {
+            return next(new ErrorHandler("Account doesn't exist", 400));
+        }
 
-    await user.save({ validateBeforeSave: false });
+        const resetToken = crypto.randomBytes(20).toString("hex");
 
-    const resetPasswordURL = `${req.protocol}://${req.headers["x-forwarded-host"]}/account/password/reset/${resetToken}`;
+        const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
-    const html = `<html>
+        user.reset_password_token = resetPasswordToken;
+        user.reset_password_expire = new Date(Date.now() + 15 * 60 * 1000);
+
+        await user.save({ validateBeforeSave: false });
+
+        const resetPasswordURL = `${req.protocol}://${req.headers["x-forwarded-host"]}/account/password/reset/${resetToken}`;
+
+        const html = `<html>
     <head>
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
       <style>
@@ -311,61 +317,69 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     </html>
     `
 
-    try {
+        try {
 
-        await sendEmail({
-            email,
-            subject: "Link to recover your MANYin password!",
-            html,
-        });
+            await sendEmail({
+                email,
+                subject: "Link to recover your ManyIN password!",
+                html,
+            });
+
+            return res.json({
+                success: true,
+                message: `A password recovery mail has been sent to ${email}`
+            })
+
+        } catch (error) {
+            user.reset_password_token = undefined;
+            user.reset_password_expire = undefined;
+            await user.save({ validateBeforeSave: false });
+
+            return next(new ErrorHandler(error.message, 500))
+        }
+    })
+];
+
+
+
+export const recoverPassword = [
+
+    passwordValidator("password"),
+    passwordValidator("confirmPassword"),
+
+    catchAsync(async (req, res, next) => {
+
+        validationError(req);
+
+        const { resetToken } = req.params;
+        const { password, confirmPassword } = req.body;
+
+        const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+        const user = await Users.findOne({ reset_password_token: resetPasswordToken, reset_password_expire: { $gt: Date.now() } }).select("+password+resetPasswordExpire+resetPasswordToken");
+
+        if (!user) {
+            return next(new ErrorHandler("Reset password link is invalid or has been expired!", 400))
+        }
+
+        if (password !== confirmPassword) {
+            return next(new ErrorHandler("Password doesn't match the confirm password!", 400))
+        }
+
+        user.password = await hashPassword(password);
+        user.reset_password_token = undefined;
+        user.reset_password_expire = undefined;
+
+        await user.save({ validateBeforeSave: false });
+
+        // addCookie(user, `${user.name}'s password has been changed!`, 200, req, res, next);
 
         return res.json({
             success: true,
-            message: `A password recovery mail has been sent to ${email}`
+            message: `Your password has been successfully changed, Please login to continue!`
         })
-
-    } catch (error) {
-        user.reset_password_token = undefined;
-        user.reset_password_expire = undefined;
-        user.save()
-        return next(new ErrorHandler(error.message, 500))
-    }
-
-});
-
-
-
-export const recoverPassword = catchAsync(async (req, res, next) => {
-
-    const { resetToken } = req.params;
-    const { password, confirmPassword } = req.body;
-
-    const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-
-    const user = await Users.findOne({ reset_password_token: resetPasswordToken, reset_password_expire: { $gt: Date.now() } }).select("+password+resetPasswordExpire+resetPasswordToken");
-
-    if (!user) {
-        return next(new ErrorHandler("Reset password link is invalid or has been expired!", 400))
-    }
-
-    if (password !== confirmPassword) {
-        return next(new ErrorHandler("Password doesn't match the confirm password!", 400))
-    }
-
-    user.password = await hashPassword(password);
-    user.reset_password_token = undefined;
-    user.reset_password_expire = undefined;
-
-    await user.save();
-
-    // addCookie(user, `${user.name}'s password has been changed!`, 200, req, res, next);
-
-    return res.json({
-        success: true,
-        message: `Your password has been successfully changed! Please login to continue.`
     })
-
-});
+];
 
 
 

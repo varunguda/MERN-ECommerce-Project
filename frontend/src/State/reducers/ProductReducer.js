@@ -188,7 +188,7 @@ export const productReviewReducer = ( state = { productReview: {} }, action ) =>
             return ({
                 reviewsLoading: false,
                 productReview: action.payload.review,
-            })
+            });
         }
 
         case ADD_PRODUCT_REVIEW_FAILURE:
@@ -198,7 +198,7 @@ export const productReviewReducer = ( state = { productReview: {} }, action ) =>
                 reviewsLoading: false,
                 productReview: {},
                 productReviewError: action.payload.message,
-            })
+            });
         }
     
         default:{

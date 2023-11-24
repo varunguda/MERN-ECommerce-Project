@@ -6,8 +6,8 @@ import { isSeller } from "../middleware/isSeller.js";
 import {
     addBundle,
     addOptions,
-    craeateProductReview,
     createProduct,
+    createProductReview,
     deleteAnyProduct,
     deleteMyProduct,
     deleteReview,
@@ -32,7 +32,7 @@ const router = Router();
 // All
 router.route('/products').get(getAllProducts);
 
-router.route('/products/addreview/:id').post(isUser, craeateProductReview);
+router.route('/products/addreview/:id').post(isUser, createProductReview);
 
 router.route('/products/reviews/like').post(isUser, toggleLikeOfAReview);
 
