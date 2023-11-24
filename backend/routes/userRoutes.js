@@ -21,7 +21,6 @@ import {
     verifyMobileNumberOtp
 } from "../controllers/userControllers.js";
 import { toggleWishlistProduct } from "../controllers/productController.js";
-import { isSeller } from "../middleware/isSeller.js";
 
 
 const router = Router();

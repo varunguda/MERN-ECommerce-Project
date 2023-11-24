@@ -37,12 +37,6 @@ const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
     // }
     // };
 
-
-    // useEffect(() => {
-    //     console.log(cardType);
-    // }, [cardType]);
-
-
     const toastErrPopUp = (msg) => {
         toast.error(msg, {
             position: "bottom-center",
@@ -86,7 +80,6 @@ const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
             toastErrPopUp(error.response.data.message);
             dispatch(loaderSpin(false));
         }
-
     }
 
 

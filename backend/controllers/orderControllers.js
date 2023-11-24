@@ -7,8 +7,9 @@ import catchAsync from "../utils/catchAsync.js";
 import { ErrorHandler } from "../utils/errorHandler.js";
 import { MeritMeter } from "../utils/meritMeter.js";
 import { sendEmail } from "../utils/sendMail.js";
-import { body, validationResult } from "express-validator";
 import { validateStripePayment } from "../utils/validateStripePayment.js";
+import { justificationValidator, statusValidator } from "../validators/orderValidators.js";
+import { validationError } from "../validators/validationError.js";
 
 
 
@@ -17,7 +18,6 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
     const { order_items, address } = req.body;
 
     for (const order of order_items) {
-
         const product = await Product.findById(order.product);
         if (!product) {
             return next(new ErrorHandler("Product not found!", 404));
@@ -25,15 +25,14 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
 
         if (product.stock < order.quantity) {
             if (product.stock === 0) {
-                return next(new ErrorHandler(`Sorry for the inconvinience, but the product has just become out of stock: ${product.name}`, 404));
+                return next(new ErrorHandler(`Sorry for the inconvinience, but this product has just become out of stock: ${product.name}`, 404));
             }
             return next(new ErrorHandler(`Sorry for the inconvinience, but we only have ${product.stock} items of product: ${product.name}`, 400))
         }
 
         if (product.seller_id.toString() === req.user._id.toString()) {
-            return next(new ErrorHandler("You cannot order your own product!", 400))
+            return next(new ErrorHandler("You cannot order your own product!", 400));
         }
-
     }
 
     // Having 2 loops combined is not a good idea, since all the products in the cart should be ordered at once.
@@ -54,7 +53,6 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         const meritMeter = new MeritMeter(order.quantity, product.seller_id);
         meritMeter.addMerit();
     }
-
 
     let paidId = false;
 
@@ -118,13 +116,10 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         html
     });
 
-
     return res.status(201).json({
         success: true,
-        message: "Order placed successfully!",
-        order
-    })
-
+        message: "Order placed successfully!"
+    });
 });
 
 
@@ -166,7 +161,7 @@ export const getOrderPriceDetails = catchAsync(async (req, res, next) => {
         totalSavings: Math.round(totalSavings),
         finalOrderPrice: Math.round(finalOrderPrice),
     })
-})
+});
 
 
 
@@ -187,7 +182,7 @@ export const getOrderDetails = catchAsync(async (req, res, next) => {
         success: true,
         order
     })
-})
+});
 
 
 
@@ -207,7 +202,7 @@ export const getMyOrders = catchAsync(async (req, res, next) => {
         ordersCount,
         totalOrdersCount,
     })
-})
+});
 
 
 
@@ -304,29 +299,36 @@ export const deleteAnyOrder = catchAsync(async (req, res, next) => {
 
 
 
-export const updateAnyOrderStatus = catchAsync(async (req, res, next) => {
+export const updateAnyOrderStatus = [
 
-    const { order_id, product_id } = req.query;
-    const { status } = req.body;
+    ...statusValidator,
 
-    const order = await Orders.findById(order_id);
-    if (!order) {
-        return next(new ErrorHandler("Order not found!", 404));
-    }
+    catchAsync(async (req, res, next) => {
 
-    for (const item of order.order_items) {
-        if (item.product.toString() === product_id) {
-            item.product_status = status;
+        validationError(req);
+
+        const { order_id, product_id } = req.query;
+        const { status } = req.body;
+
+        const order = await Orders.findById(order_id);
+        if (!order) {
+            return next(new ErrorHandler("Order not found!", 404));
         }
-    }
 
-    await order.save({ validateBeforeSave: false });
+        for (const item of order.order_items) {
+            if (item.product.toString() === product_id) {
+                item.product_status = status;
+            }
+        }
 
-    return res.json({
-        success: true,
-        message: `Order status updated to '${status}'`,
+        await order.save({ validateBeforeSave: false });
+
+        return res.json({
+            success: true,
+            message: `Order status updated to '${status}'`,
+        })
     })
-})
+];
 
 
 
@@ -351,22 +353,17 @@ export const getMyProductsOrders = catchAsync(async (req, res, next) => {
         ordersCount,
         totalOrdersCount,
     });
-})
+});
 
 
 
 export const cancelOrderOfMyProduct = [
 
-    body("justification")
-        .isLength({ min: 10, max: 400 })
-        .withMessage("The Justification provided must contain atleast 10 characters and atmost 400 characters!"),
+    ...justificationValidator,
 
     catchAsync(async (req, res, next) => {
 
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return next(new ErrorHandler(errors.array().map((err) => err.msg).join(","), 400))
-        }
+        validationError(req);
 
         const { order_id } = req.query;
         const { justification } = req.body;
@@ -381,8 +378,8 @@ export const cancelOrderOfMyProduct = [
             return next(new ErrorHandler("User not found!", 404))
         }
 
-        if(order.order_items.every(item => (item.product_status === "Out for delivery" || item.product_status === "Delivered" || item.product_status === "Cancelled")
-        )){
+        if (order.order_items.every(item => (item.product_status === "Out for delivery" || item.product_status === "Delivered" || item.product_status === "Cancelled")
+        )) {
             return next(new ErrorHandler("Order cannot be cancelled!"));
         }
 
@@ -446,16 +443,11 @@ export const cancelOrderOfMyProduct = [
 
 export const cancelAllOrderOfMyProduct = [
 
-    body('justification')
-        .isLength({ min: 10, max: 400 })
-        .withMessage("The Justification provided must contain atleast 10 characters and atmost 400 characters!"),
+    ...justificationValidator,
 
     catchAsync(async (req, res, next) => {
 
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return next(new ErrorHandler(errors.array().map((err) => err.msg).join(","), 400));
-        }
+        validationError(req);
 
         const { product } = req.params;
         const { justification } = req.body;
@@ -464,7 +456,7 @@ export const cancelAllOrderOfMyProduct = [
         if (!orders) {
             return next(new ErrorHandler("No orders of this product are found!", 404));
         }
-        
+
         let totalCancelledOrders = 0;
         for (const order of orders) {
             const user = await Users.findById(order.user);
@@ -484,7 +476,7 @@ export const cancelAllOrderOfMyProduct = [
             order.tax_price = totalItemsPrice * 18 / 100;
             order.total_price = order.items_price + order.tax_price + order.shipping_cost;
 
-            if(totalCancelledOrders > 0){
+            if (totalCancelledOrders > 0) {
                 await order.save({ validateBeforeSave: false });
 
                 const html = orderHtml({
@@ -497,7 +489,7 @@ export const cancelAllOrderOfMyProduct = [
                     button_text: "Check Order Status",
                     mail_caption: "We apologize for any inconvenience we may have caused. If you have any questions or concerns, please don't hesitate to reply to this Mail."
                 });
-    
+
                 sendEmail({
                     email: user.email,
                     subject: "Order Cancelled:(",
@@ -506,7 +498,7 @@ export const cancelAllOrderOfMyProduct = [
             }
         }
 
-        if(!totalCancelledOrders){
+        if (!totalCancelledOrders) {
             return res.json({
                 success: true,
                 message: `Seems like there are no orders currently placed for this product.`,
@@ -525,44 +517,51 @@ export const cancelAllOrderOfMyProduct = [
 
 
 
-export const updateMyProductOrderStatus = catchAsync(async (req, res, next) => {
-    const { order_id, product } = req.query;
-    const { status } = req.body;
+export const updateMyProductOrderStatus = [
 
-    const order = await Orders.findById(order_id);
-    if (!order) {
-        return next(new ErrorHandler("Order not found!", 404));
-    }
+    ...statusValidator,
 
-    if (status === "Cancelled") {
-        return next(new ErrorHandler("Can't cancel the order!", 400));
-    }
+    catchAsync(async (req, res, next) => {
 
-    let error = false;
-    order.order_items = order.order_items.map(item => {
-        if (item.product.toString() === product.toString()) {
-            if(item.product_status !== "Cancelled"){
-                item.product_status = status;
-            }
-            else{
-                error = true;
-            }
-            return item;
+        validationError(req);
+
+        const { order_id, product } = req.query;
+        const { status } = req.body;
+
+        const order = await Orders.findById(order_id);
+        if (!order) {
+            return next(new ErrorHandler("Order not found!", 404));
         }
-        else {
-            return item;
+
+        if (status === "Cancelled") {
+            return next(new ErrorHandler("Can't cancel the order!", 400));
         }
-    });
 
-    if(error){
-        return next(new ErrorHandler("Cannot update order status since the order has been cancelled!"));
-    }
+        let error = false;
+        order.order_items = order.order_items.map(item => {
+            if (item.product.toString() === product.toString()) {
+                if (item.product_status !== "Cancelled") {
+                    item.product_status = status;
+                }
+                else {
+                    error = true;
+                }
+                return item;
+            }
+            else {
+                return item;
+            }
+        });
 
-    await order.save({ validateBeforeSave: false });
+        if (error) {
+            return next(new ErrorHandler("Cannot update order status since the order has been cancelled!"));
+        }
 
-    return res.json({
-        success: true,
-        message: `Successfully updated the order status to ${status}`,
-        order
+        await order.save({ validateBeforeSave: false });
+
+        return res.json({
+            success: true,
+            message: `Successfully updated the order status to ${status}`
+        })
     })
-});
+];
