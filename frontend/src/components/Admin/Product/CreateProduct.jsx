@@ -49,7 +49,6 @@ const CreateProduct = () => {
         });
     }, [createProductError]);
 
-
     useEffect(() => {
         if(createdProduct === true){
             resetCreateProductForm();
@@ -70,7 +69,6 @@ const CreateProduct = () => {
         }));
     }
 
-
     const resetCreateProductForm = () => {
         setCommonFields({
             brand: "",
@@ -84,7 +82,6 @@ const CreateProduct = () => {
         setVariations([]);
     }
 
-
     const isFormDatavalid = () => {
         const validtors = [
             !!inputValidator("Brand", commonFields.brand, 3, 50),
@@ -92,7 +89,6 @@ const CreateProduct = () => {
         ];
         return validtors.every(validator => !validator) && variations.length > 0;
     }
-
 
     const saveCommonFieldsHandler = (e) => {
         e.preventDefault();
@@ -105,7 +101,6 @@ const CreateProduct = () => {
         }
     }
 
-
     const handleVariationCheck = (e) => {
         if (variations.includes(e.target.name)) {
             setVariations(prev => prev.filter((vari) => vari !== e.target.name));
@@ -113,7 +108,6 @@ const CreateProduct = () => {
             setVariations(prev => [...prev, e.target.name]);
         }
     }
-
 
     const removeProductHandler = (prodNum) => {
         setProducts(prev => prev.filter((_, index) => index + 1 !== prodNum));
@@ -128,7 +122,6 @@ const CreateProduct = () => {
         }
         // eslint-disable-next-line
     }, [productCount]);
-
 
     useEffect(() => {
         if ((productCount !== 0) && (productCount === productState.length) && productState.every(state => state.added === true)) {
@@ -167,7 +160,6 @@ const CreateProduct = () => {
 
         openModal("Are you sure you would like to reset your progress?", modalContent);
     }
-
 
     const createProductClickHandler = () => {
         if ((productCount !== 0) && (productCount === productState.length) && productState.every(state => state.added === true)) {

@@ -7,11 +7,11 @@ export const verifyMail = catchAsync(async (req, res, next) => {
 
     let myCloud = {};
     if(req.body.avatar){
-        myCloud = await cloudinary.v2.uploader.upload( req.body.avatar, {
+        myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
             folder: "avatars",
             width: 150,
             crop: "scale",
-        })
+        });
     }
 
     const { name, email, password } = req.body;
@@ -23,7 +23,6 @@ export const verifyMail = catchAsync(async (req, res, next) => {
     // Also two methods of verifying the mail
     // 1. I send a URL, on which upon clicking, users account get created
     // 2. A confirmation code is sent to the user's mail. This way I wouldn't have to worry about the browser-specific nature of sessions.
-
 
 
     // const mailToken = jwt.sign({
@@ -141,10 +140,8 @@ export const verifyMail = catchAsync(async (req, res, next) => {
         html
     });
 
-
     return res.json({
         success: true,
         message: `A Verification code has been sent to ${email} successfully!`
-    })
-
-})
+    });
+});

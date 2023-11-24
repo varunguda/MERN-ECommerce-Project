@@ -11,6 +11,7 @@ import { sendEmail } from '../utils/sendMail.js';
 import { MeritMeter } from '../utils/meritMeter.js';
 import { createProductValidator, productValidator, reviewValidator } from '../validators/productValidators.js';
 import { validationError } from '../validators/validationError.js';
+import cloudinary from "cloudinary";
 
 
 const allProperties = ["name", "description", "price", "images", "stock", "discount_percent", "final_price", "options", "bundles", "color", "ram", "processor", "resolution", "storage", "size", "quantity", "variations", "brand", "category", "review_id"];
@@ -333,7 +334,7 @@ export const createProduct = [
         const product_id = (products.length > 1) ? uuidv4() : undefined;
 
         if (!categoryConfig.hasOwnProperty(category)) {
-            return next(new ErrorHandler("This category is not available!", 400));
+            return next(new ErrorHandler("The category provided is not available!", 400));
         }
 
         const { properties } = categoryConfig[category];
@@ -351,6 +352,28 @@ export const createProduct = [
             // creating a product with all the data provided by the seller
             const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price });
 
+            let images = [];
+            for (let i = 0; i < product.images.length > 10 ? 10 : product.images.length; i++) {
+                let myCloud = {};
+                myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+                    folder: "Product Images",
+                });
+
+                Object.keys(myCloud).length && images.push(
+                    {
+                        pub_id: myCloud.public_id,
+                        image_url: myCloud.secure_url
+                    }
+                );
+            }
+
+            if(images.length === 0){
+                await createdProduct.deleteOne();
+                return next(new ErrorHandler("Seems like something went wrong while uploading images, Please try again!"));
+            }
+
+            createProduct.images = images;
+
             // All properties has all the flags that are present in a mongo document, to prevent a seller to fill irrelevent flags in the db, we are setting all the falg values which are not relevant to a category to undefined.
             allProperties.forEach((property) => {
                 if (!properties.includes(property)) {
@@ -365,7 +388,6 @@ export const createProduct = [
                 createdProduct.variations = variations;
             }
 
-            // Updating the product saved
             await createdProduct.save({ validateBeforeSave: false });
             createdProducts.push(createdProduct);
         }
@@ -1096,7 +1118,7 @@ export const toggleDislikeOfAReview = catchAsync(async (req, res, next) => {
 
 
 export const toggleWishlistProduct = catchAsync(async (req, res, next) => {
-    
+
     const { id } = req.params;
 
     const product = await Product.findById(id);

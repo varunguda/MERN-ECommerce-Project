@@ -74,7 +74,10 @@ export const productValidator = (field) => {
                 else{
                     return true;
                 }
-            })
+            }),
+
+        body(field ? `${field}.images` : 'images')
+            .exists().withMessage("Seems like you haven't provided image for a product")
     ]
 }
 
