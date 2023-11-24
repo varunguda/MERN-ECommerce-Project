@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+export const orderStatuses = [ "Processing", "Shipped", "In-transit" , "Out for delivery", "Delivered", "Cancelled" ];
 
 
 const schema = new Schema({
@@ -52,7 +53,7 @@ const schema = new Schema({
                 type: String,
                 required: true,
                 default: "Processing",
-                enum: [ "Processing", "Shipped", "In-transit" , "Out for delivery", "Delivered", "Cancelled" ],
+                enum: orderStatuses,
             },
             ordered_at:{
                 type: Date,

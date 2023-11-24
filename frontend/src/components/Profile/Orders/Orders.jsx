@@ -43,13 +43,13 @@ const orderParamsReducer = (state, action) => {
     }
 };
 
-
 const initialState = {
     keyword: "",
     status: "",
     time: "",
     page: 0
 }
+
 
 const Orders = () => {
 
@@ -78,6 +78,7 @@ const Orders = () => {
             payload: queryValue,
         });
     };
+
 
     useEffect(() => {
 
@@ -145,30 +146,34 @@ const Orders = () => {
 
 
     useEffect(() => {
-        toast.error(cancelledOrderError, {
-            position: "bottom-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
+        if(cancelledOrderError){
+            toast.error(cancelledOrderError, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     }, [cancelledOrderError]);
 
 
     useEffect(() => {
-        toast.success(cancelledOrderMessage, {
-            position: "bottom-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
+        if(!!cancelledOrderMessage){
+            toast.success(cancelledOrderMessage, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     }, [cancelledOrderMessage]);
 
 
