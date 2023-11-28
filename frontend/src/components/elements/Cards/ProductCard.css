@@ -10,7 +10,7 @@
         display: flex;
         gap: 5px;
         flex-wrap: nowrap;
-        padding: 10px 0px;
+        margin-bottom: 10px;
     }
     
     .review-container>span:last-of-type {
@@ -39,15 +39,16 @@
 }
 
 .product-card .product-description{
-    padding: 4px ;
+    padding: 4px;
 }
 
 .product-card .product-description > p{
     display: -webkit-box;
     -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;  
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 10px;
 }
 
 .product-card .wishlist{

@@ -71,7 +71,7 @@ export const categoryConfig = {
 export const commonFields = {
     name: "",
     description: "",
-    // images: "",
+    images: [],
     price: "",
     discount_percent: "",
     stock: "",
@@ -80,7 +80,7 @@ export const commonFields = {
 export const allFields = {
     name: "",
     description: "",
-    // images: "",
+    images: [],
     price: "",
     discount_percent: "",
     stock: "",
@@ -102,6 +102,6 @@ export const allFieldsRange = {
     ram: [1,4],
     storage: [1,4],
     processor: [5,100],
-    size: [2,10],
+    size: [1,10],
     quantity: [1,4]
 };

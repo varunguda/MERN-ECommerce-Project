@@ -8,7 +8,6 @@ import Loader2 from '../layouts/Loader/Loader2';
 import { passLengthValidator, passLetterValidator, passNumberOrSpecialCharValidator } from './validators';
 import BannerPage from "../layouts/Banner/BannerPage.jsx";
 import { VERIFY_USER_RESET } from '../../State/constants/UserConstants';
-
 import "./SignUpUser.css";
 import { Link } from 'react-router-dom';
 
@@ -37,7 +36,6 @@ const SignUpUser = () => {
     const passTipsRef = useRef(null);
     const passRef = useRef(null);
     const errRef = useRef(null);
-
     const [otp, setOtp] = useState(Array(5).fill(''));
     const otpInputRefs = useRef([]);
 
@@ -56,7 +54,6 @@ const SignUpUser = () => {
         const value = e.target.value;
 
         if (!isNaN(value)) {
-
             setOtp([...otp.map((d, indx) => (indx === index ? value.slice(0, 1) : d.slice(0, 1)))]);
 
             if (value === '' && index > 0) {
@@ -79,13 +76,11 @@ const SignUpUser = () => {
     };
 
     useEffect(() => {
-
         const query = new URLSearchParams(location.search);
 
         if (query.get("q") === "verify") {
             setVerifyPage(true);
         }
-
     }, [location.search])
 
 
@@ -101,7 +96,6 @@ const SignUpUser = () => {
         if (verifyPage && !sentSignupCode) {
             navigate("/account/login")
         }
-
         // eslint-disable-next-line
     }, [verifyPage, sentSignupCode]);
 
@@ -111,7 +105,6 @@ const SignUpUser = () => {
             if (sessionStorage.getItem("mail")) {
                 sessionStorage.removeItem("mail")
             }
-
             setTimeout(() => {
                 navigate("/");
 
@@ -120,7 +113,6 @@ const SignUpUser = () => {
                 })
             }, 3000);
         }
-
         // eslint-disable-next-line
     }, [verifiedUser, verifcationMessage])
 
@@ -191,7 +183,6 @@ const SignUpUser = () => {
     };
 
 
-
     return (
         <>
 
@@ -212,12 +203,10 @@ const SignUpUser = () => {
                         <form onSubmit={createAccountHandler} method="post" >
 
                             <div id="registerImage">
-
                                 <label htmlFor="avatar" className="custom-file-upload">
                                     <span>
                                         <img src={avatarPreview} alt="Avatar Preview" />
                                     </span>
-
                                     <input
                                         type="file"
                                         id="avatar"
@@ -226,7 +215,6 @@ const SignUpUser = () => {
                                         onChange={registerDataChange}
                                     />
                                 </label>
-
                                 <div className='small-head'>Add a profile picture</div>
                             </div>
 
@@ -288,7 +276,6 @@ const SignUpUser = () => {
                                 <li className={`${(user.pass.length !== 0) ? (passNumberOrSpecialCharValidator(user.pass) ? "valid" : "invalid") : ""}`}>At least one number or special character</li>
                             </ul>
 
-
                             <div className="err-msg">{signupError}</div>
 
                             <button
@@ -296,32 +283,27 @@ const SignUpUser = () => {
                                 type="submit"
                                 disabled={(signupLoading) || (user.pass !== user.confirmPass) || !passLengthValidator(user.pass) || !passLetterValidator(user.pass) || !passNumberOrSpecialCharValidator(user.pass) || (user.pass.length === 0) || (user.name.length < 3)}
                             >
-                                {signupLoading ? (<Loader2 />) : "Create Account"}
+                                {signupLoading ? <Loader2 /> : "Create Account"}
                             </button>
 
                             <div className="form-caption">By clicking Create Account, you acknowledge you have read and agreed to our Terms of Use and Privacy Policy.</div>
-
                         </form>
-
                     </div>
 
                 ) : (
 
-                    <>
-                        <BannerPage
-                            type="mail"
-                            letterContent={"**code**"}
-                            onClick={() => { window.open("https://mail.google.com/", '_blank'); }}
-                            caption={
-                                <>
-                                    <p>{signupMessage}</p>
+                    <BannerPage
+                        type="mail"
+                        letterContent={"**code**"}
+                        onClick={() => { window.open("https://mail.google.com/", '_blank'); }}
+                        caption={
+                            <>
+                                <p>{signupMessage}</p>
 
-                                    <button onClick={() => navigate("?q=verify")} type="button" className='main-btn' style={{ fontSize: "1rem" }}>Enter Code</button>
-                                </>
-                            }
-                        />
-                    </>
-
+                                <button onClick={() => navigate("?q=verify")} type="button" className='main-btn' style={{ fontSize: "1rem" }}>Enter Code</button>
+                            </>
+                        }
+                    />
                 )
 
             ) : (
@@ -353,7 +335,9 @@ const SignUpUser = () => {
                             </form>
                         </div>
                     </div>
+
                 ) : (
+
                     <BannerPage
                         type="done"
                         onClick={() => { navigate("/") }}
@@ -366,7 +350,6 @@ const SignUpUser = () => {
                         }
                     />
                 )
-
             )}
         </>
     )

@@ -48,23 +48,22 @@ export const createUser = [
     passwordValidator("password"),
 
     catchAsync(async (req, res, next) => {
-
+        
         validationError(req);
 
         const { email } = req.body;
 
         const user = await Users.findOne({ email });
-        if (user) {
+        if (!!user) {
             return next(new ErrorHandler("This Mail is already registered!", 400));
         }
 
         const deletedUser = await DeletedUsers.findOne({ email }).select("+password");
-        if (deletedUser) {
+        if (!!deletedUser) {
             return next(new ErrorHandler("This Mail is already registered!", 400));
         }
 
         verifyMail(req, res, next);
-
     })
 ];
 
@@ -644,7 +643,7 @@ export const getWishlistProducts = catchAsync(async (req, res, next) => {
             const { _id, rating, total_reviews, product_id, name, description, category, brand, stock, price, final_price, discount_percent, images } = product;
 
             wishlistProducts.push({
-                _id, rating, total_reviews, product_id, name, description, category, brand, stock, price, final_price, discount_percent, images
+                _id, rating, total_reviews, product_id, name, description, category, brand, stock, price, final_price, discount_percent, images: images[0]
             });
         }
     }

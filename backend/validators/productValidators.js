@@ -56,7 +56,7 @@ export const productValidator = (field) => {
 
         body(field ? `${field}.size` : 'size')
             .optional()
-            .isLength({ min: 2, max: 10 }).withMessage("Size must contain atleast 2 and atmost 10 characters."),
+            .isLength({ min: 1, max: 10 }).withMessage("Size must contain atleast 1 and atmost 10 characters."),
 
         body(field ? `${field}.processor` : 'processor')
             .optional()

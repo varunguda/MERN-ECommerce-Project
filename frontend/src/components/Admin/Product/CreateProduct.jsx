@@ -165,7 +165,16 @@ const CreateProduct = () => {
         if ((productCount !== 0) && (productCount === productState.length) && productState.every(state => state.added === true)) {
             errorRef.current.style.display = "none";
 
-            createProductAction(products, variations, commonFields.brand, commonFields.category);
+            let updatedProducts = products.map((prod) => {
+                Object.keys(prod).forEach(field => {
+                    if(prod[field] === ""){
+                        delete prod[field];
+                    }
+                });
+                return prod;
+            });
+
+            createProductAction(updatedProducts, variations, commonFields.brand, commonFields.category);
         }
         else {
             window.scrollTo({
@@ -253,7 +262,6 @@ const CreateProduct = () => {
                                 )}
                             </div>
 
-
                             {(commonFields.category && !categoryValidator(categoryConfig, commonFields.category)) && (
                                 <div className='variations-container'>
 
@@ -282,7 +290,6 @@ const CreateProduct = () => {
                                     )}
                                 </div>
                             )}
-
 
                             <div className="btn-container">
                                 {!disableCommonFields ? (
@@ -346,7 +353,6 @@ const CreateProduct = () => {
                                                 config={categoryConfig}
                                                 productCount={index + 1}
                                                 variations={variations}
-                                                products={products}
                                                 setProducts={setProducts}
                                                 removeProduct={removeProductHandler}
                                             />

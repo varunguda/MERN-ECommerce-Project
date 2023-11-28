@@ -22,22 +22,8 @@ import ProductReview from './ProductReview';
 import { loaderSpin } from '../../State/action-creators/LoaderActionCreator';
 import ListButton from '../elements/Buttons/ListButton';
 import ListHeartButton from '../elements/Buttons/ListHeartButton';
-
-
-const images = [
-    "https://images.unsplash.com/photo-1539376248633-cf94fa8b7bd8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-
-    "https://images.unsplash.com/photo-1606229365485-93a3b8ee0385?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-
-    "https://images.unsplash.com/photo-1603302576837-37561b2e2302?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2068&q=80",
-
-    "https://images.unsplash.com/photo-1542393545-10f5cde2c810?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1965&q=80",
-
-    "https://images.unsplash.com/photo-1542393545-10f5cde2c810?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1965&q=80",
-
-    "https://images.unsplash.com/photo-1542393545-10f5cde2c810?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1965&q=80",
-];
-
+import { useQuery } from "react-query";
+import { getProductDetails } from './fetchers';
 
 // const options = [
 //     {
@@ -66,7 +52,6 @@ const images = [
 
 const ProductPage = () => {
 
-    const { loading, product, variation_products, error } = useSelector((state) => state.detailedProducts);
     const { sellersProducts } = useSelector((state) => state.sellerProducts);
     const { productReview } = useSelector((state) => state.productReviews);
     const { bundles } = useSelector((state) => state.bundleProducts);
@@ -79,38 +64,47 @@ const ProductPage = () => {
     // const [selectedPlan, setSelectedPlan] = useState('No Plan');
     const [zoom, setZoom] = useState(1);
     const [quantity, setQuantity] = useState(0);
+    const [product, setProduct] = useState({});
+    const [variation_products, setVariationProducts] = useState({});
     const reviewRef = useRef(null);
-
 
     const location = useLocation();
     const dispatch = useDispatch();
 
-    const { getProductDetails, getAllProductsOfSeller, getBundleProducts, getProductReviews } = bindActionCreators(actionCreators, dispatch);
+    const { getAllProductsOfSeller, getBundleProducts, getProductReviews } = bindActionCreators(actionCreators, dispatch);
+
+    const { isLoading, data, error } = useQuery(["Product Deatils", location.pathname.replace("/product/", "")], getProductDetails, { refetchInterval: false });
 
     useEffect(() => {
-        getProductDetails(location.pathname.replace("/product/", ""));
+        if (!!data) {
+            setVariationProducts(data.variation_products);
+            setProduct(data.product);
+        }
         // eslint-disable-next-line
-    }, [location.pathname]);
-
+    }, [data]);
 
     useEffect(() => {
-        toast.error(error, {
-            position: "bottom-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
+        if (!!error) {
+            toast.error(error, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     }, [error]);
 
+    useEffect(() => {
+        getAllProductsOfSeller(product.seller_id);
+        // eslint-disable-next-line
+    }, [product.seller_id]);
 
     useEffect(() => {
-        if (product && Object.keys(product).length > 0) {
-            getAllProductsOfSeller(product.seller_id);
-
+        if (!!product && Object.keys(product).length > 0) {
             let found = false;
             cartItems.forEach(item => {
                 if (item.product === product._id) {
@@ -118,22 +112,19 @@ const ProductPage = () => {
                     found = true;
                 }
             });
-
             if (!found) {
                 setQuantity(0);
             }
-
             if (product.bundles && product.bundles.length > 0) {
                 getBundleProducts(product._id);
             }
         }
-
         // eslint-disable-next-line
     }, [product]);
 
 
     useEffect(() => {
-        if (loading) {
+        if (isLoading) {
             dispatch(loaderSpin(true));
         }
         else {
@@ -141,12 +132,11 @@ const ProductPage = () => {
         }
 
         // eslint-disable-next-line
-    }, [loading])
-
+    }, [isLoading])
 
     const getImageIndex = (images, image) => {
         for (let i = 0; i < images.length; i++) {
-            if (images[i] === image) {
+            if (images[i].image_url === image) {
                 return i;
             }
         }
@@ -161,12 +151,12 @@ const ProductPage = () => {
     }, [activeImageIndex])
 
     const handleImageClick = (e) => {
-        let index = getImageIndex(images, e.target.src);
+        let index = getImageIndex(product.images, e.target.src);
         setCurrentIndex(index);
     }
 
     const handleHoverOn = (e) => {
-        let index = getImageIndex(images, e.target.src);
+        let index = getImageIndex(product.images, e.target.src);
         setHoverImageIndex(index);
     }
 
@@ -175,13 +165,13 @@ const ProductPage = () => {
     }
 
     const handlePrevImageClick = () => {
-        if (images[currentImageIndex - 1]) {
+        if (product.images[currentImageIndex - 1]) {
             setCurrentIndex(prev => prev - 1);
         }
     }
 
     const handleNextImageClick = () => {
-        if (images[currentImageIndex + 1]) {
+        if (product.images[currentImageIndex + 1]) {
             setCurrentIndex(prev => prev + 1);
         }
     }
@@ -206,11 +196,9 @@ const ProductPage = () => {
         setZoom(prev => prev > 4 ? 2 : prev + 1);
     }
 
-
     // const handleOptionChange = (event) => {
     //     setSelectedPlan(event.target.value);
     // };
-
 
     const handleScrollToReviews = () => {
         if (Object.keys(productReview).length === 0) {
@@ -225,7 +213,6 @@ const ProductPage = () => {
             }
         }, 100)
     };
-
 
     const handleAddClick = (e) => {
         if (quantity >= product.stock) return;
@@ -251,7 +238,7 @@ const ProductPage = () => {
 
     return (
         <>
-            {(product && Object.keys(product).length > 0) && (
+            {(!!product && Object.keys(product).length > 0) && (
 
                 <div className='product-page-container'>
                     <Metadata
@@ -262,21 +249,20 @@ const ProductPage = () => {
                         <section className="page-column1">
                             <div className="product-images">
                                 <div className="image-carousel">
-                                    {images.map((url, index) => (
-                                        <div key={index} className={images[activeImageIndex] === url ? "image-wrapper active" : "image-wrapper"}>
+                                    {product.images.map((url, index) => (
+                                        <div key={index} className={product.images[activeImageIndex].image_url === url.image_url ? "image-wrapper active" : "image-wrapper"}>
                                             <img
                                                 onClick={handleImageClick}
                                                 onMouseEnter={handleHoverOn}
                                                 onMouseLeave={handleHoverOff}
-                                                src={url}
+                                                src={url.image_url}
                                                 alt="carousel-img"
                                             />
                                         </div>
-                                    ))
-                                    }
+                                    ))}
                                 </div>
 
-                                <div onClick={handlePrevImageClick} className={`image-btn prev-image ${!images[currentImageIndex - 1] ? "disabled" : ""} `} disabled={true} >
+                                <div onClick={handlePrevImageClick} className={`image-btn prev-image ${!product.images[currentImageIndex - 1] ? "disabled" : ""} `} disabled={true} >
                                     <IconChevronLeft size={30} />
                                 </div>
                                 <div
@@ -285,10 +271,10 @@ const ProductPage = () => {
                                     onMouseMove={handleMouseMove} className="product-image"
                                 >
 
-                                    <img onClick={handleMainImageClick} style={{ transformOrigin: origin, transform: `scale(${zoom})` }} src={images[hoverImageIndex]} alt="product-img" />
+                                    <img onClick={handleMainImageClick} style={{ transformOrigin: origin, transform: `scale(${zoom})` }} src={product.images[hoverImageIndex].image_url} alt="product-img" />
 
                                 </div>
-                                <div onClick={handleNextImageClick} className={`image-btn next-image ${!images[currentImageIndex + 1] ? "disabled" : ""} `}>
+                                <div onClick={handleNextImageClick} className={`image-btn next-image ${!product.images[currentImageIndex + 1] ? "disabled" : ""} `}>
                                     <IconChevronRight size={30} />
                                 </div>
                             </div>
@@ -305,6 +291,11 @@ const ProductPage = () => {
                                         <span className="highlight-name">Brand</span><span className="highlight-text">{product.brand}</span>
                                     </div>
 
+                                    {product.variations.map((variation, index) => (
+                                        <div className={`elem elem${index+2}`}>
+                                            <span className="highlight-name">{variation}</span><span className="highlight-text">{product[variation]}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
@@ -314,8 +305,8 @@ const ProductPage = () => {
                                     About this item
                                 </div>
                                 <Accordion
-                                    title="Product details"
-                                    content="Eu proident mollit minim occaecat enim et laboris ullamco anim sint.Do ut duis esse ut tempor mollit laborum pariatur magna id laborum ea pariatur.Mollit officia sunt tempor do incididunt nulla do irure nisi voluptate culpa amet adipisicing anim.In veniam ullamco dolore consequat.Tempor velit sit consequat non id nisi Lorem nisi in commodo veniam fugiat.Anim tempor cupidatat veniam nisi laboris esse.Ut dolor aliqua fugiat commodo sunt.Quis excepteur deserunt nulla voluptate adipisicing laborum deserunt est irure nostrud.Fugiat et nostrud consequat ullamco quis adipisicing reprehenderit."
+                                    title="Product description"
+                                    content={product.description}
                                 />
                                 <Accordion
                                     title="Specifications"
@@ -348,7 +339,7 @@ const ProductPage = () => {
                                                                 height="auto"
                                                                 width="180px"
                                                                 product={product}
-                                                                noreviews={true}
+                                                                noReviews={true}
                                                             />
                                                         </div>
                                                     );
@@ -365,9 +356,16 @@ const ProductPage = () => {
                                 </div>
                             )}
 
-
-                            {(sellersProducts && sellersProducts.length > 0) && (
-                                <ProductsCarousel products={sellersProducts} desktopItems={4} tabletItems={3} flipItems={2} mobileItems={1} heading="More products from the seller" />
+                            {(!!sellersProducts && sellersProducts.length > 0) && (
+                                <ProductsCarousel
+                                    products={sellersProducts}
+                                    desktopItems={4}
+                                    tabletItems={3}
+                                    flipItems={2}
+                                    mobileItems={1}
+                                    heading="More products from the seller"
+                                    noReviews={true}
+                                />
                             )}
 
                             <div ref={reviewRef}>
@@ -408,14 +406,12 @@ const ProductPage = () => {
                                         <div className="price-p">₹{product.price}</div>
                                     </div>
 
-
                                     {product.discount_percent && (
                                         <div className="save-price">
                                             <span className='highlight-text'>You save</span>
                                             ₹{Math.round(product.price - product.final_price)}
                                         </div>
                                     )}
-
 
                                     <div className="btn-container">
                                         {!quantity ?
@@ -438,18 +434,18 @@ const ProductPage = () => {
                                     </div>
                                 </div>
 
-                                {
-                                    (variation_products && variation_products.length > 0) && (
-                                        <ProductVariations variationProducts={variation_products.concat([product])} mainProduct={product} images={images} />
-                                    )
-                                }
+                                {(variation_products && variation_products.length > 0) && (
+                                    <ProductVariations variationProducts={variation_products.concat([product])} mainProduct={product} images={product.images} />
+                                )}
 
                                 <div className="seller-details">
                                     <div className="about-seller">
                                         <IconStore className='icon' size={20} strokeWidth={1} />
-                                        Sold by <span className="seller-name">Apple Official</span>
+                                        Sold by <span className="seller-name">{product.seller_name}</span>
                                     </div>
-                                    <div className="merit"><span>90</span> - Seller Merit</div>
+                                    {product.seller_merit && (
+                                        <div className="merit"><span>{product.seller_merit}</span> - Seller Merit</div>
+                                    )}
                                 </div>
 
                                 <ListButton product={product._id} />

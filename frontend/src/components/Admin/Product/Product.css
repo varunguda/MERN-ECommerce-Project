@@ -33,3 +33,76 @@
     align-items: center;
     justify-content: center;
 }
+
+.create-product-container form .product-images-container{
+    margin: 20px 0px;
+}
+
+.create-product-container form .product-images{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    height: auto;
+    padding: 2px;
+
+    > .img-container{
+        position: relative;
+        margin-top: 5px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        > img{
+            height: 100%;
+            border-radius: 4px;
+            max-width: 90px;
+        }
+
+        > .delete-cover{
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.570);
+        }
+        
+    }
+
+    > .img-container:hover > .delete-cover{
+        display: flex;
+    }
+    
+    > label{
+        font-size: var(--xxs-font-size);
+        color: var(--light-font-color);
+        height: 60px;
+        margin-top: 5px;
+        border: 1px dotted var(--light-font-color);
+        border-radius: 4px;
+        width: 90px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    > label.invalid{
+        color: var(--primary-error-color);
+        border-color: var(--primary-error-color);
+    }
+
+    > input{
+        display: none;
+    }
+}

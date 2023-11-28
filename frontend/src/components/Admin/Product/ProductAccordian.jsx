@@ -23,7 +23,6 @@ const ProductAccordian = ({ productCount, category, config, variations, setProdu
                     )}
                 </div>
             }
-
             content={
                 <CreateProductForm
                     category={category}
@@ -49,4 +48,4 @@ const ProductAccordian = ({ productCount, category, config, variations, setProdu
     )
 }
 
-export default ProductAccordian
+export default ProductAccordian;

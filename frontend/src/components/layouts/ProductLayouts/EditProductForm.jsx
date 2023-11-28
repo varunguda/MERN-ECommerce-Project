@@ -32,7 +32,7 @@ const EditProductForm = ({ product, updateProduct }) => {
 
 
     const isFormDatavalid = () => {
-        return Object.keys(allFields).every((field) => {
+        return Object.keys(allFields).filter(field => field !== "images").every((field) => {
             if (formData[field] !== undefined) {
                 return !inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(product.variations).includes(field));
             }
@@ -59,10 +59,10 @@ const EditProductForm = ({ product, updateProduct }) => {
 
 
     return (
-        (formData && Object.keys(formData).length > 0) && (
+        (!!formData && Object.keys(formData).length > 0) && (
 
             <form onSubmit={onSubmit}>
-                {Object.keys(formData).map((field, index) => (
+                {Object.keys(formData).filter(field => field !== "images").map((field, index) => (
                     <div key={index} className='input-section'>
                         <label className='label1' htmlFor={field}>{`${field.replace("_", " ")}${Object.keys(commonFields).concat(product.variations).includes(field) ? "*" : ""}`}</label>
                         <input

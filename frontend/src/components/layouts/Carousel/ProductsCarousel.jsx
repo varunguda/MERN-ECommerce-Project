@@ -24,28 +24,28 @@ const CustomRightArrow = ({ onClick, ...rest }) => {
 };
 
 
-const ProductsCarousel = ({ products, desktopItems, tabletItems, flipItems, mobileItems, heading, caption }) => {
+const ProductsCarousel = ({ products, desktopItems, tabletItems, flipItems, mobileItems, heading, caption, noReviews = false }) => {
 
     const responsive = {
         desktop: {
             breakpoint: { max: 3000, min: 1024 },
             items: desktopItems || 6,
-            slidesToSlide: 6 // optional, default to 1.
+            slidesToSlide: 6
         },
         tablet: {
             breakpoint: { max: 1024, min: 720 },
             items: tabletItems || 4,
-            slidesToSlide: 2 // optional, default to 1.
+            slidesToSlide: 2
         },
         flip: {
             breakpoint: { max: 720, min: 0 },
             items: flipItems || 3,
-            slidesToSlide: 1 // optional, default to 1.
+            slidesToSlide: 1
         },
         mobile: {
             breakpoint: { max: 400, min: 0 },
             items: mobileItems || 2,
-            slidesToSlide: 1 // optional, default to 1.
+            slidesToSlide: 1
         }
     };
 
@@ -56,53 +56,43 @@ const ProductsCarousel = ({ products, desktopItems, tabletItems, flipItems, mobi
             <div className="caption">{caption}</div>
 
             <div className="carousel-container">
-
-                {
-                    products && 
-                    (
-
-                        <Carousel
-                            additionalTransfrom={0}
-                            arrows
-                            autoPlaySpeed={3000}
-                            centerMode={false}
-                            className=""
-                            containerClass="container"
-                            customLeftArrow={<CustomLeftArrow />}
-                            customRightArrow={<CustomRightArrow />}
-                            dotListClass=""
-                            draggable
-                            focusOnSelect={false}
-                            itemClass=""
-                            keyBoardControl
-                            minimumTouchDrag={80}
-                            pauseOnHover
-                            renderArrowsWhenDisabled={false}
-                            renderButtonGroupOutside={true}
-                            rewind={false}
-                            rewindWithAnimation={false}
-                            shouldResetAutoplay
-                            showDots={false}
-                            sliderClass=""
-                            slidesToSlide={1}
-                            swipeable
-                            responsive={responsive}
-                        >
-                            
-                            {
-                                products.map((product, _index) => (
-                                    <ProductCard key={_index} height="400px" width="90%" product={product} />
-                                ))
-                            }
-
-                        </Carousel>
-                    )
+                {!!products &&
+                    <Carousel
+                        additionalTransfrom={0}
+                        arrows
+                        autoPlaySpeed={3000}
+                        centerMode={false}
+                        className=""
+                        containerClass="container"
+                        customLeftArrow={<CustomLeftArrow />}
+                        customRightArrow={<CustomRightArrow />}
+                        dotListClass=""
+                        draggable
+                        focusOnSelect={false}
+                        itemClass=""
+                        keyBoardControl
+                        minimumTouchDrag={80}
+                        pauseOnHover
+                        renderArrowsWhenDisabled={false}
+                        renderButtonGroupOutside={true}
+                        rewind={false}
+                        rewindWithAnimation={false}
+                        shouldResetAutoplay
+                        showDots={false}
+                        sliderClass=""
+                        slidesToSlide={1}
+                        swipeable
+                        responsive={responsive}
+                    >
+                        {products.map((product, index) => (
+                            <ProductCard key={index} height="400px" width="90%" product={product} noReviews={noReviews} />
+                        ))}
+                    </Carousel>
                 }
-
             </div>
         </div>
     )
 }
 
-export default ProductsCarousel
+export default ProductsCarousel;
 

@@ -35,6 +35,15 @@ const ProductSchema = new Schema({
         required: true
     },
 
+    seller_name: {
+        type: String,
+        required: true,
+    },
+
+    seller_merit: {
+        type: Number,
+    },
+
     product_id:{
         type: String
     },
@@ -137,7 +146,7 @@ const ProductSchema = new Schema({
 
     size:{
         type: String,
-        minLength: [2, "Size value is too small!"],
+        minLength: [1, "Size value is too small!"],
         maxLength: [10, "Size value is too large!"],
     },
 

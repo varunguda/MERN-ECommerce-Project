@@ -103,7 +103,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     let processorOptions = [];
     let quantityOptions = [];
 
-    if (keyword) {
+    if (!!keyword) {
         const existProducts = await Product.find({ $or: [{ name: { $regex: keyword, $options: "i" } }, { brand: { $regex: keyword, $options: "i" } }] });
         if (existProducts && existProducts.length > 0) {
             exist = true;
@@ -161,7 +161,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         })
     }
 
-
     let customer_ratings = {
         4: 0,
         3: 0,
@@ -194,20 +193,18 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         }
     }
 
-    updatedProducts = updatedProducts.map(({ _id, rating, total_reviews, product_id, name, description, category, brand, stock, price, final_price, discount_percent, images }) => ({
+    updatedProducts = updatedProducts.map(({ _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images }) => ({
         _id,
         rating,
         total_reviews,
-        product_id,
         name,
-        description,
         category,
         brand,
         stock,
         price,
         final_price,
         discount_percent,
-        images,
+        images: images[0],
     }));
 
     const queryRatings = req.query.c_ratings;
@@ -219,7 +216,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
             }
         })
     }
-
 
     let filters = {};
 
@@ -238,7 +234,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     if (processorOptions.length) {
         filters.push("processor type");
     }
-
 
     const { sort_by } = req.query;
     if (sort_by) {
@@ -279,6 +274,7 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
             let obj = {};
             obj._id = prod._id;
             for (const variation of product.variations) {
+                obj.image = prod.images[0].image_url;
                 obj[variation] = prod[variation];
             }
             variationProducts.push(obj);
@@ -349,37 +345,41 @@ export const createProduct = [
                 final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
             }
 
-            // creating a product with all the data provided by the seller
-            const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price });
-
-            let images = [];
-            for (let i = 0; i < product.images.length > 10 ? 10 : product.images.length; i++) {
+            let uploadedImages = [];
+            for (let i = 0; i < ((product.images.length > 10) ? 10 : product.images.length); i++) {
                 let myCloud = {};
-                myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+                myCloud = await cloudinary.v2.uploader.upload(product.images[i], {
                     folder: "Product Images",
                 });
 
-                Object.keys(myCloud).length && images.push(
+                Object.keys(myCloud).length && uploadedImages.push(
                     {
                         pub_id: myCloud.public_id,
                         image_url: myCloud.secure_url
                     }
                 );
-            }
-
-            if(images.length === 0){
-                await createdProduct.deleteOne();
+            };
+            
+            if(uploadedImages.length !== product.images.length){
+                for(const image of uploadedImages){
+                    await cloudinary.v2.uploader.destroy(image.pub_id);
+                }
                 return next(new ErrorHandler("Seems like something went wrong while uploading images, Please try again!"));
-            }
+            };
 
-            createProduct.images = images;
+            // creating a product with all the data provided by the seller
+            const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price, images: uploadedImages, seller_name: req.user.is_admin ? "Admin" : req.user.name });
 
             // All properties has all the flags that are present in a mongo document, to prevent a seller to fill irrelevent flags in the db, we are setting all the falg values which are not relevant to a category to undefined.
             allProperties.forEach((property) => {
                 if (!properties.includes(property)) {
                     createdProduct[property] = undefined;
                 }
-            })
+            });
+
+            if(!req.user.is_admin){
+                createdProduct.seller_merit = req.user.seller_merit;
+            }
 
             createdProduct.final_price = final_price;
             createdProduct.brand = brand;
@@ -438,6 +438,10 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Product not found!", 400));
     }
 
+    for(const image of product.images){
+        await cloudinary.v2.uploader.destroy(image.pub_id);
+    }
+
     const orders = await Orders.find({});
 
     let totalCancelledOrders = 0;
@@ -473,8 +477,12 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
 
 export const getMyProducts = catchAsync(async (req, res, next) => {
     const apiFeatures = new ApiFeatures(Product.find({ seller_id: req.user._id }), req.query).search().sortByCreate();
-    const allProducts = await apiFeatures.items;
+    let allProducts = await apiFeatures.items;
     const product_count = allProducts.length;
+
+    allProducts = allProducts.map(({ name, stock, category, brand, _id, price, discount_percent, final_price }) => {
+        return { name, stock, category, brand, _id, price, discount_percent, final_price };
+    })
 
     const products = pagination(allProducts, 10, req.query.page);
 
@@ -529,6 +537,10 @@ export const deleteMyProduct = catchAsync(async (req, res, next) => {
     const product = await Product.findOneAndDelete({ _id: id, seller_id: req.user._id });
     if (!product) {
         return next(new ErrorHandler("Product not found", 404));
+    }
+
+    for(const image of product.images){
+        await cloudinary.v2.uploader.destroy(image.pub_id);
     }
 
     const orders = await Orders.find({});
@@ -945,7 +957,22 @@ export const getProductsOfSeller = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Seller not found!", 404));
     }
 
-    const allProducts = await Product.find({ seller_id: user._id });
+    let allProducts = await Product.find({ seller_id: user._id });
+
+    allProducts = allProducts.map(({ _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images }) => ({
+        _id,
+        rating,
+        total_reviews,
+        name,
+        category,
+        brand,
+        stock,
+        price,
+        final_price,
+        discount_percent,
+        images: images[0],
+    }));
+
     const products = pagination(allProducts, 10, req.query.page);
 
     return res.json({

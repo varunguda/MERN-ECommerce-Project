@@ -20,19 +20,17 @@ const ProductVariations = ({ variationProducts, mainProduct, images }) => {
 
     const checkAvailability = (variationType, variationValue) => {
         for (let i = 0; i < variationProducts.length; i++) {
-            if(variationProducts[i][variationType] === variationValue){
+            if (variationProducts[i][variationType] === variationValue) {
                 if (areKeysEqualExceptForKey(variationProducts[i], mainProduct, Object.keys(allVariations), variationType)) {
                     return true;
                 }
             }
         }
-
         return false;
     }
 
 
     const variationChange = (e) => {
-
         let found = false;
         for (let i = 0; i < variationProducts.length; i++) {
             if ((variationProducts[i][e.target.name].toString() === e.target.value)) {
@@ -57,7 +55,7 @@ const ProductVariations = ({ variationProducts, mainProduct, images }) => {
     const getImage = (variation, variationValue) => {
         for (const product of variationProducts) {
             if (product[variation] === variationValue) {
-                return images[0];
+                return product.image;
             }
         }
     }
@@ -65,7 +63,7 @@ const ProductVariations = ({ variationProducts, mainProduct, images }) => {
 
     return (
         <>
-            {(allVariations && Object.keys(allVariations).length > 0) && (
+            {(!!allVariations && Object.keys(allVariations).length > 0) && (
 
                 <div className="product-variations">
 
@@ -75,78 +73,61 @@ const ProductVariations = ({ variationProducts, mainProduct, images }) => {
                                 <div className="variation-type">{variation}:</div>
 
                                 <div className="variation-product-items">
-                                    {
-                                        (variation === "color") ? (
-                                            allVariations[variation].map((type, index) => {
-                                                return (
-                                                    <div key={index}>
+                                    {(variation === "color") ? (
+                                        allVariations[variation].map((type, index) => {
+                                            return (
+                                                <div key={index}>
+                                                    <input
+                                                        onClick={variationChange}
+                                                        type="checkbox"
+                                                        name={variation}
+                                                        id={type}
+                                                        checked={(mainProduct[variation] === type)}
+                                                        value={type}
+                                                        readOnly
+                                                    />
 
-                                                        <input
-                                                            onClick={variationChange}
-                                                            type="checkbox"
-                                                            name={variation}
-                                                            id={type}
-                                                            checked={(mainProduct[variation] === type)}
-                                                            value={type}
-                                                            readOnly
-                                                        />
+                                                    <label htmlFor={type}>
+                                                        <div
+                                                            className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}
+                                                        >
 
-                                                        <label htmlFor={type}>
-                                                            <div
-                                                                className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}
-                                                            >
-                                                                <span
-                                                                    className={(mainProduct[variation] !== type) ? "custom-tooltip" : ""}
-                                                                    data-tooltip={`${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? `Click to select ${type}` : `See available options in ${type}`}`}
-                                                                >
-
-                                                                    <div className="product-item">
-                                                                        <div className="variation-product-image">
-                                                                            <img src={getImage(variation, type)} alt="variation-img" />
-                                                                        </div>
-                                                                        <div className="product-variation">{type}</div>
-                                                                    </div>
-
-                                                                </span>
+                                                            <div className="product-item">
+                                                                <div className="variation-product-image">
+                                                                    <img src={getImage(variation, type)} alt="variation-img" />
+                                                                </div>
+                                                                <div className="product-variation">{type}</div>
                                                             </div>
-                                                        </label>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            )
+                                        })
+                                    ) : (allVariations[variation].map((type, index) => {
+                                        return (
+                                            <div key={index}>
+                                                <input
+                                                    onClick={variationChange}
+                                                    type="checkbox"
+                                                    name={variation}
+                                                    id={type}
+                                                    checked={(mainProduct[variation] === type)}
+                                                    value={type}
+                                                    readOnly
+                                                />
 
+                                                <label htmlFor={type}>
+                                                    <div
+                                                        className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}
+                                                    >
+                                                        <div className="product-variation variation-button">
+                                                            {type}
+                                                        </div>
                                                     </div>
-                                                )
-                                            })
-                                        ) : (
-
-                                            allVariations[variation].map((type, index) => {
-                                                return (
-                                                    <div key={index}>
-                                                        <input
-                                                            onClick={variationChange}
-                                                            type="checkbox"
-                                                            name={variation}
-                                                            id={type}
-                                                            checked={(mainProduct[variation] === type)}
-                                                            value={type}
-                                                            readOnly
-                                                        />
-
-                                                        <label htmlFor={type}>
-                                                            <div
-                                                                className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}
-                                                            >
-                                                                <span
-                                                                    className={(mainProduct[variation] !== type) ? "custom-tooltip" : ""}
-                                                                    data-tooltip={`${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? `Click to select ${type}` : `See available options in ${type}`}`}
-                                                                >
-                                                                    <div className="product-variation variation-button">
-                                                                        {type}
-                                                                    </div>
-                                                                </span>
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                )
-                                            })
+                                                </label>
+                                            </div>
                                         )
+                                    }))
                                     }
                                 </div>
                             </div>
