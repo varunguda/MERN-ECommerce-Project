@@ -35,15 +35,6 @@ const ProductSchema = new Schema({
         required: true
     },
 
-    seller_name: {
-        type: String,
-        required: true,
-    },
-
-    seller_merit: {
-        type: Number,
-    },
-
     product_id:{
         type: String
     },

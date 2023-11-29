@@ -60,7 +60,7 @@ const ProductCard = ({ product, height, width, noReviews = false }) => {
             <Link className='product-card link' to={`/product/${encodeURIComponent(product._id)}`} target='_blank' >
                 <div className="image-container">
                     <img src={(product.images && product.images.image_url) || "https://images.unsplash.com/photo-1571782742478-0816a4773a10?q=80&w=1901&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} alt={product.name} />
-
+                    
                     <div onClick={handleWishlistClick} className='wishlist'>
                         <ListHeartButton product={product._id} />
                     </div>

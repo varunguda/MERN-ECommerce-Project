@@ -33,7 +33,7 @@ export const productValidator = (field) => {
             .optional()
             .isNumeric().withMessage("Product discount percent must be a numeric value!")
             .bail()
-            .isFloat({ min: 1, max: 90 }).withMessage("Product discount percent must be in range 1 to 90."),
+            .isFloat({ min: 0, max: 90 }).withMessage("Product discount percent must be in range 1 to 90."),
 
         body(field ? `${field}.color` : 'color')
             .optional()

@@ -10,6 +10,7 @@ const EditProductForm = ({ product, updateProduct }) => {
     const [formData, setFormData] = useState({});
     const [validateFields, setValidateFields] = useState(false);
 
+    
     useEffect(() => {
         return () => {
             setFormData({});
@@ -34,7 +35,7 @@ const EditProductForm = ({ product, updateProduct }) => {
     const isFormDatavalid = () => {
         return Object.keys(allFields).filter(field => field !== "images").every((field) => {
             if (formData[field] !== undefined) {
-                return !inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(product.variations).includes(field));
+                return !inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], field !== "discount_percent" && Object.keys(commonFields).concat(product.variations).includes(field));
             }
             else {
                 return true;
@@ -53,6 +54,11 @@ const EditProductForm = ({ product, updateProduct }) => {
         e.preventDefault();
         setValidateFields(true);
         if (isFormDatavalid()) {
+            Object.keys(formData).forEach((field) => {
+                if(field === "discount_percent" && formData[field] === ""){
+                    formData[field] = 0;
+                }
+            });
             updateProduct(formData);
         }
     }
@@ -64,11 +70,11 @@ const EditProductForm = ({ product, updateProduct }) => {
             <form onSubmit={onSubmit}>
                 {Object.keys(formData).filter(field => field !== "images").map((field, index) => (
                     <div key={index} className='input-section'>
-                        <label className='label1' htmlFor={field}>{`${field.replace("_", " ")}${Object.keys(commonFields).concat(product.variations).includes(field) ? "*" : ""}`}</label>
+                        <label className='label1' htmlFor={field}>{`${field.replace("_", " ")}${field !== "discount_percent" && Object.keys(commonFields).concat(product.variations).includes(field) ? "*" : ""}`}</label>
                         <input
                             onChange={formInputChangeHandler}
                             className={
-                                `${(validateFields && !!inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(product.variations).includes(field))) ? "invalid" : ""}  input1`
+                                `${(validateFields && !!inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], field !== "discount_percent" && Object.keys(commonFields).concat(product.variations).includes(field))) ? "invalid" : ""}  input1`
                             }
                             type={["price", "discount_percent", "stock", "ram", "storage", "quantity"].includes(field) ? "number" : "text"}
                             name={field}
@@ -77,8 +83,8 @@ const EditProductForm = ({ product, updateProduct }) => {
                             spellCheck={false}
                             value={formData[field]}
                         />
-                        {(validateFields && !!inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(product.variations).includes(field))) && (
-                            <span className='input-error'>{inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(product.variations).includes(field))}</span>
+                        {(validateFields && !!inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], field !== "discount_percent" && Object.keys(commonFields).concat(product.variations).includes(field))) && (
+                            <span className='input-error'>{inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], field !== "discount_percent" && Object.keys(commonFields).concat(product.variations).includes(field))}</span>
                         )}
                     </div>
                 ))}

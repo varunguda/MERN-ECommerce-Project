@@ -244,7 +244,6 @@ const ProductPage = () => {
                     <Metadata
                         title={(product.name.length > 80) ? (product.name.slice(0, 80) + "...") : product.name}
                     />
-
                     <section className="page-section">
                         <section className="page-column1">
                             <div className="product-images">
@@ -403,10 +402,12 @@ const ProductPage = () => {
 
                                     <div className="price-container">
                                         <div className="price-sp">Now ₹{product.final_price}</div>
-                                        <div className="price-p">₹{product.price}</div>
+                                        {(product.final_price !== product.price) && (
+                                            <div className="price-p">₹{product.price}</div>
+                                        )}
                                     </div>
 
-                                    {product.discount_percent && (
+                                    {!!product.discount_percent && (
                                         <div className="save-price">
                                             <span className='highlight-text'>You save</span>
                                             ₹{Math.round(product.price - product.final_price)}

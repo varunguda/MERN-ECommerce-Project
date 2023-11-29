@@ -193,19 +193,21 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         }
     }
 
-    updatedProducts = updatedProducts.map(({ _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images }) => ({
-        _id,
-        rating,
-        total_reviews,
-        name,
-        category,
-        brand,
-        stock,
-        price,
-        final_price,
-        discount_percent,
-        images: images[0],
-    }));
+    updatedProducts = updatedProducts.map(prod => {
+
+        const { _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images, description, variations } = prod;
+
+        let obj = {};
+        if (variations) {
+            variations.forEach((vari) => {
+                if (categoryConfig[category].properties.includes(vari)) {
+                    obj[vari] = prod[vari];
+                }
+            })
+        }
+
+        return ({ _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images: images[0], description, ...obj, variations });
+    });
 
     const queryRatings = req.query.c_ratings;
     if (queryRatings && queryRatings.split(",").length > 0) {
@@ -262,7 +264,7 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
 
     const product = await Product.findById(id);
     if (!product) {
-        return next(new ErrorHandler("Product not found!", 400));
+        return next(new ErrorHandler("Product not found!", 404));
     }
 
     let variationProducts = [];
@@ -281,14 +283,16 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
         })
     }
 
+    const seller = await Users.findById(product.seller_id).select("+is_admin");
+
     let updatedProduct;
     if (product.review_id) {
         const review_data = await Review.findById(product.review_id);
         if (review_data) {
-            updatedProduct = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...product._doc }
+            updatedProduct = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...product._doc, seller_merit: seller.is_admin ? "" : seller.seller_merit, seller_name: seller.is_admin ? "Admin" : seller.name };
         }
     } else {
-        updatedProduct = { ...product._doc };
+        updatedProduct = { ...product._doc, seller_merit: seller.is_admin ? "" : seller.seller_merit, seller_name: seller.is_admin ? "Admin" : seller.name };
     }
 
     return res.json({
@@ -359,9 +363,9 @@ export const createProduct = [
                     }
                 );
             };
-            
-            if(uploadedImages.length !== product.images.length){
-                for(const image of uploadedImages){
+
+            if (uploadedImages.length !== product.images.length) {
+                for (const image of uploadedImages) {
                     await cloudinary.v2.uploader.destroy(image.pub_id);
                 }
                 return next(new ErrorHandler("Seems like something went wrong while uploading images, Please try again!"));
@@ -376,10 +380,6 @@ export const createProduct = [
                     createdProduct[property] = undefined;
                 }
             });
-
-            if(!req.user.is_admin){
-                createdProduct.seller_merit = req.user.seller_merit;
-            }
 
             createdProduct.final_price = final_price;
             createdProduct.brand = brand;
@@ -411,15 +411,24 @@ export const updateAnyProduct = [
 
         const { id } = req.params;
 
-        const final_price = Math.round(Number(req.body.price) - (Number(req.body.price) * Number(req.body.discount_percent) / 100));
-
-        const product = await Product.findByIdAndUpdate(id, { ...req.body, final_price }, {
-            new: true,
-            runValidators: true,
-        });
+        const product = await Product.findById(id);
         if (!product) {
             return next(new ErrorHandler("Product not found!", 400));
         }
+
+        if (categoryConfig.hasOwnProperty(product.category)) {
+            const { properties } = categoryConfig[product.category];
+
+            properties.forEach((property) => {
+                if(property !== "images"){
+                    product[property] = (req.body[property] !== undefined) ? req.body[property] : undefined;
+                }
+            })
+        }
+
+        product.final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
+
+        await product.save({ validateBeforeSave: false });
 
         return res.json({
             success: true,
@@ -438,7 +447,7 @@ export const deleteAnyProduct = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Product not found!", 400));
     }
 
-    for(const image of product.images){
+    for (const image of product.images) {
         await cloudinary.v2.uploader.destroy(image.pub_id);
     }
 
@@ -480,11 +489,23 @@ export const getMyProducts = catchAsync(async (req, res, next) => {
     let allProducts = await apiFeatures.items;
     const product_count = allProducts.length;
 
-    allProducts = allProducts.map(({ name, stock, category, brand, _id, price, discount_percent, final_price }) => {
-        return { name, stock, category, brand, _id, price, discount_percent, final_price };
-    })
+    let products = await pagination(allProducts, 10, req.query.page);
 
-    const products = pagination(allProducts, 10, req.query.page);
+    products = products.map(prod => {
+
+        const { _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images, description, variations } = prod;
+
+        let obj = {};
+        if (variations) {
+            variations.forEach((vari) => {
+                if (categoryConfig[category].properties.includes(vari)) {
+                    obj[vari] = prod[vari];
+                }
+            })
+        }
+
+        return ({ _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images, description, ...obj, variations });
+    });
 
     return res.json({
         success: true,
@@ -514,9 +535,11 @@ export const updateMyProduct = [
             const { properties } = categoryConfig[product.category];
 
             properties.forEach((property) => {
-                product[property] = req.body[property] || undefined;
+                if(property !== "images"){
+                    product[property] = (req.body[property] !== undefined) ? req.body[property] : undefined;
+                }
             })
-        }
+        };
 
         product.final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
 
@@ -539,7 +562,7 @@ export const deleteMyProduct = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Product not found", 404));
     }
 
-    for(const image of product.images){
+    for (const image of product.images) {
         await cloudinary.v2.uploader.destroy(image.pub_id);
     }
 
