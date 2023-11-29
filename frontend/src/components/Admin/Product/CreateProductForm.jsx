@@ -28,7 +28,7 @@ const CreateProductForm = ({ category, categoryConfig, setResize, variations, se
     const isFormDatavalid = () => {
         return Object.keys(allFields).filter(field => field !== "images").every((field) => {
             if (formData[field] !== undefined) {
-                return !inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], Object.keys(commonFields).concat(variations).includes(field));
+                return !inputValidator(field, formData[field], allFieldsRange[field][0], allFieldsRange[field][1], field !== "discount_percent" && Object.keys(commonFields).concat(variations).includes(field));
             }
             else {
                 return true;

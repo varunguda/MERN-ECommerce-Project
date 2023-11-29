@@ -87,6 +87,7 @@
 
 .image-carousel img {
     height: auto;
+    max-height: 100%;
     min-width: 60px;
     min-height: 70px;
 }
