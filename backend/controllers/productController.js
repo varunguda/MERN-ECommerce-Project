@@ -18,6 +18,7 @@ const allProperties = ["name", "description", "price", "images", "stock", "disco
 
 const commonProperties = ["name", "description", "price", "images", "stock", "discount_percent", "options", "bundles"];
 
+
 const categoryConfig = {
 
     "Mobile Phone": {
@@ -32,11 +33,15 @@ const categoryConfig = {
         properties: [...commonProperties, "color", "resolution", "size"]
     },
 
+    "Camera": {
+        properties: [...commonProperties, "color"]
+    },
+
     "Clothing": {
         properties: [...commonProperties, "size", "color"]
     },
 
-    "Shoes": {
+    "Footwear": {
         properties: [...commonProperties, "color", "size"]
     },
 
@@ -45,11 +50,11 @@ const categoryConfig = {
     },
 
     "Telivision": {
-        properties: [...commonProperties, "color", "resolution", "size"],
+        properties: [...commonProperties, "color", "resolution", "size"]
     },
 
     "Refrigerator": {
-        properties: [...commonProperties, "color", "size"],
+        properties: [...commonProperties, "color", "size"]
     },
 
     "Washing Machines": {
@@ -57,15 +62,15 @@ const categoryConfig = {
     },
 
     "Accessories": {
-        properties: [...commonProperties, "color", "size"],
+        properties: [...commonProperties, "color", "size"]
     },
 
     "Audio devices": {
-        properties: [...commonProperties, "color"],
+        properties: [...commonProperties, "color"]
     },
 
     "Beauty & Health": {
-        properties: [...commonProperties, "quantity"],
+        properties: [...commonProperties, "quantity"]
     }
 };
 
@@ -198,7 +203,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         const { _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images, description, variations } = prod;
 
         let obj = {};
-        if (variations) {
+        if (variations.length > 0) {
             variations.forEach((vari) => {
                 if (categoryConfig[category].properties.includes(vari)) {
                     obj[vari] = prod[vari];
@@ -372,7 +377,7 @@ export const createProduct = [
             };
 
             // creating a product with all the data provided by the seller
-            const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price, images: uploadedImages, seller_name: req.user.is_admin ? "Admin" : req.user.name });
+            const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price, images: uploadedImages});
 
             // All properties has all the flags that are present in a mongo document, to prevent a seller to fill irrelevent flags in the db, we are setting all the falg values which are not relevant to a category to undefined.
             allProperties.forEach((property) => {

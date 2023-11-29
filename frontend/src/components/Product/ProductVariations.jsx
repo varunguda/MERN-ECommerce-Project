@@ -29,7 +29,6 @@ const ProductVariations = ({ variationProducts, mainProduct, images }) => {
         return false;
     }
 
-
     const variationChange = (e) => {
         let found = false;
         for (let i = 0; i < variationProducts.length; i++) {
@@ -50,7 +49,6 @@ const ProductVariations = ({ variationProducts, mainProduct, images }) => {
             }
         }
     }
-
 
     const getImage = (variation, variationValue) => {
         for (const product of variationProducts) {
@@ -74,37 +72,7 @@ const ProductVariations = ({ variationProducts, mainProduct, images }) => {
 
                                 <div className="variation-product-items">
                                     {(variation === "color") ? (
-                                        allVariations[variation].map((type, index) => {
-                                            return (
-                                                <div key={index}>
-                                                    <input
-                                                        onClick={variationChange}
-                                                        type="checkbox"
-                                                        name={variation}
-                                                        id={type}
-                                                        checked={(mainProduct[variation] === type)}
-                                                        value={type}
-                                                        readOnly
-                                                    />
-
-                                                    <label htmlFor={type}>
-                                                        <div
-                                                            className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}
-                                                        >
-
-                                                            <div className="product-item">
-                                                                <div className="variation-product-image">
-                                                                    <img src={getImage(variation, type)} alt="variation-img" />
-                                                                </div>
-                                                                <div className="product-variation">{type}</div>
-                                                            </div>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            )
-                                        })
-                                    ) : (allVariations[variation].map((type, index) => {
-                                        return (
+                                        allVariations[variation].map((type, index) => (
                                             <div key={index}>
                                                 <input
                                                     onClick={variationChange}
@@ -120,14 +88,40 @@ const ProductVariations = ({ variationProducts, mainProduct, images }) => {
                                                     <div
                                                         className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}
                                                     >
-                                                        <div className="product-variation variation-button">
-                                                            {type}
+
+                                                        <div className="product-item">
+                                                            <div className="variation-product-image">
+                                                                <img src={getImage(variation, type)} alt="variation-img" />
+                                                            </div>
+                                                            <div className="product-variation">{type}</div>
                                                         </div>
                                                     </div>
                                                 </label>
                                             </div>
-                                        )
-                                    }))
+                                        ))
+                                    ) : (allVariations[variation].map((type, index) => (
+                                        <div key={index}>
+                                            <input
+                                                onClick={variationChange}
+                                                type="checkbox"
+                                                name={variation}
+                                                id={type}
+                                                checked={(mainProduct[variation] === type)}
+                                                value={type}
+                                                readOnly
+                                            />
+
+                                            <label htmlFor={type}>
+                                                <div
+                                                    className={`product-item ${(mainProduct[variation] === type) ? "" : checkAvailability(variation, type) ? "" : "not-available"}`}
+                                                >
+                                                    <div className="product-variation variation-button">
+                                                        {type}
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    )))
                                     }
                                 </div>
                             </div>

@@ -46,7 +46,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
         order.name = product.name;
         order.brand = product.brand;
         order.price = product.price;
-        // order.image = product.images[0].image_url;
+        order.image = product.images[0].image_url;
         order.discount_price = product.discount_percent || 0;
         order.final_price = product.final_price;
 

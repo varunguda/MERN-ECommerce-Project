@@ -31,6 +31,10 @@ export const categoryConfig = {
         properties: ["color", "size"]
     },
 
+    "Camera": {
+        properties: ["color"]
+    },
+
     "Clothing": {
         properties: ["size", "color"]
     },

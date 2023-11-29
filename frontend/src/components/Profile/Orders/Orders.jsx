@@ -146,7 +146,7 @@ const Orders = () => {
 
 
     useEffect(() => {
-        if(cancelledOrderError){
+        if (cancelledOrderError) {
             toast.error(cancelledOrderError, {
                 position: "bottom-center",
                 autoClose: 3000,
@@ -162,7 +162,7 @@ const Orders = () => {
 
 
     useEffect(() => {
-        if(!!cancelledOrderMessage){
+        if (!!cancelledOrderMessage) {
             toast.success(cancelledOrderMessage, {
                 position: "bottom-center",
                 autoClose: 3000,
@@ -296,52 +296,46 @@ const Orders = () => {
                                 </button>
                             </form>
 
-                            <OrderFilterButton 
+                            <OrderFilterButton
                                 state={state}
-                                setStatus={(val) => setStatus(val)} 
-                                setTime={(val) => setTime(val)} 
+                                setStatus={(val) => setStatus(val)}
+                                setTime={(val) => setTime(val)}
                                 setNavigateUrl={setNavigateUrl}
                             />
                         </div>
 
 
                         <div className="orders-content">
-
                             {(myOrders.length > 0) ? (
-                                <>
-                                    {myOrders.map((order, index) => {
+                                myOrders.map((order, index) => (
+                                    <OrderCard
+                                        key={index}
+                                        order={order}
+                                        extraSection={
+                                            ((order.order_items.every(item => (item.product_status === "Processing") || (item.product_status === "Cancelled"))) && (!order.order_items.every(item => (item.product_status === "Cancelled")))) && (
+                                                <div className="cancel-order-section">
+                                                    <div>
 
-                                        return (
-                                            <OrderCard
-                                                key={index}
-                                                order={order}
-                                                extraSection={
-                                                    ((order.order_items.every(item => (item.product_status === "Processing") || (item.product_status === "Cancelled"))) && (!order.order_items.every(item => (item.product_status === "Cancelled")))) && (
-                                                        <div className="cancel-order-section">
-                                                            <div>
+                                                        <button
+                                                            className='inferior-btn warning'
+                                                            type="button"
+                                                            onClick={() => cancelOrderClickHandler(order._id)}
+                                                        >
+                                                            Cancel Order?
+                                                        </button>
 
-                                                                <button
-                                                                    className='inferior-btn warning'
-                                                                    type="button"
-                                                                    onClick={() => cancelOrderClickHandler(order._id)}
-                                                                >
-                                                                    Cancel Order?
-                                                                </button>
-
-                                                                <div
-                                                                    className="custom-tooltip light large"
-                                                                    data-tooltip="You can cancel your order only when the items in your order are under processing. Once shipped, you cannot cancel your order."
-                                                                >
-                                                                    <IconInfo className='icon' size={17} strokeWidth={1.25} />
-                                                                </div>
-                                                            </div>
+                                                        <div
+                                                            className="custom-tooltip light large"
+                                                            data-tooltip="You can cancel your order only when the items in your order are under processing. Once shipped, you cannot cancel your order."
+                                                        >
+                                                            <IconInfo className='icon' size={17} strokeWidth={1.25} />
                                                         </div>
-                                                    )
-                                                }
-                                            />
-                                        )
-                                    })}
-                                </>
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+                                    />
+                                ))
                             ) : (
                                 <>
                                     <div className="content-not-found-container">

@@ -69,7 +69,9 @@ const ProductCard = ({ product, height, width, noReviews = false }) => {
                 <div className="product-description">
                     <div className='product-price'>
                         <div className="product-sp">Now ₹{product.final_price}</div>
-                        <div className="product-p">₹{product.price}</div>
+                        {(product.final_price !== product.price) && (
+                            <div className="product-p">₹{product.price}</div>
+                        )}
                     </div>
 
                     <p>{product.name}</p>

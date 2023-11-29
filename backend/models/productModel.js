@@ -5,6 +5,7 @@ const productCategories = [
     "Laptop",
     "Computer",
     "Monitor",
+    "Camera",
     "Clothing",
     "Shoes",
     "Watches",
@@ -161,7 +162,7 @@ const ProductSchema = new Schema({
         min: [1, "Quantity must be in range 1 and 9999"],
         max: [9999, "Quantity must be in range 0 and 9999"]
     },
-
+    
     
     // Category -- TV
     resolution: {

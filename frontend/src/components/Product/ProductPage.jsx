@@ -25,39 +25,15 @@ import ListHeartButton from '../elements/Buttons/ListHeartButton';
 import { useQuery } from "react-query";
 import { getProductDetails } from './fetchers';
 
-// const options = [
-//     {
-//         name: "SamsungCare+",
-//         description: "1 Extended warranty and support",
-//         price: 4999,
-//         discount_percent: 0,
-//         final_price: 4999
-//     },
-//     {
-//         name: "SamsungCare+",
-//         description: "2 Extended warranty and support",
-//         price: 7999,
-//         discount_percent: 0,
-//         final_price: 7999
-//     },
-//     {
-//         name: "SamsungCare+",
-//         description: "3 Extended warranty and support",
-//         price: 9999,
-//         discount_percent: 0,
-//         final_price: 9999
-//     }
-// ];
-
 
 const ProductPage = () => {
 
-    const { sellersProducts } = useSelector((state) => state.sellerProducts);
-    const { productReview } = useSelector((state) => state.productReviews);
-    const { bundles } = useSelector((state) => state.bundleProducts);
-    const { cartItems } = useSelector((state) => state.cart);
+    const { sellersProducts } = useSelector(state => state.sellerProducts);
+    const { productReview } = useSelector(state => state.productReviews);
+    const { bundles } = useSelector(state => state.bundleProducts);
+    const { cartItems } = useSelector(state => state.cart);
 
-    const [currentImageIndex, setCurrentIndex] = useState(0)
+    const [currentImageIndex, setCurrentIndex] = useState(0);
     const [activeImageIndex, setActiveImageIndex] = useState(currentImageIndex);
     const [hoverImageIndex, setHoverImageIndex] = useState(activeImageIndex);
     const [origin, setOrigin] = useState('50% 50%');
@@ -74,6 +50,7 @@ const ProductPage = () => {
     const { getAllProductsOfSeller, getBundleProducts, getProductReviews } = bindActionCreators(actionCreators, dispatch);
 
     const { isLoading, data, error } = useQuery(["Product Deatils", location.pathname.replace("/product/", "")], getProductDetails, { refetchInterval: false });
+
 
     useEffect(() => {
         if (!!data) {
@@ -99,7 +76,9 @@ const ProductPage = () => {
     }, [error]);
 
     useEffect(() => {
-        getAllProductsOfSeller(product.seller_id);
+        if(!!product.seller_id){
+            getAllProductsOfSeller(product.seller_id);
+        }
         // eslint-disable-next-line
     }, [product.seller_id]);
 
@@ -119,9 +98,14 @@ const ProductPage = () => {
                 getBundleProducts(product._id);
             }
         }
+
+        return () => {
+            setActiveImageIndex(0);
+            setCurrentIndex(0);
+            setHoverImageIndex(0);
+        }
         // eslint-disable-next-line
     }, [product]);
-
 
     useEffect(() => {
         if (isLoading) {
@@ -130,9 +114,18 @@ const ProductPage = () => {
         else {
             dispatch(loaderSpin(false));
         }
-
+        
         // eslint-disable-next-line
-    }, [isLoading])
+    }, [isLoading]);
+    
+    useEffect(() => {
+        setActiveImageIndex(currentImageIndex);
+    }, [currentImageIndex]);
+
+    useEffect(() => {
+        setHoverImageIndex(activeImageIndex);
+    }, [activeImageIndex])
+
 
     const getImageIndex = (images, image) => {
         for (let i = 0; i < images.length; i++) {
@@ -141,14 +134,6 @@ const ProductPage = () => {
             }
         }
     }
-
-    useEffect(() => {
-        setActiveImageIndex(currentImageIndex);
-    }, [currentImageIndex]);
-
-    useEffect(() => {
-        setHoverImageIndex(activeImageIndex);
-    }, [activeImageIndex])
 
     const handleImageClick = (e) => {
         let index = getImageIndex(product.images, e.target.src);
@@ -238,18 +223,19 @@ const ProductPage = () => {
 
     return (
         <>
-            {(!!product && Object.keys(product).length > 0) && (
+            {(!!product && (Object.keys(product).length > 0) && !isLoading) && (
 
                 <div className='product-page-container'>
                     <Metadata
                         title={(product.name.length > 80) ? (product.name.slice(0, 80) + "...") : product.name}
                     />
+
                     <section className="page-section">
                         <section className="page-column1">
                             <div className="product-images">
                                 <div className="image-carousel">
                                     {product.images.map((url, index) => (
-                                        <div key={index} className={product.images[activeImageIndex].image_url === url.image_url ? "image-wrapper active" : "image-wrapper"}>
+                                        <div key={index} className={(product.images[activeImageIndex] && (product.images[activeImageIndex].image_url === (url.image_url))) ? "image-wrapper active" : "image-wrapper"}>
                                             <img
                                                 onClick={handleImageClick}
                                                 onMouseEnter={handleHoverOn}
@@ -270,7 +256,7 @@ const ProductPage = () => {
                                     onMouseMove={handleMouseMove} className="product-image"
                                 >
 
-                                    <img onClick={handleMainImageClick} style={{ transformOrigin: origin, transform: `scale(${zoom})` }} src={product.images[hoverImageIndex].image_url} alt="product-img" />
+                                    <img onClick={handleMainImageClick} style={{ transformOrigin: origin, transform: `scale(${zoom})` }} src={product.images[hoverImageIndex] && product.images[hoverImageIndex].image_url} alt="product-img" />
 
                                 </div>
                                 <div onClick={handleNextImageClick} className={`image-btn next-image ${!product.images[currentImageIndex + 1] ? "disabled" : ""} `}>
@@ -435,7 +421,7 @@ const ProductPage = () => {
                                     </div>
                                 </div>
 
-                                {(variation_products && variation_products.length > 0) && (
+                                {(!!variation_products && variation_products.length > 0) && (
                                     <ProductVariations variationProducts={variation_products.concat([product])} mainProduct={product} images={product.images} />
                                 )}
 
@@ -498,3 +484,29 @@ const ProductPage = () => {
 }
 
 export default ProductPage
+
+
+
+// const options = [
+//     {
+//         name: "SamsungCare+",
+//         description: "1 Extended warranty and support",
+//         price: 4999,
+//         discount_percent: 0,
+//         final_price: 4999
+//     },
+//     {
+//         name: "SamsungCare+",
+//         description: "2 Extended warranty and support",
+//         price: 7999,
+//         discount_percent: 0,
+//         final_price: 7999
+//     },
+//     {
+//         name: "SamsungCare+",
+//         description: "3 Extended warranty and support",
+//         price: 9999,
+//         discount_percent: 0,
+//         final_price: 9999
+//     }
+// ];
