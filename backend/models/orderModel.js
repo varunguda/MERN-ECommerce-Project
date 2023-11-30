@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-export const orderStatuses = [ "Processing", "Shipped", "In-transit" , "Out for delivery", "Delivered", "Cancelled" ];
+export const orderStatuses = [ "Processing", "Shipped", "In transit" , "Out for delivery", "Delivered", "Cancelled" ];
 
 
 const schema = new Schema({

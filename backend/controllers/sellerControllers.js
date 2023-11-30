@@ -151,7 +151,7 @@ export const sellerDataAnalysis = catchAsync(async (req, res) => {
             orders_placed: totalOrdersPlaced,
             orders_cancelled: totalOrdersCancelled,
             products_analysis: productCategoryAnalysis,
-            merit: req.user.seller_merit
+            merit: req.user.seller_merit.toFixed(1)
         }
     })
 })

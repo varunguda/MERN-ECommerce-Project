@@ -33,10 +33,9 @@ const UpdateOrder = ({ order, updateOrder, noCancel }) => {
 
 
     return (
-        (orderStatus && orderStatus.length > 0) && (
+        (!!orderStatus && orderStatus.length > 0) && (
 
             order.order_items.map((item, index) => {
-
                 return (
                     <div key={index} className="update-order-status-container">
                         <div className="product">
@@ -53,7 +52,7 @@ const UpdateOrder = ({ order, updateOrder, noCancel }) => {
                             >
                                 {Object.keys(allStatus).slice(1).map((status, index) => {
                                     return (
-                                        (noCancel && allStatus[status] !== "Cancelled") && (
+                                        (noCancel ? allStatus[status] !== "Cancelled" : true) && (
                                             <option key={index} value={allStatus[status]}>
                                                 {allStatus[status]}
                                             </option>

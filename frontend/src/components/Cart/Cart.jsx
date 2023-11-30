@@ -21,7 +21,7 @@ const Cart = () => {
     const [prodQuantities, setProdQuantities] = useState({});
 
     useEffect(() => {
-        window.scrollTo(0,0);
+        window.scrollTo(0, 0);
     }, [])
 
     useEffect(() => {
@@ -129,16 +129,16 @@ const Cart = () => {
                                                 </div>
 
                                                 <div className="cart-btn-container">
-                                                    <button 
-                                                        onClick={() => removeItem(item.product)} 
-                                                        type="button" 
+                                                    <button
+                                                        onClick={() => removeItem(item.product)}
+                                                        type="button"
                                                         className='inferior-btn'
                                                     >
                                                         Remove
                                                     </button>
 
                                                     <div className="add-quantity">
-                                                        <IconMinus 
+                                                        <IconMinus
                                                             className="minus"
                                                             onClick={() => handleMinusClick(item.product, index)}
                                                             strokeWidth={1.5}
@@ -170,12 +170,18 @@ const Cart = () => {
 
                                 <div>
                                     <span className='bold dark'>Subtotal ({`${cartItems.length} ${cartItems.length === 1 ? "item" : "items"}`})</span>
-                                    <span className="dashed price">
-                                        {cartItems.reduce((c, i) => c + i.price, 0)}
-                                    </span>
+                                    {!!totalSavings ? (
+                                        <span className="dashed price">
+                                            {cartItems.reduce((c, i) => c + i.price, 0)}
+                                        </span>
+                                    ) : (
+                                        <span className='price hl-text bold'>
+                                            {totalItemsFinalPrice}
+                                        </span>
+                                    )}
                                 </div>
 
-                                {(totalSavings) && (
+                                {(!!totalSavings) && (
                                     <div>
                                         <span className='bold'>Savings</span>
                                         <span className="hl-text hl-background">- <span className='price'>
@@ -185,10 +191,14 @@ const Cart = () => {
                                 )}
 
                                 <div>
-                                    <span></span>
-                                    <span className='price hl-text bold'>
-                                        {totalItemsFinalPrice}
-                                    </span>
+                                    {!!totalSavings && (
+                                        <>
+                                            <span></span>
+                                            <span className='price hl-text bold'>
+                                                {totalItemsFinalPrice}
+                                            </span>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
@@ -196,7 +206,7 @@ const Cart = () => {
                                 <div>
                                     <span>Shipping</span>
                                     <span className={`hl-text ${shippingCost && "price"}`}>
-                                        {shippingCost ? shippingCost : "Free"}
+                                        {!!shippingCost ? shippingCost : "Free"}
                                     </span>
                                 </div>
 
@@ -222,9 +232,9 @@ const Cart = () => {
                     imageURL="./images/empty-cart.png"
                     caption={
                         <>
-                        <span style={{fontWeight: "700", fontSize: "1.2rem"}}>Time to start shopping!</span>
-                        <span style={{fontWeight: "600"}}>Your cart is empty</span>
-                        <button onClick={() => navigate("/")} className='secondary-btn' type="button">Continue shopping</button>
+                            <span style={{ fontWeight: "700", fontSize: "1.2rem" }}>Time to start shopping!</span>
+                            <span style={{ fontWeight: "600" }}>Your cart is empty</span>
+                            <button onClick={() => navigate("/")} className='secondary-btn' type="button">Continue shopping</button>
                         </>
                     }
                 />

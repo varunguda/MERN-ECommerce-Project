@@ -126,11 +126,10 @@ export class MeritMeter {
           </body>
         </html>        
         `
-
         sendEmail({
             email: seller.email,
             subject: "Seller Status Revoking Notice!",
             html
-        })
+        });
     }
 }

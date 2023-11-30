@@ -72,39 +72,40 @@ const Shipping = () => {
 
 
     useEffect(() => {
-        toast.error(addAddressError, {
-            position: "bottom-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
+        if (!!addAddressError) {
+            toast.error(addAddressError, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     }, [addAddressError]);
 
-
     useEffect(() => {
-        toast.success(addedAddressMessage, {
-            position: "bottom-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
+        if (!!addedAddressMessage) {
+            toast.success(addedAddressMessage, {
+                position: "bottom-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     }, [addedAddressMessage]);
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
         getUserAddresses();
         // eslint-disable-next-line
     }, []);
-
 
     useEffect(() => {
         if (cartItems.length === 0) {
@@ -113,7 +114,6 @@ const Shipping = () => {
         dispatch(getOrderValue());
         // eslint-disable-next-line
     }, [cartItems]);
-
 
     useEffect(() => {
         if (gettingAddresses && cartItems.length > 0) {
@@ -124,7 +124,6 @@ const Shipping = () => {
         }
         // eslint-disable-next-line
     }, [gettingAddresses]);
-
 
     useEffect(() => {
         if (addresses && addresses.length > 0) {
@@ -141,7 +140,6 @@ const Shipping = () => {
         }
     }, [addresses])
 
-
     useEffect(() => {
         if (addedAddress) {
             resetAddressForm();
@@ -150,7 +148,6 @@ const Shipping = () => {
         }
         // eslint-disable-next-line
     }, [addedAddress]);
-
 
     useEffect(() => {
         if (cartItems.length > 0) {
@@ -181,12 +178,10 @@ const Shipping = () => {
 
     const removeItem = (id) => dispatch(addToCart(id, 0));
 
-
     const leaveCheckoutClickHandler = () => {
         navigate("/cart");
         closeModal();
     }
-
 
     const goBackClickHandler = () => {
 
@@ -221,7 +216,6 @@ const Shipping = () => {
         setShowAddAddressForm(false);
     };
 
-
     const validateAddressFields = () => {
         const validators = [
             nameValidator(address.first_name, "First name"),
@@ -236,7 +230,6 @@ const Shipping = () => {
 
         return validators.every((validator) => !validator);
     };
-
 
     const addAddressHandler = (e) => {
         e.preventDefault();
@@ -262,17 +255,16 @@ const Shipping = () => {
     }
 
     const savedShippingDetailsHandler = () => {
-        if (selectedAddress.length !== 0) {
+        if (!!selectedAddress) {
             setSavedShipping(true);
         }
     }
 
 
-
     return (
         <div className="shipping-page-container">
 
-            <Metadata title={"Shipping - ManyIN"} />
+            <Metadata title="Shipping - ManyIN" />
 
             {!orderPlaced ? (
                 <>
@@ -300,11 +292,10 @@ const Shipping = () => {
                                         </div>
 
 
-                                        {(savedShipping === true) && !gettingAddresses && (
-                                            addresses.map((address, index) => {
-                                                return (address._id === selectedAddress) && (
+                                        {(savedShipping) && (!gettingAddresses) && (
+                                            addresses.map((address, index) => (
+                                                (address._id === selectedAddress) && (
                                                     <Fragment key={index}>
-
                                                         <div className="saved-shipping-address">
                                                             <div className="name">{address.first_name + " " + address.last_name}</div>
 
@@ -318,20 +309,27 @@ const Shipping = () => {
                                                             )}
                                                         </div>
 
-                                                        <button onClick={() => { setSavedShipping(false) }} className='inferior-btn edit-btn'>Edit</button>
+                                                        <button onClick={() => {setSavedShipping(false)}} className='inferior-btn edit-btn'>Edit</button>
                                                     </Fragment>
                                                 )
-                                            })
+                                            ))
                                         )}
 
 
-                                        {!showAddAddressForm && !savedShipping && (<button onClick={() => setShowAddAddressForm(prev => !prev)} className='inferior-btn'>+ Add a new address</button>)}
+                                        {(!showAddAddressForm && !savedShipping) && (
+                                            <button
+                                                onClick={() => setShowAddAddressForm(prev => !prev)}
+                                                className='inferior-btn'
+                                            >
+                                                + Add a new address
+                                            </button>
+                                        )}
 
 
                                         {(!showAddAddressForm && !gettingAddresses && !savedShipping) && (
                                             <div className="shipping-addresses-checkboxes">
-                                                {addresses.map((address, index) => {
-                                                    return (<div key={index} className="checkboxes">
+                                                {addresses.map((address, index) => (
+                                                    <div key={index} className="checkboxes">
                                                         <input
                                                             type="checkbox"
                                                             name={address._id}
@@ -353,8 +351,8 @@ const Shipping = () => {
                                                                 )}
                                                             </div>
                                                         </label>
-                                                    </div>)
-                                                })}
+                                                    </div>
+                                                ))}
                                             </div>
                                         )}
 
@@ -390,50 +388,46 @@ const Shipping = () => {
                                         noBorder={true}
                                         close={true}
                                         content={
-                                            cartItems.map((item, index) => {
-                                                return (
-                                                    <div key={index} className='cart-item'>
-
-                                                        <div>
-                                                            <div className="cart-item-details link" >
-                                                                <Link
-                                                                    to={`/product/${item.product}`}
-                                                                    target='_blank'
-                                                                    className="image-container link"
-                                                                >
-                                                                    <img src={item.image} alt={item.name} />
-                                                                </Link>
-                                                                <span>{item.name}</span>
-                                                            </div>
-
-                                                            <div className="cart-item-price">
-                                                                <span className='final-price price'>{item.final_price}</span>
-                                                                {(item.final_price !== item.price) && (
-                                                                    <>
-                                                                        <span className='total-price price'>{item.price}</span>
-                                                                        <div>
-                                                                            <span className='highlight-text'>You save</span>
-                                                                            <span className='highlight-price price'>{Math.round(item.price - item.final_price)}</span>
-                                                                        </div>
-                                                                    </>
-                                                                )}
-                                                            </div>
+                                            cartItems.map((item, index) => (
+                                                <div key={index} className='cart-item'>
+                                                    <div>
+                                                        <div className="cart-item-details link" >
+                                                            <Link
+                                                                to={`/product/${item.product}`}
+                                                                target='_blank'
+                                                                className="image-container link"
+                                                            >
+                                                                <img src={item.image} alt={item.name} />
+                                                            </Link>
+                                                            <span>{item.name}</span>
                                                         </div>
 
-                                                        <div className="cart-btn-container">
-                                                            <button onClick={() => removeItem(item.product)} type="button" className='inferior-btn'>Remove</button>
-                                                            <button type="button" className='inferior-btn'>Save for later</button>
-
-                                                            <div className="add-quantity">
-                                                                <IconMinus strokeWidth={1.5} className="minus" onClick={() => handleMinusClick(item.product, index)} />
-                                                                <span>{prodQuantities[item.product]}</span>
-                                                                <IconPlus strokeWidth={1.5} className="plus" onClick={() => handlePlusClick(item.product, index)} />
-                                                            </div>
+                                                        <div className="cart-item-price">
+                                                            <span className='final-price price'>{item.final_price}</span>
+                                                            {(item.final_price !== item.price) && (
+                                                                <>
+                                                                    <span className='total-price price'>{item.price}</span>
+                                                                    <div>
+                                                                        <span className='highlight-text'>You save</span>
+                                                                        <span className='highlight-price price'>{Math.round(item.price - item.final_price)}</span>
+                                                                    </div>
+                                                                </>
+                                                            )}
                                                         </div>
-
                                                     </div>
-                                                )
-                                            })
+
+                                                    <div className="cart-btn-container">
+                                                        <button onClick={() => removeItem(item.product)} type="button" className='inferior-btn'>Remove</button>
+                                                        <button type="button" className='inferior-btn'>Save for later</button>
+
+                                                        <div className="add-quantity">
+                                                            <IconMinus strokeWidth={1.5} className="minus" onClick={() => handleMinusClick(item.product, index)} />
+                                                            <span>{prodQuantities[item.product]}</span>
+                                                            <IconPlus strokeWidth={1.5} className="plus" onClick={() => handlePlusClick(item.product, index)} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
                                         }
                                     />
                                 </div>
@@ -455,20 +449,23 @@ const Shipping = () => {
 
 
                         <section className='section section2'>
-
                             {gettingOrderVal ? <Loader /> : (
                                 <section className="cart-price-section">
-
                                     <div className='price-container'>
-
                                         <div>
                                             <span className='bold dark'>Subtotal ({`${cartItems.length} ${cartItems.length === 1 ? "item" : "items"}`})</span>
-                                            <span className="dashed price">
-                                                {totalItemsPrice}
-                                            </span>
+                                            {!!totalSavings ? (
+                                                <span className="dashed price">
+                                                    {totalItemsPrice}
+                                                </span>
+                                            ) : (
+                                                <span className='price hl-text bold'>
+                                                    {totalItemsFinalPrice}
+                                                </span>
+                                            )}
                                         </div>
 
-                                        {(totalSavings) && (
+                                        {(!!totalSavings) && (
                                             <div>
                                                 <span className='bold'>Savings</span>
                                                 <span className="hl-text hl-background">- <span className='price'>
@@ -478,15 +475,18 @@ const Shipping = () => {
                                         )}
 
                                         <div>
-                                            <span></span>
-                                            <span className='price hl-text bold'>
-                                                {totalItemsFinalPrice}
-                                            </span>
+                                            {(!!totalSavings) && (
+                                                <>
+                                                    <span></span>
+                                                    <span className='price hl-text bold'>
+                                                        {totalItemsFinalPrice}
+                                                    </span>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
 
                                     <div className='price-container'>
-
                                         <div>
                                             <span>Shipping</span>
                                             <span className={`hl-text ${shippingCost && "price"}`}>
@@ -509,14 +509,11 @@ const Shipping = () => {
                                             </span>
                                         </div>
                                     </div>
-
                                 </section>
                             )}
-
                         </section>
                     </div>
                 </>
-
             ) : (
                 <BannerPage
                     type={"done"}
@@ -538,7 +535,6 @@ const Shipping = () => {
                 />
             )}
         </div>
-
     )
 }
 

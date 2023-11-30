@@ -294,10 +294,10 @@ export const getProductDetails = catchAsync(async (req, res, next) => {
     if (product.review_id) {
         const review_data = await Review.findById(product.review_id);
         if (review_data) {
-            updatedProduct = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...product._doc, seller_merit: seller.is_admin ? "" : seller.seller_merit, seller_name: seller.is_admin ? "Admin" : seller.name };
+            updatedProduct = { rating: review_data.rating, total_reviews: review_data.total_reviews, ...product._doc, seller_merit: seller.is_admin ? "" : Math.round(seller.seller_merit), seller_name: seller.is_admin ? "Admin" : seller.name };
         }
     } else {
-        updatedProduct = { ...product._doc, seller_merit: seller.is_admin ? "" : seller.seller_merit, seller_name: seller.is_admin ? "Admin" : seller.name };
+        updatedProduct = { ...product._doc, seller_merit: seller.is_admin ? "" : Math.round(seller.seller_merit), seller_name: seller.is_admin ? "Admin" : seller.name };
     }
 
     return res.json({

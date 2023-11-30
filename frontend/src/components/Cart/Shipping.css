@@ -83,6 +83,7 @@
 }
 
 .shipping-page-container .section2{
+    justify-content: center;
     min-height: 290px;
 }
 

@@ -1,25 +1,24 @@
-
-.addresses-container{
+.addresses-container {
     margin-right: 20px;
 }
 
-.page-container form .form-instruction{
+.page-container form .form-instruction {
     color: var(--light-font-color);
     font-size: var(--small-content-font-size);
 }
 
-.page-container form .single-line{
+.page-container form .single-line {
     display: flex;
     gap: 20px;
 }
 
-.page-container form .single-line div{
+.page-container form .single-line div {
     width: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.page-container form .btn-container{
+.page-container form .btn-container {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -27,12 +26,12 @@
     margin-top: 40px;
 }
 
-.addresses-container .inferior-btn{
+.addresses-container .inferior-btn {
     font-size: 1rem;
     width: fit-content;
 }
 
-.addresses-container .addresses-container-head{
+.addresses-container .addresses-container-head {
     font-family: var(--test-font-family);
     color: var(--black-font-color);
     font-size: 1.2rem;
@@ -42,11 +41,11 @@
 
 .page-container form input[type="number"]::-webkit-inner-spin-button,
 .page-container form input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
-.address-card-container{
+.address-card-container {
     position: relative;
     display: flex;
     align-items: center;
@@ -61,20 +60,20 @@
     box-shadow: var(--primary-box-shadow);
 }
 
-.address-card-container .section1{
+.address-card-container .section1 {
     min-width: 200px;
 }
 
-.address-card-container .section1 div:not(:last-of-type){
+.address-card-container .section1 div:not(:last-of-type) {
     margin-bottom: 6px;
 }
 
-.address-card-container .section1 .light-text{
+.address-card-container .section1 .light-text {
     color: var(--light-font-color);
     font-size: 0.73rem;
 }
 
-.address-card-container .section2{
+.address-card-container .section2 {
     min-width: 120px;
     display: flex;
     align-items: center;
@@ -83,7 +82,7 @@
     gap: 10px;
 }
 
-.address-card-container .section2  button:first-of-type::after{
+.address-card-container .section2 button:first-of-type::after {
     content: "";
     position: absolute;
     right: -5px;
