@@ -19,7 +19,7 @@ const App = () => {
                 <ContentRoutes />
             </Router>
         </div>
-    )
+    );
 }
 
 export default App;
