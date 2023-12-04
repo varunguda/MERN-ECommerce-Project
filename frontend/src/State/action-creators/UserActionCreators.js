@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../axiosDefault.js";
 import {
     USER_CHECK_REQUEST,
     USER_CHECK_SUCCESS,
@@ -54,7 +54,7 @@ export const checkUsersAccount = (email) => async (dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } };
 
-        const { data } = await axios.post(`/api/v1/checkuser`, { email }, config);
+        const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/checkuser`, { email }, config);
 
         dispatch({
             type: USER_CHECK_SUCCESS,
@@ -80,9 +80,11 @@ export const loginUser = (email, pass) => async (dispatch) => {
             type: LOGIN_USER_REQUEST
         })
 
-        const config = { headers: { "Content-Type": "application/json" } }
+        const config = { 
+            headers: { "Content-Type": "application/json" }
+        }
 
-        const { data } = await axios.post("/api/v1/login", { email, password: pass }, config);
+        const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/login`, { email, password: pass }, config);
 
         dispatch({
             type: LOGIN_USER_SUCCESS,
@@ -106,7 +108,7 @@ export const loadUser = () => async (dispatch) => {
 
         dispatch({ type: LOAD_USER_REQUEST });
 
-        const { data } = await axios.get("/api/v1/me");
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me`);
 
         dispatch({
             type: LOAD_USER_SUCCESS,
@@ -131,9 +133,9 @@ export const signupUser = (user) => async (dispatch) => {
             type: SIGNUP_USER_REQUEST
         })
 
-        const config = { headers: { "Content-Type": "application/json" } }
+        const config = { headers: { "Content-Type": "application/json" } };
 
-        const { data } = await axios.post("/api/v1/register", { name: user.name, email: user.mail, password: user.confirmPass, avatar: user.avatar }, config);
+        const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/register`, { name: user.name, email: user.mail, password: user.confirmPass, avatar: user.avatar }, config);
 
         dispatch({
             type: SIGNUP_USER_SUCCESS,
@@ -161,7 +163,7 @@ export const verifyUser = (code) => async (dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } }
 
-        const { data } = await axios.post("/api/v1/register-verify", { userCode: code }, config);
+        const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/register-verify`, { userCode: code }, config);
 
         dispatch({
             type: VERIFY_USER_SUCCESS,
@@ -187,7 +189,7 @@ export const sendPassRecoveryMail = (email) => async (dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } };
 
-        const { data } = await axios.post(`/api/v1/password/forgot`, { email }, config);
+        const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/password/forgot`, { email }, config);
 
         dispatch({
             type: FORGOT_PASSWORD_SUCCESS,
@@ -212,7 +214,7 @@ export const resetPassword = (pass, confirmPass, token) => async (dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } };
 
-        const { data } = await axios.put(`/api/v1/password/reset/${token}`, { password: pass, confirmPassword: confirmPass }, config);
+        const { data } = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/v1/password/reset/${token}`, { password: pass, confirmPassword: confirmPass }, config);
 
         dispatch({
             type: RESET_PASSWORD_SUCCESS,
@@ -235,7 +237,7 @@ export const signOutUser = () => async (dispatch) => {
 
         dispatch({ type: SIGNOUT_USER_REQUEST });
 
-        const { data } = await axios.get("/api/v1/logout");
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/logout`);
 
         dispatch({
             type: SIGNOUT_USER_SUCCESS,
@@ -257,7 +259,7 @@ export const getListItems = () => async (dispatch) => {
 
         dispatch({ type: LIST_ITEMS_REQUEST });
 
-        const { data } = await axios.get("/api/v1/me/list");
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/list`);
 
         dispatch({
             type: LIST_ITEMS_SUCCESS,
@@ -276,7 +278,7 @@ export const getListItems = () => async (dispatch) => {
 
 export const toggleListItem = (id) => async () => {
     try {
-        return await axios.get(`/api/v1/me/list/${id}`);
+        return await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/list/${id}`);
     } catch (error) {
         console.error(error);
     }
@@ -289,7 +291,7 @@ export const getListProducts = () => async (dispatch) => {
 
         dispatch({ type: LIST_PRODUCTS_REQUEST });
 
-        const { data } = await axios.get("/api/v1/me/list/products");
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/list/products`);
 
         dispatch({
             type: LIST_PRODUCTS_SUCCESS,
@@ -310,7 +312,7 @@ export const emptyListItems = () => async (dispatch) => {
     try {
         dispatch({ type: EMPTY_LIST_ITEMS_REQUEST });
 
-        const { data } = await axios.delete("/api/v1/me/list");
+        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/list`);
 
         dispatch({
             type: EMPTY_LIST_ITEMS_SUCCESS,

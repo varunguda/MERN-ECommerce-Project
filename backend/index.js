@@ -9,9 +9,9 @@ config({
 });
 
 cloudinary.config({ 
-  cloud_name: process.env.CLOUDINARY_NAME, 
-  api_key: process.env.CLOUDINARY_API_KEY, 
-  api_secret: process.env.CLOUDINARY_API_SECRET 
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 
@@ -27,13 +27,12 @@ process.on("uncaughtException", (err)=>{
     server.close(()=>{
         process.exit(1);
     })
-})
+});
 
 
-const server = app.listen(process.env.PORT, ()=>{
-    console.log(`Server is listening at http://localhost:${process.env.PORT}/`)
-})
-
+const server = app.listen((process.env.PORT || 5000), ()=>{
+    console.log(`Server is listening at PORT:${process.env.PORT || 5000}`)
+});
 
 
 // Unhandled promise rejection

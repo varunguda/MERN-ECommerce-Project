@@ -110,7 +110,6 @@ const LoginUser = () => {
         }
     }
 
-
     const forgotPassClickHandler = () => {
         dispatch({
             type: LOGIN_USER_RESET,

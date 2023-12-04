@@ -14,7 +14,7 @@ export const checkSeller = () => async(dispatch) => {
     try {
         dispatch({ type: SELLER_CHECK_REQUEST });
 
-        const { data } = await axios.get("/api/v1/seller");
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/seller`);
 
         dispatch({
             type: SELLER_CHECK_SUCCESS,
@@ -35,7 +35,7 @@ export const getSellerDataAnalysis = () => async(dispatch) => {
     try {
         dispatch({ type: SELLER_DATA_ANALYSIS_REQUEST });
 
-        const { data } = await axios.get("/api/v1/seller/analysis");
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/seller/analysis`);
 
         dispatch({
             type: SELLER_DATA_ANALYSIS_SUCCESS,

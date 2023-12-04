@@ -3,7 +3,7 @@ import productRoute from './routes/productRoutes.js';
 import userRoute from './routes/userRoutes.js';
 import adminRoute from './routes/adminRoutes.js';
 import sellerRoute from './routes/sellerRoutes.js';
-import orderRoute from "./routes/orderRoutes.js"; 
+import orderRoute from "./routes/orderRoutes.js";
 import paymentRoute from "./routes/paymentRoutes.js";
 import { ErrorHandler } from './utils/errorHandler.js';
 import cookieParser from 'cookie-parser';
@@ -29,7 +29,7 @@ app.use(session({
     saveUninitialized: true,
 }));
 app.use(express.json({ limit: "150mb" }));
-app.use(express.urlencoded({ 
+app.use(express.urlencoded({
     extended: true,
     limit: '150mb',
     parameterLimit: 50000
@@ -38,8 +38,8 @@ app.use(fileUpload({
     limits: { fileSize: 150 * 1024 * 1024 }
 }));
 app.use(cors({
-    origin: [process.env.FRONTEND_URL],
-    methods: [ "GET", "POST", "DELETE", "PUT" ],
+    origin: process.env.FRONTEND_URL.split(","),
+    methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
 }));
 
@@ -84,7 +84,7 @@ app.use((err, req, res, next) => {
             success: false,
             message: err.message
         })
-})
+});
 
 
 export default app;

@@ -26,6 +26,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import Sellers from './components/Sellers/Sellers.jsx';
 
 
+
 const ContentRoutes = () => {
 
     const { load } = useSelector(state => state.loader);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { 
+import {
     ADMIN_CHECK_FAILURE,
     ADMIN_CHECK_REQUEST,
     ADMIN_CHECK_SUCCESS,
@@ -37,7 +37,7 @@ import {
     UPDATE_ANY_ORDER_STATUS_FAILURE,
     UPDATE_ANY_ORDER_STATUS_REQUEST,
     UPDATE_ANY_ORDER_STATUS_SUCCESS,
-    
+
     UPDATE_USER_ROLE_FAILURE,
     UPDATE_USER_ROLE_REQUEST,
     UPDATE_USER_ROLE_SUCCESS
@@ -45,18 +45,18 @@ import {
 
 
 
-export const checkAdmin = () => async(dispatch) => {
-    
+export const checkAdmin = () => async (dispatch) => {
+
     try {
         dispatch({ type: ADMIN_CHECK_REQUEST });
 
-        const { data } = await axios.get("/api/v1/admin");
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin`);
 
         dispatch({
             type: ADMIN_CHECK_SUCCESS,
             payload: data,
         })
-        
+
     } catch (error) {
         dispatch({
             type: ADMIN_CHECK_FAILURE,
@@ -67,17 +67,17 @@ export const checkAdmin = () => async(dispatch) => {
 
 
 
-export const getDataAnalysis = () => async(dispatch) => {
+export const getDataAnalysis = () => async (dispatch) => {
     try {
         dispatch({ type: GET_DATA_ANALYSIS_REQUEST });
 
-        const { data } = await axios.get("/api/v1/admin/analysis");
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/analysis`);
 
         dispatch({
             type: GET_DATA_ANALYSIS_SUCCESS,
             payload: data,
         })
-        
+
     } catch (error) {
         dispatch({
             type: GET_DATA_ANALYSIS_FAILURE,
@@ -88,14 +88,14 @@ export const getDataAnalysis = () => async(dispatch) => {
 
 
 
-export const createProductAction = (products, variations, brand, category) => async(dispatch) => {
+export const createProductAction = (products, variations, brand, category) => async (dispatch) => {
     try {
-        
+
         dispatch({ type: CREATE_PRODUCT_REQUEST });
 
-        const config = {headers: { "ContentType": "application/json"}};
+        const config = { headers: { "ContentType": "application/json" } };
 
-        const { data } = await axios.post("/api/v1/myproducts", { products, variations, brand, category }, config);
+        const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/myproducts`, { products, variations, brand, category }, config);
 
         dispatch({
             type: CREATE_PRODUCT_SUCCESS,
@@ -122,9 +122,9 @@ export const getAllOrders = (keyword, status, time, page) => async (dispatch) =>
             status && `status=${status}`,
             time && `time=${time}`,
             page && `page=${page}`
-        ].filter(Boolean).join("&");
+        ].filter(Boolean).join(`&`);
 
-        const { data } = await axios.get(`/api/v1/orders/all/${queryParams ? '?' + queryParams : ''}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/orders/all${queryParams ? '?' + queryParams : ''}`);
 
         dispatch({
             type: ALL_ORDERS_SUCCESS,
@@ -141,12 +141,12 @@ export const getAllOrders = (keyword, status, time, page) => async (dispatch) =>
 
 
 
-export const deleteAnyOrder = (id) => async(dispatch) => {
+export const deleteAnyOrder = (id) => async (dispatch) => {
 
     try {
         dispatch({ type: DELETE_ANY_ORDER_REQUEST });
 
-        const { data } = await axios.delete(`/api/v1/orders/all/${id}`);
+        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/orders/all${id}`);
 
         dispatch({
             type: DELETE_ANY_ORDER_SUCCESS,
@@ -163,14 +163,14 @@ export const deleteAnyOrder = (id) => async(dispatch) => {
 
 
 
-export const updateAnyOrderStatus = (order_id, product_id, status) => async(dispatch) => {
+export const updateAnyOrderStatus = (order_id, product_id, status) => async (dispatch) => {
 
     try {
         dispatch({ type: UPDATE_ANY_ORDER_STATUS_REQUEST });
 
-        const config = {headers: {"ContentType" : "application/json"}};
+        const config = { headers: { "ContentType": "application/json" } };
 
-        const { data } = await axios.put(`/api/v1/orders/all?order_id=${order_id}&product_id=${product_id}`, {status}, config);
+        const { data } = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/v1/orders/all?order_id=${order_id}&product_id=${product_id}`, { status }, config);
 
         dispatch({
             type: UPDATE_ANY_ORDER_STATUS_SUCCESS,
@@ -192,7 +192,7 @@ export const getAllCustomers = (page) => async (dispatch) => {
     try {
         dispatch({ type: ALL_USERS_REQUEST });
 
-        const { data } = await axios.get(`/api/v1/admin/users/customers${page ? `?page=${page}` : ''}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/users/customers${page ? `?page=${page}` : ''}`);
 
         dispatch({
             type: ALL_USERS_SUCCESS,
@@ -214,7 +214,7 @@ export const getAllSellers = (page) => async (dispatch) => {
     try {
         dispatch({ type: ALL_SELLERS_REQUEST });
 
-        const { data } = await axios.get(`/api/v1/admin/users/sellers${page ? `?page=${page}` : ''}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/users/sellers${page ? `?page=${page}` : ''}`);
 
         dispatch({
             type: ALL_SELLERS_SUCCESS,
@@ -231,11 +231,11 @@ export const getAllSellers = (page) => async (dispatch) => {
 
 
 
-export const deleteAnyuser = (id) => async(dispatch) => {
+export const deleteAnyuser = (id) => async (dispatch) => {
     try {
         dispatch({ type: DELETE_USER_REQUEST });
 
-        const { data } = await axios.delete(`/api/v1/admin/user/${id}`);
+        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/user${id}`);
 
         dispatch({
             type: DELETE_USER_SUCCESS,
@@ -247,18 +247,18 @@ export const deleteAnyuser = (id) => async(dispatch) => {
             type: DELETE_USER_FAILURE,
             payload: error.response.data.message,
         })
-    }   
+    }
 }
 
 
 
-export const updateUserRole = (id, is_seller, is_admin) => async(dispatch) => {
+export const updateUserRole = (id, is_seller, is_admin) => async (dispatch) => {
     try {
         dispatch({ type: UPDATE_USER_ROLE_REQUEST });
 
-        const config = { headers: { "ContentType" : "application/json" } };
+        const config = { headers: { "ContentType": "application/json" } };
 
-        const { data } = await axios.put(`/api/v1/admin/user/${id}`, {is_admin, is_seller}, config);
+        const { data } = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/user${id}`, { is_admin, is_seller }, config);
 
         dispatch({
             type: UPDATE_USER_ROLE_SUCCESS,
@@ -270,5 +270,5 @@ export const updateUserRole = (id, is_seller, is_admin) => async(dispatch) => {
             type: UPDATE_USER_ROLE_FAILURE,
             payload: error.response.data.message,
         })
-    }   
+    }
 }

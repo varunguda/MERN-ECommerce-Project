@@ -9,7 +9,9 @@ export const addCookie = async (user, message, status, req, res, next) => {
         .status(status)
         .cookie("token", token, {
             httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000
+            maxAge: 24 * 60 * 60 * 1000,
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+            secure: process.env.NODE_ENV === 'production',
         })
         .json({
             success: true,

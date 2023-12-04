@@ -27,7 +27,6 @@ import {
 } from "../constants/ProfileConstants.js";
 
 
-
 export const addUserAddress = (address) => async (dispatch) => {
     try {
 
@@ -50,7 +49,7 @@ export const addUserAddress = (address) => async (dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } };
 
-        const { data } = await axios.post("/api/v1/me/address", {
+        const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/address`, {
             first_name,
             last_name,
             flat,
@@ -86,7 +85,7 @@ export const getUserAddresses = () => async (dispatch) => {
 
         dispatch({ type: GET_USER_ADDRESSES_REQUEST });
 
-        const { data } = await axios.get("/api/v1/me/address");
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/address`);
 
         dispatch({
             type: GET_USER_ADDRESSES_SUCCESS,
@@ -125,7 +124,7 @@ export const updateUserAddress = (address, id) => async (dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } };
 
-        const { data } = await axios.put(`/api/v1/me/address/${id}`, {
+        const { data } = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/address/${id}`, {
             first_name,
             last_name,
             flat,
@@ -161,7 +160,7 @@ export const deleteUserAddress = (id) => async (dispatch) => {
 
         dispatch({ type: USER_ADDRESS_DELETE_REQUEST });
 
-        const { data } = await axios.delete(`/api/v1/me/address/${id}`);
+        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/address/${id}`);
 
         dispatch({
             type: USER_ADDRESS_DELETE_SUCCESS,
@@ -190,7 +189,7 @@ export const getUserOrders = (keyword, status, time, page) => async (dispatch) =
             page && `page=${page}`
         ].filter(Boolean).join("&");
 
-        const { data } = await axios.get(`/api/v1/me/orders${queryParams ? '?' + queryParams : ''}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/orders${queryParams ? '?' + queryParams : ''}`);
 
         dispatch({
             type: USER_ORDERS_SUCCESS,
@@ -211,7 +210,7 @@ export const cancelUserOrder = (id) => async(dispatch) => {
     try {
         dispatch({ type: CANCEL_USER_ORDER_REQUEST });
 
-        const { data } = await axios.delete(`/api/v1/me/orders/${id}`);
+        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/me/orders/${id}`);
 
         dispatch({
             type: CANCEL_USER_ORDER_SUCCESS,

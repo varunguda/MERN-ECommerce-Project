@@ -50,7 +50,6 @@ const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
         });
     }
 
-
     const toastSuccessPopUp = (msg) => {
         toast.success(msg, {
             position: "bottom-center",
@@ -69,7 +68,7 @@ const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
         try {
             const config = { headers: { "Content-Type": "application/json" } };
 
-            const { data } = await axios.post("/api/v1/order/placeneworder", { order_items, address, stripe_payment_id: payment_id }, config);
+            const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/order/placeneworder`, { order_items, address, stripe_payment_id: payment_id }, config);
 
             dispatch(loaderSpin(false));
 
@@ -81,7 +80,6 @@ const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
             dispatch(loaderSpin(false));
         }
     }
-
 
     const paymentSubmitHandler = async (e) => {
 
@@ -103,7 +101,7 @@ const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
                 order_items.push(obj);
             })
 
-            const { data } = await axios.post("/api/v1/order/payment", { order_items }, config);
+            const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/order/payment`, { order_items }, config);
 
             const clientSecret = data.client_secret;
 
@@ -155,6 +153,7 @@ const Payment = ({ cartItems, price, address, setOrderPlaced }) => {
         }
     }
 
+    
     return (
         <div className='payment-container'>
 

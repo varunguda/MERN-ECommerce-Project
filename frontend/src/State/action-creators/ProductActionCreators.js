@@ -52,7 +52,7 @@ export const getProducts = () => async (dispatch, getState) => {
             state.urlParams.sort_by && `sort_by=${state.urlParams.sort_by}`
         ].filter(Boolean).join('&');
 
-        let link = `/api/v1/products${queryParams ? '?' + queryParams : ''}`;
+        let link = `${process.env.REACT_APP_BACKEND_URL}/api/v1/products${queryParams ? '?' + queryParams : ''}`;
 
         const { data } = await axios.get(link);
 
@@ -76,7 +76,7 @@ export const getProductDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_DETAILS_REQUEST });
 
-        const { data } = await axios.get(`/api/v1/products/${id}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/products/${id}`);
 
         dispatch({
             type: PRODUCT_DETAILS_SUCCESS,
@@ -98,7 +98,7 @@ export const getAllProductsOfSeller = (id) => async (dispatch) => {
 
         dispatch({ type: SELLER_PRODUCT_REQUEST });
 
-        const { data } = await axios.get(`/api/v1/products/seller/${id}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/products/seller/${id}`);
 
         dispatch({
             type: SELLER_PRODUCT_SUCCESS,
@@ -120,7 +120,7 @@ export const getBundleProducts = (id) => async (dispatch) => {
 
         dispatch({ type: BUNDLE_PRODUCTS_REQUEST });
 
-        const { data } = await axios.get(`/api/v1/products/bundles/${id}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/products/bundles/${id}`);
 
         dispatch({
             type: BUNDLE_PRODUCTS_SUCCESS,
@@ -142,7 +142,7 @@ export const getProductReviews = (id, page) => async (dispatch) => {
 
         dispatch({ type: PRODUCT_REVIEWS_REQUEST });
 
-        const { data } = await axios.get(`/api/v1/products/reviews/${id}?page=${page ? page : 1}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/products/reviews/${id}?page=${page ? page : 1}`);
 
         dispatch({
             type: PRODUCT_REVIEWS_SUCCESS,
@@ -170,9 +170,9 @@ export const addProductReview = (review, id) => async (dispatch) => {
             rating,
         } = review;
 
-        const config = { headers: { "Content-Type": "application/json" } };
+        const config = { headers: { "Content-Type": `application/json` } };
 
-        const { data } = await axios.post(`/api/v1/products/addreview/${id}`, {
+        const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/products/addreview/${id}`, {
             title,
             comment,
             rating,
@@ -198,7 +198,7 @@ export const deleteProductReview = (id) => async (dispatch) => {
 
         dispatch({ type: DELETE_PRODUCT_REVIEW_REQUEST });
 
-        const { data } = await axios.delete(`/api/v1/products/reviews/${id}`);
+        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/products/reviews/${id}`);
 
         dispatch({
             type: DELETE_PRODUCT_REVIEW_SUCCESS,
