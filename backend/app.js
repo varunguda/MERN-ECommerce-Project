@@ -27,21 +27,32 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: process.env.NODE_ENV === "DEVELOPMENT" ? "lax" : "none",
+        secure: process.env.NODE_ENV === "DEVELOPMENT" ? false : true,
+    }
 }));
 app.use(express.json({ limit: "150mb" }));
 app.use(express.urlencoded({
     extended: true,
-    limit: '150mb',
+    limit: '100mb',
     parameterLimit: 50000
 }));
 app.use(fileUpload({
-    limits: { fileSize: 150 * 1024 * 1024 }
+    limits: { fileSize: 100 * 1024 * 1024 }
 }));
 app.use(cors({
     origin: process.env.FRONTEND_URL.split(","),
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
 }));
+
+
+app.use("/healthcheck", (req, res, next) => {
+    return res.status(200).send("OK!");
+});
 
 
 // Using routes

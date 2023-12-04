@@ -179,8 +179,8 @@ export const logoutUser = catchAsync(async (req, res, next) => {
     return res.cookie("token", "", {
         httpOnly: true,
         maxAge: 0,
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === "DEVELOPMENT" ? "lax" : "none",
+        secure: process.env.NODE_ENV === "DEVELOPMENT" ? false : true,
     }).json({
         success: true,
         message: `${req.user.name} has been logged out successfully!`

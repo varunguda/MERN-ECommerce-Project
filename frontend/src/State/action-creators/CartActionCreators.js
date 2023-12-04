@@ -6,7 +6,7 @@ export const addToCart = (id, quantity) => async (dispatch, getState) => {
 
     try {
 
-        const { data } = await axios.get(`/${process.env.REACT_APP_BACKEND_URL}/${process.env.REACT_APP_BACKEND_URL}/${process.env.REACT_APP_BACKEND_URL}/${process.env.REACT_APP_BACKEND_URL}/api/v1/product/${id}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/product/${id}`);
 
         dispatch({
             type: ADD_TO_CART,
@@ -52,7 +52,7 @@ export const getOrderValue = () => async(dispatch, getState) => {
         dispatch({ type: ORDER_VALUE_REQUEST });
 
         const config = { headers: { "Content-Type": "application/json" } };
-        const { data } = await axios.post(`/${process.env.REACT_APP_BACKEND_URL}/api/v1/order/getOrderValue`, { order_items: orderItems }, config );
+        const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/order/getOrderValue`, { order_items: orderItems }, config );
 
         dispatch({
             type: ORDER_VALUE_SUCCESS,
