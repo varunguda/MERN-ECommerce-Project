@@ -117,31 +117,31 @@ const Overview = ({ user }) => {
             <div className="overview-card-container">
                 <OverviewCard 
                     head="Orders" 
-                    img="./images/orders.svg"
+                    img="/images/orders.svg"
                     caption="Check your order status" 
                     linkTo={"/profile/orders"}
                 />
                 <OverviewCard 
                     head="Addresses" 
-                    img="./images/delivery_address.svg"
+                    img="/images/delivery_address.svg"
                     caption="Save addresses for a hassle-free checkout" 
                     linkTo={"/profile/addresses"}
                 />
                 <OverviewCard 
                     head="List" 
-                    img="./images/wishlist.svg"
+                    img="/images/wishlist.svg"
                     caption="All your curated products" 
                     linkTo={"/profile/list"}
                 />
                 <OverviewCard 
                     head="Coupons" 
-                    img="./images/coupons.svg"
+                    img="/images/coupons.svg"
                     caption="Manage coupons for additional discounts" 
                     linkTo={"/profile/coupons"}
                 />
                 <OverviewCard 
                     head="Profile Details" 
-                    img="./images/profile.svg"
+                    img="/images/profile.svg"
                     caption="Change your profile details"
                     linkTo={"/profile/personal"} 
                 />
