@@ -10,7 +10,7 @@ import "./ProductCarousel.css"
 const CustomLeftArrow = ({ onClick, ...rest }) => {
     return (
         <div {...rest} onClick={onClick} className='left-arrow'>
-            <IconChevronLeft strokeWidth={1.75} size={30} />
+            <IconChevronLeft strokeWidth={1.5} size={25} />
         </div>
     );
 };
@@ -18,7 +18,7 @@ const CustomLeftArrow = ({ onClick, ...rest }) => {
 const CustomRightArrow = ({ onClick, ...rest }) => {
     return (
         <div {...rest} onClick={onClick} className='right-arrow'>
-            <IconChevronRight strokeWidth={1.75} size={30} />
+            <IconChevronRight strokeWidth={1.5} size={25} />
         </div>
     );
 };
@@ -28,23 +28,23 @@ const ProductsCarousel = ({ products, desktopItems, tabletItems, flipItems, mobi
 
     const responsive = {
         desktop: {
-            breakpoint: { max: 3000, min: 1024 },
+            breakpoint: { max: 3000, min: 1224 },
             items: desktopItems || 6,
-            slidesToSlide: 6
+            slidesToSlide: 5
         },
         tablet: {
-            breakpoint: { max: 1024, min: 720 },
+            breakpoint: { max: 1224, min: 720 },
             items: tabletItems || 4,
-            slidesToSlide: 2
+            slidesToSlide: 3
         },
         flip: {
             breakpoint: { max: 720, min: 0 },
-            items: flipItems || 3,
+            items: flipItems || 2,
             slidesToSlide: 1
         },
         mobile: {
             breakpoint: { max: 400, min: 0 },
-            items: mobileItems || 2,
+            items: mobileItems || 1,
             slidesToSlide: 1
         }
     };
@@ -80,12 +80,13 @@ const ProductsCarousel = ({ products, desktopItems, tabletItems, flipItems, mobi
                         shouldResetAutoplay
                         showDots={false}
                         sliderClass=""
-                        slidesToSlide={1}
                         swipeable
                         responsive={responsive}
                     >
                         {products.map((product, index) => (
-                            <ProductCard key={index} height="400px" width="90%" product={product} noReviews={noReviews} />
+                            <div className="carousel-elem" style={{ width: "100%" }}>
+                                <ProductCard key={index} height="400px" width="90%" product={product} noReviews={noReviews} />
+                            </div>
                         ))}
                     </Carousel>
                 }

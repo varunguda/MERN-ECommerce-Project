@@ -28,10 +28,8 @@ const ProductsPage = () => {
 
     const { setKeyword, setMinPrice, setMaxPrice, setPage, setCategory, setBrand, setAvailability, setFacets, setRatings, setSort, resetFacets } = bindActionCreators(navigationActionCreators, dispatch);
 
-
     const location = useLocation();
     const navigate = useNavigate();
-
 
     const [price, setPrice] = useState([0, 100000]);
     const [sidebar, setSidebar] = useState(() => window.innerWidth < 1000 ? false : true);
@@ -136,7 +134,7 @@ const ProductsPage = () => {
     }, [keyword, minPrice, maxPrice, page, category, brand, availability, facets, c_ratings, sort_by]);
 
     useEffect(() => {
-        if (keyword) {
+        if (!!keyword) {
             getProducts();
         }
         // eslint-disable-next-line
@@ -184,9 +182,7 @@ const ProductsPage = () => {
     }, [category, allCategories]);
 
     useEffect(() => {
-
-        if (allCategories && (Object.keys(allCategories).length > 0) && selectedCategories.length > 0) {
-
+        if (!!allCategories && (Object.keys(allCategories).length > 0) && selectedCategories.length > 0) {
             const checkCategory = () => {
                 if (selectedCategories.join(",") === Object.keys(allCategories).filter((category) => allCategories[category] > 0).join(",")) {
                     return true;
@@ -202,12 +198,10 @@ const ProductsPage = () => {
                 setCategory("");
             }
         }
-
         // eslint-disable-next-line
     }, [selectedCategories]);
 
     useEffect(() => {
-
         if ((minPrice === productsMinPrice) && (maxPrice === productsMaxPrice)) {
             setMinPrice(0);
             setMaxPrice(0);
@@ -221,14 +215,11 @@ const ProductsPage = () => {
                 setPrice([productsMinPrice, productsMaxPrice]);
             }
         }
-
         // eslint-disable-next-line
     }, [minPrice, maxPrice, productsMinPrice, productsMaxPrice]);
 
     useEffect(() => {
-
         if (facets && facets.split("||").length > 0 && productsFilters && Object.keys(productsFilters).length > 0) {
-
             let facetColors = [];
             let facetStorages = [];
             let facetRams = [];
@@ -432,9 +423,7 @@ const ProductsPage = () => {
     }
 
     const handleCheckboxSelection = (value, setSelectedValues, allSelectedValues) => {
-
         const exist = allSelectedValues.includes(value);
-
         if (!exist) {
             setSelectedValues((prev) => [...prev, value]);
         } else {
@@ -445,7 +434,6 @@ const ProductsPage = () => {
                 setSelectedValues((prev) => prev.filter((val) => val !== value));
             }
         }
-
     };
 
     const brandsHandler = (e) => {
@@ -491,13 +479,9 @@ const ProductsPage = () => {
                     {(productsExist && !loading) ? (
 
                         <div className='products-page-container'>
-
                             <div className="products-page-header">
-
                                 <div className="header-section header1">
-
                                     <div className='filters-shortcuts'>
-
                                         {selectedCategories && selectedCategories.map((category, index) => {
                                             return (
                                                 <FilterButton
@@ -599,8 +583,6 @@ const ProductsPage = () => {
                                     <div className="clear-filters-btn" onClick={() => { navigate(`/search?keyword=${keyword}`) }}>
                                         Clear all
                                     </div>
-
-
                                 </div>
 
                                 <div className="header-section">

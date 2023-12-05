@@ -105,8 +105,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         3: 0,
     };
     let storageOptions = {};
-    let processorOptions = [];
-    let quantityOptions = [];
 
     if (!!keyword) {
         const existProducts = await Product.find({ $or: [{ name: { $regex: keyword, $options: "i" } }, { brand: { $regex: keyword, $options: "i" } }] });
@@ -149,12 +147,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
                 else if (storageOptions[prod.storage] >= 0) {
                     storageOptions[prod.storage] += 1;
                 }
-            }
-            if (prod.processer && !processorOptions.includes(prod.processer)) {
-                processorOptions.push(prod.processer);
-            }
-            if (prod.quantity && !quantityOptions.includes(prod.quantity)) {
-                quantityOptions.push(prod.quantity);
             }
             categories[prod.category] += 1;
         })
@@ -234,12 +226,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     }
     if (Object.keys(storageOptions).reduce((count, storage) => { return count + storageOptions[storage] }, 0)) {
         filters = { ...filters, storage: storageOptions }
-    }
-    if (quantityOptions.length) {
-        filters.push("quantities");
-    }
-    if (processorOptions.length) {
-        filters.push("processor type");
     }
 
     const { sort_by } = req.query;

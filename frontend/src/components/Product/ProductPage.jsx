@@ -24,6 +24,7 @@ import ListButton from '../elements/Buttons/ListButton';
 import ListHeartButton from '../elements/Buttons/ListHeartButton';
 import { useQuery } from "react-query";
 import { getProductDetails } from './fetchers';
+import NotFoundPage from '../NotFoundPage';
 
 
 const ProductPage = () => {
@@ -49,7 +50,10 @@ const ProductPage = () => {
 
     const { getAllProductsOfSeller, getBundleProducts, getProductReviews } = bindActionCreators(actionCreators, dispatch);
 
-    const { isLoading, data, error } = useQuery(["Product Deatils", location.pathname.replace("/product/", "")], getProductDetails, { refetchInterval: false });
+    const { isLoading, data, error } = useQuery(["Product Deatils", location.pathname.replace("/product/", "")], getProductDetails, {
+        refetchInterval: false,
+        retry: false,
+    });
 
 
     useEffect(() => {
@@ -76,7 +80,7 @@ const ProductPage = () => {
     }, [error]);
 
     useEffect(() => {
-        if(!!product.seller_id){
+        if (!!product.seller_id) {
             getAllProductsOfSeller(product.seller_id);
         }
         // eslint-disable-next-line
@@ -114,10 +118,10 @@ const ProductPage = () => {
         else {
             dispatch(loaderSpin(false));
         }
-        
+
         // eslint-disable-next-line
     }, [isLoading]);
-    
+
     useEffect(() => {
         setActiveImageIndex(currentImageIndex);
     }, [currentImageIndex]);
@@ -223,7 +227,7 @@ const ProductPage = () => {
 
     return (
         <>
-            {(!!product && (Object.keys(product).length > 0) && !isLoading) && (
+            {(!!product && (Object.keys(product).length > 0) && !isLoading) ? (
 
                 <div className='product-page-container'>
                     <Metadata
@@ -277,7 +281,7 @@ const ProductPage = () => {
                                     </div>
 
                                     {product.variations.map((variation, index) => (
-                                        <div className={`elem elem${index+2}`}>
+                                        <div className={`elem elem${index + 2}`}>
                                             <span className="highlight-name">{variation}</span><span className="highlight-text">{product[variation]}</span>
                                         </div>
                                     ))}
@@ -478,12 +482,16 @@ const ProductPage = () => {
                         </section>
                     </section>
                 </div>
+            ) : (
+                (!isLoading && !!error) && (
+                    <NotFoundPage />
+                )
             )}
         </>
     )
 }
 
-export default ProductPage
+export default ProductPage;
 
 
 

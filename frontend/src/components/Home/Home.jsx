@@ -13,23 +13,23 @@ import 'react-toastify/dist/ReactToastify.css';
 const Home = () => {
 
     const dispatch = useDispatch();
-    const { loading, products, error } = useSelector(
-        (state) => state.products
-    );
+    const { loading, products, error } = useSelector(state => state.products);
 
     const { getProducts } = bindActionCreators(actionCreators, dispatch);
 
     useEffect(()=> {
-        toast.error(error, {
-            position: "bottom-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
+        if(!!error){
+            toast.error(error, {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     }, [error]);
 
 
@@ -97,12 +97,10 @@ const Home = () => {
                         </div>
                     </div>
 
-
                     <section className='content-section'>
                         <ProductsCarousel products={products} heading="Latest Products" caption="New to ManyIN" />
                     </section>
                 </>
-
             )}
         </>
     )

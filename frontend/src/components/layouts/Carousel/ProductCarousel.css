@@ -1,5 +1,4 @@
-
-.carousel-container{
+.carousel-container {
     margin: 25px 15px;
 }
 
@@ -13,35 +12,51 @@
     background-color: white;
     border-radius: 50%;
     border: 1px solid black;
-    height: 50px;
-    width: 50px;
+    height: 40px;
+    width: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.right-arrow{
+.right-arrow {
     right: 0px;
 }
 
-.left-arrow{
+.left-arrow {
     left: 0px;
 }
 
-.right-arrow:active, .left-arrow:active{
+.right-arrow:active,
+.left-arrow:active {
     border: 2px solid black;
 }
 
 
-.product-carousel .title{
+.product-carousel .title {
     color: var(--black-font-color);
     font-weight: 700;
     font-size: var(--xl-font-size);
     text-align: left;
 }
 
-.product-carousel .caption{
+.product-carousel .caption {
     font-size: var(--medium-content-font-size);
     color: var(--light-font-color);
     text-align: left;
+}
+
+.carousel-elem {
+    position: relative;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 580px) {
+    .left-arrow,
+    .right-arrow {
+        height: 30px;
+        width: 30px;
+    }
 }

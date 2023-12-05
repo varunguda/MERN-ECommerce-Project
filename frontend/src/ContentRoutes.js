@@ -24,6 +24,7 @@ import Shipping from './components/Cart/Shipping';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import Sellers from './components/Sellers/Sellers.jsx';
+import NotFoundPage from './components/NotFoundPage.jsx';
 
 
 
@@ -81,6 +82,7 @@ const ContentRoutes = () => {
                                 <Shipping />
                             </Elements>
                         } />
+                        <Route path="*" element={<NotFoundPage />} />
                     </Routes>  
                 </div>
                 <Footer />

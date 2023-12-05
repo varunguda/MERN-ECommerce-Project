@@ -22,7 +22,7 @@
 
 .banner-page-container img {
     height: 200px;
-    width: 100%;
+    width: auto;
 }
 
 .banner-page-caption {
@@ -58,7 +58,7 @@
     -moz-transition: .4s;
     transition: .4s;
 
-    .body {
+    > .body {
         position: absolute;
         bottom: 0;
         width: 0;
@@ -69,7 +69,7 @@
         z-index: 2;
     }
 
-    .top-fold {
+    > .top-fold {
         position: absolute;
         top: 50px;
         width: 0;
@@ -86,7 +86,7 @@
         z-index: 2;
     }
 
-    .back-fold {
+    > .back-fold {
         position: absolute;
         bottom: 0;
         width: 200px;
@@ -95,7 +95,7 @@
         z-index: 0;
     }
 
-    .left-fold {
+    > .left-fold {
         position: absolute;
         bottom: 0;
         width: 0;
@@ -106,7 +106,7 @@
         z-index: 2;
     }
 
-    .letter {
+    > .letter {
         left: 20px;
         bottom: 0px;
         position: absolute;
@@ -129,7 +129,7 @@
                     transparent 18px);
         }
 
-        .letter-title {
+        > .letter-title {
             margin-top: 10px;
             margin-left: 5px;
             height: 10px;
@@ -137,7 +137,7 @@
             background: #ffc220;
         }
 
-        .letter-context {
+        > .letter-context {
             margin-top: 10px;
             margin-left: 5px;
             height: 10px;
@@ -145,7 +145,7 @@
             background: #ffc220;
         }
 
-        .letter-content {
+        > .letter-content {
             position: absolute;
             color: white;
             padding: 2px;
@@ -156,7 +156,7 @@
             margin: 14px 0px 0px 5px;
         }
 
-        .letter-stamp {
+        > .letter-stamp {
             margin-top: 30px;
             margin-left: 120px;
             border-radius: 100%;
