@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import "./Dashboard.css";
 import IconDevices2 from '@tabler/icons-react/dist/esm/icons/IconDevices2';
 import IconUsers from '@tabler/icons-react/dist/esm/icons/IconUsers';
 import IconPackages from '@tabler/icons-react/dist/esm/icons/IconPackages';

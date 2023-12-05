@@ -52,7 +52,7 @@ const UpdateOrder = ({ order, updateOrder, noCancel }) => {
                             >
                                 {Object.keys(allStatus).slice(1).map((status, index) => {
                                     return (
-                                        (noCancel ? allStatus[status] !== "Cancelled" : true) && (
+                                        (noCancel ? (allStatus[status] !== "Cancelled") : true) && (
                                             <option key={index} value={allStatus[status]}>
                                                 {allStatus[status]}
                                             </option>

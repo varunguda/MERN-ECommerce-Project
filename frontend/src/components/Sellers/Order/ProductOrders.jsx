@@ -30,7 +30,9 @@ export const JustificationModalContent = ({ cancelOrderHandler }) => {
 
     return (
         <>
-            <div className="modal-caption">Please provide the customer with a clear and concise explanation for the inconvenience they have experienced due to your actions. Remember that you may have a significant impact on your merit.</div>
+            <div className="modal-caption">
+                Please provide the customer with a clear and concise explanation for the inconvenience they are going to experience due to your actions. Also remember that you may have a significant impact on your merit upon performing this action.
+            </div>
 
             <div className="input-section">
                 <textarea

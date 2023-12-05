@@ -17,6 +17,7 @@ import Accordion from '../../elements/Accordians/Accordion';
 import UpdateOrder from './UpdateOrder';
 import OrderFilterButton from '../../elements/Buttons/OrderFilterButton';
 import OrderCard from '../../elements/Cards/OrderCard';
+import { allStatus, allTimes } from '../../Data';
 
 
 const orderParamsReducer = (state, action) => {
@@ -313,7 +314,7 @@ const AllOrders = () => {
                                                     </div>
 
                                                     <Accordion
-                                                        title={"Update order status"}
+                                                        title="Update order status"
                                                         close={true}
                                                         noBorder={true}
                                                         content={
@@ -368,22 +369,3 @@ const AllOrders = () => {
 }
 
 export default AllOrders;
-
-
-const allStatus = {
-    "all": "All",
-    "delivered": "Delivered",
-    "outForDelivery": "Out for delivery",
-    "inTransit": "In transit",
-    "shipped": "Shipped",
-    "processing": "Processing",
-    "cancelled": "Cancelled",
-}
-
-const allTimes = {
-    "any": "Anytime",
-    "last30days": "Last 30 days",
-    "last6months": "Last 6 months",
-    "last1year": "Last year",
-    "before1year": "Before an year",
-}

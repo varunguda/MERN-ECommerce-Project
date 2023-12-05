@@ -74,17 +74,15 @@
     flex-wrap: nowrap;
     gap: 5px;
     padding: 5px 0px;
-}
 
-.product-card .product-price{
-    .product-sp{
+    > .product-sp{
         color: var(--highlight-font-color);
         font-size: var(--xl-font-size);
         font-weight: 600;
         white-space: nowrap;
     }
-
-    .product-p{
+    
+    > .product-p{
         color: var(--light-font-color);
         text-decoration: line-through;
     }
