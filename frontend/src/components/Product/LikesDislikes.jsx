@@ -30,13 +30,13 @@ const LikesDislikes = ({ reviewsId, review }) => {
     const toggleReviewLike = async(reviews_id, review_id) => {
         const config = { headers: { "Content-Type": "application/json" } };
 
-        await axios.post("/api/v1/products/reviews/like", { reviews: reviews_id, review: review_id }, config);
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/products/reviews/like`, { reviews: reviews_id, review: review_id }, config);
     }
 
     const toggleReviewDislike = async(reviews_id, review_id) => {
         const config = { headers: { "Content-Type": "application/json" } };
 
-        await axios.post("/api/v1/products/reviews/dislike", { reviews: reviews_id, review: review_id }, config);
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/products/reviews/dislike`, { reviews: reviews_id, review: review_id }, config);
     }
 
 
