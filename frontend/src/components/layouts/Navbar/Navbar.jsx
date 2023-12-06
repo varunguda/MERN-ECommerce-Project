@@ -69,7 +69,7 @@ const Navbar = () => {
 
                     <Link to="/admin" className='nav-elems link'>
                         <IconChartPie size={20} strokeWidth={1.5} />
-                        <span>Portal</span>
+                        <span>Admin Portal</span>
                     </Link>
 
                     <Link to="/seller" className='nav-elems link'>
@@ -140,7 +140,7 @@ const Navbar = () => {
                                     {(user && user.is_admin) && (
                                         <Link to="/admin" className='nav-elems link'>
                                             <IconChartPie strokeWidth={1.5} size={20} />
-                                            <span>Portal</span>
+                                            <span>Admin Portal</span>
                                         </Link>
                                     )}
 

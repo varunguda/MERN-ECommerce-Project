@@ -106,8 +106,7 @@ const SignUpUser = () => {
                 sessionStorage.removeItem("mail")
             }
             setTimeout(() => {
-                navigate("/");
-
+                window.open("/", "_self");
                 dispatch({
                     type: VERIFY_USER_RESET,
                 })
@@ -335,17 +334,15 @@ const SignUpUser = () => {
                             </form>
                         </div>
                     </div>
-
                 ) : (
-
                     <BannerPage
                         type="done"
-                        onClick={() => { navigate("/") }}
+                        onClick={() => { window.open("/", "_self"); }}
                         caption={
                             <>
                                 <p>{verifcationMessage}</p>
 
-                                <button onClick={() => navigate("/")} type="button" className='inferior-btn' style={{ color: "#0071dc" }}>Home</button>
+                                <button onClick={() => window.open("/", "_self")} type="button" className='inferior-btn' style={{ color: "#0071dc" }}>Home</button>
                             </>
                         }
                     />
