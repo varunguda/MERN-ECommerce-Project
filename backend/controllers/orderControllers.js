@@ -97,7 +97,7 @@ export const placeNewOrder = catchAsync(async (req, res, next) => {
 
     await order.save({ validateBeforeSave: false });
 
-    const trackOrderURL = `${req.protocol}://${req.get("host")}/`;
+    const trackOrderURL = `${req.protocol}://${req.hostname}/profile/orders`;
 
     const html = orderHtml({
         head: "Order Confirmation",

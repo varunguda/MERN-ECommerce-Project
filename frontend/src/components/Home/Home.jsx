@@ -99,7 +99,7 @@ const Home = () => {
                     </div>
 
                     <section className='content-section'>
-                        <ProductsCarousel products={products} heading="Latest Products" caption="New to ManyIN" />
+                        <ProductsCarousel products={products} heading="Latest Products" caption="New on ManyIN" />
                     </section>
                 </>
             )}
