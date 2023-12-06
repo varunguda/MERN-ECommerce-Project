@@ -124,7 +124,7 @@ export const getAllOrders = (keyword, status, time, page) => async (dispatch) =>
             page && `page=${page}`
         ].filter(Boolean).join(`&`);
 
-        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/orders/all${queryParams ? '?' + queryParams : ''}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/orders/all/${queryParams ? '?' + queryParams : ''}`);
 
         dispatch({
             type: ALL_ORDERS_SUCCESS,
@@ -146,7 +146,7 @@ export const deleteAnyOrder = (id) => async (dispatch) => {
     try {
         dispatch({ type: DELETE_ANY_ORDER_REQUEST });
 
-        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/orders/all${id}`);
+        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/orders/all/${id}`);
 
         dispatch({
             type: DELETE_ANY_ORDER_SUCCESS,
@@ -214,7 +214,7 @@ export const getAllSellers = (page) => async (dispatch) => {
     try {
         dispatch({ type: ALL_SELLERS_REQUEST });
 
-        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/users/sellers${page ? `?page=${page}` : ''}`);
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/users/sellers/${page ? `?page=${page}` : ''}`);
 
         dispatch({
             type: ALL_SELLERS_SUCCESS,
@@ -235,7 +235,7 @@ export const deleteAnyuser = (id) => async (dispatch) => {
     try {
         dispatch({ type: DELETE_USER_REQUEST });
 
-        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/user${id}`);
+        const { data } = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/user/${id}`);
 
         dispatch({
             type: DELETE_USER_SUCCESS,
@@ -258,7 +258,7 @@ export const updateUserRole = (id, is_seller, is_admin) => async (dispatch) => {
 
         const config = { headers: { "ContentType": "application/json" } };
 
-        const { data } = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/user${id}`, { is_admin, is_seller }, config);
+        const { data } = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/v1/admin/user/${id}`, { is_admin, is_seller }, config);
 
         dispatch({
             type: UPDATE_USER_ROLE_SUCCESS,

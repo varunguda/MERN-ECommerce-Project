@@ -27,12 +27,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: {
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
-        sameSite: process.env.NODE_ENV === "DEVELOPMENT" ? "lax" : "none",
-        secure: process.env.NODE_ENV === "DEVELOPMENT" ? false : true,
-    }
+    cookie: { secure: false }
 }));
 app.use(express.json({ limit: "150mb" }));
 app.use(express.urlencoded({
