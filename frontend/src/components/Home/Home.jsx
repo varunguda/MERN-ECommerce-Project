@@ -89,7 +89,8 @@ const Home = () => {
                         </div>
 
                         <div className="banner banner6">
-                            <span className="text1">Sale & all</span>
+                            <span className="text1">Sale</span>
+                            <span className="text2"> & all</span>
                         </div>
 
                         <div className="banner banner7">

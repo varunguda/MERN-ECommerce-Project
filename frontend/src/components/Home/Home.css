@@ -16,11 +16,10 @@
 .banner {
     position: absolute;
     border-radius: 10px;
-    filter: grayscale(1);
     transition: 0.1s;
     cursor: pointer;
     width: 100%;
-    padding: 20px;
+    padding: 4%;
     animation: popin 0.5s forwards;
 }
 
@@ -37,13 +36,15 @@
 }
 
 .banner:hover {
-    filter: grayscale(0);
+    filter: grayscale(1);
 }
 
 .banner span {
     display: block;
     color: white;
     position: relative;
+    white-space: nowrap;
+    width: fit-content;
 }
 
 .banner1 {
@@ -56,13 +57,14 @@
 
 .banner1>span:first-of-type {
     letter-spacing: 1px;
-    font-size: 30px;
+    font-size: clamp(10px, 2vw, 32px);
+    line-height: 1;
 }
 
 .banner1>span:last-of-type {
     letter-spacing: 1px;
-    font-size: 100px;
-    line-height: 70px;
+    font-size: clamp(20px, 8vw, 100px);
+    line-height: 1;
 }
 
 
@@ -75,14 +77,13 @@
 }
 
 .banner2>span:first-of-type {
-    font-size: 90px;
-    line-height: 90px;
+    font-size: clamp(20px, 8vw, 90px);
+    line-height: 1;
 }
 
 .banner2>span:last-of-type {
-    letter-spacing: 1px;
-    font-size: 20px;
-    line-height: 0px;
+    font-size: clamp(10px, 2vw, 22px);
+    line-height: 1;
 }
 
 
@@ -95,13 +96,13 @@
 }
 
 .banner3>span:first-of-type {
-    letter-spacing: 1px;
-    font-size: 30px;
+    font-size: clamp(10px, 2vw, 32px);
+    line-height: 1;
 }
 
 .banner3>span:last-of-type {
-    font-size: 100px;
-    line-height: 70px;
+    font-size: clamp(20px, 8vw, 100px);
+    line-height: 1;
 }
 
 
@@ -115,13 +116,13 @@
 }
 
 .banner4>span:first-of-type {
-    font-size: 80px;
-    line-height: 80px;
+    font-size: clamp(10px, 6vw, 70px);
+    line-height: 1;
 }
 
 .banner4>span:last-of-type {
-    font-size: 20px;
-    line-height: 0px;
+    font-size: clamp(7px, 2vw, 22px);
+    line-height: 1;
 }
 
 .banner5 {
@@ -133,13 +134,13 @@
 }
 
 .banner5>span:first-of-type {
-    letter-spacing: 1px;
-    font-size: 30px;
+    font-size: clamp(10px, 2vw, 32px);
+    line-height: 1;
 }
 
 .banner5>span:last-of-type {
-    font-size: 70px;
-    line-height: 45px;
+    font-size: clamp(20px, 5vw, 62px);
+    line-height: 1;
 }
 
 .banner6 {
@@ -152,9 +153,13 @@
 }
 
 .banner6>span:first-of-type {
-    letter-spacing: 1px;
-    font-size: 120px;
-    line-height: 120px;
+    font-size: clamp(20px, 8vw, 100px);
+    line-height: 1;
+}
+
+.banner6>span:last-of-type {
+    font-size: clamp(20px, 8vw, 120px);
+    line-height: 1;
 }
 
 .banner7 {
@@ -167,15 +172,15 @@
 }
 
 .banner7>span:first-of-type {
-    font-size: 60px;
+    font-size: clamp(10px, 6vw, 70px);
+    line-height: 1;
     top: 50%;
-    left: 0%;
-    transform: translate(0%, -50%);
-    text-align: center;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
-/* 
 
-@media (max-width: 900px) {
+
+/* @media (max-width: 900px) {
     .banner {
         filter: grayscale(0);
     }
