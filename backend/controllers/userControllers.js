@@ -233,7 +233,7 @@ export const forgotPassword = [
 
         await user.save({ validateBeforeSave: false });
 
-        const resetPasswordURL = `${req.protocol}://${req.hostname}/account/password/reset/${resetToken}`;
+        const resetPasswordURL = `${req.get('Referer')}account/password/reset/${resetToken}`;
 
         const html = `<html>
     <head>
@@ -316,7 +316,7 @@ export const forgotPassword = [
     </body>
     
     </html>
-        `
+        `;
 
         try {
 

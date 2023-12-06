@@ -587,7 +587,7 @@ export const deleteMyProduct = catchAsync(async (req, res, next) => {
                 head_caption: `We regret to inform you that your order has been cancelled. Below are the details of your cancelled order:`,
                 order,
                 order_caption: `<strong>Reason for this inconvinience:</strong> Seller has tookdown his product and the product is no longer available on ManyIN.`,
-                button_url: `${req.protocol}://${req.hostname}/profile/orders`,
+                button_url: `${req.get('Referer')}/profile/orders`,
                 button_text: "Check Order Status",
                 mail_caption: "We apologize for any inconvenience we may have caused. If you have any questions or concerns, please don't hesitate to reply to this Mail."
             });
