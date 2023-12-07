@@ -22,55 +22,55 @@ const commonProperties = ["name", "description", "price", "images", "stock", "di
 const categoryConfig = {
 
     "Mobile Phone": {
-        properties: [...commonProperties, "ram", "storage", "color", "resolution", "processor"]
+        properties: [ "ram", "storage", "color", "resolution", "processor"]
     },
 
     "Laptop": {
-        properties: [...commonProperties, "ram", "color", "resolution", "processor", "storage", "size"]
+        properties: [ "ram", "color", "resolution", "processor", "storage", "size"]
     },
 
     "Monitor": {
-        properties: [...commonProperties, "color", "resolution", "size"]
+        properties: [ "color", "resolution", "size"]
     },
 
     "Camera": {
-        properties: [...commonProperties, "color"]
+        properties: [ "color"]
     },
 
     "Clothing": {
-        properties: [...commonProperties, "size", "color"]
+        properties: [ "size", "color"]
     },
 
     "Footwear": {
-        properties: [...commonProperties, "color", "size"]
+        properties: [ "color", "size"]
     },
 
     "Watches": {
-        properties: [...commonProperties, "color"]
+        properties: [ "color"]
     },
 
     "Telivision": {
-        properties: [...commonProperties, "color", "resolution", "size"]
+        properties: [ "color", "resolution", "size"]
     },
 
     "Refrigerator": {
-        properties: [...commonProperties, "color", "size"]
+        properties: [ "color", "size"]
     },
 
     "Washing Machines": {
-        properties: [...commonProperties, "color", "size"],
+        properties: [ "color", "size"],
     },
 
     "Accessories": {
-        properties: [...commonProperties, "color", "size"]
+        properties: [ "color", "size"]
     },
 
     "Audio devices": {
-        properties: [...commonProperties, "color"]
+        properties: [ "color"]
     },
 
     "Beauty & Health": {
-        properties: [...commonProperties, "quantity"]
+        properties: [ "quantity"]
     }
 };
 
@@ -195,13 +195,11 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
         const { _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images, description, variations } = prod;
 
         let obj = {};
-        if (variations.length > 0) {
-            variations.forEach((vari) => {
-                if (categoryConfig[category].properties.includes(vari)) {
-                    obj[vari] = prod[vari];
-                }
-            })
-        }
+        categoryConfig[category].properties.forEach((field) => {
+            if(!obj[field] && !!prod[field]){
+                obj[field] = prod[field];
+            }
+        });
 
         return ({ _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images: images[0], description, ...obj, variations });
     });
@@ -213,8 +211,8 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
             if (prod.rating) {
                 return ((prod.rating === 5) ? reviewsArr.includes('4') : reviewsArr.includes(Math.floor(prod.rating).toString()));
             }
-        })
-    }
+        });
+    };
 
     let filters = {};
 
@@ -321,7 +319,6 @@ export const createProduct = [
 
         const { products, variations, category, brand } = req.body;
 
-        const createdProducts = [];
         const product_id = (products.length > 1) ? uuidv4() : undefined;
 
         if (!categoryConfig.hasOwnProperty(category)) {
@@ -329,8 +326,10 @@ export const createProduct = [
         }
 
         const { properties } = categoryConfig[category];
+        
+        let uploadedImages = {};
 
-        for (const product of products) {
+        const createdPromises = products.map(async(product, index) => {
 
             let final_price;
             if (!product.discount_percent) {
@@ -340,14 +339,14 @@ export const createProduct = [
                 final_price = Math.round(product.price - (product.price * product.discount_percent / 100));
             }
 
-            let uploadedImages = [];
+            uploadedImages[index] = [];
             for (let i = 0; i < ((product.images.length > 10) ? 10 : product.images.length); i++) {
                 let myCloud = {};
                 myCloud = await cloudinary.v2.uploader.upload(product.images[i], {
                     folder: "Product Images",
                 });
 
-                Object.keys(myCloud).length && uploadedImages.push(
+                Object.keys(myCloud).length && uploadedImages[index].push(
                     {
                         pub_id: myCloud.public_id,
                         image_url: myCloud.secure_url
@@ -355,19 +354,19 @@ export const createProduct = [
                 );
             };
 
-            if (uploadedImages.length !== product.images.length) {
-                for (const image of uploadedImages) {
+            if (uploadedImages[index].length !== product.images.length) {
+                for (const image of Object.values(uploadedImages).flat()) {
                     await cloudinary.v2.uploader.destroy(image.pub_id);
                 }
                 return next(new ErrorHandler("Seems like something went wrong while uploading images, Please try again!"));
             };
 
             // creating a product with all the data provided by the seller
-            const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price, images: uploadedImages});
+            const createdProduct = await Product.create({ ...product, brand, category, seller_id: req.user._id, product_id, final_price, images: uploadedImages[index]});
 
             // All properties has all the flags that are present in a mongo document, to prevent a seller to fill irrelevent flags in the db, we are setting all the falg values which are not relevant to a category to undefined.
             allProperties.forEach((property) => {
-                if (!properties.includes(property)) {
+                if (!properties.concat(commonProperties).includes(property)) {
                     createdProduct[property] = undefined;
                 }
             });
@@ -380,12 +379,13 @@ export const createProduct = [
             }
 
             await createdProduct.save({ validateBeforeSave: false });
-            createdProducts.push(createdProduct);
-        }
+        });
+
+        const createdProducts = await Promise.all(createdPromises);
 
         return res.status(201).json({
             success: true,
-            message: `${products.length === 1 ? "Product" : "Products"} added successfully!`
+            message: `${createdProducts.length === 1 ? "Product" : "Products"} added successfully!`
         })
     })
 ];
@@ -410,7 +410,7 @@ export const updateAnyProduct = [
         if (categoryConfig.hasOwnProperty(product.category)) {
             const { properties } = categoryConfig[product.category];
 
-            properties.forEach((property) => {
+            properties.concat(commonProperties).forEach((property) => {
                 if(property !== "images"){
                     product[property] = (req.body[property] !== undefined) ? req.body[property] : undefined;
                 }
@@ -487,13 +487,11 @@ export const getMyProducts = catchAsync(async (req, res, next) => {
         const { _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images, description, variations } = prod;
 
         let obj = {};
-        if (variations) {
-            variations.forEach((vari) => {
-                if (categoryConfig[category].properties.includes(vari)) {
-                    obj[vari] = prod[vari];
-                }
-            })
-        }
+        categoryConfig[category].properties.forEach((field) => {
+            if(!obj[field] && !!prod[field]){
+                obj[field] = prod[field];
+            }
+        });
 
         return ({ _id, rating, total_reviews, name, category, brand, stock, price, final_price, discount_percent, images, description, ...obj, variations });
     });

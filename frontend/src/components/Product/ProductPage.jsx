@@ -25,6 +25,7 @@ import ListHeartButton from '../elements/Buttons/ListHeartButton';
 import { useQuery } from "react-query";
 import { getProductDetails } from './fetchers';
 import NotFoundPage from '../NotFoundPage';
+import { categoryConfig } from '../Data';
 
 
 const ProductPage = () => {
@@ -279,15 +280,20 @@ const ProductPage = () => {
                                     <div className="elem elem1">
                                         <span className="highlight-name">Brand</span><span className="highlight-text">{product.brand}</span>
                                     </div>
+                                    <div className="elem elem2">
+                                        <span className="highlight-name">Category</span><span className="highlight-text">{product.category}</span>
+                                    </div>
 
-                                    {product.variations.map((variation, index) => (
-                                        <div className={`elem elem${index + 2}`}>
-                                            <span className="highlight-name">{variation}</span><span className="highlight-text">{product[variation]}</span>
-                                        </div>
+                                    {categoryConfig[product.category].properties.map((field, index) => (
+                                        (!!product[field] && ((index) < 5)) && (
+                                            <div className={`elem elem${index + 3}`}>
+                                                <span className="highlight-name">{field}</span>
+                                                <span className="highlight-text">{product[field]}</span>
+                                            </div>
+                                        )
                                     ))}
                                 </div>
                             </div>
-
 
                             <div className="about-product">
                                 <div className="heading">

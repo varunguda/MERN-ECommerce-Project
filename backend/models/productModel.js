@@ -7,7 +7,7 @@ const productCategories = [
     "Monitor",
     "Camera",
     "Clothing",
-    "Shoes",
+    "Footwear",
     "Watches",
     "Telivision",
     "Refrigerator",

@@ -39,7 +39,7 @@ export const categoryConfig = {
         properties: ["size", "color"]
     },
 
-    "Shoes": {
+    "Footwear": {
         properties: ["color", "size"]
     },
 
@@ -48,11 +48,11 @@ export const categoryConfig = {
     },
 
     "Telivision": {
-        properties: ["color", "size"],
+        properties: ["color", "size"]
     },
 
     "Refrigerator": {
-        properties: ["color", "size"],
+        properties: ["color", "size"]
     },
 
     "Washing Machines": {
@@ -60,15 +60,15 @@ export const categoryConfig = {
     },
 
     "Accessories": {
-        properties: ["color", "size"],
+        properties: ["color", "size"]
     },
 
     "Audio devices": {
-        properties: ["color"],
+        properties: ["color"]
     },
 
     "Beauty & Health": {
-        properties: ["quantity"],
+        properties: ["quantity"]
     }
 }
 

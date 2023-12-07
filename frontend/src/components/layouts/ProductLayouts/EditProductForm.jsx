@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { allFields, allFieldsRange, commonFields } from '../../Data';
+import { allFields, allFieldsRange, categoryConfig, commonFields } from '../../Data';
 import { ModalContext } from '../../../Context/ModalContext';
 import { inputValidator } from '../../Admin/Product/utils';
 
@@ -19,11 +19,12 @@ const EditProductForm = ({ product, updateProduct }) => {
     }, []);
 
     useEffect(() => {
-        if(product && Object.keys(product).length > 0){
+        if(!!product && Object.keys(product).length > 0){
+            console.log(product);
             let obj = {};
-            Object.keys(product).forEach(field => {
+            Object.keys(product).concat(categoryConfig[product.category].properties).forEach(field => {
                 if(Object.keys(allFields).includes(field)){
-                    obj[field] = product[field];
+                    obj[field] = product[field] || "";
                 }
             });
             setFormData(obj);
@@ -57,6 +58,9 @@ const EditProductForm = ({ product, updateProduct }) => {
             Object.keys(formData).forEach((field) => {
                 if(field === "discount_percent" && formData[field] === ""){
                     formData[field] = 0;
+                }
+                else if(formData[field] === ""){
+                    delete formData[field];
                 }
             });
             updateProduct(formData);

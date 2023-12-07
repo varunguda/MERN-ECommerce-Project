@@ -597,9 +597,8 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    grid-column-gap: 50px;
     grid-row-gap: 20px;
-    font-size: var(--m-font-size);
+    grid-column-gap: 50px;
 }
 
 .highlight-section::after {
@@ -612,42 +611,40 @@
 }
 
 .highlight-section .elem {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 100px;
+    justify-content: space-between;
 }
 
-.highlight-section .elem1 {
-    grid-area: 1 / 1 / 2 / 2;
-}
-
-.highlight-section .elem2 {
-    grid-area: 2 / 1 / 3 / 2;
-}
-
-.highlight-section .elem3 {
-    grid-area: 3 / 1 / 4 / 2;
-}
-
-.highlight-section .elem4 {
-    grid-area: 1 / 2 / 2 / 3;
-}
-
-.highlight-section .elem5 {
-    grid-area: 2 / 2 / 3 / 3;
-}
-
-.highlight-section .elem6 {
-    grid-area: 3 / 2 / 4 / 3;
-}
-
-.highlight-name {
-    width: 30%;
+.highlight-section .highlight-name {
+    width: 50%;
     font-weight: 600;
     text-transform: capitalize;
     overflow: hidden;
 }
 
+.highlight-section .highlight-text {
+    width: 50%;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 530px) {
+    .highlight-section {
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: auto;
+        grid-row-gap: 5px;
+        padding: 15px;
+    }
+
+    .highlight-section::after{
+        display: none;
+    }
+}
 
 
 .bundles-container {
