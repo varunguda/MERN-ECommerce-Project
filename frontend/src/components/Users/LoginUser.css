@@ -10,6 +10,7 @@
 .secondary-page-content{
     color: var(--light-font-color);
     margin-top: 40px;
+    min-width: 200px;
     padding: 0px 10%;
     display: flex;
     flex-direction: column;
@@ -45,6 +46,7 @@
     font-size: var(--xxl-font-size);
     font-weight: 700;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 

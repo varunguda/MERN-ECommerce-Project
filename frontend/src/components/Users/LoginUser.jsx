@@ -10,6 +10,7 @@ import Loader2 from '../layouts/Loader/Loader2';
 
 import "./LoginUser.css";
 import { Link } from 'react-router-dom';
+import Loader from '../layouts/Loader/Loader';
 
 
 const LoginUser = () => {
@@ -119,92 +120,89 @@ const LoginUser = () => {
 
 
     return (
-        <div className='center-container'>
+        <>
+            {checkingUser ? <Loader /> : (<div className='center-container'>
 
-            <Metadata title={"Login - ManyIN"} />
+                <Metadata title={"Login - ManyIN"} />
 
-            <div className="secondary-page-content">
+                <div className="secondary-page-content">
 
-                <Link to="/">
-                    <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
-                </Link>
+                    <Link to="/">
+                        <img className='logo-image' src="/ManyIN_LOGO.png" alt="logo" />
+                    </Link>
 
-                {(!fetched) && (
+                    {(!fetched) && (
+                        <>
+                            <div className='secondary-head'>Sign in or create your account</div>
 
-                    <>
-                        <div className='secondary-head'>Sign in or create your account</div>
+                            <p>Not sure if you have an account?<br />
+                                Enter your email and we'll check for you.</p>
 
-                        <p>Not sure if you have an account?<br />
-                            Enter your email and we'll check for you.</p>
+                            <form onSubmit={mailSubmitHandler} method="post">
 
-                        <form onSubmit={mailSubmitHandler} method="post">
-
-                            <div className='input-section'>
-                                <label className='label1' htmlFor="email">Email Address*</label>
-                                <input
-                                    className='input1'
-                                    onChange={mailChangeHandler}
-                                    value={mail}
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    spellCheck={false}
-                                />
-                            </div>
-
-
-                            <button className='main-btn loader-btn' type="submit" disabled={checkingUser}>
-                                {checkingUser ? (<Loader2 />) : "Continue"}
-                            </button>
-
-                            <p className="form-caption">Securing your personal information is our priority.</p>
-                        </form>
-                    </>
-
-                )}
+                                <div className='input-section'>
+                                    <label className='label1' htmlFor="email">Email Address*</label>
+                                    <input
+                                        className='input1'
+                                        onChange={mailChangeHandler}
+                                        value={mail}
+                                        type="email"
+                                        name="email"
+                                        id="email"
+                                        spellCheck={false}
+                                    />
+                                </div>
 
 
-                {(userExist && fetched) && (
+                                <button className='main-btn loader-btn' type="submit" disabled={checkingUser}>
+                                    {checkingUser ? (<Loader2 />) : "Continue"}
+                                </button>
 
-                    <>
-                        <div className='secondary-head'>Login to your account</div>
-                        <p>You are already a ManyIN user.<br />
-                            Please enter your password in the given field below.</p>
+                                <p className="form-caption">Securing your personal information is our priority.</p>
+                            </form>
+                        </>
 
-                        <form onSubmit={passSubmitHandler} method="post">
+                    )}
 
-                            <div className='input-section'>
-                                <label className='label1' htmlFor="pass">Password*</label>
-                                <input
-                                    ref={passRef}
-                                    onChange={passChangeHandler}
-                                    className='input1 pass-input'
-                                    type="password"
-                                    name="pass"
-                                    value={pass}
-                                    id="pass"
-                                    spellCheck={false}
-                                />
-                                <span className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
 
-                            </div>
+                    {(userExist && fetched) && (
+                        <>
+                            <div className='secondary-head'>Login to your account</div>
+                            <p>You are already a ManyIN user.<br />
+                                Please enter your password in the given field below.</p>
 
-                            <p ref={passErrMsgRef} className='err-msg'>{loginMessage ? loginMessage : ""}</p>
+                            <form onSubmit={passSubmitHandler} method="post">
 
-                            <button className='main-btn loader-btn' type="submit" disabled={loginLoading}>
-                                {loginLoading ? (<Loader2 />) : "Log in"}
-                            </button>
+                                <div className='input-section'>
+                                    <label className='label1' htmlFor="pass">Password*</label>
+                                    <input
+                                        ref={passRef}
+                                        onChange={passChangeHandler}
+                                        className='input1 pass-input'
+                                        type="password"
+                                        name="pass"
+                                        value={pass}
+                                        id="pass"
+                                        spellCheck={false}
+                                    />
+                                    <span className='inferior-btn show-pass-btn' onClick={showPassClickHandler}>{showPass ? "hide" : "show"}</span>
 
-                            <button onClick={forgotPassClickHandler} className='inferior-btn forgot-pass-btn' type="button">Forgot Password?</button>
+                                </div>
 
-                        </form>
-                    </>
+                                <p ref={passErrMsgRef} className='err-msg'>{loginMessage ? loginMessage : ""}</p>
 
-                )}
+                                <button className='main-btn loader-btn' type="submit" disabled={loginLoading}>
+                                    {loginLoading ? (<Loader2 />) : "Log in"}
+                                </button>
 
-            </div>
+                                <button onClick={forgotPassClickHandler} className='inferior-btn forgot-pass-btn' type="button">Forgot Password?</button>
 
-        </div>
+                            </form>
+                        </>
+                    )}
+                </div>
+            </div>)}
+        </>
     )
 }
 

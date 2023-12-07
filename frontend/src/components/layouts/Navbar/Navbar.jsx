@@ -77,13 +77,10 @@ const Navbar = () => {
                         <span>My Portal</span>
                     </Link>
 
-                    <div className='nav-elems'>
-                        <IconHeart strokeWidth={1.25} size={17} />
-                        <Link to={"/profile/list"} className='nav-elem-desc link'>
-                            <div className='nav-elem-small'>Order&nbsp;</div>
-                            <div>My List</div>
-                        </Link>
-                    </div>
+                    <Link to="/profile/list" className='nav-elems link'>
+                        <IconHeart strokeWidth={1.5} size={17} />
+                        <span>My List</span>
+                    </Link>
                 </nav>
 
                 <nav className={sidebar ? "secondary-navbar-menu active" : "secondary-navbar-menu"}>
@@ -157,7 +154,7 @@ const Navbar = () => {
 
                             <Link to={"/profile/list"} className='nav-elems link'>
                                 <IconHeart strokeWidth={1.5} size={17} />
-                                <div className='nav-elem-desc link'>
+                                <div className='nav-elem-desc'>
                                     <div className='nav-elem-small'>Order&nbsp;</div>
                                     <div>My List</div>
                                 </div>
