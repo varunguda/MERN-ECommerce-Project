@@ -73,14 +73,14 @@
     text-overflow: ellipsis;
 }
 
-.list-product-card .product-price {
+.list-product-card > .product-description > .product-price {
     display: flex;
     flex-wrap: nowrap;
     gap: 5px;
     padding: 5px 0px;
 }
 
-.list-product-card .product-price {
+.list-product-card > .product-description > .product-price {
     > .product-sp {
         font-size: var(--l-font-size);
         white-space: nowrap;
