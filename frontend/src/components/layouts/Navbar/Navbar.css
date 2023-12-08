@@ -230,13 +230,10 @@
         white-space: nowrap;
     }
 
-    .nav-elems:not(:last-child):hover{
+    .nav-elems:hover{
         background-color: white;
     }
 }
-
-
-
 
 
 .secondary-navbar button {
