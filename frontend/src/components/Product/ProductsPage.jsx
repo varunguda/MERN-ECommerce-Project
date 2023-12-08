@@ -610,19 +610,16 @@ const ProductsPage = () => {
                                             style={{ fontSize: "15px", fontWeight: "600" }}
                                             content={
                                                 <>
-                                                    {Object.keys(allCategories) && (Object.keys(allCategories).length > 0) && Object.keys(allCategories).slice(0, expandCategories ? Object.keys(allCategories).length : 5).map((category, index) => {
-                                                        return (
-                                                            <div key={index} className='checkboxes'>
-                                                                <input onClick={selectCategoryHandler} checked={selectedCategories.includes(category)} type="checkbox" name={`${category}`} id={`${category}`} readOnly />
-                                                                <label htmlFor={`${category}`}>
-                                                                    <div className='sb-label'>
-                                                                        {category}<span>{allCategories[category]}</span>
-                                                                    </div>
-                                                                </label>
-                                                            </div>
-                                                        )
-                                                    })
-                                                    }
+                                                    {Object.keys(allCategories) && (Object.keys(allCategories).length > 0) && Object.keys(allCategories).slice(0, expandCategories ? Object.keys(allCategories).length : 5).map((category, index) => (
+                                                        <div key={index} className='checkboxes'>
+                                                            <input onClick={selectCategoryHandler} checked={selectedCategories.includes(category)} type="checkbox" name={`${category}`} id={`${category}`} readOnly />
+                                                            <label htmlFor={`${category}`}>
+                                                                <div className='sb-label'>
+                                                                    {category}<span>{allCategories[category]}</span>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    ))}
 
                                                     <button type='button' className='inferior-btn' onClick={toggleExpandCategories}>
                                                         {(!expandCategories && allCategories && Object.keys(allCategories).length > 5) ? "Show more" : "Show less"}
@@ -683,49 +680,42 @@ const ProductsPage = () => {
                                                         title={filter.charAt(0).toUpperCase() + filter.slice(1).toLowerCase()}
                                                         style={{ fontSize: "15px", fontWeight: "600" }}
                                                         content={
-                                                            <>
-                                                                {
-                                                                    (productsFilters[filter] && (Object.keys(productsFilters[filter]).length > 0) && Object.keys(productsFilters[filter]).map((type, index) => {
+                                                            (productsFilters[filter] && (Object.keys(productsFilters[filter]).length > 0) && Object.keys(productsFilters[filter]).map((type, index) => (
+                                                                <div key={index} className='checkboxes'>
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        name={type}
+                                                                        id={filter + type}
+                                                                        onClick={(e) => {
+                                                                            (filter === 'ram') ? selectRamHandler(e) :
+                                                                                (filter === 'storage') ? selectStorageHandler(e) :
+                                                                                    (filter === 'quantity') ? selectQuantityHandler(e) :
+                                                                                        selectColorHandler(e);
+                                                                        }}
+                                                                        checked={
+                                                                            (filter === 'ram') ? selectedRam.includes(type) :
+                                                                                (filter === 'storage') ? selectedStorage.includes(type) :
+                                                                                    (filter === 'quantity') ? selectedQuantity.includes(type) :
+                                                                                        selectedColors.includes(type)
+                                                                        }
+                                                                        readOnly
+                                                                    />
 
-                                                                        return (
-                                                                            <div key={index} className='checkboxes'>
-                                                                                <input
-                                                                                    type="checkbox"
-                                                                                    name={type}
-                                                                                    id={filter + type}
-                                                                                    onClick={(e) => {
-                                                                                        (filter === 'ram') ? selectRamHandler(e) :
-                                                                                            (filter === 'storage') ? selectStorageHandler(e) :
-                                                                                                (filter === 'quantity') ? selectQuantityHandler(e) :
-                                                                                                    selectColorHandler(e);
-                                                                                    }}
-                                                                                    checked={
-                                                                                        (filter === 'ram') ? selectedRam.includes(type) :
-                                                                                            (filter === 'storage') ? selectedStorage.includes(type) :
-                                                                                                (filter === 'quantity') ? selectedQuantity.includes(type) :
-                                                                                                    selectedColors.includes(type)
-                                                                                    }
-                                                                                    readOnly
-                                                                                />
-
-                                                                                <label htmlFor={filter + type}>
-                                                                                    <div className='sb-label'>
-                                                                                        {
-                                                                                            (filter === 'ram') ? ramFormatter(type) :
-                                                                                                (filter === 'storage') ? storageFormatter(type) :
-                                                                                                    (filter === 'quantity') ? "" :
-                                                                                                        type
-                                                                                        }
-                                                                                        <span>
-                                                                                            {productsFilters[filter][type]}
-                                                                                        </span>
-                                                                                    </div>
-                                                                                </label>
-                                                                            </div>
-                                                                        )
-                                                                    }))
-                                                                }
-                                                            </>
+                                                                    <label htmlFor={filter + type}>
+                                                                        <div className='sb-label'>
+                                                                            {
+                                                                                (filter === 'ram') ? ramFormatter(type) :
+                                                                                    (filter === 'storage') ? storageFormatter(type) :
+                                                                                        (filter === 'quantity') ? "" :
+                                                                                            type
+                                                                            }
+                                                                            <span>
+                                                                                {productsFilters[filter][type]}
+                                                                            </span>
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            )))
                                                         }
                                                     />
                                                 </Fragment>

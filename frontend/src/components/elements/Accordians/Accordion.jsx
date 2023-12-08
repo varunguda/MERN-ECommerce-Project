@@ -15,13 +15,11 @@ const Accordion = ({ title, content, resize, style, noBorder, activeProp, setAct
         }
     }, [activeProp]);
     
-
     useEffect(() => {
         if (((content && contentRef.current) || resize === true ) && activeProp !== undefined ? activeProp === true : active === true) {
             setHeight(`${contentRef.current.scrollHeight}px`);
         }
     }, [content, resize, activeProp, active]);
-
 
     useEffect(() => {
         if (active) {
@@ -39,6 +37,7 @@ const Accordion = ({ title, content, resize, style, noBorder, activeProp, setAct
             setActive(!active);
         }
     };
+
 
     return (
         <div className={`accordion__section ${titleClassName}`} style={noBorder && { borderTop: "none" }}>

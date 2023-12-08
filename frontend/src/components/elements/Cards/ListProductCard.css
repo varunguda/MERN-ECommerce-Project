@@ -81,12 +81,12 @@
 }
 
 .list-product-card .product-price {
-    .product-sp {
+    > .product-sp {
         font-size: var(--l-font-size);
         white-space: nowrap;
     }
 
-    .product-p {
+    > .product-p {
         margin-top: 2px;
         font-size: var(--s-font-size);
         color: var(--light-font-color);

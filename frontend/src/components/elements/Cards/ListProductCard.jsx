@@ -60,7 +60,7 @@ const ListProductCard = ({ product, setTotal }) => {
         <div className={`list-product-card-container ${product.stock === 0 && "low-stock" }`}>
             <div className='list-product-card' >
                 <Link className="image-container link"  to={`/product/${encodeURIComponent(product._id)}`} target='_blank'>
-                    <img src={(product.images && product.images.image_url) || "https://images.unsplash.com/photo-1571782742478-0816a4773a10?q=80&w=1901&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} alt={product.name} />
+                    <img src={product.images && product.images.image_url} alt={product.name} />
                 </Link>
 
                 <div className="product-description">
