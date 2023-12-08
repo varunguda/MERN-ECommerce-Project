@@ -124,3 +124,5 @@ frontend/.env:
 # Usage
 
 In case you would like to try out different roles that are available on ManyIN such as Seller or Admin, feel free to drop a mail on varunsaiguda999@gmail.com.
+
+Also note that there is pretty much work to be done on website's responsiveness. Hence, it is recommended to access site on a desktop or a wider screen.
