@@ -69,7 +69,9 @@ const ListProductCard = ({ product, setTotal }) => {
 
                     <div className='product-price'>
                         <div className="product-sp">Now ₹{product.final_price}</div>
-                        <div className="product-p">₹{product.price}</div>
+                        {(product.final_price !== product.price) && (
+                            <div className="product-p">₹{product.price}</div>
+                        )}
                     </div>
 
                     <div className="quantity">
