@@ -1,4 +1,3 @@
-
 # ManyIN - MERN E-Commerce Project
 
 ManyIN is a user-friendly MERN E-Commerce Project that allows users to buy and sell products online. It's built using MongoDB, Express.js, React, and Node.js, making it reliable and smooth to use.
@@ -6,15 +5,13 @@ ManyIN is a user-friendly MERN E-Commerce Project that allows users to buy and s
 Users can securely engage in buying and selling activities, facilitated by robust payment gateways and real-time communication features. The project also incorporates personalized user profiles to enhance the overall experience, providing a technically sound foundation for a diverse and thriving online commerce ecosystem.
 ## Install Dependencies
 
-Backend: 
-
+Backend:
 ```bash
   cd backend
   npm i
 ```
 
 Frontend:
-
 ```bash
   cd frontend
   npm i
@@ -23,29 +20,19 @@ Frontend:
 
 Below are some key libraries and technologies employed in the development of this project:
 
-React
-
-Redux
-
-CSS
-
-Node.js
-
-Express.js
-
-MongoDB
-
-Mongoose
-
-Jwt
-
-Bcrypt
-
-RESTful APIs
-
-Stripe
-
+React  
+Redux  
+CSS  
+Node.js  
+Express.js  
+MongoDB  
+Mongoose  
+Jwt  
+Bcrypt  
+RESTful APIs  
+Stripe  
 Cloudinary
+
 ## Screenshots
 
 Here are a few screenshots providing a glimpse of what's available on the ManyIN Online Store.
@@ -86,21 +73,18 @@ Checkout Page:
 
 Frontend Deployment:
 
-The frontend is securely hosted using AWS Amplify. This service simplifies deployment processes, making it simple to perform changes.
-
+The frontend is securely hosted using AWS Amplify. This service simplifies deployment processes, making it simple to perform changes.  
 Frontend URL - https://manyin.in
 
 Backend Deployment:
 
-The server-side, or backend, of the project is deployed on AWS ElasticBeanstalk. This service provides a scalable and managed environment for running applications, enhancing the project's performance and stability.
-
+The server-side, or backend, of the project is deployed on AWS ElasticBeanstalk. This service provides a scalable and managed environment for running applications, enhancing the project's performance and stability.  
 Backend URL - https://api.manyin.in
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your files in respective directories:
 
-backend/config/config.env :
-
+backend/config/config.env :  
 `PORT`
 `NODE_ENV`
 `FRONTEND_URL`
@@ -117,12 +101,15 @@ backend/config/config.env :
 `STRIPE_KEY`
 `FAST2SMS_API_KEY`
 
-frontend/.env:
-
+frontend/.env:  
 `REACT_APP_STRIPE_PUBLISH_KEY`
 `REACT_APP_BACKEND_URL`
 # Usage
 
-In case you would like to try out different roles that are available on ManyIN such as Seller or Admin, feel free to drop a mail on varunsaiguda999@gmail.com.
+DEMO USER:  
+email: vsg6677@gmail.com  
+password: testUser1
 
-Also note that there is pretty much work to be done on website's responsiveness. Hence, it is recommended to access site on a desktop or a wider screen.
+In case you would like to try out any other roles that are available on ManyIN such as Seller or Admin, feel free to drop a mail at varunsaiguda999@gmail.com.
+
+Also, note that there is pretty much work to be done on the website's responsiveness. Hence, it is recommended to access the site on a desktop or a wider screen.
