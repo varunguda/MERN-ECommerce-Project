@@ -106,10 +106,18 @@ frontend/.env:
 `REACT_APP_BACKEND_URL`
 # Usage
 
+<<<<<<< HEAD
 DEMO USER:  
 email: vsg6677@gmail.com  
 password: testUser1
 
 In case you would like to try out any other roles that are available on ManyIN such as Seller or Admin, feel free to drop a mail at varunsaiguda999@gmail.com.
+=======
+DEMO USER:
+email: vsg6677@gmail.com
+password: testUser1
+
+In case you would like to try out different roles that are available on ManyIN such as Seller or Admin, feel free to drop a mail at varunsaiguda999@gmail.com.
+>>>>>>> 24e2a716a87abf509d3c623f26a973fa5e75e3db
 
 Also, note that there is pretty much work to be done on the website's responsiveness. Hence, it is recommended to access the site on a desktop or a wider screen.
