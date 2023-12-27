@@ -3,6 +3,9 @@
 ManyIN is a user-friendly MERN E-Commerce Project that allows users to buy and sell products online. It's built using MongoDB, Express.js, React, and Node.js, making it reliable and smooth to use.
 
 Users can securely engage in buying and selling activities, facilitated by robust payment gateways and real-time communication features. The project also incorporates personalized user profiles to enhance the overall experience, providing a technically sound foundation for a diverse and thriving online commerce ecosystem.
+
+Here's a complete walkthrough of the project: https://www.youtube.com/watch?v=7LowbT-NsO4
+
 ## Install Dependencies
 
 Backend:
